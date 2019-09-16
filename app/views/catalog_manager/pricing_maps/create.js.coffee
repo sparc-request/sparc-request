@@ -19,15 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 $("#pricing_map_submit").removeAttr('disabled')
 <% else %>
-$("#modal_place").modal('hide')
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service, user: @user %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service %>")
 
 ##Re render general info form, to refresh availability toggle, etc.
-$("#general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service, user: @user %>")
+$("#general-info .panel-body").html("<%= j render '/catalog_manager/services/general_info_form', service: @service %>")
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 

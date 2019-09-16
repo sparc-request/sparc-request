@@ -27,8 +27,8 @@ $("#status-history-table").bootstrapTable 'refresh'
 
 $(".selectpicker").selectpicker()
 $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY')
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
 <% end %>

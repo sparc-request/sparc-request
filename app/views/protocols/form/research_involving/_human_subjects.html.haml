@@ -1,0 +1,73 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= f.fields_for :human_subjects_info do |ff_hsi|
+  %section.mt-3#humanSubjectsInfoContainer{ class: ff_rti.object.human_subjects? ? '' : 'd-none' }
+    .form-group
+      %h4.pb-2.mb-2.border-bottom
+        = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:human_subjects))
+
+    .form-row
+      .form-group.col-6
+        = ff_hsi.label :nct_number, title: t('protocols.tooltips.nct_number'), data: { toggle: 'tooltip', placement: 'right' }
+        = ff_hsi.text_field :nct_number, class: 'form-control'
+
+      .form-group.col-6
+        = ff_hsi.label :pro_number, title: t('protocols.tooltips.pro_number'), data: { toggle: 'tooltip', placement: 'right' }
+        = ff_hsi.text_field :pro_number, class: 'form-control'
+
+    .form-row
+      .form-group.col-6
+        = ff_hsi.label :irb_of_record
+        = ff_hsi.text_field :irb_of_record, class: 'form-control'
+      .form-group.col-3
+        = ff_hsi.label :submission_type
+        = ff_hsi.select :submission_type, options_for_select(PermissibleValue.get_inverted_hash('submission_type'), protocol.human_subjects_info.submission_type), { include_blank: true }, class: 'selectpicker'
+      .form-group.col-3
+        = ff_hsi.label :approval_pending
+        = ff_hsi.check_box :approval_pending, data: { toggle: 'toggle', on: t('constants.yes_select'), off: t('constants.no_select'), style: 'btn-block' }, disabled: !ff_rti.object.human_subjects?
+
+    .form-row
+      .form-group.col-4
+        = ff_hsi.label :initial_irb_approval_date
+        .input-group.datetimepicker.date#initialIrbApprovalDatePicker{ data: { target_input: 'nearest' } }
+          = ff_hsi.text_field :initial_irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(protocol.human_subjects_info.initial_irb_approval_date), data: { target: '#initialIrbApprovalDatePicker' }
+          .input-group-append{ data: { toggle: 'datetimepicker', target: '#initialIrbApprovalDatePicker' } }
+            %span.input-group-text
+              = icon('fas', 'calendar-alt')
+      .form-group.col-4
+        = ff_hsi.label :irb_approval_date
+        .input-group.datetimepicker.date#currentIrbApprovalDatePicker{ data: { target_input: 'nearest' } }
+          = ff_hsi.text_field :irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(protocol.human_subjects_info.irb_approval_date), data: { target: '#currentIrbApprovalDatePicker' }
+          .input-group-append{ data: { toggle: 'datetimepicker', target: '#currentIrbApprovalDatePicker' } }
+            %span.input-group-text
+              = icon('fas', 'calendar-alt')
+      .form-group.col-4
+        = ff_hsi.label :irb_expiration_date
+        .input-group.datetimepicker.date#irbExpirationDatePicker{ data: { target_input: 'nearest' } }
+          = ff_hsi.text_field :irb_expiration_date, class: 'datetimepicker-input form-control', value: format_date(protocol.human_subjects_info.irb_expiration_date), data: { target: '#irbExpirationDatePicker' }
+          .input-group-append{ data: { toggle: 'datetimepicker', target: '#irbExpirationDatePicker' } }
+            %span.input-group-text
+              = icon('fas', 'calendar-alt')
+
+    .form-row
+      .form-group.col-4
+        = f.label :study_phase_ids
+        = f.collection_select :study_phase_ids, StudyPhase.v1, :id, :phase, {}, class: 'selectpicker', multiple: true

@@ -77,8 +77,8 @@ RSpec.describe 'User creates study', js: true do
         fill_in 'protocol_sponsor_name', with: 'asd'
         find('#study_selected_for_epic_false_button').click
 
-        fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
-        page.execute_script("$('#protocol_project_roles_attributes_0_identity_id').trigger('focus');")
+        fill_in 'protocol_primary_pi_role_attributes_0_identity_id', with: 'Julia'
+        page.execute_script("$('#protocol_primary_pi_role_attributes_0_identity_id').trigger('focus');")
         wait_for_javascript_to_finish
         expect(page).to have_selector('.tt-suggestion')
 
@@ -104,7 +104,7 @@ RSpec.describe 'User creates study', js: true do
         fill_in 'protocol_sponsor_name', with: 'asd'
         find('#study_selected_for_epic_false_button').click
 
-        fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
+        fill_in 'protocol_primary_pi_role_attributes_0_identity_id', with: 'Julia'
 
         find('#protocol_impact_areas_attributes_7__destroy').click
 

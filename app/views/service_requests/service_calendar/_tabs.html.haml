@@ -17,17 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#service-calendar
-  = render 'service_calendars/master_calendar/pppv/services_toggle', srid: @service_request.id, sub_service_request_id: nil, tab: 'calendar', review: @review, portal: @portal, display_all_services: @display_all_services
-  .schedule-tabs
-    %ul.nav.nav-tabs.nav-justified{ role: 'tablist' }
-      %li.custom-tab.active{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:template], '#template-calendar', id: 'template-tab', data: { toggle: 'tab', url: table_service_calendars_path(srid: service_request.id, tab: 'template', review: false, portal: false), role: 'tab', 'aria-controls' => 'template-calendar', target: '#template-calendar' }
-      %li.custom-tab{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:billing], '#billing-strategy-calendar', id: 'billing-strategy-tab', data: { toggle: 'tab', url: table_service_calendars_path(srid: service_request.id, tab: 'billing_strategy', review: false, portal: false), role: 'tab', 'aria-controls' => 'billing-strategy-calendar', target: '#billing-strategy-calendar' }
-      %li.custom-tab{ role: 'presentation' }
-        = link_to t(:calendars)[:tabs][:pricing], '#consolidated-request-calendar', id: 'calendar-tab', data: { toggle: 'tab', url: merged_calendar_service_calendars_path(srid: service_request.id, tab: 'calendar', review: false, portal: false), role: 'tab', 'aria-controls' => 'consolidated-request-calendar', target: '#consolidated-request-calendar' }
+
+.col-12#serviceCalendar
+  .d-flex.justify-content-between.align-items-center
+    %ul.nav.nav-tabs.border-bottom-0{ role: 'tablist' }
+      = link_to t('calendars.tabs.template'), table_service_calendars_path(srid: service_request.id, tab: 'template'), remote: true, id: 'templateTabLink', class: 'nav-link h4 mb-0 ml-3 active', role: 'tab', data: {toggle: 'tab' }, aria: { controls: 'templateTab', selected: 'true' }
+      = link_to t('calendars.tabs.billing'), table_service_calendars_path(srid: service_request.id, tab: 'billing_strategy'), remote: true, id: 'billingStrategyTabLink', class: 'nav-link h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'billingStrategyTab', selected: 'false' }
+      = link_to t('calendars.tabs.pricing'), merged_calendar_service_calendars_path(srid: service_request.id, show_unchecked: @show_unchecked), remote: true, id: 'calendarTabLink', class: 'nav-link h4 mb-0', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'calendarTab', selected: 'false' }
+    = render 'service_calendars/master_calendar/pppv/services_toggle'
   .tab-content
-    .tab-pane.active#template-calendar{ role: 'tabpanel' }
-    .tab-pane#billing-strategy-calendar{ role: 'tabpanel' }
-    .tab-pane#consolidated-request-calendar{ role: 'tabpanel' }
+    .tab-pane.fade.show.active#templateTab{ role: 'tabpanel', aria: { labelledby: 'templateTabLink' } }
+    .tab-pane.fade#billingStrategyTab{ role: 'tabpanel', aria: { labelledby: 'billingStrategyTabLink' } }
+    .tab-pane.fade#calendarTab{ role: 'tabpanel', aria: { labelledby: 'calendarTabLink' } }
+    .tab-pane.fade.show.active#calendarLoading
+      .card
+        .card-body.text-center
+          %h3.d-flex.justify-content-center.align-items-center.mb-0
+            = t('constants.search.loading')

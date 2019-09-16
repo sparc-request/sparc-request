@@ -19,10 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '.standard-login-button', ->
-    $('.login-buttons, .return-button, .sign-up-button').addClass('hidden')
-    $('#login-form').removeClass('hidden')
-
-  $(document).on 'click', '.go-back-button', ->
-    $('.login-buttons, .return-button, .sign-up-button').removeClass('hidden')
-    $('#login-form').addClass('hidden')
+  $(document).on 'click', '#outsideUserLogin', ->
+    $('form#new_identity').removeClass('d-none')

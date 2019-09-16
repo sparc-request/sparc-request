@@ -21,18 +21,16 @@
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
-  include ActionView::Helpers::TextHelper
-
   respond_to :js, :json, :html
 
-  before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_action :initialize_service_request,      except: [:approve_changes]
   before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_action :find_cart_ssrs,                  only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
-  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
+  before_action :authorize_identity,              except: [:approve_changes, :show]
+  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
   before_action :find_service,                    only:   [:catalog]
+  before_action :current_page
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
@@ -60,9 +58,6 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     @institutions = Institution.all
-
-    setup_catalog_calendar
-    setup_catalog_news_feed
   end
 
   def protocol
@@ -127,7 +122,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     NotifierLogic.delay.obtain_research_pricing_logic(@service_request, current_user)
-    render formats: [:html]
+    render :confirmation
   end
 
   def confirmation
@@ -153,73 +148,42 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    respond_to do |format|
-      format.html {
-        @service_request.update_status('draft', current_user)
-        @service_request.ensure_ssr_ids
-        redirect_to dashboard_root_path
-      }
-      format.js
-    end
+    @service_request.update_status('draft', current_user)
+    @service_request.ensure_ssr_ids
+    redirect_to dashboard_root_path
+
+    respond_to :html
   end
 
   def add_service
-    add_service = AddService.new(@service_request,
-                                 params[:service_id].to_i,
-                                 current_user
-                                )
-    add_service.existing_service_ids
-    if add_service.existing_service_ids.include?( params[:service_id].to_i )
+    add_service = AddService.new(@service_request, params[:service_id], current_user, params[:srid].blank?, params[:confirmed] == 'true')
+
+    if add_service.confirm_new_request?
+      @confirm_new_request = true
+    elsif add_service.duplicate_service?
       @duplicate_service = true
     else
       add_service.generate_new_service_request
+      @service_request.reload
     end
 
-    @service_request.reload
-
-    @line_items_count = @service_request.line_items.count
-    find_cart_ssrs
+    respond_to :js
   end
 
   def remove_service
-    line_item = @service_request.line_items.find(params[:line_item_id])
-    ssr       = line_item.sub_service_request
+    page            = Rails.application.routes.recognize_path(request.referrer)[:action]
+    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, page, params[:confirmed] == 'true')
 
-    if ssr.can_be_edited?
-      @service_request.line_items.where(service: line_item.service.related_services).update_all(optional: true)
-
-      line_item.destroy
-
-      ssr.update_attribute(:status, 'draft') unless ssr.status == 'first_draft'
-      @service_request.reload
-
-      if ssr.line_items.empty?
-        NotifierLogic.new(@service_request, current_user).ssr_deletion_emails(deleted_ssr: ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
-        ssr.destroy
-      end
-    end
-
-    @service_request.reload
-
-    @line_items_count = @service_request.line_items.count
-    find_cart_ssrs
-
-    respond_to do |format|
-      format.js { render layout: false }
-    end
-  end
-
-  def get_help
-  end
-
-  def feedback
-    feedback = Feedback.new(feedback_params)
-    if feedback.save
-      Notifier.provide_feedback(feedback).deliver_now
-      flash.now[:success] = t(:proper)[:right_navigation][:feedback][:submitted]
+    if remove_service.confirm_previously_submitted?
+      @confirm_previously_submitted = true
+    elsif remove_service.confirm_last_service?
+      @confirm_last_service = true
     else
-      @errors = feedback.errors
+      remove_service.remove_service
+      redirect_to root_path(srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
+
+    respond_to :js
   end
 
   def approve_changes
@@ -233,42 +197,46 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  private
+  def system_satisfaction_survey
+    @survey = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
 
-  def feedback_params
-    params.require(:feedback).permit(:email, :message)
+    respond_to :js
   end
 
-  def details_params
-    @details_params ||= begin
-      required_keys = params[:study] ? :study : params[:project] ? :project : nil
-      if required_keys.present?
-        temp = params.require(required_keys).permit(:start_date, :end_date,
-          :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services).to_h
+  private
 
-        # Finally, transform date attributes.
-        date_attrs = %w(start_date end_date recruitment_start_date recruitment_end_date initial_budget_sponsor_received_date budget_agreed_upon_date)
-        temp.inject({}) do |h, (k, v)|
-          if date_attrs.include?(k) && v.present?
-            h.merge(k => Time.strptime(v, "%m/%d/%Y"))
-          else
-            h.merge(k => v)
-          end
-        end
-      end
+  def details_params
+    if params[:protocol]
+      params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]
+      params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]
+      params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]
+      params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]
+      params[:protocol][:initial_budget_sponsor_received_date]  = sanitize_date params[:protocol][:initial_budget_sponsor_received_date]
+      params[:protocol][:budget_agreed_upon_date]               = sanitize_date params[:protocol][:budget_agreed_upon_date]
+
+      params.require(:protocol).permit(
+        :start_date,
+        :end_date,
+        :recruitment_start_date,
+        :recruitment_end_date,
+        :initial_budget_sponsor_received_date,
+        :budget_agreed_upon_date,
+        :initial_amount,
+        :negotiated_amount,
+        :initial_amount_clinical_services,
+        :negotiated_amount_clinical_services
+      )
     end
   end
 
   def current_page
-    action_name == 'navigate' ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
-  end
-
-  def find_cart_ssrs
-    @sub_service_requests = @service_request.cart_sub_service_requests
+    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
   end
 
   def validate_step
     case current_page
+    when 'catalog'
+      validate_catalog
     when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
       validate_catalog && validate_protocol
     when 'service_details'
@@ -279,7 +247,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_catalog
-    unless @service_request.group_valid?(:catalog)
+    unless @service_request.catalog_valid?
       redirect_to catalog_service_request_path(srid: @service_request.id) and return false unless action_name == 'catalog'
       @errors = @service_request.errors
     end
@@ -287,9 +255,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_protocol
-    unless @service_request.group_valid?(:protocol)
+    unless @service_request.protocol_valid?
       redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
-      @errors = @service_request.errors
+      @errors = @service_request.protocol ? @service_request.protocol.errors : @service_request.errors
     end
     return true
   end
@@ -297,98 +265,28 @@ class ServiceRequestsController < ApplicationController
   def validate_service_details
     @service_request.protocol.update_attributes(details_params) if details_params
 
-    unless @service_request.group_valid?(:service_details)
-      redirect_to service_details_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_details'
-      @errors = @service_request.errors
+    unless @service_request.service_details_valid?
+      redirect_to service_details_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_details'
+      @errors = @service_request.protocol.errors
     end
     return true
   end
 
   def validate_service_calendar
-    unless @service_request.group_valid?(:service_calendar)
-      redirect_to service_calendar_service_request_path(srid: @service_request.id, navigate: 'true') and return false unless action_name == 'service_calendar'
+    unless @service_request.service_calendar_valid?
+      redirect_to service_calendar_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true
   end
 
   def setup_navigation
-    if c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[current_page]
-      @step_text   = c['step_text']
-      @css_class   = c['css_class']
-      @back        = eval("#{c['back']}_service_request_path(srid: #{@service_request.id})") if c['back']
-      @forward     = eval("#{c['forward']}_service_request_path(srid: #{@service_request.id})") if c['forward']
-    end
-  end
-
-  def create_calendar_event event, occurence
-    all_day     = !occurence.start_time.to_s.include?("UTC")
-    start_time  = Time.parse(occurence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time    = Time.parse(occurence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    {
-      month:          start_time.strftime("%b"),
-      day:            start_time.day,
-      title:          event.summary,
-      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="_blank">\0</a>'),
-      all_day:        all_day,
-      start_time:     start_time.strftime("%l:%M %p"),
-      end_time:       end_time.strftime("%l:%M %p"),
-      sort_by_start:  start_time.strftime("%Y%m%d"),
-      where:          event.location
-    }
-  end
-
-
-  def setup_catalog_calendar
-    if Setting.get_value("use_google_calendar")
-      curTime   = Time.now.utc
-      startMin  = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
-      begin
-        path = Rails.root.join("tmp", "basic.ics")
-        if path.exist?
-          #to parse file and get events
-          cal_file = File.open(path)
-
-          cals = Icalendar::Calendar.parse(cal_file)
-
-          cal = cals.first
-
-          cal.events.each do |event|
-            if event.occurrences_between(startMin, startMax).present?
-              event.occurrences_between(startMin, startMax).each do |occurence|
-                @events << create_calendar_event(event, occurence)
-              end
-            end
-          end
-
-          if @events.present?
-            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
-            @events.reverse!
-          end
-
-          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-        end
-      rescue Exception, ArgumentError => e
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-  end
-
-  def setup_catalog_news_feed
-    if Setting.get_value("use_news_feed")
-      @news =
-        if Setting.get_value("use_news_feed_api")
-          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
-        else
-          @news = NewsFeed::PageParser.new.posts
-        end
+    if c = Step.get(current_page)
+      @step_header      = c[:header]
+      @step_sub_header  = c[:sub_header]
+      @css_class        = c[:css_class]
+      @back             = eval("#{c[:back]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:back]
+      @forward          = eval("#{c[:forward]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:forward]
     end
   end
 

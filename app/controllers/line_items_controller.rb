@@ -19,26 +19,24 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItemsController < ApplicationController
-  respond_to :json, :js, :html
-
   before_action :initialize_service_request
   before_action :authorize_identity
 
-  # Used for x-editable update and validations
-  def update
-    line_item = LineItem.find(params[:id])
+  def edit
+    @line_item = LineItem.find(params[:id])
 
-    if line_item.update_attributes(line_item_params)
-      @service_request.update_attribute(:status, 'draft')
-      line_item.sub_service_request.update_attribute(:status, 'draft')
-      
-      render json: {
-        total_per_study: render_to_string(partial: 'service_calendars/master_calendar/otf/total_per_study', locals: { line_item: line_item }),
-        max_total_direct: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', locals: { service_request: @service_request }),
-        total_costs: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/total_cost_per_study', locals: { service_request: @service_request })
-      }
+    respond_to :js
+  end
+
+  def update
+    @line_item  = LineItem.find(params[:id])
+    @field      = params[:field]
+
+    if @line_item.update_attributes(line_item_params)
+      @service_request.update_attribute(:status, 'draft') unless @service_request.previously_submitted?
+      @line_item.sub_service_request.update_attribute(:status, 'draft')
     else
-      render json: line_item.errors, status: :unprocessable_entity
+      @errors = @line_item.errors
     end
   end
 

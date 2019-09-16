@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @service %>
-$("#modal_place").html("<%= escape_javascript(render( 'catalog_manager/services/new', service: @service )) %>")
-$("#modal_place").modal('show')
+$("#modalContainer").html("<%= escape_javascript(render( 'catalog_manager/services/new', service: @service )) %>")
+$("#modalContainer").modal('show')
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( '/layouts/flash' )) %>")
 <% end %>

@@ -19,21 +19,11 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - disable = ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role)
 = user_form_group(name: :rights, form: form, required: true,
-  data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+  data: { toggle: 'tooltip', placement: 'bottom' },
   title: t(:authorized_users)[:tooltips][:rights]) do
   - PermissibleValue.get_inverted_hash('proxy_right').each do |key, value|
     .radio
       %label
         = form.radio_button :project_rights, value, disabled: ['pi', 'primary-pi', 'business-grants-manager'].include?(form.object.role) && value != 'approve', data: { dashboard: dashboard.to_s }
-      %span{ title: t(:authorized_users)[:tooltips][value.to_sym], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
+      %span{ title: t(:authorized_users)[:tooltips][value.to_sym], data: { toggle: 'tooltip', placement: 'right' } }
         = key
-- user = (@user.present? ? @user : current_user)
-- if action_name == 'edit' && user.id == form.object.identity_id
-  - if dashboard && !admin
-    .form-group.text-center.project-rights-redirect-warning.hidden
-      %span.text-danger
-        = t(:authorized_users)[:rights][:change_warning][:dashboard]
-  - elsif !dashboard && !user.catalog_overlord?
-    .form-group.text-center.project-rights-redirect-warning.hidden
-      %span.text-danger
-        = t(:authorized_users)[:rights][:change_warning][:proper]

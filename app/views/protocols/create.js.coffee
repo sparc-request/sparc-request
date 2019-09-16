@@ -18,10 +18,28 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% unless @errors %>
-window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
+<% if @errors %>
+$("[name^='protocol']:not([type='hidden']):not(.research-involving, .study-type, .impact-area, .affiliation)").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('#studyTypeQuestionsContainer').removeClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.select{ |attr| attr != :study_type_answers }.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='protocol[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+
+<% @protocol.primary_pi_role.errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+
+<% if @errors.messages[:study_type_answers][0] %>
+<% @errors.messages[:study_type_answers][0].each do |question_id, message| %>
+$("#study_type_answer_<%= question_id %>").children('.form-group:last-of-type').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-$('#body').scrollTop(0)
-$('#protocol_research_master_id').prop('disabled', <%=@rmid_server_down%>)
+window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
 <% end %>

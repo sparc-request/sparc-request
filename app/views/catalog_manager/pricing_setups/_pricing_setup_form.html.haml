@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- pricing_setup_disabled = (pricing_setup.new_record? ? false : pricing_setup.disabled?(@user))
+- pricing_setup_disabled = (pricing_setup.new_record? ? false : pricing_setup.disabled?(current_user))
 
 .modal-dialog.modal-lg#pricing_setup_modal
   .modal-content

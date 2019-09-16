@@ -22,8 +22,19 @@ class CatalogsController < ApplicationController
   before_action :initialize_service_request
   before_action :authorize_identity
   before_action :find_locked_org_ids, only: [:update_description]
+  before_action :find_organization
   
   def update_description
-    @organization = Organization.find(params[:id])
+  end
+
+  def locked_organization
+    @identity = @organization.service_providers.where(is_primary_contact: true).first.try(&:identity)
+    @ssr      = SubServiceRequest.where(service_request: @service_request, organization: @organization).first
+  end
+
+  private
+
+  def find_organization
+    @organization = Organization.find(params[:organization_id])
   end
 end

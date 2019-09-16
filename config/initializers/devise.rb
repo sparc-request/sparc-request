@@ -237,22 +237,28 @@ Devise.setup do |config|
 
   request_type = ENV['SHIBBOLETH_REQUEST_TYPE'] || :env
 
-  config.omniauth :shibboleth, {:uid_field => 'eppn', :request_type => request_type,
-                  :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
-                  :extra_fields => [:schacHomeOrganization]
-  }
-
-  cas_config_file_path = Rails.root.join('config', 'cas.yml')
-  if File.exist?(cas_config_file_path)
-    cas_config = YAML.load_file(cas_config_file_path)[Rails.env]
-    if cas_config
-      config.omniauth :cas,
-                      url: cas_config['url'],
-                      login_url: cas_config['login_url'],
-                      service_validate_url: cas_config['service_validate_url'],
-                      callback_url: cas_config['callback_url'],
-                      debug: cas_config['debug']
+  begin
+    if Setting.get_value('use_shibboleth') && !(Setting.get_value('use_cas_only') && !Setting.get_value('use_shibboleth_only'))
+      config.omniauth :shibboleth, {
+        uid_field: 'eppn', request_type: request_type,
+        info_fields: {
+          email: 'mail', name: 'cn', last_name: 'sn', first_name: 'givenName'
+        }, extra_fields: [:schacHomeOrganization]
+      }
     end
+
+    if Setting.get_value('use_cas') && !(Setting.get_value('use_shibboleth') && Setting.get_value('use_shibboleth_only'))
+      cas_config_file_path = Rails.root.join('config', 'cas.yml')
+      if File.exist?(cas_config_file_path) && cas_config = YAML.load_file(cas_config_file_path)[Rails.env]
+        config.omniauth :cas, {
+          url: cas_config['url'], login_url: cas_config['login_url'],
+          service_validate_url: cas_config['service_validate_url'],
+          callback_url: cas_config['callback_url'], debug: cas_config['debug']
+        }
+      end
+    end
+  rescue
+    #Do nothing, just continue
   end
 
   # ==> Warden configuration

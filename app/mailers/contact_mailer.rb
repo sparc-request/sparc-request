@@ -19,9 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ContactMailer < ApplicationMailer
-
   def contact_us_email(contact_form)
     @contact_form = contact_form
+
     mail(to: Setting.get_value("contact_us_mail_to"), cc: Setting.get_value("contact_us_cc"), from: "#{contact_form.email}", subject: "#{contact_form.subject}")
   end
 end

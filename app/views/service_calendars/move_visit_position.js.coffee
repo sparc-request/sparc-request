@@ -17,11 +17,20 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#moveVisitForm #visit_group_id, #moveVisitForm #position").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% if @errors.messages[:visit_group_id] && message = @errors.messages[:visit_group_id].first %>
+$('#moveVisitForm #visit_group_id').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$('#moveVisitForm #position').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% elsif @errors.messages[:position] && message = @errors.messages[:position].first %>
+$('#moveVisitForm #position').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% elsif @errors.messages[:day] && message = @errors.messages[:day].first %>
+$('#moveVisitForm #day').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
 <% else %>
-$(".arm-calendar-container-<%= @arm.id %> .pppv-thead").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_header", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden, visit_groups: @visit_groups %>')
-$(".arm-calendar-container-<%= @arm.id %> .pppv-tbody").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden, visit_groups: @visit_groups, display_all_services: @display_all_services %>')
-$('.selectpicker').selectpicker()
-$('#modal_place').modal('hide')
+$(".arm-<%= @arm.id %>-container").replaceWith('<%= j render "service_calendars/master_calendar/pppv/pppv_calendar", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: @page.to_i, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>')
+$('#modalContainer').modal('hide')
 <% end %>

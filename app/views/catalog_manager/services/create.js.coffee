@@ -19,17 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( '/shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( '/layouts/modal_errors', errors: @errors )) %>")
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render( '/shared/flash' )) %>")
-$("#org-form-container").html("<%= j render 'form', service: @service, user: @user %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( '/layouts/flash' )) %>")
+$("#org-form-container").html("<%= j render 'form', service: @service %>")
 $('#cm-accordion').replaceWith("<%= j render '/catalog_manager/catalog/accordion', institutions: @institutions, show_available_only: false %>")
 $('#availability_toggle_container').html("<%= j render '/catalog_manager/catalog/availability_toggle', show_available_only: false %>")
 
 $("[data-toggle='toggle']").bootstrapToggle();
 $('.selectpicker').selectpicker();
 
-$("#modal_place").modal 'hide'
+$("#modalContainer").modal 'hide'
 
 initialize_related_services_search()
 <% end %>

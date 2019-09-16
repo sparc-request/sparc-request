@@ -94,7 +94,7 @@ $(document).ready ->
   # ADMIN TAB LISTENER BEGIN
 
   $(document).on 'click', '.ssr_tab a', ->
-    $.cookie('admin-tab', $(this).attr('id'), {path: '/'})
+    Cookies.set('admin-tab', $(this).attr('id'), { path: '/' })
     ##Refresh Tabs Ajax
     protocol_id = $(this).parents('ul').data('protocol-id')
     ssr_id = $(this).parents('ul').data('ssr-id')
@@ -109,16 +109,16 @@ $(document).ready ->
   # STUDY SCHEDULE TAB BEGIN
 
   $(document).on 'click', '.ss_tab a', ->
-    $.cookie('admin-ss-tab', $(this).attr('id'), {path: '/'})
+    Cookies.set('admin-ss-tab', $(this).attr('id'), { path: '/' })
 
   $(document).on 'click', '.service_calendar_row', ->
-    if confirm(I18n['calendars']['confirm_row_select'])
+    if confirm(I18n.t('calendars.confirm_row_select'))
       $.ajax
         type: 'post'
         url: $(this).data('url')
 
   $(document).on 'click', '.service_calendar_column', ->
-    if confirm(I18n['calendars']['confirm_column_select'])
+    if confirm(I18n.t('calendars.confirm_column_select'))
       $.ajax
         type: 'post'
         url: $(this).data('url')

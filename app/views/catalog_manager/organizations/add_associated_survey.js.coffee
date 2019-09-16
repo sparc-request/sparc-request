@@ -23,4 +23,4 @@ new_row = "<%= j render 'survey_row', organization: @organization, associated_su
 
 $(new_row).hide().appendTo('#surveys_container').fadeIn(1000)
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

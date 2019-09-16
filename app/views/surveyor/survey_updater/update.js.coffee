@@ -23,7 +23,7 @@ if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasCl
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
   $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").after("<span class='help-block'><%=message%></span>")
   <% if @field == 'active' %>
-  if $('#modal_place:visible').length > 0
+  if $('#modalContainer:visible').length > 0
     $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)
   else
     swal("Error", "<%= @object.errors.generate_message(:active, :taken) %>","error")
@@ -40,7 +40,7 @@ $('[id^=survey][id$=version]').siblings('.help-block').remove()
 <% end %>
 
 <% if @field == 'active' %>
-if $('#modal_place:visible').length == 0
+if $('#modalContainer:visible').length == 0
   $(".<%=@object.class.yaml_klass.downcase%>-table").bootstrapTable('refresh')
 <% end %>
 

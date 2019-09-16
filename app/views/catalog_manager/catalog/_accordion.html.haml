@@ -20,7 +20,7 @@
 
 - availability = [show_available_only, true]
 .panel-group#cm-accordion
-  - if @user.catalog_overlord?
+  - if current_user.catalog_overlord?
     -# New Institution link
     .panel-heading.no-padding-y
       .col-sm-1.no-padding-y

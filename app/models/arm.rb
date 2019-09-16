@@ -18,7 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Arm < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
@@ -42,11 +41,20 @@ class Arm < ApplicationRecord
   after_update :update_liv_subject_counts
 
   validates :name, presence: true
-  validate :name_formatted_properly
-  validate :name_unique_to_protocol
+  validates_format_of :name, with: /\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/
+  validates_uniqueness_of :name, case_sensitive: false, scope: :protocol_id
 
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
+
+  def visit_groups_valid?
+    self.errors.add(:visit_groups, :invalid) unless self.visit_groups.all?(&:valid?)
+    self.errors.add(:visit_groups, :out_of_order) unless self.visit_groups.all?(&:in_order?)
+    self.errors.none?
+  end
+
+  # To add errors for moving a visit's position
+  attr_accessor :visit_group_id
 
   def name=(name)
     write_attribute(:name, name.squish)
@@ -67,19 +75,6 @@ class Arm < ApplicationRecord
         self.line_items_visits.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     end
-  end
-
-  def name_formatted_properly
-    if !name.blank? && name.match(/\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/).nil?
-      errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
-    end
-  end
-
-  def name_unique_to_protocol
-    arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)
-    arm_names = arm_names.map(&:downcase)
-
-    errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
   def per_patient_per_visit_line_items

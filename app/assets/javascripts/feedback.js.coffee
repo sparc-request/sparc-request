@@ -38,6 +38,6 @@ $.fn.render_form_errors = (model_name, errors) ->
 
 $ ->
 
-  $('#modal_place').on 'shown.bs.modal', ->
+  $('#modalContainer').on 'shown.bs.modal', ->
     $('.new_feedback').ajaxError (e, data) ->
       $('.new_feedback').render_form_errors('feedback', JSON.parse(data.responseText))

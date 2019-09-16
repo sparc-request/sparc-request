@@ -17,8 +17,42 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('.shopping-cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', service_request: @service_request, sub_service_requests: @sub_service_requests, allow_delete: true )) %>")
+
+<% if @confirm_previously_submitted %>
+ConfirmSwal.fire(
+  title: I18n.t('proper.cart.request_submitted.header')
+  text: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
+).then (result) ->
+  if result.value
+    $.ajax
+      type: 'delete'
+      dataType: 'script'
+      url: '/service_request/remove_service'
+      data:
+        srid: getSRId()
+        line_item_id: "<%= params[:line_item_id] %>"
+        confirmed: "true"
+<% elsif @confirm_last_service %>
+ConfirmSwal.fire(
+  title: I18n.t('proper.cart.last_service.header')
+  text: I18n.t('proper.cart.last_service.warning')
+  confirmButtonText: I18n.t('proper.cart.last_service.confirm')
+  cancelButtonText: I18n.t('proper.cart.last_service.cancel')
+).then (result) ->
+  if result.value
+    $.ajax
+      type: 'delete'
+      dataType: 'script'
+      url: '/service_request/remove_service'
+      data:
+        srid: getSRId()
+        line_item_id: "<%= params[:line_item_id] %>"
+        confirmed: "true"
+<% else %>
+$('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
+$('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
 <% if request.referrer.split('/').last == 'protocol' %>
-$('.service-list').html("<%= escape_javascript(render( 'service_requests/protocol/service_list', service_request: @service_request )) %>")
+$('.service-list').html("<%= j render 'service_requests/protocol/service_list', service_request: @service_request %>")
+<% end %>
 <% end %>

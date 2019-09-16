@@ -1,0 +1,40 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= f.fields_for :investigational_products_info do |ff_ipi|
+  %section.mt-3#investigationalProductsInfoContainer{ class: ff_rti.object.investigational_products? ? '' : 'd-none' }
+    .form-group
+      %h4.pb-2.mb-2.border-bottom
+        = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:investigational_products))
+
+    .form-row
+      .form-group.col-3
+        = ff_ipi.label :ind_number, title: t(:protocols)[:tooltips][:ind_number], data: { toggle: 'tooltip', placement: 'right' }
+        = ff_ipi.text_field :ind_number, class: 'form-control'
+      .form-group.col-3
+        = ff_ipi.label :ind_on_hold
+        = ff_ipi.check_box :ind_on_hold, data: { toggle: 'toggle', on: t('constants.yes_select'), off: t('constants.no_select'), style: 'btn-block' }, disabled: ff_ipi.object.ind_number.blank?
+      .form-group.col-3
+        = ff_ipi.label :exemption_type
+        = ff_ipi.select :exemption_type, options_for_select(PermissibleValue.get_inverted_hash('product_exemption_type'), ff_ipi.object.exemption_type), { include_blank: true }, class: 'selectpicker'
+      - PermissibleValue.get_key_list('product_exemption_type').each do |exemption_type|
+        .form-group.col-3.device-container{ id: "#{exemption_type}DeviceContainer", class: ff_ipi.object.exemption_type == exemption_type ? '' : 'd-none' }
+          = ff_ipi.label :inv_device_number, "#{exemption_type.upcase} #"
+          = ff_ipi.text_field :inv_device_number, class: 'form-control', disabled: ff_ipi.object.exemption_type != exemption_type

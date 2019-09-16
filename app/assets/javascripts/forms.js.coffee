@@ -23,8 +23,8 @@ $ ->
 
     form_id = $(this).data('response-id')
     swal {
-      title: I18n['swal']['swal_confirm']['title']
-      text: I18n['swal']['swal_confirm']['text']
+      title: I18n.t('swal.swal_confirm.title')
+      text: I18n.t('swal.swal_confirm.text')
       type: 'warning'
       showCancelButton: true
       confirmButtonColor: '#DD6B55'

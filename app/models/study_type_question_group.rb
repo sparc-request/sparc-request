@@ -20,8 +20,9 @@
 
 class StudyTypeQuestionGroup < ApplicationRecord
   has_many :study_type_questions
-  scope :inactive, -> {where(active:false)}
-  scope :active, -> {where(active:true)}
+
+  scope :inactive, -> {where(active: false)}
+  scope :active, -> {where(active: true)}
 
   def self.active_id
     self.active.first.id

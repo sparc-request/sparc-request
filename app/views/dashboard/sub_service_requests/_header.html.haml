@@ -49,7 +49,7 @@
           %td.text-center#service_request_owner_dropdown
             = service_request_owner_display(sub_service_request)
           %td.text-center#ssr_fulfillment_status
-            = ready_for_fulfillment_display(current_user, sub_service_request)
+            = ready_for_fulfillment_display(sub_service_request)
           %td.effective_cost
             = number_to_currency(effective_current_total(sub_service_request))
           %td.display_cost

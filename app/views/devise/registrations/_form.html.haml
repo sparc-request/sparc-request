@@ -1,0 +1,66 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true do |f|
+  = hidden_field_tag :srid, service_request.try(:id)
+  .form-row
+    .form-group.col-12.col-xl-6
+      = f.label :first_name, class: 'required'
+      = f.text_field :first_name, autofocus: true, class: 'form-control'
+    .form-group.col-12.col-xl-6
+      = f.label :last_name, class: 'required'
+      = f.text_field :last_name, class: 'form-control'
+  .form-row
+    .form-group.col-12.col-xl-6
+      = f.label :email, class: 'required'
+      .input-group
+        .input-group-prepend
+          = f.label :email, icon('far', 'envelope'), class: 'input-group-text'
+        = f.email_field :email, class: 'form-control'
+    .form-group.col-12.col-xl-6
+      = f.label :phone
+      .input-group
+        .input-group-prepend
+          = f.label :phone, icon('fas', 'phone'), class: 'input-group-text'
+        = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
+      %span.form-text.text-muted
+        = t('constants.phone.note')
+  .form-group
+    = f.label :company
+    = f.text_field :company, class: 'form-control'
+  .form-group
+    = f.label :reason
+    = f.text_area :reason, class: 'form-control', rows: 5
+  .form-group
+    = f.label :ldap_uid, class: 'required'
+    = f.text_field :ldap_uid, class: 'form-control'
+  .form-group
+    = f.label :password, class: 'required'
+    = f.password_field :password, autocomplete: 'off', class: 'form-control'
+    - if @minimum_password_length
+      %small.form-text.text-muted
+        = t('devise.min_password_length', min_length: @minimum_password_length)
+  .form-group
+    = f.label :password_confirmation, class: 'required'
+    = f.password_field :password_confirmation, autocomplete: 'off', class: 'form-control'
+  .form-group
+    = f.submit t('devise.registrations.submit'), class: 'btn btn-lg btn-block btn-outline-primary'
+  .form-group.text-center
+    = link_to t('devise.links.sign_in'), new_identity_session_path(srid: service_request.try(:id))

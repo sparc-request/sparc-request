@@ -18,21 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Send the user back to dashboard if theyre a member and not an admin
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-# Update the entire view to ensure the user now only has their admin privileges
+
+<% if @redirect %>
+window.location = "<%= dashboard_root_path %>"
 <% elsif @current_user_destroyed && @admin %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin, user: @user)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false)) %>")
+$("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
+$("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
+$("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
+$('.service-request-card:not(:first-of-type').remove()
+$(".service-request-card:first-of-type").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
-$("#associated-users-table").bootstrapTable()
-$("#documents-table").bootstrapTable()
+$("#authorizedUsersTable").bootstrapTable()
+$("#documentsTable").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
-
-reset_service_requests_handlers()
 <% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
+$("#authorizedUsersTable").bootstrapTable('refresh')
 <% end %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

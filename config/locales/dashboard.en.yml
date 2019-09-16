@@ -25,11 +25,6 @@ en:
     ##########
     header: "SPARCRequest Dashboard"
 
-    ###########
-    #  ADMIN  #
-    ###########
-    admin:
-
     ###############
     #  APPROVALS  #
     ###############
@@ -46,12 +41,6 @@ en:
     arms:
       manage: "Manage Arms"
 
-    ###############
-    #  DOCUMENTS  #
-    ###############
-    documents:
-      header: "Documents"
-
     #################
     #  EPIC QUEUES  #
     #################
@@ -60,6 +49,19 @@ en:
         current: "Current"
         past: "Past"
         protocol_update: "Protocol Update"
+      confirm: "Are you sure you want to delete this item from the Epic Queue?"
+      date_formatter: "%m/%d/%Y %I:%M:%S %p"
+      date: "Last Queue Date"
+      PIs: "PI(s)"
+      protocol: "Queued Protocol"
+      notes: "Notes"
+      status: "Last Queue Status"
+      created_at: 'Current Queue Date'
+      by: 'By'
+      sent_protocols: 'Sent Protocols'
+      type: 'Type'
+      actions: 'Actions'
+
 
     #########
     # FORMS #
@@ -105,10 +107,8 @@ en:
         user: "User"
         date: "Date"
         message: "Message"
-        no_messages: "This Notification currently has no Messages."
       new:
         header: "New Message to "
-        message: "Message:"
 
     #########################
     #  MULTIPLE LINE ITEMS  #
@@ -121,17 +121,6 @@ en:
       destroyed: "Services Removed!"
       service: "Service:"
 
-    ##########
-    # NAVBAR #
-    ##########
-    navbar:
-      logged_in_as: "Logged in as "
-      epic_queue: "Epic Queue"
-      messages: "All Notifications"
-      tooltips:
-        epic_queue: "View or edit protocols for Epic interface"
-        messages: "Access to correspondence"
-
     ##############
     # NAVIGATION #
     ##############
@@ -143,6 +132,8 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
+      service_providers:
+        header: "Notify a Service Provider"
       table:
         send: "Send Notification"
         compose: "Compose Message"
@@ -160,11 +151,9 @@ en:
         requester: "(Requester)"
       form:
         select_header: "Send Notification"
-        select: "Select User:"
-        subject: "Subject"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Ability to send correspondence to Service Providers or Authorized Users"
+        table_button: "Send correspondence to Service Providers"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
 
 
@@ -174,20 +163,20 @@ en:
     ######################
     protocol_filters:
       header: "Filter Protocols"
-      search_by: "Search All"
+      search_by: "All"
+      search_placeholder: "Search for Protocols"
       archived: "Archived"
+      unarchived: "Unarchived"
       inactive: "(inactive)"
       status: "Status"
       organization: "Organization"
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
-      empty_protocols: "Empty Protocols (No Services)"
+      modal:
+        header: "Choose a name for your search"
       saved_filters:
         header: "Recently Saved Filters"
-        modal:
-          header: "Choose a name for your search."
-          name: "Name"
       tooltips:
         save: "Save current search"
         reset: "Clear current search"
@@ -196,6 +185,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'
         cancel_edit_selected_for_epic: 'Cancel Edit'
@@ -204,15 +194,8 @@ en:
         cancel_edit_answer: 'Cancel Edit'
 
       table:
-        export: "Export"
         header: "Protocols"
-        new_protocol: "New Protocol"
-        new_study: "New Study"
-        new_project: "New Project"
         short_title: "Short Title"
-        id: "Protocol ID"
-        pis: "PI(s)"
-        requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
@@ -220,16 +203,13 @@ en:
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
 
-      documents:
-        header: "Documents"
-        add_document: "Add Document"
-
       service_requests:
-        header: "Requests"
-        view_consolidated: "View Consolidated Request"
-        export_consolidated: "Export Consolidated Request"
-        coverage_report: 'Coverage Analysis Report'
-        cost_analysis_report: 'Cost Analysis Report'
+        header: "Requests - %{status} - %{date}"
+        view_consolidated: "Consolidated Request"
+        export_consolidated: "Export"
+        coverage_report: 'Coverage Analysis'
+        cost_analysis_report: 'Cost Analysis'
+        consolidated_all: "All Requests"
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
@@ -247,6 +227,28 @@ en:
           end_date: "Project/Study estimated end date (used by service providers to prioritize)"
           recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
           recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
+    
+    ###############
+    #  PROTOCOL MERGE  #
+    ###############
+    protocol_merge:
+      modal_header: "Merge Protocols"
+      enter_master_protocol: "Enter the id of the Master Protocol:"
+      enter_merged_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
+      perform_protocol_merge: "Perform Protocol Merge"
+      warning: "Preparing to merge protocol %{master_protocol_id} and protocol %{merged_protocol_id}. Do you wish to continue?"
+      yes_button: "<b>Yes</b> <br>Continue Merging"
+      no_button: "<b>No</b> <br>Cancel Merge"
+      errors:
+        access:  "You do not have access to perform a Protocol Merge"
+        master_blank: "Master protocol can't be blank"
+        merged_blank: "Protocol to be merged can't be blank"
+        master_does_not_exist: "Master protocol ID does not exist"
+        merged_does_not_exist: "Protocol to be merged ID does not exist"
+        one_calendar: "Only one protocol may have a calendar to be merged"
+        cannot_merge: "Protocol to be merged has already been pushed to SPARCFulfillment and can't be merged"
+      success: "Protocol merge successful"
+
     #####################
     # SERVICE CALENDARS #
     #####################
@@ -272,33 +274,14 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Add / Modify Request"
-      srid: "SRID"
-      organization: "Organization"
-      owner: "Owner"
-      status: "Status"
-      notifications: "Notifications"
-      actions:
-        header: "Actions"
-        view: "View"
-        edit: "Edit"
-        admin_edit: "Admin Edit"
-        tooltips:
-          view: "Quick access to view services for selected provider"
-          edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
-          admin: "Service Provider administrative access to track and manage services"
+      modify_request: "Add / Modify Requests"
       forms:
-        header: "Forms"
-        selectpicker: "Complete Form"
+        selectpicker: "Complete Forms"
       tooltips:
+        view: "Quick access to view services from this provider"
+        admin_edit: "Service Provider administrative access to track and manage services"
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
         coverage_report: "Ability to export research and third-party payer information to Excel"
-      view_ssr:
-        documents:
-          header: "Documents"
-          none: "No Documents"
-          file_name: "File Name"
-          program_core: "Program/Core"
 
     ############################
     #  Non-clinical Services #
@@ -349,7 +332,6 @@ en:
         cost: "Cost:"
       tooltips:
         add_non_clinical_services: "Add Non-clinical services related to selected organization"
-        modified_rate: 'Modified Rate'
         change_rate: "Click to modify rate"
 
     ##########################
@@ -399,9 +381,6 @@ en:
 
         study_level_activities:
           header: "Non-clinical Services"
-
-        documents:
-          header: "Documents"
 
         history:
           header: "History"

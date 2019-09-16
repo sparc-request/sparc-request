@@ -17,18 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= stylesheet_link_tag 'associated_users_table'
-.panel-group#protocol_show_information_panel
-  = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin, user: @user
-  = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-  - if @protocol.has_clinical_services?
-    = render 'dashboard/calendar_structure/table', protocol: @protocol
-  = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: @show_view_ssr_back, statuses_hidden: %(first_draft)
-  = render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-  = render 'dashboard/forms/table', protocol: @protocol
-  = render "dashboard/protocols/milestone", protocol: @protocol
 
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })
+= render 'protocols/summary', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
+= render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
+= render "protocols/milestones", protocol: @protocol
+- if @protocol.has_clinical_services?
+  = render 'dashboard/calendar_structure/table', protocol: @protocol
+= render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit
+= render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
+= render 'forms/table', protocol: @protocol

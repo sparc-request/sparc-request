@@ -28,7 +28,7 @@ class Dashboard::ApprovalsController < Dashboard::BaseController
   def create
     @sub_service_request = SubServiceRequest.find(params[:ssr_id])
     if @sub_service_request.update_attributes(approval_params[:sub_service_request])
-      @sub_service_request.generate_approvals(@user, approval_params[:sub_service_request])
+      @sub_service_request.generate_approvals(current_user, approval_params[:sub_service_request])
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       flash[:success] = 'Approval Submitted!'

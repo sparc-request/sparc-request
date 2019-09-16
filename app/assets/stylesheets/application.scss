@@ -1,63 +1,112 @@
-// Copyright © 2011-2019 MUSC Foundation for Research Development*/
-// All rights reserved.*/
+// Copyright © 2011-2019 MUSC Foundation for Research Development
+// All rights reserved.
 
-// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
-// disclaimer in the documentation and/or other materials provided with the distribution.*/
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
 
-// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
-// derived from this software without specific prior written permission.*/
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
-// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
-// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
-// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-@import 'flex-utils';
-@import 'bootstrap-custom';
+////////////////////////
+/// Require Packages ///
+////////////////////////
+
+@import 'custom/bootstrap-variables-custom';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-select/dist/css/bootstrap-select.min';
+@import 'bootstrap-table/dist/bootstrap-table.min';
+@import 'bootstrap4-toggle/css/bootstrap4-toggle';
+@import 'sweetalert2/dist/sweetalert2.min';
+@import 'tempusdominus-bootstrap-4/src/sass/_tempusdominus-bootstrap-4';
+
+@import 'font-awesome-sprockets';
+@import 'font-awesome';
+
+/////////////////////////////////////
+/// Require Package Customization ///
+/////////////////////////////////////
+
+@import 'custom/nprogress-custom';
+@import 'custom/bootstrap-custom';
+@import 'custom/bootstrap-select-custom';
+@import 'custom/bootstrap-table-custom';
+@import 'custom/bootstrap-toggle-custom';
+@import 'custom/sweetalert-custom';
+@import 'custom/tempusdominus-custom';
+@import 'custom/typeahead-custom';
+
+/////////////////////////////////////
+/// Require All Other Stylesheets ///
+/////////////////////////////////////
+
+@import 'utilities';
+@import 'layout';
+@import 'header';
+@import 'navbar';
+@import 'footer';
+@import 'components';
+
+@import 'service_requests';
+@import 'protocols';
+@import 'service_calendar';
+@import 'dashboard/notifications'
+
+
+
+
+
+
+
+//@import 'flex-utils';
+//@import 'bootstrap-custom';
 
 // replaced require_tree .
-@import 'proper/custom_jquery_ui';
-@import 'proper/devise';
-@import 'proper/layout';
-@import 'proper/contact_forms';
-@import 'proper/steps';
-@import 'proper/right_navigation';
-@import 'proper/navigation';
-@import 'proper/protocols';
-@import 'proper/service_calendars';
-@import 'proper/service_catalog';
-@import 'proper/service_details';
-@import 'proper/service_subsidy';
-@import 'proper/document_management';
-@import 'proper/review';
-@import 'proper/system_satisfaction';
-@import 'proper/confirmation';
-@import 'sweetalert';
-@import 'proper/modal';
-@import 'surveyor/responses';
-@import 'surveyor/surveys';
+//@import 'proper/custom_jquery_ui';
+//@import 'proper/devise';
+//@import 'proper/layout';
+//@import 'proper/contact_forms';
+//@import 'proper/steps';
+//@import 'proper/right_navigation';
+//@import 'proper/navigation';
+//@import 'proper/protocols';
+//@import 'proper/service_calendars';
+//@import 'proper/service_catalog';
+//@import 'proper/service_details';
+//@import 'proper/service_subsidy';
+//@import 'proper/document_management';
+//@import 'proper/review';
+//@import 'proper/system_satisfaction';
+//@import 'proper/confirmation';
+//@import 'sweetalert';
+//@import 'proper/modal';
+//@import 'surveyor/responses';
+//@import 'surveyor/surveys';
 
 // other files
-@import 'bootstrap-sprockets';
-@import 'bootstrap';
-@import 'bootstrap-select';
-@import 'bootstrap-select-custom';
-@import 'bootstrap-table';
-@import 'bootstrap-table-custom';
-@import 'bootstrap-datetimepicker';
-@import 'editable/bootstrap-editable';
-@import '960';
-@import 'layout';
-@import 'twitter_typeahead';
-@import 'associated_user_form';
-@import 'protocol_form';
-@import 'service_calendar';
-@import 'nprogress_config';
-@import 'funding';
-@import 'notes';
+//@import 'bootstrap-sprockets';
+//@import 'bootstrap';
+//@import 'bootstrap-select';
+//@import 'bootstrap-select-custom';
+//@import 'bootstrap-table';
+//@import 'bootstrap-table-custom';
+//@import 'bootstrap-datetimepicker';
+//@import 'editable/bootstrap-editable';
+//@import 'layout';
+//@import 'twitter_typeahead';
+//@import 'associated_user_form';
+//@import 'protocol_form';
+//@import 'service_calendar';
+//@import 'nprogress_config';
+//@import 'funding';
+//@import 'notes';

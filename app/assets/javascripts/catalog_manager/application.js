@@ -18,15 +18,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
+//= require i18n/translations
 //= require jquery
 //= require bootstrap-sprockets
 //= require bootstrap-select
@@ -41,17 +33,10 @@
 //= require catalog_manager/form
 //= require jquery_ujs
 //= require jquery.remotipart
-//= require jquery.cookie
-//= require jquery.form
 //= require nprogress
 //= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require form_manager
-//= require form_fx_manager
 //= require twitter/typeahead.min
 //= require handlebars-v4.0.5
-//= require assert
-//= require ajax_handler
 //= require sweetalert.min
+//= require stickybits/dist/stickybits.min
 //= require ../global

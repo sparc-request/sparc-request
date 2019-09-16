@@ -19,71 +19,64 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  post 'study_type/determine_study_type_note'
-
-  namespace :surveyor do
-    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
-      get :preview
-      get :update_dependents_list
-      post :copy
-    end
-    resource :survey, only: [] do
-      get :search_surveyables
-    end
-    resources :sections, only: [:create, :destroy]
-    resources :questions, only: [:create, :destroy]
-    resources :options, only: [:create, :destroy]
-    resources :responses do
-      get :complete
-      put :resend_survey
-    end
-    resources :response_filters, only: [:new, :create, :destroy]
-    resources :survey_updater, only: [:update]
-    root to: 'surveys#index'
-  end
-
-  resources :forms, only: [:index]
-
-  resources :feedback
+  ####################
+  ### Devise Setup ###
+  ####################
 
   begin
-    use_shibboleth_only = Setting.get_value("use_shibboleth_only")
-    use_cas_only        = Setting.get_value("use_cas_only")
+    if Setting.get_value("use_shibboleth_only")
+      devise_for :identities,
+                 controllers: {
+                   omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations'
+                 }, path_names: { sign_in: 'auth/shibboleth', sign_up: 'auth/shibboleth' }
+
+    elsif Setting.get_value("use_cas_only")
+      devise_for :identities,
+                 controllers: {
+                   omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations'
+                 }, path_names: { sign_in: 'auth/cas', sign_up: 'auth/cas' }
+    else
+      devise_for :identities,
+                 controllers: {
+                   omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations',
+                   passwords: 'identities/passwords'
+                 }
+    end
   rescue
-    use_shibboleth_only = nil
-    use_cas_only = nil
-  end
-
-  if use_shibboleth_only
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-               }, path_names: { sign_in: 'auth/shibboleth' }
-
-  elsif use_cas_only
-    devise_for :identities,
-               controllers: {
-                 omniauth_callbacks: 'identities/omniauth_callbacks',
-               }, path_names: { sign_in: 'auth/cas' }
-  else
-    devise_for :identities,
-               controllers: {
-                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 registrations: 'identities/registrations',
+                 passwords: 'identities/passwords'
                }
   end
 
   resources :identities, only: [] do
-
     member do
       get 'approve_account'
       get 'disapprove_account'
     end
   end
 
-  resources :contact_forms, only: [:new, :create]
-  resources :short_interactions, only: [:new, :create]
+  ####################
+  ### Other Routes ###
+  ####################
 
-  resource :locked_organizations, only: [:show]
+  resource :pages, only: [] do
+    get :event_details
+    get :faqs
+  end
+
+  resources :forms, only: [:index]
+
+  resources :feedback, only: [:new, :create]
+
+  resources :contact_forms, only: [:new, :create]
+
+  resources :short_interactions, only: [:new, :create]
 
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
@@ -98,24 +91,27 @@ SparcRails::Application.routes.draw do
     get :obtain_research_pricing
     get :confirmation
     get :save_and_exit
-    get :get_help
     get :approve_changes
+    get :system_satisfaction_survey
 
     post :navigate
-    post :feedback
-
-    resources :projects, except: [:index, :show, :destroy]
-    resources :studies, except: [:index, :show, :destroy]
+    post :add_service
+    delete :remove_service
   end
 
+  resource :research_master, only: [:update]
+
   resources :protocols, except: [:index, :destroy] do
-    resource :research_master, only: [:update]
     member do
-      put :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
+      patch :update_protocol_type
     end
+  end
+
+  resource :protocol do
+    get :get_study_type_note
   end
 
   resources :projects, controller: :protocols, except: [:index, :show, :destroy]
@@ -124,7 +120,7 @@ SparcRails::Application.routes.draw do
 
   resources :associated_users, except: [:show] do
     collection do
-      get :search_identities
+      get :update_professional_organizations
     end
   end
 
@@ -144,20 +140,21 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :line_items, only: [:update]
-  resources :line_items_visits, only: [:update, :destroy]
+  resources :line_items, only: [:edit, :update]
+  resources :line_items_visits, only: [:edit, :update, :destroy]
   resources :visit_groups, only: [:edit, :update]
   resources :visits, only: [:edit, :update, :destroy]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :notes, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :notes, only: [:index, :create, :edit, :update, :destroy]
 
   resources :sub_service_requests, only: [:show]
 
-  resources :catalogs, only: [] do
+  resources :catalogs, param: :organization_id, only: [] do
     member do
-      post 'update_description'
+      get :update_description
+      get :locked_organization
     end
   end
 
@@ -171,8 +168,6 @@ SparcRails::Application.routes.draw do
   end
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
-  match 'service_request/add_service/:service_id' => 'service_requests#add_service', via: [:post]
-  match 'service_request/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:delete]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
@@ -235,12 +230,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
-      collection do
-        get :search_identities
-        get :update_professional_organization_form_items
-      end
-    end
+    resources :associated_users, except: [:show]
 
     resources :documents, except: [:show]
 
@@ -248,7 +238,7 @@ SparcRails::Application.routes.draw do
     resources :epic_queue_records, only: [:index]
 
     resource :protocol_merge do
-      get :perform_protocol_merge
+      put :perform_protocol_merge
     end
 
     resources :fulfillments
@@ -273,7 +263,6 @@ SparcRails::Application.routes.draw do
 
     resources :notifications, only: [:index, :new, :create] do
       member do
-        put :user_portal_update
         put :admin_update
       end
       collection do
@@ -286,10 +275,11 @@ SparcRails::Application.routes.draw do
     resources :protocols, except: [:destroy] do
       resource :milestones, only: [:update]
       resource :study_type_answers, only: [:edit]
+
       member do
-        put :update_protocol_type
         get :display_requests
         patch :archive
+        patch :update_protocol_type
       end
     end
 
@@ -341,18 +331,32 @@ SparcRails::Application.routes.draw do
     root to: 'protocols#index'
   end
 
+  namespace :surveyor do
+    resources :surveys, only: [:index, :new, :create, :edit, :destroy] do
+      get :preview
+      get :update_dependents_list
+      post :copy
+    end
+    resource :survey, only: [] do
+      get :search_surveyables
+    end
+    resources :sections, only: [:create, :destroy]
+    resources :questions, only: [:create, :destroy]
+    resources :options, only: [:create, :destroy]
+    resources :responses do
+      get :complete
+      put :resend_survey
+    end
+    resources :response_filters, only: [:new, :create, :destroy]
+    resources :survey_updater, only: [:update]
+    root to: 'surveys#index'
+  end
+
   resources :reports, only: [:index] do
     collection do
       get :setup
       post :generate
     end
-  end
-
-  ##### Admin Identities #####
-  namespace :admin do
-    root :to => 'identities#index'
-    match 'identities/search' => 'identities#search', :via => :get
-    resources :identities, only: [:index, :show, :create, :update]
   end
 
   ##### Funding Download #####
@@ -369,7 +373,7 @@ SparcRails::Application.routes.draw do
 
   root to: 'service_requests#catalog'
 
-  ## error page routes ##
-  match "/404", :to => "error_pages#not_found", :via => :all
-  match "/500", :to => "error_pages#internal_server_error", :via => :all
+  get "/authorization_error", to: "error_pages#authorization_error"
+  get "/404", to: "error_pages#not_found"
+  get "/500", to: "error_pages#internal_server_error"
 end

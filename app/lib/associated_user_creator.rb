@@ -51,5 +51,9 @@ class AssociatedUserCreator
   def successful?
     @successful
   end
+
+  def protocol_role
+    @protocol_role
+  end
 end
 

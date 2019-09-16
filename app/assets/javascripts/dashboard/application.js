@@ -18,51 +18,60 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// This is a manifest file that'll be compiled into including all the files listed below.
-// Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
-// be included in the compiled file accessible from http://example.com/assets/application.js
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
-//= require jquery
-//= require batch-select
-//= require bootstrap-sprockets
-//= require bootstrap-select
-//= require bootstrap-select-custom
-//= require bootstrap-table
-//= require bootstrap-table-export
-//= require bootstrap-table-custom
-//= require tableExport
-//= require moment
-//= require bootstrap-datetimepicker
-//= require jquery_ujs
-//= require jquery.remotipart
-//= require jquery.cookie
-//= require jquery.form
-//= require jquery.printElement
-//= require editable/bootstrap-editable
-//= require editable/rails
-//= require nprogress
-//= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require assert
-//= require form_manager
-//= require form_fx_manager
-//= require twitter/typeahead.min
-//= require filterrific/filterrific-jquery
-//= require sweetalert.min
-//= require_tree .
+///////////////////////////////////////
+/// These need to be required first ///
+///////////////////////////////////////
 
-//= require ../service_calendar
-//= require ../global
-//= require global
-//= require associated_users_form
-//= require study_schedule_tabs
-//= require subsidy_form
-//= require surveyor/responses
-//= require surveyor/surveys
-//= require dashboard/navbar
-//= require notes
+// require i18n/translations
+// require sweetalert2/dist/sweetalert2.min
+// require custom/sweetalert-integration
+// require jquery-ujs
+// require jquery/dist/jquery.min
+
+//////////////////////////////////
+/// Require Remaining Packages ///
+//////////////////////////////////
+
+// require popper.js/dist/umd/popper.min
+// require bootstrap/dist/js/bootstrap.min
+// require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
+// require bootstrap-select/dist/js/bootstrap-select.min
+// require corejs-typeahead/dist/typeahead.bundle.min
+// require js-cookie/src/js.cookie
+
+// require nprogress/nprogress
+
+///////////////////////////////
+/// Require Our JavaScripts ///
+///////////////////////////////
+
+// require custom/bootstrap-select-custom
+
+
+
+
+// require batch-select
+// require bootstrap-table
+// require bootstrap-table-export
+// require bootstrap-table-custom
+// require tableExport
+// require jquery.remotipart
+// require editable/bootstrap-editable
+// require editable/rails
+// require twitter/typeahead.min
+// require filterrific/filterrific-jquery
+// require sweetalert.min
+// require_tree .
+
+// require ../service_calendar
+// require ../global
+// require global
+// require associated_users_form
+// require study_schedule_tabs
+// require subsidy_form
+// require surveyor/responses
+// require surveyor/surveys
+// require dashboard/navbar
+// require notes
 
 window.Sparc = {};

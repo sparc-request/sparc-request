@@ -35,10 +35,10 @@ class Identity < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :omniauthable
+  devise :database_authenticatable, :registerable, :validatable,
+         :recoverable, :rememberable, :trackable, :omniauthable,
+         omniauth_providers: Devise.omniauth_providers
 
-  email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
   #### END DEVISE SETUP ####
@@ -69,28 +69,19 @@ class Identity < ApplicationRecord
 
   cattr_accessor :current_user
 
-  validates_presence_of :last_name
-  validates_presence_of :first_name
-  validates_presence_of :email
-  validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
-  validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
-  validates             :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  validates_presence_of :first_name, :last_name, :email
 
-  validates_presence_of     :password, if: :password_required?
-  validates_length_of       :password, within: password_length, allow_blank: true
-  validates_confirmation_of :password, if: :password_required?
+  validates_format_of :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
+  validates_format_of :phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true, if: :phone_changed?
+
+  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+
+  # validates_presence_of :reason, if: :new_record?
 
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
-
-  def password_required?
-    !persisted? || !password.nil? || !password_confirmation.nil?
-  end
-
-  def email_required?
-    false
-  end
 
   def suggestion_value
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
@@ -244,11 +235,7 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    has_correct_project_role?(sr) || self.catalog_overlord?
-  end
-
-  def has_correct_project_role?(request)
-    can_edit_protocol?(request.protocol)
+    sr.sub_service_requests.where(service_requester: self).any? || (sr.protocol && can_edit_protocol?(sr.protocol)) || self.catalog_overlord?
   end
 
   def can_view_protocol?(protocol)

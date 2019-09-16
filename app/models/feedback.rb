@@ -23,20 +23,11 @@ if Setting.get_value("use_redcap_api")
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
+    extend ActiveModel::Translation
 
-    attr_accessor :name, :email, :date, :typeofrequest,
-      :priority, :browser, :version, :sparc_request_id, :letters
+    attr_accessor :name, :email, :date, :typeofrequest, :priority, :browser, :version, :sparc_request_id, :letters
 
-    validates :name,
-      :email,
-      :date,
-      :typeofrequest,
-      :priority,
-      :browser,
-      :version,
-      :sparc_request_id,
-      presence: true
-
+    validates_presence_of :name, :email, :date, :typeofrequest, :priority, :sparc_request_id
     validates_format_of :email, with: Devise::email_regexp
 
     def initialize(attributes = {})
@@ -53,9 +44,7 @@ else
   class Feedback < ApplicationRecord
     audited
 
-    validates :message,
-      :email,
-      presence: true
+    validates_presence_of :name, :email, :message
     validates_format_of :email, with: Devise::email_regexp
   end
 end

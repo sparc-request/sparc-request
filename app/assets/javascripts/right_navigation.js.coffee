@@ -20,14 +20,14 @@
 $(document).ready ->
   $(document).on 'click', '.help-question', ->
     id = $(this).data('id')
-    answer = $("#modal_place #help-answer-#{id}")
+    answer = $("#modalContainer #help-answer-#{id}")
     if answer.hasClass('hidden')
-      $('#modal_place .help-answer').addClass('hidden')
+      $('#modalContainer .help-answer').addClass('hidden')
       answer.removeClass('hidden')
     else
       answer.addClass('hidden')
 
   $(document).on 'click', 'button.feedback-button', ->
-    $('#modal_place').html($('#feedback-modal').html())
-    $('#modal_place').modal 'show'
+    $('#modalContainer').html($('#feedback-modal').html())
+    $('#modalContainer').modal 'show'
     return false

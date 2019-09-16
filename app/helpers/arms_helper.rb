@@ -19,36 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ArmsHelper
-
   def arm_name_helper(arm)
-    returning_html = content_tag(:span, arm.name)
-
     if arm.name == 'Screening Phase'
-      returning_html += content_tag(:span, '', class: 'glyphicon glyphicon-question-sign screening-info', title: t(:arms)[:screening_tooltip], data: { toggle: 'tooltip' })
+      content_tag :span, title: t('arms.tooltips.screening'), data: { toggle: 'tooltip', container: 'body', boundary: 'window' } do
+        icon('fas', 'info-circle text-primary mr-1') + arm.name
+      end
+    else
+      arm.name
     end
-
-    returning_html
   end
 
-  def arms_edit_button(arm, arms_editable)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { arm_id: arm.id },
-      class: 'btn btn-warning edit-arm-button',
-      disabled: !arms_editable
-    )
+  def arms_actions(arm, opts={})
+    [
+      arms_edit_button(arm, opts),
+      arms_delete_button(arm, opts)
+    ].join('')
   end
 
-  def arms_delete_button(arm, arms_editable, arm_count)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { arm_id: arm.id },
-      class: 'btn btn-danger delete-arm-button',
-      disabled: !arms_editable || arm_count == 1
-    )
+  def arms_edit_button(arm, opts={})
+    link_to icon('far', 'edit'), edit_arm_path(arm, srid: opts[:srid]), remote: true, class: ['btn btn-warning mr-1', opts[:editable] ? '' : 'disabled']
+  end
+
+  def arms_delete_button(arm, opts={})
+    link_to icon('fas', 'trash-alt'), arm_path(arm, srid: opts[:srid]), remote: true, method: :delete,
+    class: ['btn btn-danger', opts[:editable] && opts[:count] > 1 ? '' : 'disabled'],
+    data: {
+      confirm_swal: 'true'
+    }
   end
 end

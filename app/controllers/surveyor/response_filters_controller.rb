@@ -24,7 +24,7 @@ class Surveyor::ResponseFiltersController < ApplicationController
   before_action :authenticate_identity!
 
   def new
-    @response_filter = current_user.response_filters.new(sanitize_dates(new_params, [:start_date, :end_date]))
+    @response_filter = current_user.response_filters.new(new_params)
   end
 
   def create
@@ -49,6 +49,9 @@ class Surveyor::ResponseFiltersController < ApplicationController
   private
 
   def new_params
+    params[:filterrific][:start_date] = sanitize_date params[:filterrific][:start_date]
+    params[:filterrific][:end_date]   = sanitize_date params[:filterrific][:end_date]
+
     params.require(:filterrific).permit(
       :of_type,
       :start_date,

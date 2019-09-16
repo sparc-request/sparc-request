@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on "click", "#reporting-return-to-list", (event) ->
-    event.preventDefault()
-    $('#report-container').hide()
-    $('#report-selection').show()
+
+##################################
+# Organization Select Dependency #
+##################################
 
   $(document).on "change", ".reporting-field", ->
     parent_id = "#" + $(this).attr('id')
@@ -48,7 +48,7 @@ $(document).ready ->
 
     if empty.length
       event.preventDefault()
-      alert I18n['reporting']['actions']['errors']
+      alert(I18n.t('reporting.actions.errors'))
 
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through
@@ -84,19 +84,6 @@ rewriteoption = (myfilter, res) ->
       resultgood = true
   if resultgood
     return optionlisting
-
-window.create_date_pickers = (from, to) ->
-  $("#{from}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
-  $("#{to}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true, useCurrent: false)
-
-  $("#{from}").on "dp.change", (e) ->
-    $("#{to}").data('DateTimePicker').minDate(e.date)
-
-  $("#{to}").on "dp.change", (e) ->
-    $("#{from}").data('DateTimePicker').maxDate(e.date)
-
-window.create_single_date_pickers = ->
-  $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
 window.disable_deps = (parent_id) ->
   $("[data-dependency*=\"#{parent_id}\"]").each ->

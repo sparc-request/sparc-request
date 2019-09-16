@@ -30,7 +30,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def index
     @filterrific  =
-      initialize_filterrific(Response, params[:filterrific] && sanitize_dates(filterrific_params, [:start_date, :end_date]),
+      initialize_filterrific(Response, params[:filterrific] && filterrific_params,
         default_filter_params: {
           include_incomplete: 'false',
           of_type: 'SystemSurvey'
@@ -152,6 +152,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def filterrific_params
+    params[:filterrific][:start_date] = sanitize_date params[:filterrific][:start_date]
+    params[:filterrific][:end_date]   = sanitize_date params[:filterrific][:end_date]
+
     params.require(:filterrific).permit(
       :reset_filterrific,
       :of_type,

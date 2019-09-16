@@ -17,13 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag 'service_calendar'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
-.col-sm-12.body-container
-  = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form' do
-    - if params[:navigate]
-      = render 'shared/modal_errors', errors: @errors
+= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
+  = render '/service_requests/navigation/steps'
+  = render '/service_requests/navigation/header'
+  - if @errors && (@service_request.previously_submitted? || Rails.application.routes.recognize_path(request.referrer)[:action] == 'service_calendar')
+    - @service_request.arms.select{ |a| a.errors.any? }.each do |arm|
+      = render 'layouts/modal_errors', errors: arm.errors, messages: arm.errors.messages[:visit_groups], header: arm.name
+  .row
     = render 'service_calendars/quantity_billing_labels'
     = render 'service_requests/service_calendar/tabs', service_request: @service_request
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+  = render 'service_requests/navigation/footer'

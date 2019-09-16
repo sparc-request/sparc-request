@@ -29,12 +29,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
   def index
-    service_request       = ServiceRequest.find(params[:srid])
-    protocol              = service_request.protocol
-    @admin_orgs           = @user.authorized_admin_organizations
-    @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
-    @show_view_ssr_back   = params[:show_view_ssr_back]
-    @sr_table             = params[:sr_table] || false
+    @sub_service_requests = @service_request.sub_service_requests.eager_load(:service_forms, :organization_forms, organization: { service_providers: :identity }, protocol: { project_roles: :identity }).where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
   end
 
   def show
@@ -46,8 +41,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
         @service_request  = @sub_service_request.service_request
         @protocol         = @sub_service_request.protocol
-
-        render
       }
 
       format.js { # User Modal Show
@@ -61,8 +54,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         end
 
         @service_request        = @sub_service_request.service_request
-        @service_list           = @service_request.service_list
-        @line_items             = @sub_service_request.line_items
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
         @portal                 = true
@@ -70,15 +61,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @review                 = true
         @merged                 = false
         @consolidated           = false
-        @show_view_ssr_back     = params[:show_view_ssr_back] == "true"
-        @display_all_services   = true
         @pages                  = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
         end
-
-        render
       }
     end
   end
@@ -234,29 +221,23 @@ private
   end
 
   def find_permissions
-    @permission_to_edit = @user.can_edit_protocol?(@service_request.protocol)
-    @permission_to_view = @permission_to_edit || @user.can_view_protocol?(@service_request.protocol)
+    @permission_to_edit = current_user.can_edit_protocol?(@service_request.protocol)
+    @permission_to_view = @permission_to_edit || current_user.can_view_protocol?(@service_request.protocol)
   end
 
   def find_admin_orgs
-    @admin_orgs = @user.authorized_admin_organizations
+    @admin_orgs = current_user.authorized_admin_organizations
   end
 
   def authorize_protocol
-    unless @permission_to_view || Protocol.for_admin(@user.id).include?(@service_request.protocol)
-      @sub_service_request  = nil
-      @service_request      = nil
-      @permission_to_edit   = nil
-      @permission_to_view   = nil
-
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    unless @permission_to_view || Protocol.for_admin(current_user.id).include?(@service_request.protocol)
+      authorization_error('You are not allowed to access this Sub Service Request.')
     end
   end
 
   def authorize_admin
     unless (@admin_orgs & @sub_service_request.org_tree).any?
-      @sub_service_request = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      authorization_error('You are not allowed to access this Sub Service Request.')
     end
   end
 

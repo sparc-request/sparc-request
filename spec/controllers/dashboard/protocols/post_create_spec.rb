@@ -28,12 +28,12 @@ RSpec.describe Dashboard::ProtocolsController do
 
       before( :each ) do
         @logged_in_user = build_stubbed( :identity )
-        
+
         protocol = build( :study_with_blank_dates )
 
         project_role_attributes = { "0" => { identity_id: @logged_in_user.id, role: 'primary-pi', project_rights: 'approve' } }
 
-        @protocol_attributes = protocol.attributes.merge( { project_roles_attributes: project_role_attributes } )
+        @protocol_attributes = protocol.attributes.merge( { primary_pi_role_attributes: project_role_attributes } )
 
         allow( StudyTypeQuestionGroup ).to receive( :active_id ).
           and_return( "active group id" )
@@ -63,7 +63,7 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       it 'creates an extra project role record if the current user is not assigned to the protocol' do
-        @protocol_attributes[:project_roles_attributes]["0"][:identity_id] = build_stubbed(:identity).id
+        @protocol_attributes[:primary_pi_role_attributes]["0"][:identity_id] = build_stubbed(:identity).id
         expect{ post :create, params: {
                     protocol: @protocol_attributes
                     }, xhr: true }.
@@ -81,7 +81,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
       before( :each ) do
         @logged_in_user = build_stubbed( :identity )
-        
+
         @protocol = build( :study_with_blank_dates )
 
         allow( StudyTypeQuestionGroup ).to receive( :active_id ).

@@ -17,21 +17,17 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#participate-in-survey-modal.hidden
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
-          = t(:proper)[:survey][:header]
-      .modal-body
-        #modal_errors
-        .form-group.text-center
-          = t(:proper)[:survey][:participate]
-      .modal-footer
-        .center-block
-          %a.btn.btn-default.yes-button{ data: { id: survey.id } }
-            = t(:constants)[:yes_select]
-          %a.btn.btn-default.no-button{ data: { dismiss: 'modal' } }
-            = t(:constants)[:no_select]
+.modal-dialog{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = t(:proper)[:survey][:header]
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      .form-group.text-center
+        = t(:proper)[:survey][:participate]
+    .modal-footer
+      %button.btn.btn-secondary{ data: { dismiss: 'modal' } }
+        = t(:constants)[:no_select]
+      = link_to t(:constants)[:yes_select], new_surveyor_response_path( respondable_id: service_request.id, respondable_type: service_request.class.name, survey_id: survey.id, type: SystemSurvey.name ), remote: true, class: 'btn btn-primary'

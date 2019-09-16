@@ -128,21 +128,25 @@ initialize_org_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
-                                          <h5 class="service-name col-sm-12 no-padding no-margin {{text_color}}">{{type}}: {{name}} <small class="text-danger">{{inactive_tag}}</small></h5>
-                                          <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
-                                          <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
-                                          {{#if cpt_code_text}}
-                                            {{{cpt_code_text}}}
-                                          {{/if}}
-                                          {{#if eap_id_text}}
-                                            {{{eap_id_text}}}
-                                          {{/if}}
-                                          {{#if pricing_text}}
-                                            {{{pricing_text}}}
-                                          {{/if}}
-                                        </button>')
-        notFound: '<div class="tt-suggestion">No Results</div>'
+        suggestion: Handlebars.compile('
+          <div class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+            <div class="w-100">
+              <h5 class="no-margin {{text_color}}"><span>{{type}}</span><span>: {{name}}</span></h5>
+            </div>
+            <div class="w-100">{{{breadcrumb}}}</div>
+            <div class="w-100"><strong>Abbreviation:</strong> {{abbreviation}}</div>
+            {{#if cpt_code_text}}
+              {{{cpt_code_text}}}
+            {{/if}}
+            {{#if eap_id_text}}
+              {{{eap_id_text}}}
+            {{/if}}
+            {{#if pricing_text}}
+              {{{pricing_text}}}
+            {{/if}}
+          </div>
+        ')
+        notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>"
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
@@ -152,7 +156,7 @@ initialize_org_search = () ->
     id = suggestion.id
     $.ajax
       type: 'GET'
-      url: "/catalog_manager/#{type}s/#{id}/edit"
+      url: "/catalog_manager/#{type.toLowerCase()}s/#{id}/edit"
   )
 
 
@@ -185,7 +189,7 @@ window.initialize_user_rights_search = () ->
         suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
                                           <strong>{{name}}</strong> <span>{{email}}</span>
                                         </button>")
-        notFound: '<div class="tt-suggestion">No Results</div>'
+        notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>"
       }
     }
   ).on('typeahead:select', (event, suggestion) ->
@@ -194,7 +198,7 @@ window.initialize_user_rights_search = () ->
       return $(this).data('identity-id')
 
     if suggestion['identity_id'] in users_on_table
-      $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['user_rights']['user_in_table']}</div>")
+      $('#user-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n.t('catalog_manager.organization_form.user_rights.user_in_table')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax
@@ -242,7 +246,7 @@ window.initialize_fulfillment_rights_search = () ->
       return $(this).data('identity-id')
 
     if suggestion['identity_id'] in users_on_table
-      $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n['catalog_manager']['organization_form']['fulfillment_rights']['user_in_table']}</div>")
+      $('#fulfillment-rights-query').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion['name']} #{I18n.t('catalog_manager.organization_form.fulfillment_rights.user_in_table')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax
@@ -277,21 +281,25 @@ window.initialize_related_services_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
-                                          <h5 class="service-name col-sm-12 no-padding no-margin"><span class="text-service">Service</span><span>: {{label}}</span></h5>
-                                          <span class="col-sm-12 no-padding">{{{breadcrumb}}}</span>
-                                          <span class="col-sm-12 no-padding"><strong>Abbreviation:</strong> {{abbreviation}}</span>
-                                          {{#if cpt_code_text}}
-                                            {{{cpt_code_text}}}
-                                          {{/if}}
-                                          {{#if eap_id_text}}
-                                            {{{eap_id_text}}}
-                                          {{/if}}
-                                          {{#if pricing_text}}
-                                            {{{pricing_text}}}
-                                          {{/if}}
-                                        </button>')
-        notFound: '<div class="tt-suggestion">No Results</div>'
+        suggestion: Handlebars.compile('
+          <div class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+            <div class="w-100">
+              <h5 class="service-name no-margin"><span class="text-service">{{type}}</span><span>: {{name}}</span></h5>
+            </div>
+            <div class="w-100">{{{breadcrumb}}}</div>
+            <div class="w-100"><strong>Abbreviation:</strong> {{abbreviation}}</div>
+            {{#if cpt_code_text}}
+              {{{cpt_code_text}}}
+            {{/if}}
+            {{#if eap_id_text}}
+              {{{eap_id_text}}}
+            {{/if}}
+            {{#if pricing_text}}
+              {{{pricing_text}}}
+            {{/if}}
+          </div>
+        ')
+        notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>"
       }
     }
   )
@@ -300,7 +308,7 @@ window.initialize_related_services_search = () ->
       return $(this).data('related-service-id')
 
     if suggestion.value in existing_services
-      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion.label} #{I18n['catalog_manager']['related_services_form']['service_in_list']}</div>")
+      $('#new_related_services_search').parent().prepend("<div class='alert alert-danger alert-dismissable'>#{suggestion.label} #{I18n.t('catalog_manager.related_services_form.service_in_list')}</div>")
       $('.alert-dismissable').delay(3000).fadeOut()
     else
       $.ajax

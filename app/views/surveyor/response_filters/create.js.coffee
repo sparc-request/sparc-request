@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
-$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
+$("#modal_errors").html("<%= j render 'layouts/modal_errors', errors: @errors %>")
 <% else %>
 $("#saved-searches").html("<%= j render 'surveyor/response_filters/saved_searches' %>")
-$("#modal_place").modal('hide')
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

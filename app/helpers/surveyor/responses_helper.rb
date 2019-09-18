@@ -109,7 +109,7 @@ module Surveyor::ResponsesHelper
       [
         "dependent-for-option-#{question.depender_id}",
         "dependent-for-question-#{question.depender.question_id}",
-        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "d-none")
       ].join(' ')
     end
   end

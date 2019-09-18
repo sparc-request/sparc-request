@@ -96,9 +96,6 @@ class ServiceRequestsController < ApplicationController
     @notable_type = 'Protocol'
     @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
-    @review       = true
-    @portal       = false
-    @admin        = false
     @merged       = true
     @consolidated = false
     @display_all_services = true
@@ -159,6 +156,7 @@ class ServiceRequestsController < ApplicationController
     else
       add_service.generate_new_service_request
       @service_request.reload
+      flash[:success] = t('line_items.created')
     end
 
     respond_to :js
@@ -174,7 +172,8 @@ class ServiceRequestsController < ApplicationController
       @confirm_last_service = true
     else
       remove_service.remove_service
-      redirect_to root_path(srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
+      flash[:alert] = t('line_items.deleted')
+      redirect_to root_path(method: :get, srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
 
     respond_to :js

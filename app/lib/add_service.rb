@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AddService
-  def initialize(service_request, service_id, requester, new_request, confirmed)
+  def initialize(service_request, service_id, requester, new_request=false, confirmed=false)
     @service_request  = service_request
     @service          = Service.find(service_id)
     @requester        = requester

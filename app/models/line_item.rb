@@ -51,8 +51,7 @@ class LineItem < ApplicationRecord
   delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
-  validates :service_id, numericality: true, presence: true
-  validates :service_request_id, numericality:  true
+  validates :service_id, :service_request_id, presence: true
 
   validates :quantity, presence: true, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }

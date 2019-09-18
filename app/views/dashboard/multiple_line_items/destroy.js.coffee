@@ -19,16 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: { errors: @errors })) %>")
-$("#edit_arm_form_button").removeAttr("disabled")
+$("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.each do |message| %>
+$("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
 <% else %>
-$("#per_patient_services").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: { sub_service_request: @sub_service_request, service_request: @service_request })) %>");
+$('#serviceCalendarHeader').replaceWith("<%= j render 'service_calendars/header', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
-$(".selectpicker").selectpicker()
+adjustCalendarHeaders()
 
-refresh_study_schedule()
-
-$("#modalContainer").modal 'hide'
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

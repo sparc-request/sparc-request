@@ -18,5 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module LineItemsHelper
+module Dashboard::MultipleLineItemsHelper
+  def new_multiple_line_items_button(opts={})
+    link_to dashboard_multiple_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: 'btn btn-lg btn-success', title: t('line_items.new'), data: { toggle: 'tooltip' } do
+      icon('fas', 'plus mr-2') + t('dashboard.sub_service_requests.study_schedule.add_services')
+    end
+  end
+
+  def delete_multiple_line_items_button(opts={})
+    link_to edit_dashboard_multiple_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: 'btn btn-lg btn-danger', title: t('line_items.delete'), data: { toggle: 'tooltip' } do
+      icon('fas', 'trash-alt mr-2') + t('dashboard.sub_service_requests.study_schedule.delete_services')
+    end
+  end
 end

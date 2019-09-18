@@ -18,7 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modalContainer").html("<%= j render '/dashboard/arms/navigate_arm_form', intended_action: @intended_action, arm: @arm, protocol: @protocol, sub_service_request: @sub_service_request %>")
+$("#modalContainer").html("<%= j render 'dashboard/multiple_line_items/form', services: @services, sub_service_request: @sub_service_request, line_item: @line_item, tab: @tab, page: @page, pages: @pages %>")
 $("#modalContainer").modal('show')
-
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

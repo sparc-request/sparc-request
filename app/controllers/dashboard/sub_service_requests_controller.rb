@@ -56,7 +56,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @service_request        = @sub_service_request.service_request
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
-        @merged                 = false
+        @merged                 = true
         @consolidated           = false
         @pages                  = {}
         @service_request.arms.each do |arm|

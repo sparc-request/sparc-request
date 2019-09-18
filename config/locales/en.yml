@@ -123,6 +123,7 @@ en:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
       line_item:
+        id: "Service"
         displayed_cost: "Your Cost"
       line_items_visit:
         subject_count: "Subject Count"
@@ -494,7 +495,7 @@ en:
       select: "---Please Select---"
       select_action: "Select an action"
       select_one: "Select One"
-    add_as_last: "Add as last"
+    add_as_last: "Last Visit"
     other: "Other"
     show: "Show Details"
     hide: "Hide Details"
@@ -640,6 +641,8 @@ en:
   line_items:
     new: "Add Service"
     delete: "Delete Service"
+    created: "Service added!"
+    deleted: "Service removed!"
 
   ###########
   # MAILERS #
@@ -849,7 +852,7 @@ en:
     form:
       arm: "Arm"
       visit: "Visit"
-      move_note: "Note: Previous consecutive visits will also be updated."
+      move_note: "Note: Consecutive visits will also have their days changed."
 
 
 

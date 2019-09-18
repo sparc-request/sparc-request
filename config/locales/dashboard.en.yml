@@ -98,17 +98,6 @@ en:
       new:
         header: "New Message to "
 
-    #########################
-    #  MULTIPLE LINE ITEMS  #
-    #########################
-    multiple_line_items:
-      manage: "Manage Services"
-      add: "Add Service"
-      remove: "Remove Service"
-      created: "Services Added!"
-      destroyed: "Services Removed!"
-      service: "Service:"
-
     ##############
     # NAVIGATION #
     ##############
@@ -363,6 +352,8 @@ en:
           header: "Timeline"
       study_schedule:
         header: "Clinical Services"
+        add_services: "Add Clinical Services"
+        delete_services: "Delete Clinical Services"
         manage:
           header: "Manage Clinical Services"
           arms: "Manage Arms"

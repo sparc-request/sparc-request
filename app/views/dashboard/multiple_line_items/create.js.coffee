@@ -18,16 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
+<% if @errors %>
+$("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
-$(".selectpicker").selectpicker()
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+<% end %>
+<% end %>
+<% else %>
+$('#serviceCalendarHeader').replaceWith("<%= j render 'service_calendars/header', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 
-refresh_study_schedule()
+adjustCalendarHeaders()
 
-$("#modalContainer").modal 'hide'
-$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

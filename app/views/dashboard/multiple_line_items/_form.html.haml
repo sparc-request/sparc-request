@@ -18,29 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog{ role: 'document' }
+.modal-dialog.modal-sm{ role: 'document' }
   .modal-content
-    = form_for arm, url: dashboard_arms_path(arm), remote: true do |f|
+    = form_for line_item, url: dashboard_multiple_line_items_path, method: action_name == 'new' ? :post : :delete, remote: true do |f|
+      = hidden_field_tag :ssrid, sub_service_request.id
+      = hidden_field_tag :tab, tab
+      = hidden_field_tag :page, page
+      - pages.each do |arm_id, page|
+        = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          = t(:arms)[:new]
+          = t("line_items.#{action_name == 'new' ? action_name : 'delete'}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-group
-          = f.label :name, class: "col-sm-4 control-label required", title: t(:arms)[:name_tooltip], data: { toggle: 'tooltip', animation: 'false' }
-          .col-sm-7
-            = f.text_field :name, { class: 'form-control' }
-        .form-group
-          = f.label :subject_count, class: "col-sm-4 control-label required"
-          .col-sm-7
-            = f.text_field :subject_count, { class: 'form-control', value: '' }
-        .form-group
-          = f.label :visit_count, class: "col-sm-4 control-label required"
-          .col-sm-7
-            = f.text_field :visit_count, { class: 'form-control', value: '' }
+          - if action_name == 'new'
+            = f.label :service_id, class: 'required'
+            = f.select :service_id, options_from_collection_for_select(sub_service_request.candidate_services.per_patient_per_visit.reorder(:name), :id , :display_service_name), { include_blank: true }, class: 'selectpicker', data: { live_search: 'true' }
+          - else
+            = f.label :id, class: 'required'
+            = f.select :id, options_from_collection_for_select(sub_service_request.per_patient_per_visit_line_items.reorder('services.name'), :id , :name), { include_blank: true }, class: 'selectpicker', data: { live_search: 'true' }
       .modal-footer
-        .center-block
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-          %input.btn.btn-primary#add_arm_form_button{ type: 'submit', value: t(:actions)[:add] }
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

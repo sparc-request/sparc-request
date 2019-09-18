@@ -123,7 +123,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :arms, only: [:new, :create, :edit, :update, :destroy]
+  resources :arms, except: [:show]
 
   resource :service_calendars, only: [] do
     member do
@@ -218,12 +218,6 @@ SparcRails::Application.routes.draw do
   end
 
   namespace :dashboard do
-    resources :arms, only: [:new, :create, :update, :destroy, :index] do
-      collection do
-        get :navigate
-      end
-    end
-
     resources :associated_users, except: [:show]
 
     resources :documents, except: [:show]
@@ -248,10 +242,10 @@ SparcRails::Application.routes.draw do
 
     resources :multiple_line_items, only: [] do
       collection do
-        get :new_line_items
-        put :create_line_items
-        get :edit_line_items
-        put :destroy_line_items
+        get :new
+        get :edit
+        post :create
+        delete :destroy
       end
     end
 
@@ -313,12 +307,6 @@ SparcRails::Application.routes.draw do
         get :subsidy_history
         get :refresh_service_calendar
         get :refresh_tab
-      end
-    end
-
-    resources :visit_groups, only: [:new, :create, :update, :destroy] do
-      collection do
-        get :navigate
       end
     end
 

@@ -25,10 +25,6 @@ $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .t
 $('#serviceCalendarHeader').replaceWith("<%= j render 'service_calendars/header', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
-
-<% if @in_dashboard %>
-$('#studyScheduleManagement').replaceWith("<%= j render 'dashboard/sub_service_requests/study_schedule/management_buttons', sub_service_request: @sub_service_request, tab: @tab %>")
-<% end %>
 <% end %>
 
 adjustCalendarHeaders()

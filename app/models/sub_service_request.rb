@@ -222,13 +222,12 @@ class SubServiceRequest < ApplicationRecord
   def candidate_services
     services = []
     if self.organization.process_ssrs
-      services = self.organization.all_child_services.select {|x| x.is_available?}
-
+      services = self.organization.all_child_services.available
     else
       begin
-        services = self.organization.process_ssrs_parent.all_child_services.select {|x| x.is_available}
+        services = self.organization.process_ssrs_parent.all_child_services.available
       rescue
-        services = self.organization.all_child_services.select {|x| x.is_available?}
+        services = self.organization.all_child_services.available
       end
     end
 

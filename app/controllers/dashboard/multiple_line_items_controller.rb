@@ -18,65 +18,66 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# this controller exists in order to separate the mass creation of line items
-# from single line item creation and deletion which will happen on the study schedule
 class Dashboard::MultipleLineItemsController < Dashboard::BaseController
+  before_action :authorize_admin
 
-  respond_to :js
+  def new
+    @line_item  = @service_request.line_items.new(sub_service_request_id: @sub_service_request.id)
+    @tab        = params[:tab]
 
-  def new_line_items
-    # called to render modal to mass create line items
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @protocol = Protocol.find params[:protocol_id]
-    # TODO change back to not otf services
-    @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
-    # @services = @protocol.organization.inclusive_child_services(:per_participant)
-    @page_hash = params[:page_hash]
-    @schedule_tab = params[:schedule_tab]
+    setup_calendar_pages
+
+    respond_to :js
   end
 
-  def create_line_items
-    # handles submission of the add line items form
-    @service_request = ServiceRequest.find(params[:service_request_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service = Service.find(params[:add_service_id])
-    existing_service_ids = @service_request.line_items.pluck(:service_id)
+  def create
+    if line_item_params[:service_id].present?
+      add_service = AddService.new(@service_request, line_item_params[:service_id], current_user)
+      @tab        = params[:tab]
 
-    # # we don't have arms and we are adding a new per patient per visit service
-    if @service_request.arms.empty? && !@service.one_time_fee
-      @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, subject_count: 1)
+      setup_calendar_pages
+
+      add_service.generate_new_service_request
+      flash[:success] = t('line_items.created')
+    else
+      line_item = @service_request.line_items.new
+      line_item.valid?
+      @errors = line_item.errors
     end
 
-    ActiveRecord::Base.transaction do
-      if (@new_line_items = @service_request.create_line_items_for_service(
-          service: @service,
-          optional: true,
-          existing_service_ids: existing_service_ids,
-          allow_duplicates: true))
+    respond_to :js
+  end
 
-        @new_line_items.each do |line_item|
-          line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-        end
+  def edit
+    @line_item  = @service_request.line_items.new(sub_service_request_id: @sub_service_request.id)
+    @tab        = params[:tab]
 
-        flash.now[:success] = t(:dashboard)[:multiple_line_items][:created]
-      else
-        @errors = @service_request.errors
-      end
+    setup_calendar_pages
+
+    respond_to :js
+  end
+
+  def destroy
+    if line_item_params[:id].present?
+      @line_item  = LineItem.find(line_item_params[:id])
+      @tab        = params[:tab]
+
+      setup_calendar_pages
+      @line_item.destroy
+
+      flash[:alert] = t('line_items.deleted')
+    else
+      line_item = @service_request.line_items.new
+      line_item.valid?
+      @errors = line_item.errors.messages[:service_id]
     end
+
+    respond_to :js
   end
 
-  def edit_line_items
-    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id])
-  end
+  private
 
-  def destroy_line_items
-    @line_item            = LineItem.find(params[:line_item_id])
-    @sub_service_request  = @line_item.sub_service_request
-    @service_request      = @sub_service_request.service_request
-
-    @line_item.destroy
-
-    flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
+  def line_item_params
+    params.require(:line_item).permit(:service_id, :id)
   end
 end

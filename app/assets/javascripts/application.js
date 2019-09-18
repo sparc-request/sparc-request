@@ -83,7 +83,6 @@
 //= require dashboard/notifications
 //= require dashboard/epic_queues
 //= require dashboard/sub_service_requests
-//= require dashboard/study_schedule_management
 
 //= require reporting
 

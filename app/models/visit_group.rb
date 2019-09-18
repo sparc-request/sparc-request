@@ -57,10 +57,6 @@ class VisitGroup < ApplicationRecord
 
   default_scope { order(:position) }
 
-  def lower_position
-    self.position - 1
-  end
-
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
     self.day <=> other_vg.day
@@ -68,6 +64,18 @@ class VisitGroup < ApplicationRecord
 
   def self.admin_day_multiplier
     5
+  end
+
+  def position=(position)
+    # Because we have to insert before using position - 1,
+    # increment position
+    if position.blank?
+      write_attribute(:position, nil)
+    elsif position == self.arm.visit_count
+      write_attribute(:position, position)
+    else
+      write_attribute(:position, position.to_i + 1)
+    end
   end
 
   def identifier
@@ -95,7 +103,7 @@ class VisitGroup < ApplicationRecord
   end
 
   def moved_and_days_need_update?
-    self.persisted? && position_changed? && day_changed? && self.day == self.higher_item.day
+    self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day)
   end
 
   def in_order?
@@ -128,8 +136,8 @@ class VisitGroup < ApplicationRecord
   end
 
   def move_previous_visit_days
-    self.higher_items.select{ |vg| vg.higher_item.nil? || (vg.day.present? && vg.day == vg.higher_item.day + 1) }.sort_by(&:position).each do |v|
-      v.update_attribute(:day, v.day - 1)
+    if vg = self.arm.visit_groups.find_by(position: self.position)
+      vg.update_attributes(day: vg.day + 1)
     end
   end
 

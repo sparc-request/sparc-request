@@ -26,9 +26,8 @@ class VisitGroupsController < ApplicationController
 
   def new
     @arm          = Arm.find(params[:arm_id])
-    @visit_group  = @arm.visit_groups.new
+    @visit_group  = params[:visit_group] ? @arm.visit_groups.new(visit_group_params) : @arm.visit_groups.new
     @tab          = params[:tab]
-    @position     = visit_group_params[:position].to_i if params[:visit_group]
 
     setup_calendar_pages
 
@@ -52,9 +51,10 @@ class VisitGroupsController < ApplicationController
   end
 
   def edit
+    @visit_group.assign_attributes(visit_group_params) if params[:visit_group]
+
     @arm          = @visit_group.arm
     @tab          = params[:tab]
-    @position     = params[:visit_group] ? visit_group_params[:position].to_i : @visit_group.position
 
     setup_calendar_pages
 

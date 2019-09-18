@@ -18,17 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'layouts/modal_errors', locals: {errors: @errors})) %>")
-$("#add_visit_group_form_button").removeAttr("disabled")
-<% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
-
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
-$(".selectpicker").selectpicker()
-
-refresh_study_schedule()
-
-$("#modalContainer").modal 'hide'
-$("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
-<% end %>
+$("#modalContainer").html("<%= j render 'dashboard/multiple_line_items/form', sub_service_request: @sub_service_request, line_item: @line_item, line_items: @line_items, tab: @tab, page: @page, pages: @pages %>")
+$("#modalContainer").modal('show')

@@ -31,7 +31,7 @@
         = link_to dashboard_protocol_path(protocol, locked: true), method: :put, remote: true, class: ['btn', protocol.locked? ? 'btn-success' : 'btn-danger'], title: t(:calendar_structure)[:tooltips][:lock_calendar], data: { toggle: 'tooltip' } do
           = succeed t(:calendar_structure)[protocol.locked? ? :unlock_calendar : :lock_calendar] do
             = protocol.locked? ? icon('fas', 'unlock-alt mr-2') : icon('fas', 'lock mr-2')
-    %table#calendarStructureTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), toolbar: '#calendarStructureTableToolbar' } }
+    %table#calendarStructureTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: arms_path(format: :json, protocol_id: protocol.id), toolbar: '#calendarStructureTableToolbar' } }
       %thead.bg-light
         %tr
           %th{ data: { field: 'name', align: 'left'} }

@@ -27,10 +27,6 @@ $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 <% end %>
 
-<% if @in_dashboard %>
-$('#studyScheduleManagement').replaceWith("<%= j render 'dashboard/sub_service_requests/study_schedule/management_buttons', sub_service_request: @sub_service_request, tab: @tab %>")
-<% end %>
-
 toggleServicesToggle(false)
 
 adjustCalendarHeaders()

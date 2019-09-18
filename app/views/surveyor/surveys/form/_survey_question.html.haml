@@ -50,9 +50,8 @@
           = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
   - if question.question_responses.any?
     .form-group
-      .col-sm-12
-        %span.text-danger
-          = t(:surveyor)[:surveys][:form][:content][:question][:warning]
+      %span.text-danger
+        = t(:surveyor)[:surveys][:form][:content][:question][:warning]
 
   .question-options{ data: { question_id: question.id } }
     = render "surveyor/surveys/form/form_partials/#{question.question_type}_example", question: question

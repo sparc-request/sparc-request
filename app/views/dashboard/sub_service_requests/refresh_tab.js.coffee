@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('#subServiceRequestDetails .nav-tabs .nav-link.active, #subServiceRequestDetails .tab-content .tab-pane.active.show').removeClass('active show')
-$("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
+$('#adminTabs').replaceWith("<%= j render 'dashboard/sub_service_requests/tabs', sub_service_request: @sub_service_request %>")
+$('#requestLoading').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>').addClass('active show')
 $(".bootstrap_table").bootstrapTable()
 

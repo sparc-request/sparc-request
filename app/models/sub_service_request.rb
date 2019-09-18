@@ -87,6 +87,10 @@ class SubServiceRequest < ApplicationRecord
     super(status)
   end
 
+  def label
+    "(#{self.ssr_id}) #{self.organization.label}"
+  end
+
   def previously_submitted?
     self.submitted_at.present?
   end

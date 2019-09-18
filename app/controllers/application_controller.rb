@@ -190,10 +190,15 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
-    @in_admin     ||= @portal && params[:srrid].present?
+    @in_dashboard ||= helpers.in_dashboard?
+
+    in_admin?
 
     @in_dashboard
+  end
+
+  def in_admin?
+    @in_admin ||= helpers.in_admin?
   end
 
   def authorize_dashboard_access

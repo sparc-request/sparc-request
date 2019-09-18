@@ -595,7 +595,7 @@ en:
       help:
         header: "Get Help"
       profile:
-        notifications: "Notifications"
+        messages: "Messages"
         edit: "Edit Profile"
     dashboard:
       navigation:

@@ -203,7 +203,7 @@ module ApplicationHelper
   end
 
   def in_admin?
-    @in_admin ||= in_dashboard? && params[:ssrid].present?
+    @in_admin ||= in_dashboard? && (params[:ssrid].present? || (controller_name == 'sub_service_requests' && !['index', 'show'].include?(action_name)) || (controller_name == 'sub_service_requests' && action_name == 'show' && request.format.html?))
   end
 
   def in_review?

@@ -109,11 +109,13 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
+      header: "Messages"
+      compose: "Compose Message"
+      authorized_users:
+        header: "Message an Authorized User"
       service_providers:
-        header: "Notify a Service Provider"
+        header: "Message a Service Provider"
       table:
-        send: "Send Notification"
-        compose: "Compose Message"
         requester: "Requester"
         authorized_users: "Authorized Users"
         service_providers: "Service Providers"
@@ -130,7 +132,7 @@ en:
         select_header: "Send Notification"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Send correspondence to Service Providers"
+        table_button: "Send correspondence related to this request to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
 
 
@@ -388,7 +390,7 @@ en:
           approval_history: "Time stamp log of approvals"
           subsidy_history: "Time stamp of approved subsidies"
       notifications:
-        header: "Notifications"
+        header: "Messages"
       tooltips:
         export: "Generates spreadsheet with request information"
         delete: "Deletes requested services and all associated information"

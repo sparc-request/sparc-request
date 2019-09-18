@@ -47,4 +47,8 @@
       border: 0 !important;
     }
   }
+
+  .card-body .bootstrap-table .fixed-table-toolbar > * {
+    margin-top: 0px;
+  }
 }

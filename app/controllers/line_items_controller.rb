@@ -21,7 +21,7 @@
 class LineItemsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
-  before_action :authorize_dashboard_access,  if: :in_dashboard?
+  before_action :authorize_admin,             if: :in_dashboard?
 
   def edit
     @line_item = LineItem.find(params[:id])

@@ -77,10 +77,6 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-
-
-
-
   def display_line_items_otf(lis)
     # only show the services that are set to be pushed to Epic when use_epic = true
     if Setting.get_value('use_epic')
@@ -92,7 +88,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def service_request_owner_display sub_service_request
     if sub_service_request.status == "draft"
-      content_tag :span, t('dashboard.sub_service_requests.header.owner.not_available', status: PermissibleValue.get_value('status', 'draft'))
+      content_tag :div, t('dashboard.sub_service_requests.header.owner.not_available', status: PermissibleValue.get_value('status', 'draft')), class: 'alert alert-sm alert-warning mb-0'
     else
       select_tag "sub_service_request_owner", owners_for_select(sub_service_request), :prompt => t(:constants)[:prompts][:select], :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
     end

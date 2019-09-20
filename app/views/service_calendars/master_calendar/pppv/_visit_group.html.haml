@@ -30,7 +30,7 @@
             = icon('fas', 'minus')
         %th.text-center.p-0{ title: t(:calendars)[:tooltips][:visit_day], data: { toggle: 'tooltip' } }
           %span
-            = t(:calendars)[:pppv][:header_fields][:day]
+            = VisitGroup.human_attribute_name(:day)
         %th.text-center.py-0.px-1{ title: t(:calendars)[:tooltips][:window_after], data: { toggle: 'tooltip' } }
           %span
             = icon('fas', 'plus')

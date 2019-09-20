@@ -43,7 +43,7 @@
                 = simple_format(note.body)
                 = note_date(note)
       - if notes.empty?
-        .alert.alert-success.mb-0
+        .alert.alert-warning.mb-0
           = t('notes.none', notable_type: notable.try(:friendly_notable_type) || notable.model_name.human)
     .modal-footer
       = form_for note, remote: true, html: { class: 'w-100' } do |f|

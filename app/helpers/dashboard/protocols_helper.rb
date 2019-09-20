@@ -40,9 +40,11 @@ module Dashboard::ProtocolsHelper
 
   def pis_display(protocol)
     if protocol.primary_pi
-      content_tag(:span, title: t('activerecord.attributes.protocol.primary_pi'), data: { toggle: 'tooltip', boundary: 'window' }) do
-        icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
-      end + '<br>'.html_safe
+      content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
+        content_tag(:span) do
+          icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
+        end + '<br>'.html_safe
+      end
     else
       ""
     end + raw(

@@ -116,10 +116,10 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
-      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
-      cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
+      confirmation_warning: "An email has been sent to each of your Service Providers and they should be contacting you soon.<br>If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
+      cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
-      download_request: "Download Service Request"
+      download_request: "Download Request"
       to_dashboard: "Go to Dashboard"
       table_fields:
         request_id: "Request ID"
@@ -210,8 +210,10 @@ en:
           sub_header: "Review your request and make changes if necessary"
         obtain_research_pricing:
           header: "Get a Cost Estimate"
+          sub_header: "You have successfully submitted a request to get a cost estimate"
         confirmation:
           header: "Submission Confirmation"
+          sub_header: "Thank you for submitting your request through SPARCRequest"
       bottom:
         back:
           full: "Go Back"

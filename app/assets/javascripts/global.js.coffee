@@ -37,7 +37,7 @@ $ ->
 
   stickybits('.position-sticky, .sticky-top')
 
-  $(document).on 'load-success.bs.table ajax:complete', ->
+  $(document).on 'load-success.bs.table search.bs.table sort.bs.table column-switch.bs.table ajax:complete', (e) ->
     initializeSelectpickers()
     initializeDateTimePickers()
     initializeTooltips()

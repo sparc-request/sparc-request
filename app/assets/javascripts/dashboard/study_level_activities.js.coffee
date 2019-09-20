@@ -29,15 +29,6 @@ $ ->
       type: 'GET'
       url: "/dashboard/line_items/#{line_item_id}/details"
 
-  $(document).on 'click', "#otf_service_new", ->
-    data =
-      'sub_service_request_id'  : $(this).data('sub-service-request-id')
-      'one_time_fee'            : true
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/line_items/new'
-      data: data
-
   $(document).on 'click', '.otf_edit', ->
     row_index   = $(this).parents('tr').data('index')
     line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[row_index].id
@@ -54,14 +45,6 @@ $ ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/line_items/#{line_item_id}"
-
-  $(document).on 'click', '.otf_fulfillment_list', ->
-    line_item_id = $(this).data('line-item-id')
-    data = line_item_id: line_item_id
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/fulfillments"
-      data: "line_item_id" : line_item_id
 
   # This listener is also used in fulfillment notes
   $(document).on 'click', 'button#fulfillments_back', ->

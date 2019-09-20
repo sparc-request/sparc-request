@@ -65,10 +65,6 @@
 #protocolFilters {
   width: 20%;
 
-  .sticky-top {
-    top: 1rem !important;
-  }
-
   #protocolSearchSelect .bootstrap-select {
     width: 100%;
   }
@@ -76,5 +72,4 @@
 
 #protocolsList {
   width: 80%;
-  @extend .pl-3;
 }

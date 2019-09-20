@@ -20,7 +20,7 @@
 
 .modal-dialog.modal-sm{ role: 'document' }
   .modal-content
-    = form_for line_item, url: dashboard_multiple_line_items_path, method: action_name == 'new' ? :post : :delete, remote: true do |f|
+    = form_for [:dashboard, line_item], url: dashboard_clinical_line_items_path, method: action_name == 'new' ? :post : :delete, remote: true do |f|
       = hidden_field_tag :ssrid, sub_service_request.id
       = hidden_field_tag :tab, tab
       = hidden_field_tag :page, page
@@ -28,7 +28,7 @@
         = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          = t("line_items.#{action_name == 'new' ? action_name : 'delete'}")
+          = t("dashboard.sub_service_requests.study_schedule.#{action_name == 'new' ? 'add_services' : 'delete_services'}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body

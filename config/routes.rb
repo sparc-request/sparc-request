@@ -231,21 +231,18 @@ SparcRails::Application.routes.draw do
 
     resources :fulfillments
 
-    resources :line_items do
-      member do
-        get :details
-        put :update_from_cwf
-      end
-    end
-
-    resources :messages, only: [:index, :new, :create]
-
-    resources :multiple_line_items, only: [] do
+    resources :clinical_line_items, only: [] do
       collection do
         get :new
         get :edit
         post :create
         delete :destroy
+      end
+    end
+
+    resources :study_level_activities do
+      member do
+        put :update_from_cwf
       end
     end
 
@@ -257,6 +254,8 @@ SparcRails::Application.routes.draw do
         put :mark_as_read
       end
     end
+
+    resources :messages, only: [:index, :new, :create]
 
     resources :projects, controller: :protocols, except: [:destroy]
 

@@ -42,7 +42,7 @@ class VisitGroup < ApplicationRecord
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
   after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
   
-  before_update :move_previous_visit_days, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
+  before_update :move_consecutive_visit, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
 
   before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
@@ -135,9 +135,10 @@ class VisitGroup < ApplicationRecord
     self.arm.decrement!(:visit_count)
   end
 
-  def move_previous_visit_days
+  def move_consecutive_visit
     if vg = self.arm.visit_groups.find_by(position: self.position)
-      vg.update_attributes(day: vg.day + 1)
+      # This actually increments position when position= is called
+      vg.update_attributes(day: vg.day + 1, position: vg.position)
     end
   end
 

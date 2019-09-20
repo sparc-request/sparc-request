@@ -20,23 +20,23 @@
 
 %tr
   %th.service-name.text-center{ colspan: 8, rowspan: 2 }
-    = t(:calendars)[:pppv][:header_fields][:service]
+    = LineItem.human_attribute_name(:service)
   %th.notes.text-center{ colspan: 2, rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:pppv][:header_fields][:notes]
+    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip' } }
+      = Note.model_name.plural.capitalize
   %th.status.text-center{ colspan: 3, rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:pppv][:header_fields][:status]
+    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip' } }
+      = LineItem.human_attribute_name(:status)
   %th.unit-cost.text-center{ colspan: 6 }
-    = t(:calendars)[:pppv][:header_fields][:unit_cost]
+    = LineItem.human_attribute_name(:unit_costs)
 
   - unless in_dashboard?
     %th.unit-type.text-center{ colspan: 4, rowspan: 2 }
-      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top' } }
-        = raw t(:calendars)[:pppv][:header_fields][:quantity_type]
+      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip' } }
+        = raw LineItem.human_attribute_name(:clinical_quantity_type).sub(' ', '<br>')
 
   %th.subject-count.text-center{ colspan: 2, rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip', placement: 'top' } }
+    %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip' } }
       = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th{ colspan: 2, rowspan: 2 }
   %th.visit-group-select.text-center{ colspan: 15 }
@@ -50,11 +50,11 @@
 
 %tr
   %th.service-rate.text-center{ colspan: 3 }
-    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top' } }
-      = raw t(:calendars)[:pppv][:header_fields][:service_rate]
+    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip' } }
+      = raw LineItem.human_attribute_name(:service_rate).gsub(' ', '<br>')
   %th.your-cost.text-center{ colspan: 3 }
-    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top' } }
-      = raw t(:calendars)[:pppv][:header_fields][:your_cost]
+    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip' } }
+      = raw LineItem.human_attribute_name(:displayed_cost).gsub(' ', '<br>')
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, sub_service_request: sub_service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, merged: merged
 
 %tr.check-visits-row

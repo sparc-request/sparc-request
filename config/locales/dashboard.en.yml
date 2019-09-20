@@ -266,23 +266,7 @@ en:
     #  Non-clinical Services #
     ############################
     study_level_activities:
-      add: "Add Non-clinical Services"
       edit: "Edit Non-clinical Services"
-      created: "Non-clinical Services Created!"
-      updated: "Non-clinical Services Updated!"
-      destroyed: "Non-clinical Services Destroyed!"
-      table:
-        service: "Service"
-        unit_requested: "Units Requested"
-        unit_type: "Unit Type"
-        quantity_requested: "Qty Requested"
-        quantity_type: "Qty Type"
-        service_rate: "Service Rate"
-        cost: "Your Cost"
-        total: "Total Per Study"
-        in_process: "In Process"
-        complete: "Complete"
-        actions: "Actions"
       form:
         service: "Service:"
         unit_per_quantity: "Units Requested:"
@@ -310,7 +294,6 @@ en:
         header: "Add Admin Rate"
         cost: "Cost:"
       tooltips:
-        add_non_clinical_services: "Add Non-clinical services related to selected organization"
         change_rate: "Click to modify rate"
 
     ##########################
@@ -356,14 +339,18 @@ en:
         header: "Clinical Services"
         add_services: "Add Clinical Services"
         delete_services: "Delete Clinical Services"
-        manage:
-          header: "Manage Clinical Services"
-          arms: "Manage Arms"
-          visit_groups: "Manage Visits"
-          services: "Manage Services"
-        no_requests: "There are no clinical services requested."
+        none: "This request does not have any Clinical Services."
       study_level_activities:
-        header: "Non-clinical Services"
+        header: "Non-Clinical Services"
+        none: "This request does not have any Non-Clinical Services."
+        new: "Add Non-Clinical Service"
+        created: "Non-clinical Service Created!"
+        updated: "Non-clinical Service Updated!"
+        destroyed: "Non-clinical Service Deleted!"
+        tooltips:
+          new: "Add Non-Clinical Services related to the selected organization"
+          view: "View Details"
+          fulfillments: "View Fulfillments for this Service"
       history:
         header: "History"
         status_history:

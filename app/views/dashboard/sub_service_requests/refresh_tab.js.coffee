@@ -23,7 +23,7 @@ $('#requestLoading').removeClass('active show')
 $("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>').addClass('active show')
 $(".bootstrap_table").bootstrapTable()
 
-<% if @tab == 'study_schedule' %>
+<% if @tab == 'study_schedule' && @sub_service_request.has_per_patient_per_visit_services? %>
 loadServiceCalendar()
 <% end %>
 

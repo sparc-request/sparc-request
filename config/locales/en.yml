@@ -124,7 +124,18 @@ en:
         inventors: "Inventor(s)"
       line_item:
         id: "Service"
+        status: "Status"
+        unit_costs: "Unit Costs"
+        service_rate: "Service Rate"
         displayed_cost: "Your Cost"
+        units_per_quantity: "Units Requested"
+        unit_type: "Unit Type"
+        quantity: "Qty Requested"
+        quantity_type: "Qty Type"
+        clinical_quantity_type: "Clinical Qty Type"
+        created_at: "Date Received"
+        in_process_date: "Date Processed"
+        complete_date: "Date Completed"
       line_items_visit:
         subject_count: "Subject Count"
       message:
@@ -196,6 +207,7 @@ en:
         ip_patents: "IP/Patents"
       service:
         abbreviation: "Abbreviation"
+        charge_code: "Charge Code"
       service_request:
         id: "SRID"
         organization: "Organization"
@@ -380,15 +392,7 @@ en:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"
       header_fields:
-        notes: "Notes"
-        service: "Service Name"
-        status: "Status"
-        unit_cost: "Unit Costs"
-        service_rate: "Service<br>Rate"
-        your_cost: "Your<br>Cost"
-        quantity_type: "Clinical<br>Qty Type"
         subject_count: "N"
-        day: "Day"
         page_select:
           previous: "Previous Page"
           next: "Next Page"
@@ -406,13 +410,6 @@ en:
     otf:
       header: "Non-clinical Services"
       header_fields:
-        service: "Service Name"
-        status: "Status"
-        unit_cost: "Unit Costs"
-        service_rate: "Service Rate"
-        your_cost: "Your Cost"
-        unit_type: "Unit Type #"
-        qty_type: "Qty Type #"
         total_per_study: "Total Per Study"
       totals:
         total_direct: "Total Direct Costs (Non-clinical Services) Per Study"

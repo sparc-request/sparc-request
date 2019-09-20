@@ -18,50 +18,66 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::LineItemsVisitsController < Dashboard::BaseController
-  respond_to :json, :js, :html
+class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
+  before_action :authorize_admin
 
-  # Used for x-editable update and validations
-  def update
-    @line_items_visit = LineItemsVisit.find( params[:id] )
-    @service_request  = ServiceRequest.find( params[:srid] )
+  def new
+    @line_item  = @service_request.line_items.new(sub_service_request_id: @sub_service_request.id)
+    @tab        = params[:tab]
 
-    if @line_items_visit.update_attributes(line_items_visit_params)
-      unless params[:portal] == 'true'
-        @service_request.update_attributes(status: 'draft')
-        @line_items_visit.sub_service_request.update_attributes(status: 'draft')
-      end
-      head :ok
+    setup_calendar_pages
+
+    respond_to :js
+  end
+
+  def create
+    if line_item_params[:service_id].present?
+      add_service = AddService.new(@service_request, line_item_params[:service_id], current_user)
+      @tab        = params[:tab]
+
+      setup_calendar_pages
+
+      add_service.generate_new_service_request
+      flash[:success] = t('line_items.created')
     else
-      render json: @line_items_visit.errors, status: :unprocessable_entity
+      line_item = @service_request.line_items.new
+      line_item.valid?
+      @errors = line_item.errors
     end
 
+    respond_to :js
+  end
+
+  def edit
+    @line_item  = @service_request.line_items.new(sub_service_request_id: @sub_service_request.id)
+    @tab        = params[:tab]
+
+    setup_calendar_pages
+
+    respond_to :js
   end
 
   def destroy
-    @line_items_visit = LineItemsVisit.find(params[:id])
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @service_request = @sub_service_request.service_request
-    @selected_arm = @service_request.arms.first
-    line_item = @line_items_visit.line_item
-    @line_items = @sub_service_request.line_items
+    if line_item_params[:id].present?
+      @line_item  = LineItem.find(line_item_params[:id])
+      @tab        = params[:tab]
 
-    ActiveRecord::Base.transaction do
-      if @line_items_visit.destroy
-        line_item.destroy unless line_item.line_items_visits.count > 0
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @service_request = @sub_service_request.service_request
-        render 'dashboard/sub_service_requests/add_line_item'
-      end
+      setup_calendar_pages
+      @line_item.destroy
+
+      flash[:alert] = t('line_items.deleted')
+    else
+      line_item = @service_request.line_items.new
+      line_item.valid?
+      @errors = line_item.errors.messages[:service_id]
     end
+
+    respond_to :js
   end
 
   private
 
-  def line_items_visit_params
-    params.require(:line_items_visit).permit(:arm_id,
-      :line_item_id,
-      :subject_count,
-      :hidden)
+  def line_item_params
+    params.require(:line_item).permit(:service_id, :id)
   end
 end

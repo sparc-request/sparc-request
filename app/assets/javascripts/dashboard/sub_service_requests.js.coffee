@@ -83,6 +83,21 @@ $ ->
       url: "/dashboard/sub_service_requests/#{getSSRId()}"
       data: data
 
+  ##############################
+  # Study Level Activities Tab #
+  ##############################
+
+  $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: '/dashboard/study_level_activities/new'
+      data: $('#studyLevelActivitiesForm').serialize()
+
+
+
+
+
 
 
 
@@ -124,64 +139,3 @@ $ ->
       url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
 
   # SERVICE REQUEST INFO LISTENERS END
-  # ADMIN TAB LISTENER BEGIN
-
-  $(document).on 'click', '.ssr_tab a', ->
-    Cookies.set('admin-tab', $(this).attr('id'), { path: '/' })
-    ##Refresh Tabs Ajax
-    protocol_id = $(this).parents('ul').data('protocol-id')
-    ssr_id = $(this).parents('ul').data('ssr-id')
-    partial_name = $(this).data('partial-name')
-
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/refresh_tab"
-      data: {"protocol_id": protocol_id, "ssr_id": ssr_id, "partial_name": partial_name}
-
-  # ADMIN TAB LISTENER END
-  # STUDY SCHEDULE TAB BEGIN
-
-  $(document).on 'click', '.ss_tab a', ->
-    Cookies.set('admin-ss-tab', $(this).attr('id'), { path: '/' })
-
-  $(document).on 'click', '.service_calendar_row', ->
-    if confirm(I18n.t('calendars.confirm_row_select'))
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  $(document).on 'click', '.service_calendar_column', ->
-    if confirm(I18n.t('calendars.confirm_column_select'))
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  # STUDY SCHEDULE TAB END
-  # TIMELINE LISTENERS BEGIN
-
-  $(document).on 'dp.hide', '#sub_service_request_consult_arranged_date_picker', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    consult_arranged_date = $(this).val()
-    data = 'sub_service_request' : 'consult_arranged_date' : consult_arranged_date
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'dp.hide', '#sub_service_request_requester_contacted_date_picker', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    requester_contacted_date = $(this).val()
-    data = 'sub_service_request' : 'requester_contacted_date' : requester_contacted_date
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  # TIMELINE LISTENERS END
-
-  ###############
-  # History Tab #
-  ###############
-
-  $(document).on 'show.bs.tab', '#historyTab [data-toggle=tab]', (event) ->
-    $("#{this.hash}").find('table[data-toggle=table]').bootstrapTable('refresh')

@@ -61,6 +61,7 @@
 
 /// Replace with //= require_tree . when finished! ///
 
+//= require utilities
 //= require global
 //= require batch-select
 //= require login

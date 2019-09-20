@@ -132,6 +132,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def complete
+    @survey = Response.find(params[:response_id]).survey
   end
 
   def resend_survey

@@ -53,3 +53,11 @@ $text-map: (
 .locked {
   @extend .alert-danger;
 }
+
+@for $i from 1 through 99 {
+  @if not ($i == 25 or $i == 50 or $i == 75) {
+    .w-#{$i} {
+      width: calc(#{$i} * 1%);
+    }
+  }
+}

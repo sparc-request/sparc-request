@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_12_145929) do
+ActiveRecord::Schema.define(version: 2019_09_18_150314) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -72,12 +72,12 @@ ActiveRecord::Schema.define(version: 2019_06_12_145929) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "auditable_id"
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.bigint "auditable_id"
     t.string "auditable_type"
-    t.integer "associated_id"
+    t.bigint "associated_id"
     t.string "associated_type"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -155,6 +155,20 @@ ActiveRecord::Schema.define(version: 2019_06_12_145929) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "documents", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.datetime "deleted_at"
+    t.string "doc_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "document_file_name"
+    t.string "document_content_type"
+    t.integer "document_file_size"
+    t.datetime "document_updated_at"
+    t.string "doc_type_other"
+    t.bigint "protocol_id"
+    t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
   create_table "documents_sub_service_requests", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -554,7 +568,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_145929) do
     t.string "with_owner"
   end
 
-  create_table "protocol_merges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "protocol_merges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "master_protocol_id"
     t.integer "merged_protocol_id"
     t.integer "identity_id"
@@ -936,6 +950,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_145929) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "access_empty_protocols", default: false
+    t.boolean "billing_manager"
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end

@@ -33,20 +33,38 @@ $ ->
   ##############
 
   refreshFulfillmentButton = ->
-   refresh = window.setInterval((->
-      imported_to_fulfillment = $('#fulfillmentStatus').data('imported-to-fulfillment')
-      if imported_to_fulfillment == false
-        $("#nprogress").hide()
-        $("#ssr_fulfillment_status").load(location.href + " #fulfillmentStatus")
-        $("#nprogress").hide()
-      else
+    refresh = window.setInterval((->
+      imported_to_fulfillment = $('#fulfillmentStatus').data('imported')
+      if imported_to_fulfillment
         window.clearInterval refresh
+      else
+        $.get window.location.href + ".html", (data) ->
+          $("#fulfillmentStatusContainer").replaceWith($(data).find('#fulfillmentStatusContainer'))
       return
     ), 5000)
 
   # SERVICE REQUEST INFO LISTENERS BEGIN
   if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
+
+  $(document).on 'click', '#pushToFulfillment', ->
+    $(this).prop('disabled', true)
+    $.ajax
+      type: 'PATCH'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}"
+      data:
+        sub_service_request:
+          in_work_fulfillment: 1
+      success: ->
+        refreshFulfillmentButton()
+
+  $(document).on 'click', '#pushToEpic', ->
+    $(this).prop('disabled', true)
+    $.ajax
+      method: 'PUT'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
 
   ###############
   # Details Tab #
@@ -93,49 +111,5 @@ $ ->
       dataType: 'script'
       url: '/dashboard/study_level_activities/new'
       data: $('#studyLevelActivitiesForm').serialize()
-
-
-
-
-
-
-
-
-  $(document).on 'change', '#sub_service_request_owner', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    owner_id = $(this).val()
-    data = 'sub_service_request' : 'owner_id' : owner_id
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'change', '#sub_service_request_status', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    status = $(this).val()
-    data = 'sub_service_request' : 'status' : status
-    $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'click', '#pushToFulfillment', ->
-    $(this).prop('disabled', true)
-    $.ajax
-      type: 'PATCH'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}"
-      data:
-        sub_service_request:
-          in_work_fulfillment: 1
-      success: ->
-        refreshFulfillmentButton()
-
-  $(document).on 'click', '#pushToEpic', ->
-    $(this).prop('disabled', true)
-    $.ajax
-      method: 'PUT'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
 
   # SERVICE REQUEST INFO LISTENERS END

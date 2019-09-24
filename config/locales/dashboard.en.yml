@@ -234,9 +234,12 @@ en:
       header:
         status:
           header: "Status"
+          menu_header: "Change Request Status"
         owner: 
           header: "Owner"
+          menu_header: "Change Request Owner"
           not_available: "Not available in %{status} status"
+          none: "No Owner Selected"
         epic:
           header: "Epic"
           push: "Push to Epic"

@@ -59,14 +59,36 @@
     %tbody
       %tr
         %td.text-center{ title: sub_service_request.previously_submitted? ? '' : t('dashboard.sub_service_requests.tooltips.not_submitted'), data: { toggle: 'tooltip', container: 'body' } }
-          = select_tag "sub_service_request_status", options_for_select(ssr_select_options(sub_service_request), sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker', disabled: !sub_service_request.previously_submitted?
+          .dropdown
+            %button.btn.btn-block.btn-light.dropdown-toggle#requestStatus{ class: sub_service_request.previously_submitted? ? '' : 'disabled', role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+              = PermissibleValue.get_value('status', sub_service_request.status)
+            .dropdown-menu{ aria: { labelledby: "requestStatus" } }
+              .dropdown-header
+                %h5.mb-0
+                  = t('dashboard.sub_service_requests.header.status.menu_header')
+              .dropdown-divider
+              - ssr_status_dropdown_statuses(sub_service_request).each do |label, status|
+                = link_to label, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { status: status }), remote: true, method: :put, class: 'dropdown-item'
         %td.text-center
-          = service_request_owner_display(sub_service_request)
+          - if sub_service_request.status == 'draft'
+            .alert.alert-sm.alert-warning.mb-0
+              = t('dashboard.sub_service_requests.header.owner.not_available', status: PermissibleValue.get_value('status', 'draft'))
+          - else
+            .dropdown
+              %button.btn.btn-block.btn-light.dropdown-toggle#requestOwner{ role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+                = sub_service_request.owner.try(&:full_name) || t('dashboard.sub_service_requests.header.owner.none')
+              .dropdown-menu{ aria: { labelledby: "requestStatus" } }
+                .dropdown-header
+                  %h5.mb-0
+                    = t('dashboard.sub_service_requests.header.owner.menu_header')
+                .dropdown-divider
+                - sub_service_request.candidate_owners.each do |owner|
+                  = link_to owner.full_name, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: owner.id }), remote: true, method: :put, class: 'dropdown-item'
         - if use_epic
           %td.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
             = push_to_epic_ssr_button(sub_service_request, request_valid)
         - if use_fulfillment
-          %td.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
+          %td.text-center#fulfillmentStatusContainer{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
             = ready_for_fulfillment_display(sub_service_request, request_valid)
         - if sub_service_request.is_complete?
           %td.text-center#surveys

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::NotificationsHelper
-
   def notification_subject_line(notification)
     protocol = notification.sub_service_request_id.blank? ? '' : "[#{notification.sub_service_request.display_id}] - "
     subject = notification.subject.present? ? notification.subject : t(:dashboard)[:messages][:index][:no_subject]

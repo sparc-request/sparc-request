@@ -86,16 +86,12 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def service_request_owner_display sub_service_request
-    if sub_service_request.status == "draft"
-      content_tag :div, t('dashboard.sub_service_requests.header.owner.not_available', status: PermissibleValue.get_value('status', 'draft')), class: 'alert alert-sm alert-warning mb-0'
+  def ssr_status_dropdown_statuses(ssr)
+    if ssr.is_complete?
+      PermissibleValue.get_inverted_hash('status').sort.select{ |_, staus| Setting.get_value('finished_statuses').include?(status) }
     else
-      select_tag "sub_service_request_owner", owners_for_select(sub_service_request), :prompt => t(:constants)[:prompts][:select], :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
+      PermissibleValue.get_inverted_hash('status').sort
     end
-  end
-
-  def user_display_total sub_service_request
-    return (sub_service_request.direct_cost_total / 100.0)
   end
 
   def user_display_protocol_total protocol, service_request
@@ -134,55 +130,6 @@ module Dashboard::SubServiceRequestsHelper
     if admin_access
       link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' }
     end
-  end
-
-  private
-
-  def ssr_select_options(ssr)
-    if ssr.is_complete?
-      finished_statuses(ssr)
-    else
-      ssr.nil? ? [] : statuses_with_classes(ssr)
-    end
-  end
-
-  def statuses_with_classes(ssr)
-    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
-      if in_finished_status?(status)
-        status.push(:class=> 'finished-status')
-      else
-        status
-      end
-    end
-  end
-
-  def finished_statuses(ssr)
-    new_statuses = []
-    sorted_by_permissible_values(ssr.organization.get_available_statuses).invert.map do |status|
-      if in_finished_status?(status)
-        new_statuses << status
-      end
-    end
-
-    new_statuses.each do |status|
-      status.push(:class=> 'finished-status')
-    end
-  end
-
-  def in_finished_status?(status)
-    Setting.get_value("finished_statuses").include?(status.last)
-  end
-
-  def sorted_by_permissible_values(statuses)
-    values = PermissibleValue.get_hash('status')
-    sorted_hash = {}
-    values.each do |k, v|
-      if statuses.has_key?(k)
-        sorted_hash[k] = v
-      end
-    end
-
-    sorted_hash
   end
 end
 

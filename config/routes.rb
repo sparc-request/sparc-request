@@ -260,7 +260,6 @@ SparcRails::Application.routes.draw do
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
-      resource :milestones, only: [:update]
       resource :study_type_answers, only: [:edit]
 
       member do

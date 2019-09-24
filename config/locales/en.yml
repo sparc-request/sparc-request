@@ -87,7 +87,9 @@ en:
         title: "Title"
         completed: "Completed"
       fulfillment:
+        date: "Date Fulfilled"
         time: "Quantity"
+        timeframe: "Qty Type"
       human_subjects_info:
         approval_pending: "Pending Approval?"
         initial_irb_approval_date: "Initial IRB Approval Date"
@@ -267,6 +269,10 @@ en:
           attributes:
             active:
               taken: "A different version of this Form is already active"
+        fulfillment:
+          attributes:
+            time:
+              invalid: "Can only have two decimal places"
         line_item:
           attributes:
             quantity:

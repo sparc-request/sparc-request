@@ -59,6 +59,9 @@
         .form-group
           = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('notes.placeholder')
         .text-right
-          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-            = t('actions.close')
+          - if notable.is_a?(Fulfillment)
+            = link_to t('actions.back'), dashboard_fulfillments_path(line_item_id: notable.line_item_id, ssrid: @sub_service_request.id), remote: true, class: 'btn btn-secondary'
+          - else
+            %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+              = t('actions.close')
           = f.submit t('notes.add'), class: 'btn btn-primary'

@@ -18,34 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog
+.modal-dialog{ role: 'document' }
   .modal-content
-    = form_for [:dashboard, fulfillment], {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
+    = form_for [:dashboard, fulfillment], remote: true do |f|
+      = f.hidden_field :line_item_id
+      = hidden_field_tag :ssrid, sub_service_request.id
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
-          = header_text
+        %h3.modal-title
+          = t("dashboard.sub_service_requests.study_level_activities.fulfillments.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
-        .row
-          .col-md-12
-            = form.hidden_field :line_item_id
-            .form-group
-              = form.label "date", t(:dashboard)[:fulfillments][:form][:date], class: "col-sm-4 control-label"
-              .col-sm-7
-                = form.text_field "date", {class: 'form-control datetimepicker', id: 'date_fulfilled_field', value: format_date(fulfillment.date)}
-            .form-group
-              = form.label "time", t(:dashboard)[:fulfillments][:form][:time], class: "col-sm-4 control-label"
-              .col-sm-7
-                = form.text_field "time", {class: 'form-control'}
-            .form-group
-              = form.label "timeframe", t(:dashboard)[:fulfillments][:form][:time_unit], class: "col-sm-4 control-label"
-              .col-sm-7
-                = form.select "timeframe", options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment.timeframe), {}, class: 'form-control selectpicker'
+        .form-group
+          = f.label :date, class: 'required'
+          .input-group.datetimepicker.date#fulfillmentDatePicker{ data: { target_input: 'nearest' } }
+            = f.text_field :date, class: 'datetimepicker-input form-control', value: format_date(fulfillment.date), data: { target: '#fulfillmentDatePicker' }
+            .input-group-append{ data: { toggle: 'datetimepicker', target: '#fulfillmentDatePicker' } }
+              %span.input-group-text
+                = icon('fas', 'calendar-alt')
+        .form-group
+          = f.label :time, class: 'required'
+          = f.number_field :time, class: 'form-control', step: 0.01
+        .form-group
+          = f.label :timeframe, class: 'required'
+          = f.select :timeframe, options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment.timeframe), { include_blank: true }, class: 'selectpicker'
       .modal-footer
-        .center-block
-          %button#fulfillments_back.btn.btn-default{type: 'button', data: {line_item_id: fulfillment.line_item_id}}
-            = t(:actions)[:cancel]
-          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+        = link_to t('actions.back'), dashboard_fulfillments_path(line_item_id: fulfillment.line_item_id, ssrid: sub_service_request.id), remote: true, class: 'btn btn-secondary'
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

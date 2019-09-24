@@ -57,35 +57,6 @@ en:
     forms:
       header: "Form Submissions"
 
-    ##################
-    #  FULFILLMENTS  #
-    ##################
-    fulfillments:
-      add: "Add Fulfillment"
-      edit: "Edit Fulfillment"
-      created: "Fulfillment Created!"
-      updated: "Fulfillment Updated!"
-      destroyed: "Fulfillment Destroyed!"
-      table:
-        date: "Fulfillment Date"
-        time_unit: "Qty Type"
-        time: "Quantity"
-        actions: "Actions"
-      actions:
-        notes: " Notes"
-        edit: " Edit Fulfillment"
-        delete: " Delete Fulfillment"
-      form:
-        date: "Fulfillment Date:*"
-        time: "Quantity:*"
-        time_unit: "Qty Type:*"
-
-    ################
-    #  LINE ITEMS  #
-    ################
-    line_items:
-      updated: "Line Item Updated!"
-
     ##############
     #  MESSAGES  #
     ##############
@@ -97,13 +68,6 @@ en:
         message: "Message"
       new:
         header: "New Message to "
-
-    ##############
-    # NAVIGATION #
-    ##############
-    navigation:
-      bottom:
-        saving: "Saving..."
 
     ###################
     #  NOTIFICATIONS  #
@@ -134,8 +98,6 @@ en:
       tooltips:
         table_button: "Send correspondence related to this request to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
-
-
 
     ######################
     #  PROTOCOL FILTERS  #
@@ -232,7 +194,7 @@ en:
     # SERVICE CALENDARS #
     #####################
     service_calendars:
-      consolidated_request:
+      d:
         header: "Consolidated Request Summary"
         protocol_information:
           header: " Information"
@@ -261,40 +223,6 @@ en:
         admin_edit: "Service Provider administrative access to track and manage services"
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
         coverage_report: "Ability to export research and third-party payer information to Excel"
-
-    ############################
-    #  Non-clinical Services #
-    ############################
-    study_level_activities:
-      edit: "Edit Non-clinical Services"
-      form:
-        service: "Service:"
-        unit_per_quantity: "Units Requested:"
-        quantity_requested: "Quantity Requested:"
-        in_process: "In Process Date:"
-        complete: "Complete Date:"
-      actions:
-        details: " Details"
-        notes: " Notes"
-        admin_rate: " Add Admin Rate"
-        edit: " Edit Activity"
-        delete: " Delete Activity"
-      details:
-        header: "Non-clinical Services Details"
-        charge_code: "Charge Code"
-        unit_quantity: "Units Requested"
-        unit_type: "Unit Type"
-        quantity_requested: "Quantity Requested"
-        quantity_type: "Quantity Type"
-        cost: "Cost"
-        received: "Received"
-        in_process: "In Process"
-        complete: "Complete"
-      admin_rate:
-        header: "Add Admin Rate"
-        cost: "Cost:"
-      tooltips:
-        change_rate: "Click to modify rate"
 
     ##########################
     #  SUB SERVICE REQUESTS  #
@@ -344,9 +272,16 @@ en:
         header: "Non-Clinical Services"
         none: "This request does not have any Non-Clinical Services."
         new: "Add Non-Clinical Service"
-        created: "Non-clinical Service Created!"
+        created: "Non-clinical Service Added!"
         updated: "Non-clinical Service Updated!"
         destroyed: "Non-clinical Service Deleted!"
+        fulfillments:
+          header: "Fulfillments - %{service}"
+          new: "Add Fulfillment"
+          edit: "Edit Fulfillment"
+          created: "Fulfillment Added!"
+          updated: "Fulfillment Updated!"
+          deleted: "Fulfillment Deleted!"
         tooltips:
           new: "Add Non-Clinical Services related to the selected organization"
           view: "View Details"
@@ -389,24 +324,3 @@ en:
           text: "This request and all requested services and associated information will be lost forever.<br><br>Are you sure you want to proceed?"
         push_to_epic:
           text: "This request could not be push to Epic due to an unexpected error.<br><br><i>%{error}</i><br><br>Please try again later."
-
-
-    ###############
-    #  SUBSIDIES  #
-    ###############
-    subsidies:
-      header: "Subsidy Information"
-
-    ##################
-    #  VISIT GROUPS  #
-    ##################
-    visit_groups:
-      add: "Add Visit Group"
-      remove: "Remove Visit Group"
-      edit: "Edit Visit Group"
-      add_visit: "Add Visit"
-      edit_visit: "Edit Visit"
-      remove_visit: "Remove Visit"
-      created: "Visit Created!"
-      updated: "Visit Updated!"
-      destroyed: "Visit Destroyed!"

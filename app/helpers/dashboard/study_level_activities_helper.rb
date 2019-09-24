@@ -67,29 +67,4 @@ module Dashboard::StudyLevelActivitiesHelper
   def delete_sla_button(line_item)
     link_to icon('fas', 'trash-alt'), dashboard_study_level_activity_path(line_item, ssrid: line_item.sub_service_request_id), remote: true, method: :delete, class: 'btn btn-danger', title: t('actions.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
   end
-
-  def fulfillment_options_buttons fulfillment
-    has_notes = fulfillment.notes.length > 0
-
-    options = raw(
-      content_tag(:li, raw(
-        content_tag(:button,
-          raw(content_tag(:span, '', class: ["glyphicon glyphicon-list-alt note-icon", has_notes ? "blue-note" : "black-note"], aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:notes]+
-          raw(content_tag(:span, fulfillment.notes.count, class: ["badge", has_notes ? "blue-badge" : ""], id: "fulfillment_#{fulfillment.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: fulfillment.id, notable_type: "Fulfillment"})
-        )
-      )+
-      content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_fulfillment_edit'))
-      )+
-      content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:delete], type: 'button', class: 'btn btn-default form-control actions-button otf_fulfillment_delete'))
-      )
-    )
-
-    span = raw content_tag(:span, '', class: 'glyphicon glyphicon-triangle-bottom')
-    button = raw content_tag(:button, raw(span), type: 'button', class: 'btn btn-default btn-sm dropdown-toggle form-control available-actions-button', 'data-toggle' => 'dropdown', 'aria-expanded' => 'false')
-    ul = raw content_tag(:ul, options, class: 'dropdown-menu', role: 'menu')
-
-    raw content_tag(:div, button + ul, class: 'btn-group')
-  end
 end

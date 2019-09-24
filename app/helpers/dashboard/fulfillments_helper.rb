@@ -18,5 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modalContainer").html("<%= j render 'dashboard/fulfillments/fulfillments', line_item: @line_item, sub_service_request: @sub_service_request %>")
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+module Dashboard::FulfillmentsHelper
+  def fulfillment_actions(fulfillment, sub_service_request)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw [
+        edit_fulfillment_button(fulfillment, sub_service_request),
+        delete_fulfillment_button(fulfillment, sub_service_request)
+      ].join('')
+    end
+  end
+
+  def edit_fulfillment_button(fulfillment, sub_service_request)
+    link_to icon('fas', 'edit'), edit_dashboard_fulfillment_path(fulfillment, ssrid: sub_service_request.id), remote: true, class: 'btn btn-warning mr-1', title: t('actions.edit'), data: { toggle: 'tooltip' }
+  end
+
+  def delete_fulfillment_button(fulfillment, sub_service_request)
+    link_to icon('fas', 'trash-alt'), dashboard_fulfillment_path(fulfillment, ssrid: sub_service_request.id), remote: true, method: :delete, class: 'btn btn-danger', title: t('actions.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
+  end
+end

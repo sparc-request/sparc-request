@@ -22,7 +22,7 @@ require "rails_helper"
 
 RSpec.describe Dashboard::DocumentsController do
   describe "DELETE #destroy" do
-
+    let!(:before_filters) { find_before_filters }
     let(:logged_in_user) { create(:identity) }
     let(:other_user) { create(:identity) }
 
@@ -62,6 +62,30 @@ RSpec.describe Dashboard::DocumentsController do
         expect(Document.count).to eq(0)
       end
 
+      it 'should not call before_filter #protocol_authorizer_view' do
+        expect(before_filters.include?(:protocol_authorizer_view)).to eq(false)
+      end
+
+      it 'should call before_filter #find_document' do
+        expect(before_filters.include?(:find_document)).to eq(true)
+      end
+
+      it 'should call before_filter #find_protocol' do
+        expect(before_filters.include?(:find_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #find_admin_for_protocol' do
+        expect(before_filters.include?(:find_admin_for_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #protocol_authorizer_edit' do
+        expect(before_filters.include?(:protocol_authorizer_edit)).to eq(true)
+      end
+
+      it 'should call before_filter #authorize_admin_access_document' do
+        expect(before_filters.include?(:authorize_admin_access_document)).to eq(true)
+      end
+
       it { is_expected.to respond_with :ok }
       it { is_expected.to render_template "dashboard/documents/destroy" }
     end
@@ -78,8 +102,7 @@ RSpec.describe Dashboard::DocumentsController do
         expect(Document.count).to eq(1)
       end
 
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
+      it { is_expected.to respond_with 302 }
     end
 
     context 'user has admin access to document' do
@@ -116,8 +139,7 @@ RSpec.describe Dashboard::DocumentsController do
         expect(Document.count).to eq(1)
       end
 
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
+      it { is_expected.to respond_with 302 }
     end
   end
 end

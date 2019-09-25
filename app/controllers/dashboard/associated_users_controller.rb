@@ -55,7 +55,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_role      = controller.instance_variable_get(:@protocol_role)
     @permission_to_edit = @protocol_role.can_edit?
     @errors             = controller.instance_variable_get(:@errors)
-
     respond_to :js
   end
 
@@ -69,7 +68,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @identity       = controller.instance_variable_get(:@identity)
     @protocol_role  = controller.instance_variable_get(:@protocol_role)
     @epic_user      = controller.instance_variable_get(:@epic_user)
-
     respond_to :js
   end
 
@@ -109,7 +107,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   private
 
   def project_role_params
-    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    params[:project_role][:identity_attributes][:phone] = !params[:project_role][:identity_attributes][:phone].empty? ? (sanitize_phone params[:project_role][:identity_attributes][:phone]) : ""
     params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(

@@ -37,7 +37,7 @@ $ ->
 
   stickybits('.position-sticky, .sticky-top')
 
-  $(document).on 'load-success.bs.table ajax:complete', ->
+  $(document).on 'load-success.bs.table search.bs.table sort.bs.table column-switch.bs.table ajax:complete', (e) ->
     initializeSelectpickers()
     initializeDateTimePickers()
     initializeTooltips()
@@ -232,7 +232,7 @@ $ ->
   $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
-  $("input[name='sub_service_request_id']").val()
+  $("input[name='ssrid']").val()
 
 (exports ? this).getProtocolId = ->
   $("input[name=protocol_id]").val()

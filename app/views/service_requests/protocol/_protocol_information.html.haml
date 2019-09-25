@@ -22,6 +22,7 @@
   - if protocol
     = render 'protocols/summary', protocol: protocol, service_request: service_request
     = render 'associated_users/table', protocol: protocol, service_request: service_request
+    = render 'protocols/milestones', service_request: @service_request, protocol: @service_request.protocol
   - else
     .card#newProtocolCard
       .card-header.bg-primary.text-white

@@ -21,39 +21,52 @@
 .modal-dialog{ role: 'document' }
   .modal-content
     = form_for visit_group, remote: true do |f|
+      = f.hidden_field :arm_id
+      = hidden_field_tag :arm_id, visit_group.arm_id
       = hidden_field_tag :srid, service_request.try(:id)
-      = hidden_field_tag :tab, params[:tab]
-      = hidden_field_tag :page, params[:page]
-      - params[:pages].each do |arm_id, page|
-        = hidden_field_tag "pages[#{arm_id}]", page.to_i
+      = hidden_field_tag :tab, tab
+      = hidden_field_tag :page, page
+      - pages.each do |arm_id, page|
+        = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          = t('visit_groups.edit')
+          - if action_name == 'new'
+            = t('visit_groups.new')
+          - else
+            = t('visit_groups.edit', visit_name: visit_group.name)
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
+        .form-group
+          = f.label :name, class: 'required'
+          = f.text_field :name, class: 'form-control'
         .form-row
           .form-group.col-4
             = f.label :window_before, class: 'required'
             = f.number_field :window_before, class: 'form-control', min: 0
           .form-group.col-4
-            - min = visit_group.higher_items.where.not(day: nil).maximum(:day).try(:+, 1)
-            - max = visit_group.lower_items.where.not(day: nil).minimum(:day).try(:-, 1)
+            - min, max = move_visit_group_boundaries(visit_group, arm)
+            - disable = min == max && min.present? # Disable if there can only be one day to choose from and the user did not select the blank option
             = f.label :day, class: 'required'
-            = f.number_field :day, class: 'form-control', min: min, max: max
+            = f.number_field :day, class: 'form-control', min: min, max: max, value: disable ? min : visit_group.day, readonly: disable
             - if min || max
               %small.form-text.text-muted
                 - if min
                   = t('constants.min', min: min)
                 - if max
                   = t('constants.max', max: max)
+              - if min == max && (visit_group.new_record? || visit_group.position_changed?)
+                %small.form-text.text-warning
+                  = t('visit_groups.form.move_note')
           .form-group.col-4
             = f.label :window_after, class: 'required'
             = f.number_field :window_after, class: 'form-control', min: 0
         .form-group
-          = f.label :name, class: 'required'
-          = f.text_field :name, class: 'form-control'
+          = f.label :position, class: 'required'
+          = f.select :position, visit_position_options(arm, visit_group), { include_blank: true }, class: 'selectpicker', disabled: visit_group.nil?
       .modal-footer
+        - if action_name == 'edit'
+          = delete_visit_group_button(visit_group, srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')
         = f.submit t('actions.submit'), class: 'btn btn-primary'

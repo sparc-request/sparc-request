@@ -28,7 +28,7 @@
   = render 'associated_users/table', service_request: @service_request, protocol: @service_request.protocol
 
   .mb-3#serviceCalendar
-    = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page 
+    = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page 
 
   = render 'documents/table', service_request: @service_request, protocol: @service_request.protocol
   - if @service_request.has_associated_forms?

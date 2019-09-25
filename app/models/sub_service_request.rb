@@ -27,6 +27,7 @@ class SubServiceRequest < ApplicationRecord
   before_create :set_protocol_id
   after_save :update_org_tree
   after_save :update_past_status
+  after_update :generate_approvals
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
@@ -84,6 +85,10 @@ class SubServiceRequest < ApplicationRecord
   def status= status
     @prev_status = self.status
     super(status)
+  end
+
+  def label
+    "(#{self.ssr_id}) #{self.organization.label}"
   end
 
   def previously_submitted?
@@ -221,13 +226,12 @@ class SubServiceRequest < ApplicationRecord
   def candidate_services
     services = []
     if self.organization.process_ssrs
-      services = self.organization.all_child_services.select {|x| x.is_available?}
-
+      services = self.organization.all_child_services.available
     else
       begin
-        services = self.organization.process_ssrs_parent.all_child_services.select {|x| x.is_available}
+        services = self.organization.process_ssrs_parent.all_child_services.available
       rescue
-        services = self.organization.all_child_services.select {|x| x.is_available?}
+        services = self.organization.all_child_services.available
       end
     end
 
@@ -261,14 +265,9 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # return true if the request is already in fulfillmentt and fulfillment_contingent_on_catalog_manager is turned off
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") ||
-        (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
-      return true
-    else
-      return false
-    end
+    (self.in_work_fulfillment && !Setting.get_value("fulfillment_contingent_on_catalog_manager")) || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
   end
 
   ########################
@@ -349,10 +348,6 @@ class SubServiceRequest < ApplicationRecord
     self.update_attributes(service_request_id: new_sr.id)
   end
 
-  def arms_editable?
-    !self.in_work_fulfillment?
-  end
-
   def update_past_status
     if saved_change_to_status? && !@prev_status.blank?
       past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now, changed_by_id: self.current_user_id)
@@ -393,24 +388,6 @@ class SubServiceRequest < ApplicationRecord
     candidates = Identity.where(id: self.organization.all_service_providers.pluck(:identity_id)).distinct.to_a
     candidates << self.owner if self.owner
     candidates.uniq
-  end
-
-  def generate_approvals current_user, params
-    if params[:nursing_nutrition_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Nursing/Nutrition Approved"})
-    end
-
-    if params[:lab_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Lab Approved"})
-    end
-
-    if params[:imaging_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Imaging Approved"})
-    end
-
-    if params[:committee_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Committee Approved"})
-    end
   end
 
   #############
@@ -460,8 +437,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def survey_latest_sent_date
-    survey_response = self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' })
-    survey_response.any? ? survey_response.first.updated_at.try(:strftime, '%D') : 'N/A'
+    self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.try(:updated_at)
   end
 
   ###############################
@@ -550,6 +526,24 @@ class SubServiceRequest < ApplicationRecord
 
   def set_protocol_id
     self.protocol_id = service_request.try(:protocol_id)
+  end
+
+  def generate_approvals
+    if self.nursing_nutrition_approved_changed? && self.nursing_nutrition_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:nursing_nutrition_approved))
+    end
+
+    if self.lab_approved_changed? && self.lab_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:lab_approved))
+    end
+
+    if self.imaging_approved_changed? && self.imaging_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:imaging_approved))
+    end
+
+    if self.committee_approved_changed? && self.committee_approved?
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:committee_approved))
+    end
   end
 
   def notify_remote_around_update?

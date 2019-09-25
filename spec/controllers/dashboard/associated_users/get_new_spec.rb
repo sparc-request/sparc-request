@@ -22,6 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET new' do
+    let!(:before_filters) { find_before_filters }
+
     let!(:identity) do
       findable_stub(Identity) { build_stubbed(:identity) }
     end
@@ -50,8 +52,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
           with(protocol, identity)
       end
 
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
-      it { is_expected.to respond_with :ok }
+      it 'should call before_filter #find_protocol' do
+        expect(before_filters.include?(:find_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #find_admin_for_protocol' do
+        expect(before_filters.include?(:find_admin_for_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #protocol_authorizer_edit' do
+        expect(before_filters.include?(:protocol_authorizer_edit)).to eq(true)
+      end
     end
 
     context "User authorized to edit Protocol" do
@@ -62,10 +73,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
         get :new, params: {
           protocol_id: protocol.id
         }, xhr: true
-      end
-
-      it 'should set @header_text to "Add Associated User"' do
-        expect(assigns(:header_text)).to eq('Add Authorized User')
       end
 
       it { is_expected.to render_template "dashboard/associated_users/new" }
@@ -99,14 +106,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it 'should set @identity to the Identity from params[:identity_id]' do
         expect(assigns(:identity)).to eq(identity)
-      end
-
-      it 'should set @current_pi to the Primary PI of @protocol' do
-        expect(assigns(:current_pi)).to eq(primary_pi)
-      end
-
-      it 'should set @project_role to a new ProjectRole associated with @protocol' do
-        expect(assigns(:project_role)).to eq(@new_project_role)
       end
 
       it { is_expected.to render_template "dashboard/associated_users/new" }

@@ -27,7 +27,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   def perform_protocol_merge
-
     @errors = {}
     confirmed = params[:protocol_merge][:confirmed] == "false" ? false : true
 

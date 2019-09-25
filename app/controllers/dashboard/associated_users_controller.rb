@@ -107,7 +107,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   private
 
   def project_role_params
-    params[:project_role][:identity_attributes][:phone] = !params[:project_role][:identity_attributes][:phone].empty? ? (sanitize_phone params[:project_role][:identity_attributes][:phone]) : ""
+    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
     params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(

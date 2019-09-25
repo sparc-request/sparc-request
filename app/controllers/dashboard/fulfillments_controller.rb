@@ -19,45 +19,43 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::FulfillmentsController < Dashboard::BaseController
-
+  before_action :authorize_admin
   before_action :find_fulfillment, only: [:edit, :update, :destroy]
 
   def index
     @line_item = LineItem.find(params[:line_item_id])
-    respond_to do |format|
-      format.js { render }
-      format.json do
-        @fulfillments = @line_item.fulfillments
 
-        render
-      end
+    respond_to do |format|
+      format.js
+      format.json {
+        @fulfillments = @line_item.fulfillments
+      }
     end
   end
 
   def new
-    @fulfillment = Fulfillment.new(line_item_id: params[:line_item_id])
-    @header_text = t(:dashboard)[:fulfillments][:add]
+    @line_item    = LineItem.find(params[:line_item_id])
+    @fulfillment  = @line_item.fulfillments.new
   end
 
   def create
     @fulfillment = Fulfillment.new(fulfillment_params)
-    if @fulfillment.valid?
-      @fulfillment.save
+
+    if @fulfillment.save
       @line_item = @fulfillment.line_item
-      flash[:success] = t(:dashboard)[:fulfillments][:created]
+      flash[:success] = t('dashboard.sub_service_requests.study_level_activities.fulfillments.created')
     else
       @errors = @fulfillment.errors
     end
   end
 
   def edit
-    @header_text = t(:dashboard)[:fulfillments][:edit]
   end
 
   def update
     if @fulfillment.update_attributes(fulfillment_params)
       @line_item = @fulfillment.line_item
-      flash[:success] = t(:dashboard)[:fulfillments][:updated]
+      flash[:success] = t('dashboard.sub_service_requests.study_level_activities.fulfillments.updated')
     else
       @errors = @fulfillment.errors
     end
@@ -66,25 +64,24 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   def destroy
     if @fulfillment.delete
       @line_item = @fulfillment.line_item
-      flash[:alert] = t(:dashboard)[:fulfillments][:destroyed]
+      flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.fulfillments.deleted')
     end
   end
 
   private
 
-  def fulfillment_params
-    params.require(:fulfillment).permit(:line_item_id,
-      :timeframe,
-      :notes,
-      :time,
-      :date,
-      :quantity,
-      :unit_quantity,
-      :quantity_type,
-      :unit_type)
-  end
-
   def find_fulfillment
     @fulfillment = Fulfillment.find(params[:id])
+  end
+
+  def fulfillment_params
+    params[:fulfillment][:date] = sanitize_date params[:fulfillment][:date]
+
+    params.require(:fulfillment).permit(
+      :line_item_id,
+      :date,
+      :time,
+      :timeframe
+    )
   end
 end

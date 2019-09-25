@@ -79,7 +79,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if updater.successful?
       flash[:success] = t('authorized_users.updated')
 
-      redirect_to dashboard_root_path if @protocol_role.identity == current_user && !@admin && ['none'].include?(protocol_role.project_rights)
+      redirect_to dashboard_root_path if @protocol_role.identity == current_user && !@admin && ['none'].include?(@protocol_role.project_rights)
     else
       @errors = updater.protocol_role.errors
     end

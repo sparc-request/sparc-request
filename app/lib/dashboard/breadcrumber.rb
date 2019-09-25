@@ -81,11 +81,13 @@ class Dashboard::Breadcrumber
 
   def ssr_label_and_url
     sub_service_request_id = @crumbs[:sub_service_request_id]
-    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).organization.label, "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
+    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).label, "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
   end
 
   def notifications_label_and_url
-    @crumbs[:notifications] ? ["Notifications", "/dashboard/notifications"] : nil
+    self.clear(:protocol_id)
+    self.clear(:sub_service_request_id)
+    @crumbs[:notifications] ? [I18n.t('dashboard.notifications.header'), "/dashboard/notifications"] : nil
   end
 
   def edit_protocol_label_and_url

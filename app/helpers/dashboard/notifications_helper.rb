@@ -19,23 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::NotificationsHelper
-
-  def message_hide_or_show(notification, index)
-    notification.messages.length - 1 == index ? 'shown' : 'hidden'
-  end
-
-  def notification_subject_line(notification, with_body=true)
+  def notification_subject_line(notification)
     protocol = notification.sub_service_request_id.blank? ? '' : "[#{notification.sub_service_request.display_id}] - "
     subject = notification.subject.present? ? notification.subject : t(:dashboard)[:messages][:index][:no_subject]
     body    = notification.messages.length > 0 ? notification.messages.last.body : ""
 
-    returning_html = content_tag(:div, 
-                       content_tag(:span, protocol) +
-                       content_tag(:span, truncate_string_length(subject)), class: "text-info"
-                     )
-
-    returning_html += content_tag(:div, ' - ' + truncate_string_length(body), class: "text-muted") if with_body
-    raw returning_html
+    if controller_name == 'notifications'
+      content_tag :div, class: 'd-flex flex-column' do
+        content_tag(:span, protocol + truncate_string_length(subject), class: "text-primary") +
+        content_tag(:span, ' - ' + truncate_string_length(body), class: "text-muted")
+      end
+    else
+      link_to protocol + truncate_string_length(subject), dashboard_protocol_path(notification.sub_service_request.protocol_id), target: :blank
+    end
   end
 
   def notification_time_display(notification)
@@ -46,22 +42,23 @@ module Dashboard::NotificationsHelper
     end
   end
 
-  def display_authorized_user(project_role, ssr_requester_id)
+  def display_authorized_user(project_role, ssr)
     content_tag :span do
-      "#{display_user_role(project_role)}: #{project_role.identity.full_name}" + 
-      if project_role.identity_id == ssr_requester_id
-        content_tag :small, content_tag(:i, t('dashboard.notifications.table.requester')), class: 'text-primary'
+      raw(
+        content_tag(:strong, display_user_role(project_role), class: 'mr-2') + "#{project_role.identity.full_name}" + 
+      if project_role.identity_id == ssr.service_requester_id
+        content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1')
       else
         ''
-      end
+      end)
     end
   end
 
-  def display_service_provider(service_provider, ssr_owner_id)
+  def display_service_provider(service_provider, ssr)
     content_tag :span do
       service_provider.identity.full_name +
-      if service_provider.identity_id == ssr_owner_id
-        content_tag :small, content_tag(:i, t('dashboard.notifications.table.owner')), class: 'text-primary'
+      if service_provider.identity_id == ssr.owner_id
+        content_tag(:small, content_tag(:em, t('dashboard.notifications.table.owner')), class: 'text-primary ml-1')
       else
         ''
       end

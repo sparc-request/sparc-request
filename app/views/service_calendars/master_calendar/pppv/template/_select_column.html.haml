@@ -24,7 +24,7 @@
 - check_param         = checked ? 'uncheck'     : 'check'
 - icon                = checked ? 'times'       : 'check'
 - klass               = checked ? 'btn-danger'  : 'btn-success'
-- tooltip             = t(:calendars)[:pppv][:editable_fields][:column_select][checked ? :uncheck : :check]
+- tooltip             = t(:calendars)[:editable_fields][:column_select][checked ? :uncheck : :check]
 - url                 = toggle_calendar_column_service_calendars_path(srid: service_request.id, visit_group_id: visit_group.id, page: page, :"#{check_param}" => 'true')
 - url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 

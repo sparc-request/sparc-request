@@ -22,7 +22,7 @@
   .modal-content
     .modal-header
       %h3.modal-title
-        = notification_subject_line(notification, false)
+        = notification_subject_line(notification)
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body

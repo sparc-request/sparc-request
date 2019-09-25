@@ -38,9 +38,9 @@ class ServiceCalendarsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
+  after_action :set_service_calendar_cookie, only: [:table, :merged_calendar]
 
   def table
-    @review               = false
     @merged               = false
     @consolidated         = false
     @tab                  = params[:tab]
@@ -50,7 +50,6 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @review               = true
     @merged               = true
     @consolidated         = false
     @tab                  = 'calendar'
@@ -61,7 +60,6 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def view_full_calendar
-    @review                 = false
     @merged                 = true
     @consolidated           = true
     @tab                    = 'calendar'
@@ -69,51 +67,6 @@ class ServiceCalendarsController < ApplicationController
     @show_unchecked         = params[:show_unchecked] == 'true'
     @service_request        = @protocol.any_service_requests_to_display?
     setup_calendar_pages
-
-    respond_to :js
-  end
-
-  def show_move_visits
-    @tab          = params[:tab]
-    @page         = params[:page]
-    @pages        = params[:pages]
-    @arm          = Arm.find(params[:arm_id])
-    @visit_group  = @arm.visit_groups.find(params[:visit_group_id]) if params[:visit_group_id].present?
-
-    if params[:position].present?  # Inline if converts blank to 0
-      @position = params[:position].to_i
-    end
-
-    respond_to :js
-  end
-
-  def move_visit_position
-    @review       = false
-    @merged       = false
-    @consolidated = false
-    @tab          = params[:tab]
-    @page         = params[:page]
-    @pages        = Hash[params[:pages].permit!.to_h.map{ |arm_id, page| [arm_id, page.to_i] }]
-    @arm          = Arm.find(params[:arm_id])
-    @visit_group  = VisitGroup.find(params[:visit_group_id]) if params[:visit_group_id].present?
-
-    if @visit_group
-      if params[:position].present?
-        new_position = params[:position].to_i
-        new_position -= 1 if @visit_group.position < new_position
-
-        # If no change occurs then insert_at returns nil
-        unless @visit_group.update_attributes(day: params[:day], position: new_position)
-          @errors = @visit_group.errors
-        end
-      else
-        @visit_group.errors.add(:position, :blank)
-        @errors = @visit_group.errors
-      end
-    else
-      @arm.errors.add(:visit_group_id, :blank)
-      @errors = @arm.errors
-    end
 
     respond_to :js
   end
@@ -126,7 +79,7 @@ class ServiceCalendarsController < ApplicationController
     @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
     @visits             = @line_items_visit.ordered_visits.eager_load(service: :pricing_maps)
-    @locked             = !@admin && !@line_items_visit.sub_service_request.can_be_edited?
+    @locked             = !@in_admin && !@line_items_visit.sub_service_request.can_be_edited?
 
     if params[:check] && !@locked
       unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
@@ -137,7 +90,7 @@ class ServiceCalendarsController < ApplicationController
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @admin || @locked
+    unless @in_admin || @locked
       @line_items_visit.sub_service_request.update_attribute(:status, "draft")
       @service_request.update_attribute(:status, "draft")
     end
@@ -173,7 +126,7 @@ class ServiceCalendarsController < ApplicationController
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
-    unless @admin
+    unless @in_admin
       editable_ssrs.where.not(status: 'draft').update_all(status: 'draft')
       @service_request.update_attribute(:status, "draft")
     end
@@ -183,18 +136,11 @@ class ServiceCalendarsController < ApplicationController
 
   private
 
-  def setup_calendar_pages
-    @pages  = {}
-    @page   = params[:page].to_i if params[:page]
-    arm_id  = params[:arm_id].to_i if params[:arm_id]
-    @arm    = Arm.find(arm_id) if arm_id
-
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
-
-    @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
-      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
+  def set_service_calendar_cookie
+    if in_dashboard?
+      cookies["calendar-tab-ssr-#{@sub_service_request.id}"] = @tab
+    else
+      cookies["calendar-tab-sr-#{@service_request.id}"] = @tab
     end
   end
 end

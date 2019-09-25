@@ -21,9 +21,10 @@
 - content_for :content do
   .container
     .col-12.col-sm-8.px-0.mx-auto{ class: controller_name == 'registrations' ? '' : 'col-lg-6' }
-      .card
+      .card.w-100
         .card-body.p-xl-5
           = yield
+      = yield(:footer) if content_for :footer
 
 - content_for :flash, true
 

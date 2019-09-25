@@ -28,7 +28,10 @@ $("[name='arm[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid
 <% end %>
 <% end %>
 <% else %>
-$('#armsTable').bootstrapTable('refresh')
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+
+adjustCalendarHeaders()
+
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

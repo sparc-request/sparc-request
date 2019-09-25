@@ -52,4 +52,6 @@ if !url.searchParams.get('srid')
   $('input[name=srid]').val("<%= @service_request.id %>")
   $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
   $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
+
+  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

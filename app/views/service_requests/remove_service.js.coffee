@@ -55,4 +55,6 @@ $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_reque
 <% if request.referrer.split('/').last == 'protocol' %>
 $('.service-list').html("<%= j render 'service_requests/protocol/service_list', service_request: @service_request %>")
 <% end %>
+
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

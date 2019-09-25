@@ -24,18 +24,18 @@
   = fields_for :project_role do |f|
     = f.fields_for :identity_attributes do |ff_i|
       - state[:dont_submit_selected].each do |prev_selected_pro_org|
-        .form-group.col-4
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
           = ff_i.label prev_selected_pro_org.org_type, org_type_label(prev_selected_pro_org)
           = professional_organization_dropdown(choices_from: prev_selected_pro_org)
 
       -# ProfessionalOrganization dropdown whose selected option is actually submitted with the Authorized User form.
       - if state[:submit_selected]
-        .form-group.col-4
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
           = ff_i.label :professional_organization_id, org_type_label(state[:submit_selected])
           = professional_organization_dropdown(choices_from: state[:submit_selected], form: ff_i)
 
       -# ProfessionalOrganization dropdown for the children of the selected organization from prevous dropdown.
       - if state[:dont_submit_unselected].any?
-        .form-group.col-4
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
           = ff_i.label state[:dont_submit_unselected].first.org_type, org_type_label(state[:dont_submit_unselected].first)
           = professional_organization_dropdown(choices_from: state[:dont_submit_unselected])

@@ -24,8 +24,8 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_action :initialize_service_request,      except: [:approve_changes]
-  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
@@ -66,16 +66,10 @@ class ServiceRequestsController < ApplicationController
 
   def service_details
     if @service_request.has_per_patient_per_visit_services? && @service_request.arms.empty?
-        @service_request.protocol.arms.create(
-          name: 'Screening Phase',
-          visit_count: 1,
-          new_with_draft: true
-        )
+      @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, new_with_draft: true)
     end
-  end
 
-  def service_calendar
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    setup_calendar_pages
   end
 
   def service_subsidy
@@ -94,7 +88,7 @@ class ServiceRequestsController < ApplicationController
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
     unless @has_subsidy || @eligible_for_subsidy
-      @back = service_calendar_service_request_path(srid: @service_request.id)
+      @back = service_details_service_request_path(srid: @service_request.id)
     end
   end
 
@@ -102,9 +96,6 @@ class ServiceRequestsController < ApplicationController
     @notable_type = 'Protocol'
     @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
-    @review       = true
-    @portal       = false
-    @admin        = false
     @merged       = true
     @consolidated = false
     @display_all_services = true
@@ -165,6 +156,7 @@ class ServiceRequestsController < ApplicationController
     else
       add_service.generate_new_service_request
       @service_request.reload
+      flash[:success] = t('line_items.created')
     end
 
     respond_to :js
@@ -180,7 +172,8 @@ class ServiceRequestsController < ApplicationController
       @confirm_last_service = true
     else
       remove_service.remove_service
-      redirect_to root_path(srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
+      flash[:alert] = t('line_items.deleted')
+      redirect_to root_path(method: :get, srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
 
     respond_to :js
@@ -205,7 +198,7 @@ class ServiceRequestsController < ApplicationController
 
   private
 
-  def details_params
+  def milestones_params
     if params[:protocol]
       params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]
       params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]
@@ -239,10 +232,8 @@ class ServiceRequestsController < ApplicationController
       validate_catalog
     when -> (n) { ['protocol', 'save_and_exit'].include?(n) }
       validate_catalog && validate_protocol
-    when 'service_details'
-      validate_catalog && validate_protocol && validate_service_details
     else
-      validate_catalog && validate_protocol && validate_service_details && validate_service_calendar
+      validate_catalog && validate_protocol && validate_service_details
     end
   end
 
@@ -255,6 +246,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_protocol
+    @service_request.protocol.update_attributes(milestones_params) if milestones_params
+
     unless @service_request.protocol_valid?
       redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
       @errors = @service_request.protocol ? @service_request.protocol.errors : @service_request.errors
@@ -263,18 +256,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_service_details
-    @service_request.protocol.update_attributes(details_params) if details_params
-
     unless @service_request.service_details_valid?
       redirect_to service_details_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_details'
-      @errors = @service_request.protocol.errors
-    end
-    return true
-  end
-
-  def validate_service_calendar
-    unless @service_request.service_calendar_valid?
-      redirect_to service_calendar_service_request_path(srid: @service_request.id) and return false unless action_name == 'service_calendar'
       @errors = @service_request.errors
     end
     return true

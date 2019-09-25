@@ -22,7 +22,7 @@
 
 - unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
   %nav.nav.w-100.mb-1#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
-    .steps-container.d-flex.w-100
+    .steps-container.d-flex.w-100{ class: subsidy ? 'even' : '' }
       - Step::CONFIG.each do |step, _|
         - next if ['obtain_research_pricing', 'confirmation'].include?(step)
         - next if !subsidy && step == 'service_subsidy'

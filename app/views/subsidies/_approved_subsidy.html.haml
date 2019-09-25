@@ -21,9 +21,6 @@
 .alert.alert-success.rounded-0.mb-0
   %h4.alert-heading.mb-0
     = t(:subsidies)[:approved][:header]
-  - if admin
-    %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }
-      = t(:models)[:note][:plural]
 %table.table.table-bordered.table-centered.mb-0
   %thead.bg-light
     %tr
@@ -57,6 +54,5 @@
       %td
         = format_datetime(subsidy.approved_at)
       - if admin
-        %td.text-center.delete-subsidy
-          %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
-            %span.glyphicon.glyphicon-remove
+        %td.text-center
+          = delete_subsidy_button(subsidy)

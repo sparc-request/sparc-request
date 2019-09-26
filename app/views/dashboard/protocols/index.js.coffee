@@ -20,7 +20,5 @@
 
 $("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, protocol_filters: @protocol_filters, admin: @admin %>")
 $("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/table', filterrific: @filterrific %>")
-initializeSelectpickers()
-initializeTooltips()
-initializeToggles()
-$('#protocolsTable').bootstrapTable()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

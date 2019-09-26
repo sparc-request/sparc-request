@@ -50,11 +50,10 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     @merged_protocol = Protocol.where(id: params[:protocol_merge][:merged_protocol_id]).first
 
     if @master_protocol && @merged_protocol
-      
       if @master_protocol.has_clinical_services? && @merged_protocol.has_clinical_services?
         @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
-      elsif @merged_protocol.fulfillment_protocols.any?
+      elsif Setting.get_value("fulfillment_contingent_on_catalog_manager") && @merged_protocol.fulfillment_protocols.any?
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:cannot_merge]
       elsif @errors.empty? && !confirmed
         @no_errors = true
@@ -148,12 +147,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
       end
     end
     return true
-  end
-
-  def authorize_overlord
-    unless current_user.catalog_overlord?
-      authorization_error(t(:dashboard)[:protocol_merge][:errors][:access])
-    end
   end
 
   def has_research?(protocol, research_type)

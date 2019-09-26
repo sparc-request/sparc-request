@@ -134,7 +134,7 @@ module Dashboard
     end
 
     def self.build_visits_select(arm, page, url)
-      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url }
+      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url, dropup_auto: 'false' }
     end
 
     def self.visits_select_options(arm, cur_page=1)

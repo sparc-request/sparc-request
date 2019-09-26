@@ -35,7 +35,7 @@ $(document).ready ->
       if !endDate
         $('#protocol_end_date').val('')
 
-    $('#protocolStartDatePicker').on 'hide.datetimepicker', ->
+    $('#protocolStartDatePicker').on 'change.datetimepicker', ->
       startDate = $('#protocol_start_date').val()
       endDate   = $('#protocol_end_date').val()
 
@@ -64,7 +64,7 @@ $(document).ready ->
       if !recruitmentEndDate
         $('#protocol_recruitment_end_date').val('')
 
-    $('#protocolRecruitmentStartDatePicker').on 'hide.datetimepicker', ->
+    $('#protocolRecruitmentStartDatePicker').on 'change.datetimepicker', ->
       recruitmentStartDate = $('#protocol_recruitment_start_date').val()
       recruitmentEndDate   = $('#protocol_recruitment_end_date').val()
 

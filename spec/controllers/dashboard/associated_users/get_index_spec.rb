@@ -22,6 +22,9 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET index' do
+    
+    let!(:before_filters) { find_before_filters }
+
     let!(:identity) do
       build_stubbed(:identity)
     end
@@ -43,8 +46,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
           with(protocol, identity)
       end
 
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
-      it { is_expected.to respond_with :ok }
+      it 'should call before_filter #find_protocol' do
+        expect(before_filters.include?(:find_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #find_admin_for_protocol' do
+        expect(before_filters.include?(:find_admin_for_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #protocol_authorizer_view' do
+        expect(before_filters.include?(:protocol_authorizer_view)).to eq(true)
+      end
     end
 
     context "User has view rights to Protocol" do

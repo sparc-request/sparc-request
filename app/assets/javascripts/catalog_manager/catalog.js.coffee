@@ -156,7 +156,7 @@ initialize_org_search = () ->
     id = suggestion.id
     $.ajax
       type: 'GET'
-      url: "/catalog_manager/#{type}s/#{id}/edit"
+      url: "/catalog_manager/#{type.toLowerCase()}s/#{id}/edit"
   )
 
 

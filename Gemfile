@@ -26,7 +26,7 @@ gem 'curb', '~> 0.9.10'
 gem 'deep_cloneable', '~> 3.0.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.6'
+gem 'devise', '~> 4.7'
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
 gem 'execjs'
@@ -92,7 +92,7 @@ group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.6.0' # Check usage
+  gem 'addressable', '~> 2.7.0' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

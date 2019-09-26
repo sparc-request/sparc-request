@@ -50,8 +50,14 @@ class FeedbackController < ApplicationController
   private
 
   def feedback_params
-    params.require(:feedback).permit(
-      :name, :email, :date, :typeofrequest, :priority,
-      :browser,:version, :sparc_request_id)
+    if Setting.get_value('use_redcap_api')
+      params.require(:feedback).permit(
+        :name, :email, :date, :typeofrequest, :priority,
+        :browser,:version, :sparc_request_id)
+    else
+      params.require(:feedback).permit(
+        :name, :email, :message
+      )
+    end
   end
 end

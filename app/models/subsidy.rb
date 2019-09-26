@@ -32,6 +32,10 @@ class Subsidy < ApplicationRecord
 
   validate :contribution_caps
 
+  def friendly_notable_type
+    Subsidy.model_name.human
+  end
+
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
     # then it will reflect the full cost of the request.

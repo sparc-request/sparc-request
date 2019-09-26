@@ -32,14 +32,14 @@
         - if protocol.persisted?
           - change_type_method = :patch
           - change_type_remote = 'true'
-          - if @in_dashboard
+          - if in_dashboard?
             - change_type_url = update_protocol_type_dashboard_protocol_path(protocol, type: new_type)
           - else
             - change_type_url = update_protocol_type_protocol_path(protocol, type: new_type, srid: @service_request.try(:id))
         - else
           - change_type_method = :get
           - change_type_remote = 'false'
-          - if @in_dashboard
+          - if in_dashboard?
             - change_type_url = new_dashboard_protocol_path(type: new_type, srid: @service_request.try(:id))
           - else
             - change_type_url = new_protocol_path(type: new_type, srid: @service_request.try(:id))

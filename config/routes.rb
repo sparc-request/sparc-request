@@ -84,7 +84,6 @@ SparcRails::Application.routes.draw do
     get :catalog
     get :protocol
     get :service_details
-    get :service_calendar
     get :service_subsidy
     get :document_management
     get :review
@@ -124,7 +123,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :arms, except: [:show]
 
   resource :service_calendars, only: [] do
     member do
@@ -133,8 +132,6 @@ SparcRails::Application.routes.draw do
       get 'view_full_calendar'
     end
     collection do
-      get 'show_move_visits'
-      post 'move_visit_position'
       post 'toggle_calendar_row'
       post 'toggle_calendar_column'
     end
@@ -142,7 +139,7 @@ SparcRails::Application.routes.draw do
 
   resources :line_items, only: [:edit, :update]
   resources :line_items_visits, only: [:edit, :update, :destroy]
-  resources :visit_groups, only: [:edit, :update]
+  resources :visit_groups, only: [:new, :create, :edit, :update, :destroy]
   resources :visits, only: [:edit, :update, :destroy]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
@@ -221,15 +218,6 @@ SparcRails::Application.routes.draw do
   end
 
   namespace :dashboard do
-
-    resources :approvals, only: [:new, :create]
-
-    resources :arms, only: [:new, :create, :update, :destroy, :index] do
-      collection do
-        get :navigate
-      end
-    end
-
     resources :associated_users, except: [:show]
 
     resources :documents, except: [:show]
@@ -243,21 +231,18 @@ SparcRails::Application.routes.draw do
 
     resources :fulfillments
 
-    resources :line_items do
-      member do
-        get :details
-        put :update_from_cwf
+    resources :clinical_line_items, only: [] do
+      collection do
+        get :new
+        get :edit
+        post :create
+        delete :destroy
       end
     end
 
-    resources :messages, only: [:index, :new, :create]
-
-    resources :multiple_line_items, only: [] do
-      collection do
-        get :new_line_items
-        put :create_line_items
-        get :edit_line_items
-        put :destroy_line_items
+    resources :study_level_activities do
+      member do
+        put :update_from_cwf
       end
     end
 
@@ -270,10 +255,11 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :messages, only: [:index, :new, :create]
+
     resources :projects, controller: :protocols, except: [:destroy]
 
     resources :protocols, except: [:destroy] do
-      resource :milestones, only: [:update]
       resource :study_type_answers, only: [:edit]
 
       member do
@@ -319,12 +305,6 @@ SparcRails::Application.routes.draw do
         get :subsidy_history
         get :refresh_service_calendar
         get :refresh_tab
-      end
-    end
-
-    resources :visit_groups, only: [:new, :create, :update, :destroy] do
-      collection do
-        get :navigate
       end
     end
 

@@ -27,12 +27,7 @@ $ ->
   #########################
 
   if $('#serviceCalendar .nav-tabs').length
-    $.ajax
-      method: 'get'
-      dataType: 'script'
-      url: $('#serviceCalendar .nav-tabs .nav-link.active').attr('href')
-      success: ->
-        $('#calendarLoading').removeClass('show active')
+    loadServiceCalendar()
 
   $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
     $(this).find('.service-calendar-table thead tr th').css('top', 0)
@@ -44,7 +39,7 @@ $ ->
   # Visit Checkbox / Input #
   ##########################
 
-  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
+  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
     if $(this).hasClass('editable') && event.target.tagName != 'A' && $link = $(this).find('a:not(.disabled)')
       $.ajax
         method: $link.data('method') || 'GET'
@@ -92,20 +87,14 @@ $ ->
   # Update Move Visit Modal #
   ###########################
 
-  $(document).on 'change', '#moveVisitForm #visit_group_id', ->
-    $('#moveVisitForm #position').val('').selectpicker('refresh')
+  $(document).on 'change', '#visit_group_position', ->
+    $form   = $(this).parents('form')
+    action  = if $form.is('.new_visit_group') then 'new' else 'edit'
     $.ajax
       type: 'GET'
       dataType: 'script'
-      url: '/service_calendars/show_move_visits'
-      data: $('#moveVisitForm').serialize()
-
-  $(document).on 'change', '#moveVisitForm #position', ->
-    $.ajax
-      type: 'GET'
-      dataType: 'script'
-      url: '/service_calendars/show_move_visits'
-      data: $('#moveVisitForm').serialize()
+      url: "#{$form.attr('action')}/#{action}"
+      data: $form.serialize()
 
   ################################
   # Calendar Tab Services Toggle #
@@ -123,6 +112,14 @@ $ ->
         ssrid: getSSRId()
         show_draft: $('#show_draft').val()
         show_unchecked: $(this).prop('checked')
+
+(exports ? this).loadServiceCalendar = () ->
+  $.ajax
+    method: 'get'
+    dataType: 'script'
+    url: $('#serviceCalendar .nav-tabs .nav-link.active').attr('href')
+    success: ->
+      $('#calendarLoading').removeClass('show active')
 
 (exports ? this).setup_xeditable_fields = (scroll) ->
   $('.edit-your-cost').editable
@@ -153,6 +150,8 @@ $ ->
       $('.study_level_activities').bootstrapTable('refresh', silent: true)
 
 (exports ? this).adjustCalendarHeaders = () ->
+  zIndex = $('.service-calendar-container').length * 4
+
   $('.service-calendar-container').each ->
     $head   = $(this).children('.card-header')
     $row1   = $(this).find('.service-calendar-table > thead > tr:first-child')
@@ -164,9 +163,14 @@ $ ->
     row2Height  = $row2.outerHeight()
     row3Height  = $row3.outerHeight()
 
-    $row1.children('th').css('top', headHeight)
-    $row2.children('th').css('top', headHeight + row1Height)
-    $row3.children('th').css('top', headHeight +  row1Height + row2Height)
+    $head.css('z-index': zIndex)
+    zIndex--
+    $row1.children('th').css({ 'top': headHeight, 'z-index': zIndex })
+    zIndex--
+    $row2.children('th').css({ 'top': headHeight + row1Height, 'z-index': zIndex })
+    zIndex--
+    $row3.children('th').css({ 'top': headHeight +  row1Height + row2Height, 'z-index': zIndex })
+    zIndex--
 
 (exports ? this).toggleServicesToggle = (toggleOn) ->
   if toggleOn

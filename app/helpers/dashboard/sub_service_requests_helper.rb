@@ -88,7 +88,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_status_dropdown_statuses(ssr)
     if ssr.is_complete?
-      PermissibleValue.get_inverted_hash('status').sort.select{ |_, staus| Setting.get_value('finished_statuses').include?(status) }
+      PermissibleValue.get_inverted_hash('status').sort.select{ |_, status| Setting.get_value('finished_statuses').include?(status) }
     else
       PermissibleValue.get_inverted_hash('status').sort
     end

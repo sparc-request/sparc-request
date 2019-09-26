@@ -87,28 +87,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     end
   end
 
-  def refresh_service_calendar
-    @service_request  = @sub_service_request.service_request
-    arm_id            = params[:arm_id].to_s if params[:arm_id]
-    @arm              = Arm.find arm_id if arm_id
-    @portal           = params[:portal] if params[:portal]
-    @thead_class      = @portal == 'true' ? 'default_calendar' : 'red-provider'
-    page              = params[:page] if params[:page]
-
-    if params[:pages]
-      session[:service_calendar_pages] = params[:pages].permit!.to_h
-    end
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
-    end
-
-    @tab = 'calendar'
-  end
-
   def push_to_epic
     begin
       @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)

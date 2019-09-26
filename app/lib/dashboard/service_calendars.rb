@@ -31,8 +31,6 @@ module Dashboard
 
       path_method = if @merged
         method(:merged_calendar_service_request_service_calendars_path)
-      elsif @review
-        method(:refresh_service_calendar_service_request_path)
       else
         method(:table_service_request_service_calendars_path)
       end

@@ -19,6 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $(document).ready ->
+  $('#responsesList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
+
+  $(document).on 'click', '#responsesList .export button', ->
+    url = new URL($('#responsesTable').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url
+
+
   $(document).on 'click', '.likert-group:not(.disabled) .likert-option', ->
     $(this).find('input').prop('checked', true)
 
@@ -50,7 +58,11 @@ $(document).ready ->
     for option_id in option_ids
       $(".dependent-for-option-#{option_id}").removeClass('d-none')
 
-  $(document).on 'click', '#save-filters', ->
+#######################
+# Filterrific Filters #
+#######################
+
+  $(document).on 'click', '#saveResponseFilters', ->
     data = {} # Grab form values
 
     $.each $('form#filterrific_filter:visible').serializeArray(), (i, field) ->
@@ -98,3 +110,29 @@ $(document).ready ->
   $(document).on 'click', '#responses-panel .export button', ->
     $(this).parent().removeClass('open')
     window.location = '/surveyor/responses.xlsx'
+
+  if $('#responseStartDatePicker').length && $('#responseEndDatePicker').length
+    startDate = $('#responseStartDatePicker').data().date
+    endDate   = $('#responseEndDatePicker').data().date
+
+    if startDate
+      $('#responseEndDatePicker').datetimepicker('minDate', startDate)
+      if !endDate
+        $('#filterrific_end_date').val('')
+
+    $('#responseStartDatePicker').on 'hide.datetimepicker', ->
+      startDate = $('#filterrific_start_date').val()
+      endDate   = $('#filterrific_end_date').val()
+
+      if startDate
+        $('#responseEndDatePicker').datetimepicker('minDate', startDate)
+        $('#filterrific_end_date').focus()
+        if !endDate
+          $('#filterrific_end_date').val(startDate).blur().focus()
+      else
+        $('#responseEndDatePicker').datetimepicker('minDate', false)
+
+    $(document).on 'click', '#filterrific_end_date', ->
+      if (startDate = $('#filterrific_start_date').val()) && !$(this).val()
+        $(this).val(startDate).blur().focus()
+

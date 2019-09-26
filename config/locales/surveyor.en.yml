@@ -46,6 +46,8 @@ en:
         state_filters:
           active: "Active"
           inactive: "Inactive"
+        form_filter:
+          version: "Version"
         completion_date: "Completion Date"
         from: "From"
         to: "To"

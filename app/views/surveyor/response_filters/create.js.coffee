@@ -20,7 +20,7 @@
 <% if @errors %>
 $("#modal_errors").html("<%= j render 'layouts/modal_errors', errors: @errors %>")
 <% else %>
-$("#saved-searches").html("<%= j render 'surveyor/response_filters/saved_searches' %>")
+$("#savedSearches").replaceWith("<%= j render 'surveyor/response_filters/saved_searches' %>")
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

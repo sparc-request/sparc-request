@@ -21,14 +21,19 @@
 - protocol ||= nil
 - service_request ||= nil
 - has_forms = service_request ? service_request.has_associated_forms? : protocol.service_requests.any?(&:has_associated_forms?)
-.card.w-100#forms{ class: !in_dashboard? || has_forms ? '' : 'd-none' }
+- has_completed_forms = service_request ? service_request.completed_forms.any? : protocol.service_requests.map(&:completed_forms).flatten.present?
+
+.card.w-100#forms{ class: !in_dashboard? || has_completed_forms ? '' : 'd-none' }
   .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#formsCollapse' } }
     %h3.mb-0{ title: t(:proper)[:document_management][:tooltips][:forms], data: { toggle: 'tooltip' } }<
       = icon('fas', 'caret-down pr-1 mr-2')
-      = t(:proper)[:document_management][:forms_notice]
+      - if in_dashboard?
+        = t(:dashboard)[:forms][:header]
+      - else
+        = t(:proper)[:document_management][:forms_notice]
   .collapse.show#formsCollapse
     - if has_forms
-      %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, protocol_id: protocol.try(:id), srid: service_request.try(:id)) } }
+      %table#formsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, protocol_id: protocol.try(:id), srid: service_request.try(:id)) } }
         %thead.bg-light
           %tr
             %th{ data: { field: "srid", align: "left", sortable: "true" } }

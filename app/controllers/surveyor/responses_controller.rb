@@ -202,7 +202,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     responses = []
     Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
       p.sub_service_requests.each do |ssr|
-        ssr.forms_to_complete.select do |f|
+        ssr.forms_to_complete.values.flatten.select do |f|
           # Apply the State, Survey/Form, and Start/End Date filters manually
           (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
           (@filterrific.with_survey.try(&:empty?) || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))

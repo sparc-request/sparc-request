@@ -22,6 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET edit' do
+    let!(:before_filters) { find_before_filters }
+
     let!(:identity) do
       build_stubbed(:identity)
     end
@@ -60,8 +62,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
           with(protocol, identity)
       end
 
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
-      it { is_expected.to respond_with :ok }
+      it 'should call before_filter #protocol_authorizer_edit' do
+        expect(before_filters.include?(:protocol_authorizer_edit)).to eq(true)
+      end
+
+      it 'should call before_filter #find_protocol_role' do
+        expect(before_filters.include?(:find_protocol_role)).to eq(true)
+      end
     end
 
     context "User authorized to edit Protocol" do
@@ -83,11 +90,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       it 'should set @identity to the Identity associated with @project_role' do
         expect(assigns(:identity)).to eq(identity)
       end
-
-      it 'should set @header_text to "Edit Authorized User"' do
-        expect(assigns(:header_text)).to eq('Edit Authorized User')
-      end
-
+      
       it { is_expected.to render_template "dashboard/associated_users/edit" }
       it { is_expected.to respond_with :ok }
     end

@@ -23,16 +23,16 @@
 
 - line_items.each do |ssr, livs|
   - line_items_visits << livs
-  - locked = !ssr.can_be_edited? && !admin
+  - locked = !ssr.can_be_edited? && !in_admin?
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'alert-danger' : 'alert-primary' }
-    %th{ colspan: portal ? 13 : 50 }
+    %th{ colspan: in_dashboard? ? 38 : 50 }
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
-    %tr{ class: ["line-items-visit-#{liv.id}", locked ? 'text-danger' : ''] }
+    %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", locked ? 'text-danger' : ''] }
       %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
       %td.notes.text-center{ colspan: 2, class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
@@ -41,36 +41,25 @@
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center{ colspan: 3, title: display_service_rate(liv.line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(liv.line_item)
-      -# TODO: Fix with Admin Calendar
-      - your_cost = currency_converter(liv.line_item.applicable_rate)
-      - modified  = liv.line_item.admin_rates.present?
-      %td.your-cost.text-center{ colspan: 3, title: modified ? t('calendars.tooltips.modified_rate', cost: your_cost) : your_cost, data: { toggle: 'tooltip', html: 'true' } }
-        - if portal
-          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: your_cost, id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
-        - else
-          - if modified
-            %span.text-warning
-              = your_cost
-          - else
-            = your_cost
+      = render 'service_calendars/displayed_cost', service_request: service_request, sub_service_request: sub_service_request, line_item: liv.line_item, merged: merged, page: page, tab: tab
 
-      - unless portal
+      - unless in_dashboard?
         %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
           = display_unit_type(liv)
 
-      = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, locked: locked
+      = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, locked: locked
 
       = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, locked: locked, page: page
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
         %td.visit.template-visit.text-center{ class: ["visit-#{v.id}", locked ? '' : 'editable'], colspan: 3 }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, visit: v, tab: tab, page: page, admin: admin, locked: locked
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, visit: v, tab: tab, page: page, locked: locked
       - (Visit.per_page - visits.size).times do
         %td{ colspan: 3 }
 
-      - unless portal
+      - unless in_dashboard?
         = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
         = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
-- unless portal
+- unless in_dashboard?
   = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, visit_groups: visit_groups, tab: tab, line_items_visits: line_items_visits.flatten, page: page

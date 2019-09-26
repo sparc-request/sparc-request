@@ -50,7 +50,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       end
 
       it { is_expected.not_to render_template "dashboard/associated_users/destroy" }
-      it { is_expected.to respond_with :ok }
+      it { is_expected.to respond_with 302 }
     end
 
     context "when authorized" do
@@ -87,7 +87,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(assigns(:protocol_type)).to eq(@protocol.type)
           expect(assigns(:permission_to_edit)).to eq(false)
           expect(assigns(:admin)).to eq(false)
-          expect(assigns(:return_to_dashboard)).to eq(true)
+          expect(assigns(:redirect)).to eq(true)
         end
 
         it { is_expected.to render_template "dashboard/associated_users/destroy" }

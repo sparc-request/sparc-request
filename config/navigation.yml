@@ -23,23 +23,18 @@ catalog:
   forward: "protocol"
 
 protocol:
-  css_class: "info-alt"
+  css_class: "success"
   back: "catalog"
   forward: "service_details"
 
 service_details:
-  css_class: "success"
-  back: "protocol"
-  forward: "service_calendar"
-
-service_calendar:
   css_class: "info"
-  back: "service_details"
+  back: "protocol"
   forward: "service_subsidy"
 
 service_subsidy:
-  css_class: "danger-alt"
-  back: "service_calendar"
+  css_class: "info-alt"
+  back: "service_details"
   forward: "document_management"
 
 document_management:

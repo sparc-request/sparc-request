@@ -19,9 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @arm %>
-$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated %>")
 <% else %>
-$('#modalContainer').html("<%= j render 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, page: @page, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated %>")
+$('#modalContainer').html("<%= j render 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, page: @page, merged: @merged, consolidated: @consolidated %>")
 <% end %>
 if $('#modalContainer:visible').length
   $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

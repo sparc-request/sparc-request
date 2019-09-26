@@ -22,7 +22,7 @@ require "rails_helper"
 
 RSpec.describe Dashboard::DocumentsController do
   describe "GET #edit" do
-
+    let!(:before_filters) { find_before_filters }
     let(:logged_in_user) { create(:identity) }
     let(:other_user) { create(:identity) }
 
@@ -58,13 +58,30 @@ RSpec.describe Dashboard::DocumentsController do
         expect(assigns(:authorization)).to be
       end
 
-      it 'should assign @action' do
-        expect(assigns(:action)).to eq('edit')
+      it 'should not call before_filter #protocol_authorizer_view' do
+        expect(before_filters.include?(:protocol_authorizer_view)).to eq(false)
       end
 
-      it 'should assign @header_text' do
-        expect(assigns(:header_text)).to eq('Edit Document')
+      it 'should call before_filter #find_document' do
+        expect(before_filters.include?(:find_document)).to eq(true)
       end
+
+      it 'should call before_filter #find_protocol' do
+        expect(before_filters.include?(:find_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #find_admin_for_protocol' do
+        expect(before_filters.include?(:find_admin_for_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #protocol_authorizer_edit' do
+        expect(before_filters.include?(:protocol_authorizer_edit)).to eq(true)
+      end
+
+      it 'should call before_filter #authorize_admin_access_document' do
+        expect(before_filters.include?(:authorize_admin_access_document)).to eq(true)
+      end
+
 
       it { is_expected.to respond_with :ok }
       it { is_expected.to render_template "dashboard/documents/edit" }
@@ -78,8 +95,7 @@ RSpec.describe Dashboard::DocumentsController do
         get :edit, params: { id: document.id, format: :js }, xhr: true
       end
 
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
+      it { is_expected.to respond_with 302 }
     end
 
     context 'user has admin access to document' do
@@ -108,8 +124,7 @@ RSpec.describe Dashboard::DocumentsController do
         get :edit, params: { id: document.id, format: :js }, xhr: true
       end
 
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
+      it { is_expected.to respond_with 302 }
     end
   end
 end

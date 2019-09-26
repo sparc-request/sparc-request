@@ -32,15 +32,10 @@ module AssociatedUsersHelper
   def authorized_user_actions(pr, opts={})
     content_tag :div, class: 'd-flex justify-content-center' do
       raw([
-        notify_authorized_user_button(pr, opts),
         edit_authorized_user_button(pr, opts),
         delete_authorized_user_button(pr, opts)
       ].join(''))
     end
-  end
-
-  def notify_authorized_user_button(pr, opts={})
-    link_to icon('far', 'envelope'), new_dashboard_notification_path(identity_id: pr.identity_id), remote: true, class: ['btn btn-primary mr-1', pr.identity == current_user ? 'disabled' : ''], title: t('authorized_users.tooltips.notify'), data: { toggle: 'tooltip' }
   end
 
   def edit_authorized_user_button(pr, opts={})

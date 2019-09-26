@@ -17,6 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Arm < ApplicationRecord
   include RemotelyNotifiable
 
@@ -41,7 +42,7 @@ class Arm < ApplicationRecord
   after_update :update_liv_subject_counts
 
   validates :name, presence: true
-  validates_format_of :name, with: /\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/
+  validates_format_of :name, with: /\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/, if: Proc.new{ |arm| arm.name.present? }
   validates_uniqueness_of :name, case_sensitive: false, scope: :protocol_id
 
   validates :visit_count, numericality: { greater_than: 0 }

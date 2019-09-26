@@ -17,8 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
-  before_action :authorize_overlord
+  before_action :authorize_epic_queue_access
 
   def index
     @epic_queue_records = EpicQueueRecord.with_valid_protocols.
@@ -36,7 +37,7 @@ class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
   private
 
   # Check to see if user has rights to view epic queues
-  def authorize_overlord
+  def authorize_epic_queue_access
     unless Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
       authorization_error('You do not have access to view the Epic Queues')
     end

@@ -190,10 +190,15 @@ class ApplicationController < ActionController::Base
   end
 
   def in_dashboard?
-    @portal ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
-    @admin  ||= @portal && params[:srrid].present?
+    @in_dashboard ||= helpers.in_dashboard?
 
-    @portal
+    in_admin?
+
+    @in_dashboard
+  end
+
+  def in_admin?
+    @in_admin ||= helpers.in_admin?
   end
 
   def authorize_dashboard_access
@@ -216,7 +221,7 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin
     if current_user
-      @sub_service_request = SubServiceRequest.find(params[:ssrid])
+      @sub_service_request ||= SubServiceRequest.find(params[:ssrid])
       @service_request     = @sub_service_request.service_request
       unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
         authorization_error('You are not allowed to access this Sub Service Request.')
@@ -226,8 +231,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+  def authorize_overlord
+    if current_user
+      unless current_user.catalog_overlord?
+        authorization_error
+      end
+    else
+      redirect_to_login
+    end
   end
 
   def authorize_funding_admin
@@ -240,5 +251,26 @@ class ApplicationController < ActionController::Base
 
   def sanitize_phone(phone)
     return phone.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
+  end
+
+  # More Specific Helpers #
+
+  def setup_calendar_pages
+    @pages  = {}
+    @page   = params[:page].try(:to_i) || 1
+    arm_id  = params[:arm_id].to_i if params[:arm_id]
+    @arm    = Arm.find(arm_id) if arm_id
+
+    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
+
+    @service_request.arms.each do |arm|
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
+      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
+    end
+  end
+
+  def find_locked_org_ids
+    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 end

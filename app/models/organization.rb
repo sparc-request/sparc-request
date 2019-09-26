@@ -226,7 +226,7 @@ class Organization < ApplicationRecord
   # deep children.
   def all_child_services(include_self=true)
     org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
-    Service.where(organization_id: org_ids).sort_by{|x| x.name}
+    Service.where(organization_id: org_ids)
   end
 
   def has_one_time_fee_services?

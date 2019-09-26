@@ -39,7 +39,8 @@ $("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protoco
 $("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
 $("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
 $('.service-request-card:not(:first-of-type').remove()
-$(".service-request-card:first-of-type").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+$('.service-request-card:not(:eq(0))').remove()
+$(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
 $("#authorizedUsersTable").bootstrapTable()
 $("#documentsTable").bootstrapTable()

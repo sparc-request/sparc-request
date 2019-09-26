@@ -20,14 +20,10 @@
 
 $(document).ready ->
 
-  $('.epic-queue-table').bootstrapTable()
-  $('.epic-queue-records-table').bootstrapTable()
+  $('#epicQueues .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-  $(document).on 'click-cell.bs.table', '.epic-queue-table, .epic-queue-records-table', (field, value, row, $element) ->
-    if value == 'protocol'
-      protocolId = $element.protocol_id
-      window.open("/dashboard/protocols/#{protocolId}")
-
-  $(document).on 'click', '#epic-queue-panel .export button', ->
-    $(this).parent().removeClass('open')
+  $(document).on 'click', '#epicQueues .export button', ->
     window.location = '/dashboard/epic_queue_records.xlsx'
+
+  $(document).on 'show.bs.tab', '#epicQueues [data-toggle=tab]', (event) ->
+    $("#{this.hash}").find('table[data-toggle=table]').bootstrapTable('refresh')

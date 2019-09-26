@@ -35,7 +35,7 @@
       .dropdown-divider
       = link_to dashboard_notifications_path, class: 'dropdown-item text-secondary' do
         = icon('far', 'envelope mr-2')
-        = t('layout.navigation.profile.notifications')
+        = t('layout.navigation.profile.messages')
         - if current_user.unread_notification_count > 0
           %span.badge.badge-pill.badge-danger.ml-1#messagesBadge
             = current_user.unread_notification_count

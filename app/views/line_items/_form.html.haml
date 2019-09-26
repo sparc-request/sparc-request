@@ -18,22 +18,35 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+- if params[:field] == 'quantity'
+  - min = line_item.service.current_effective_pricing_map.quantity_minimum
+  - max = line_item.service.current_effective_pricing_map.units_per_qty_max
+- elsif params[:field] == 'displayed_cost'
+  - min = 0
+  - max = nil
+- else
+  - min = nil
+  - max = nil
+
 .modal-dialog.modal-sm{ role: 'document' }
   .modal-content
     = form_for line_item, remote: true do |f|
       = hidden_field_tag :srid, service_request.try(:id)
+      = hidden_field_tag :ssrid, sub_service_request.try(:id)
       = hidden_field_tag :field, params[:field]
       .modal-header
         %h3.modal-title
-          = t("calendars.otf.editable_fields.#{params[:field]}")
+          = t("calendars.editable_fields.#{params[:field]}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-group
-          - min = params[:field] == 'quantity' ? line_item.service.current_effective_pricing_map.quantity_minimum : nil
-          - max = params[:field] == 'quantity' ? line_item.service.current_effective_pricing_map.units_per_qty_max : nil
           = f.label params[:field], class: 'required'
-          = f.number_field params[:field], class: 'form-control', min: min, max: max
+          .input-group
+            - if params[:field] == 'displayed_cost'
+              .input-group-prepend
+                = f.label params[:field], t('constants.currency'), class: 'input-group-text'
+            = f.number_field params[:field], class: 'form-control', min: min, max: max, step: params[:field] == 'displayed_cost' ? '0.01' : '1'
           - if params[:field] == 'quantity'
             %small.form-text.text-muted
               = t('constants.min', min: min)

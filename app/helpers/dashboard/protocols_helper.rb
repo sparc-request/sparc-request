@@ -30,15 +30,21 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def protocol_id_button(protocol)
-    link_to protocol.id, dashboard_protocol_path(protocol), class: 'btn btn-block btn-outline-primary protocol-link'
+  def protocol_id_link(protocol)
+    link_to protocol.id, dashboard_protocol_path(protocol)
+  end
+
+  def protocol_short_title_link(protocol)
+    link_to protocol.short_title, dashboard_protocol_path(protocol)
   end
 
   def pis_display(protocol)
     if protocol.primary_pi
-      content_tag(:span, title: t('activerecord.attributes.protocol.primary_pi'), data: { toggle: 'tooltip', boundary: 'window' }) do
-        icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
-      end + '<br>'.html_safe
+      content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
+        content_tag(:span) do
+          icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
+        end + '<br>'.html_safe
+      end
     else
       ""
     end + raw(

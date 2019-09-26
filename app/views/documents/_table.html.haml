@@ -19,11 +19,11 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#documentsCard
-  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#documents' } }
+  .card-header.bg-primary.text-white{ class: action_name == 'document_management' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#documents' } }
     %h3.mb-0
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('documents.header')
-  .collapse#documents{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
+  .collapse#documents{ class: action_name == 'document_management' && service_request.previously_submitted? ? '' : 'show' }
     #documentsTableToolbar
       - if in_dashboard?
         = new_document_button(protocol_id: protocol.id, permission: permission_to_edit)

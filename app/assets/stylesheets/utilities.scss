@@ -60,6 +60,7 @@ $text-map: (
       width: calc(#{$i} * 1%);
     }
   }
+}
 
 @keyframes rotate {
   from { transform: rotate(0deg); }

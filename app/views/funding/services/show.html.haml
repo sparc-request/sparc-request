@@ -22,13 +22,9 @@
 %header.d-flex.mb-2.default
   %h2.p-2.mr-auto
     = t('funding.download.header')
-  %h4.p-2
-    = link_to "/funding?back=true" do
-      = icon('fas', 'arrow-left mr-2')
-      = t('funding.download.back')
 
 .card
-  .card-header.bg-default.text-dark.h4
-    = render 'funding/services/title', service: @service
-  .card-body.mt-3
-    = render 'funding/services/documents', service: @service, table: @table
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t('funding.download.funding_opportunity', org_name: @service.organization.name, org_abbreviation: @service.abbreviation)
+  = render 'funding/services/documents', service: @service, table: @table

@@ -19,18 +19,18 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 .card#fundingsList
-  .card-header.bg-default.text-dark
-    %h2.p-1
+  .card-header.bg-primary.text-white
+    %h3.mb-0
       = t('funding.index.header')
-  .card-body
-    %table#fundings_table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
-      %thead.bg-primary.text-white
-        %tr
-          %th{ data: { class: 'title', field: "title", align: "left", sortable: 'true' } }
-            = t(:funding)[:index][:table][:headers][:title]
-          %th{ class: 'program', data: { field: "program", align: "left", sortable: 'true' } }
-            = t(:funding)[:index][:table][:headers][:program]
-          %th{ class: 'created', data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
-            = t(:funding)[:index][:table][:headers][:created]
-          %th{ class: 'action', data: { field: "action", align: "center" } }
-            = t(:funding)[:index][:table][:headers][:action]
+
+  %table#fundings_table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
+    %thead.bg-light
+      %tr
+        %th{ data: { class: 'title', field: "title", align: "left", sortable: 'true' } }
+          = t(:funding)[:index][:table][:headers][:title]
+        %th{ class: 'program', data: { field: "program", align: "left", sortable: 'true' } }
+          = t(:funding)[:index][:table][:headers][:program]
+        %th{ class: 'created', data: { field: "created", align: "left", sortable: 'true' , sorter: "dateSorter"  } }
+          = t(:funding)[:index][:table][:headers][:created]
+        %th{ class: 'action', data: { field: "action", align: "center" } }
+          = t(:funding)[:index][:table][:headers][:action]

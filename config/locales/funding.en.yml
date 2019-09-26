@@ -68,6 +68,7 @@ en:
           admin_edit: "Access to Dashboard Admin Edit page"
           protocol: "Access to Dashboard Protocol page"
         uploaded: "Uploaded"
+      funding_opportunity: "Funding Opportunity: %{org_name} / %{org_abbreviation}"
       tooltips:
         loi: "View/Download Pre-Application/Letter of Intent Documents"
         application: "View/Download Application Documents"

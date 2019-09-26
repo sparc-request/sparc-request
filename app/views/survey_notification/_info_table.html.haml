@@ -28,7 +28,7 @@
           %strong= t(:notifier)[:study_info]
   %tbody
     %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:forms)[:table_fields][:srid]
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= Form.human_attribute_name(:respondable_id)
       %td{:style => 'border: 1px solid black;'}= @ssr.display_id
 
     %tr{:style => 'border: 1px solid black;'}
@@ -52,5 +52,5 @@
 
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:table][:headers][:request_owner]
-      %td{:style => 'border: 1px solid black;'}= @ssr.owner.full_name
+      %td{:style => 'border: 1px solid black;'}= @ssr.owner.try(&:full_name)
 

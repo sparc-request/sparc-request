@@ -22,7 +22,8 @@
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash', errors: { 'alert' => @errors } %>")
 <% else %>
 $("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
-$("#status-history-table").bootstrapTable 'refresh'
-
+$("#statusHistoryTable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

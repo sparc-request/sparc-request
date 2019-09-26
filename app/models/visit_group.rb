@@ -69,7 +69,7 @@ class VisitGroup < ApplicationRecord
   def position=(position)
     # Because we have to insert before using position - 1,
     # increment position
-    if position.blank?
+    if position.blank? || self.arm.blank?
       write_attribute(:position, nil)
     elsif position == self.arm.visit_count
       write_attribute(:position, position)

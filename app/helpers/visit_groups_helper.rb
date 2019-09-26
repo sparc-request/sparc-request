@@ -55,7 +55,7 @@ module VisitGroupsHelper
           if vg_at_position != visit_group && vg_at_position.day == min
             vg_at_position.day
           elsif min.nil? || vg_at_position.day > min
-            vg_at_position.day - 1
+            vg_at_position.day.try(:-, 1)
           else
             vg_at_position.lower_items.where.not(id: visit_group.id, day: nil).minimum(:day).try(:-, 1)
           end

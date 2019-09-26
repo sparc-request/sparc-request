@@ -578,6 +578,7 @@ en:
   #########
   forms:
     none: "You don't have any forms to complete"
+    srid: "SRID"
 
   ##########
   # LAYOUT #

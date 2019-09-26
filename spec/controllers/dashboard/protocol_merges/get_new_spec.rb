@@ -20,51 +20,46 @@
 
 require 'rails_helper'
 
-RSpec.describe Dashboard::AssociatedUsersController do
-  describe 'GET search_identities' do
+RSpec.describe Dashboard::ProtocolMergesController do
+
+  stub_controller
+
+  context 'user is catalog overlord' do
+
+    let!(:logged_in_user) { create(:identity, catalog_overlord: true) }
     before(:each) do
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
+      log_in_dashboard_identity(obj: logged_in_user)
+      allow(controller).to receive(:current_user).and_return(logged_in_user)
+      get :new, params: {
+          format: :js
+        }, xhr: true
+
     end
 
-    context "search term yields at least one matching record" do
-      before(:each) do
-        matching_record1 = instance_double(Identity,
-          display_name: "My Good Name",
-          suggestion_value: 1,
-          id: 1,
-          email: "user1@email.com")
-        matching_record2 = instance_double(Identity,
-          display_name: "Person",
-          suggestion_value: 2,
-          id: 2,
-          email: "user2@email.com")
-        allow(Identity).to receive(:search).with("ABC").and_return([matching_record1, matching_record2])
-
-        get :search_identities, params: { term: "\n ABC \n" }, format: :json
-      end
-
-      it "should render those results as json" do
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response).to eq([
-          { "label" => "My Good Name", "value" => 1, "email" => "user1@email.com" },
-          { "label" => "Person", "value" => 2, "email" => "user2@email.com" }])
-      end
-
-      it { is_expected.to respond_with :ok }
+    it 'should NOT see an authorization_error' do
+      expect(controller).to_not receive(:authorization_error)
+      controller.send(:authorize_overlord)
     end
 
-    context "search term yields no matching records" do
-      before(:each) do
-        allow(Identity).to receive(:search).with("ABC").and_return([])
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template :new}
+  end
 
-        get :search_identities, params: { term: "\n ABC \n" }, format: :json
-      end
+  context 'user is NOT catalog overlord' do
 
-      it "should render 'No Results' in json response" do
-        expect(JSON.parse(response.body)).to eq([{ "label" => "No Results" }])
-      end
+    let!(:logged_in_user) { create(:identity, catalog_overlord: false) }
+    before(:each) do
+      log_in_dashboard_identity(obj: logged_in_user)
+      allow(controller).to receive(:current_user).and_return(logged_in_user)
+      get :new, params: {
+          format: :js
+        }, xhr: true
 
-      it { is_expected.to respond_with :ok }
+    end
+
+    it 'should see an authorization_error' do
+      expect(controller).to receive(:authorization_error)
+      controller.send(:authorize_overlord)
     end
   end
 end

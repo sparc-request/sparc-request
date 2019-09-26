@@ -50,7 +50,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     @merged_protocol = Protocol.where(id: params[:protocol_merge][:merged_protocol_id]).first
 
     if @master_protocol && @merged_protocol
-
       if @master_protocol.has_clinical_services? && @merged_protocol.has_clinical_services?
         @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]

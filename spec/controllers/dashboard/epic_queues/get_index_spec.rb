@@ -60,7 +60,7 @@ RSpec.describe Dashboard::EpicQueuesController do
       end
 
       it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-      it { is_expected.to respond_with 200 }
+      it { is_expected.to respond_with 302 }
     end
   end
 end

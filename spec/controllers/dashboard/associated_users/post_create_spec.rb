@@ -22,6 +22,7 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'POST create' do
+    let!(:before_filters) { find_before_filters }
     let!(:identity)   { build_stubbed(:identity) }
     let!(:other_user) { build_stubbed(:identity) }
     let!(:protocol)   { findable_stub(Protocol) { build_stubbed(:protocol) } }
@@ -39,8 +40,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
           with(protocol, identity)
       end
 
-      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
-      it { is_expected.to respond_with :ok }
+      it 'should call before_filter #find_protocol' do
+        expect(before_filters.include?(:find_protocol)).to eq(true)
+      end
+
+      it 'should call before_filter #find_admin_for_protocol' do
+        expect(before_filters.include?(:find_admin_for_protocol)).to eq(true)
+      end
+
+      it { is_expected.to respond_with 302 }
     end
 
     context "User authorized to edit Protocol and params[:project_role] describes valid ProjectRole" do

@@ -23,7 +23,7 @@
   .form-row
     .form-group.col-9
       = label_tag "question-#{question.id}-content", t(:surveyor)[:surveys][:form][:content][:question][:content], class: 'required font-weight-bold'
-      = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control col-auto', maxlength: 255
+      = text_field_tag "question-#{question.id}-content", question.content, class: 'form-control col-auto'
     .form-group.col.pl-0
       = label_tag "question-#{question.id}-question_type", t(:surveyor)[:surveys][:form][:content][:question][:type], class: 'font-weight-bold'
       = select_tag "question-#{question.id}-question_type", options_for_select(Survey::QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type', data: { question_id: question.id }, disabled: question.question_responses.any?

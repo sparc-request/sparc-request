@@ -25,7 +25,7 @@
     = link_to icon('fas', 'trash-alt'), surveyor_section_path(section), method: :delete, remote: true, class: ' btn btn-danger delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', confirm_swal: true }
   .form-group
     = label_tag "section-#{section.id}-title", t(:surveyor)[:surveys][:form][:content][:section][:title], class: 'required'
-    = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control', maxlength: 255
+    = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control'
   .form-group
     = label_tag "section-#{section.id}-description", t(:surveyor)[:surveys][:form][:content][:section][:description]
     = text_area_tag "section-#{section.id}-description", section.description, class: 'form-control'

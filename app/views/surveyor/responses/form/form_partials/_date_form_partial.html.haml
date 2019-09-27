@@ -20,7 +20,7 @@
 .form-group
   .input-group.datetimepicker.date.option
     - if ['new', 'edit', 'preview'].include?(action_name)
-      = qr.text_field :content, class: 'form-control', maxlength: 255
+      = qr.text_field :content, class: 'form-control'
     - else
       = text_field_tag :content, question_response.content, class: 'form-control', disabled: true
     %span.input-group-addon

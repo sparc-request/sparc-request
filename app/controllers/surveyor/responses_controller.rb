@@ -101,6 +101,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     if @response.save
       SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
       flash[:success] = t(:surveyor)[:responses][:completed]
+    else
+      @errors = @response.errors
     end
 
     respond_to do |format|
@@ -111,6 +113,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def update
     if @response.update_attributes(response_params)
       flash[:success] = t(:surveyor)[:responses][:completed]
+    else
+      @errors = @response.errors
     end
 
     respond_to do |format|

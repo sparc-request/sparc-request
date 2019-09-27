@@ -23,8 +23,9 @@
   %h2.p-2.mr-auto
     = t('funding.download.header')
 
-.card
-  .card-header.bg-primary.text-white
-    %h3.mb-0
-      = t('funding.download.funding_opportunity', org_name: @service.organization.name, org_abbreviation: @service.abbreviation)
-  = render 'funding/services/documents', service: @service, table: @table
+.p1#documentsList
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('funding.download.funding_opportunity', org_name: @service.organization.name, org_abbreviation: @service.abbreviation)
+    = render 'funding/services/documents', service: @service, table: @table

@@ -35,7 +35,7 @@ GIT
 
 GIT
   remote: https://github.com/randym/axlsx
-  revision: c593a08b2a929dac7aa8dc418b55e26b4c49dc34
+  revision: 2891eb2246d963a717b213add4dae687e694acdf
   branch: master
   specs:
     axlsx (3.0.0.pre)

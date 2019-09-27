@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+  # Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -31,15 +31,16 @@ $(document).ready ->
     $(this).find('input').prop('checked', true)
 
   $(document).on 'change', '.option input', ->
-    question_id = $(this).parents('.option').data('question-id')
-    option_id = $(this).parents('.option').data('option-id')
+    if ($(this).prop('type') == 'checkbox' && $(this).prop('id').endsWith('for_dependent')) || $(this).prop('type') == 'radio'
+      question_id = $(this).parents('.option').data('question-id')
+      option_id = $(this).parents('.option').data('option-id')
 
-    $(".dependent-for-question-#{question_id}").addClass('d-none')
+      $(".dependent-for-question-#{question_id}").addClass('d-none')
 
-    if $(this).is(":checked")
-      $(".dependent-for-option-#{option_id}").removeClass('d-none')
-    else
-      $(".dependent-for-option-#{option_id}").addClass('d-none')
+      if $(this).is(":checked")
+        $(".dependent-for-option-#{option_id}").removeClass('d-none')
+      else
+        $(".dependent-for-option-#{option_id}").addClass('d-none')
 
   $(document).on 'change', '.question .selectpicker:not([multiple=multiple])', ->
     question_id = $(this).data('question-id')

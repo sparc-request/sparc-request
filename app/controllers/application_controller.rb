@@ -182,6 +182,7 @@ class ApplicationController < ActionController::Base
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
     elsif current_user.nil?
+      store_location_for(:identity, request.get? ? request.url : request.referrer)
       authenticate_identity!
       return true
     end

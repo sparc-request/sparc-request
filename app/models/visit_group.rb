@@ -103,7 +103,11 @@ class VisitGroup < ApplicationRecord
   end
 
   def moved_and_days_need_update?
-    self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day)
+    # Two Cases:
+    # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+    # The Visit Group has been moved and now we need to move consecutive visits
+    (self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) ||
+    (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day))
   end
 
   def in_order?
@@ -136,9 +140,14 @@ class VisitGroup < ApplicationRecord
   end
 
   def move_consecutive_visit
-    if vg = self.arm.visit_groups.find_by(position: self.position)
+    # The Visit Group has been moved and now we need to move consecutive visits
+    if position_changed?
+      vg = self.arm.visit_groups.find_by(position: self.position)
       # This actually increments position when position= is called
       vg.update_attributes(day: vg.day + 1, position: vg.position)
+    else # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+      vg = self.lower_items.where.not(id: self.id, day: nil).first
+      vg.update_attributes(day: vg.day + 1, position: vg.position - 1)
     end
   end
 

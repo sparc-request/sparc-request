@@ -74,15 +74,15 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater       = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
-    protocol_role = updater.protocol_role
+    updater         = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
+    @protocol_role  = updater.protocol_role
 
     if updater.successful?
       flash[:success] = t('authorized_users.updated')
 
-      redirect_to dashboard_root_path(method: :get) if protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
+      redirect_to dashboard_root_path(method: :get) if @protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(@protocol_role.project_rights)
     else
-      @errors = updater.protocol_role.errors
+      @errors = @protocol_role.errors
     end
 
     respond_to :js

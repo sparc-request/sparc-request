@@ -54,6 +54,14 @@ $text-map: (
   @extend .alert-danger;
 }
 
+@for $i from 1 through 99 {
+  @if not ($i == 25 or $i == 50 or $i == 75) {
+    .w-#{$i} {
+      width: calc(#{$i} * 1%);
+    }
+  }
+}
+
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

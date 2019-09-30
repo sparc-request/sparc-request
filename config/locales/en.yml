@@ -315,6 +315,10 @@ en:
       messages:
         spoofed_media_type: "invalid file type"
     models:
+      service:
+        one: "Service"
+        other: "Services"
+      system_survey: "Survey"
       sub_service_request: "Request"
 
   ########
@@ -576,6 +580,7 @@ en:
   #########
   forms:
     none: "You don't have any forms to complete"
+    srid: "SRID"
 
   ##########
   # LAYOUT #

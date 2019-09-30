@@ -34,5 +34,5 @@
               .col-lg-12.no-padding
                 %p.section-description
                   = raw(section.description)
-          - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
-            = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index
+          = f.fields_for :question_responses do |qr|
+            = render 'surveyor/responses/form/response_question', section: section, question: qr.object.question, question_response: qr.object, index: qr.options[:child_index], qr: qr

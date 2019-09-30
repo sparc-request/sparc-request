@@ -18,12 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-primary#responses-panel
-  .bootstrap-table-dropdown-overflow
-    #responses-custom-toolbar
-      %h2.panel-title
+.pl-3.w-80#responsesList
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
         = t('surveyor.responses.table.header', type: type)
-    %table#responses-table{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responses-custom-toolbar' } }
+    #responsesCustomToolbar
+    %table#responsesTable{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responsesCustomToolbar' } }
       %thead
         %tr
           %th{ data: { class: 'srid col-sm-2', align: 'left', sortable: 'true', field: 'srid' } }

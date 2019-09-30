@@ -59,7 +59,7 @@ module Dashboard::ProtocolsHelper
     if protocol.sub_service_requests.any? && access
       link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary') do
         content_tag :span, class: 'd-flex align-items-center' do
-          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-light ml-2'))
+          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.count, class: 'badge badge-pill badge-light ml-2'))
         end
       end
     end

@@ -95,7 +95,7 @@ module Surveyor::ResponsesHelper
   def resend_survey_button(response, permissions=true)
     if @type == 'Survey'
       link_to(
-        content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        icon('fas', 'reply'),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend'),
@@ -109,7 +109,7 @@ module Surveyor::ResponsesHelper
       [
         "dependent-for-option-#{question.depender_id}",
         "dependent-for-question-#{question.depender.question_id}",
-        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "d-none")
       ].join(' ')
     end
   end

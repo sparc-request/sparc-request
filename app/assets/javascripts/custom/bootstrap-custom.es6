@@ -41,8 +41,12 @@
     })
 
     $(document).on('click', 'table.table-interactive tbody tr', event => {
-      if (event.target.tagName != 'A') {
-        window.location = $(event.target).find('a').first().attr('href');
+      el = event.target
+
+      if (el.tagName == 'tr') {
+        window.location = $(el).find('a').first().attr('href');
+      } else if (el.tagName != 'a') {
+        window.location = $(el).parents('tr').find('a').first().attr('href');
       }
     })
   })

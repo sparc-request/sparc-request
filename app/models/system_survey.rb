@@ -30,10 +30,6 @@ class SystemSurvey < Survey
     })
   }
 
-  def self.yaml_klass
-    Survey.name
-  end
-
   def system_satisfaction?
     self.access_code == 'system-satisfaction-survey'
   end

@@ -24,6 +24,17 @@ module Features
       block.call if block_given?
       page.driver.browser.switch_to.alert.accept
     end
+
+    def confirm_swal
+      expect(page).to have_selector('.swal2-shown', visible: true)
+
+      # Confirm
+      if page.has_selector?('.swal2-container .swal2-confirm')
+        find('.swal2-container .swal2-confirm').click
+      else # Alert
+        find('.swal2-container .swal2-cancel').click
+      end
+    end
   end
 end
 

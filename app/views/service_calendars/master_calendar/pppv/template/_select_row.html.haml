@@ -24,7 +24,7 @@
 - klass        = checked ? 'btn-danger' : 'btn-success'
 - tooltip      = t(:calendars)[:editable_fields][:row_select][checked ? :uncheck : :check]
 - url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, page: page, :"#{check_param}" => 'true')
-- url         += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
+- url         += "&ssrid=#{sub_service_request.id}" if sub_service_request
 
 %td.check-row.text-center{ colspan: 2, class: locked ? '' : 'editable', id: "toggleRow#{liv.id}", title: tooltip, data: { toggle: 'tooltip' } }
   = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sm btn-sq', klass, locked ? 'disabled' : ''], data: { confirm_swal: 'true', text: t('calendars.confirm_row_select') }

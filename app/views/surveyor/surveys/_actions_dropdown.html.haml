@@ -18,11 +18,33 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-%select.selectpicker.survey-actions
-  %option{ value: '' }
-    = t(:constants)[:prompts][:select_action]
-  %option.preview-survey{ data: { url: surveyor_survey_preview_path(survey), content: preview_survey } }
-  %option{ class: survey.active? ? "disable-survey" : "activate-survey", disabled: survey.questions.none? || survey.surveyable_type == 'Identity', data: { url: surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), method: :put, content: activate_survey(survey, survey.questions.none? || survey.surveyable_type == 'Identity') } }
-  %option.copy-survey{ data: { url: surveyor_survey_copy_path(survey), method: :post, content: copy_survey } }
-  %option.edit-survey{ disabled: survey.active?, data: { url: edit_surveyor_survey_path(survey), content: edit_survey(survey.active?) } }
-  %option.delete-survey{ disabled: survey.active? || survey.has_responses?, data: { survey_id: survey.id, content: delete_survey(survey.active? || survey.has_responses?) } }
+.dropdown
+	%button.btn.btn-light.dropdown-toggle.w-100{ id: "surveyActions#{survey.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+		= t(:constants)[:prompts][:select_action]
+	.dropdown-menu{ aria: { labelledby: "surveyActions#{survey.id}" } }
+		= link_to surveyor_survey_preview_path(survey), remote: true, class: 'dropdown-item text-info' do
+			= icon('fas', 'eye mr-1')
+			= t(:actions)[:preview]
+
+		- disabled_action = survey.questions.none? || survey.surveyable_type == 'Identity'
+		= link_to surveyor_survey_updater_path(survey, klass: 'survey', survey: { active: !survey.active }), remote: true, method: :put, class: "dropdown-item #{disabled_action ? 'disabled' : ''}" do
+			- if survey.active?
+				.text-danger
+					= icon('fas', 'times mr-1')
+					= t(:actions)[:disable]
+			- else
+				%div{ class: disabled_action ? '' : 'text-success' }
+					= icon('fas', 'check mr-1')
+					= t(:actions)[:activate]
+
+		= link_to surveyor_survey_copy_path(survey), remote: true, method: :post, class: 'dropdown-item text-primary' do
+			= icon('fas', 'copy mr-1')
+			= t(:actions)[:copy]
+
+		= link_to edit_surveyor_survey_path(survey), remote: true, class: "dropdown-item #{survey.active? ? 'disabled' : 'text-warning'}" do
+			= icon('far', 'edit mr-1')
+			= t(:actions)[:edit]
+
+		= link_to surveyor_survey_path(survey), remote: true, method: :delete, class: "dropdown-item #{survey.active? || survey.has_responses? ? 'disabled' : 'text-danger'}", data: { confirm_swal: 'true' } do
+			= icon('fas', 'trash-alt mr-1')
+			= t(:actions)[:delete]

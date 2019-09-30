@@ -60,7 +60,9 @@
 @import 'service_requests';
 @import 'protocols';
 @import 'service_calendar';
-@import 'dashboard/notifications'
+@import 'dashboard/notifications';
+
+@import 'surveyor/responses';
 
 
 
@@ -90,7 +92,6 @@
 //@import 'proper/confirmation';
 //@import 'sweetalert';
 //@import 'proper/modal';
-//@import 'surveyor/responses';
 //@import 'surveyor/surveys';
 
 // other files

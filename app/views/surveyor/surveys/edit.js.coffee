@@ -22,7 +22,7 @@ $('#modalContainer').modal('show')
 $('.selectpicker').selectpicker()
 
 <% if @survey.is_a?(SystemSurvey) %>
-$('.survey-table').bootstrapTable('refresh')
+$('.system-survey-table').bootstrapTable('refresh')
 <% end %>
 
 surveyable_bloodhound = new Bloodhound(
@@ -45,15 +45,12 @@ $("#modalContainer [id$='-surveyable']").typeahead(
     source: surveyable_bloodhound,
     limit: 100,
     templates: {
-      suggestion: Handlebars.compile('<button class="text-left">
-                                        {{#if parents}}
-                                          <strong>{{{parents}}}</strong><br>
-                                        {{/if}}
-                                        <span><strong>{{label}}</strong></span>
-                                        {{#if cpt_code}}
-                                          <br><span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                        {{/if}}
-                                      </button>')
+      suggestion: (s) -> [
+        "<button class='text-left'>",
+          if s.parents then "<strong>{{{parents}}}</strong><br>",
+          "<span><strong>{{label}}</strong></span>",
+          if s.cpt_code then "<br><span><strong>CPT Code: {{cpt_code}}</strong></span>",
+        "</button>')"].join('')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
   }

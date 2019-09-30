@@ -47,7 +47,7 @@
               .input-group-prepend
                 = f.label params[:field], t('constants.currency'), class: 'input-group-text'
             = f.number_field params[:field], class: 'form-control', min: min, max: max, step: params[:field] == 'displayed_cost' ? '0.01' : '1'
-          - if params[:field] == 'quantity'
+          - if min || max
             %small.form-text.text-muted
               = t('constants.min', min: min)
               = t('constants.max', max: max)

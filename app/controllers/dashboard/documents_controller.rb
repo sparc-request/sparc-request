@@ -67,6 +67,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     controller          = ::DocumentsController.new
     controller.request  = request
     controller.response = response
+    controller.instance_variable_set(:@protocol, @protocol)
     controller.instance_variable_set(:@document, @document)
     controller.update
     @document = controller.instance_variable_get(:@document)

@@ -21,7 +21,7 @@
 = form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
   = render '/service_requests/navigation/header'
 
-  .alert#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
+  .alert.d-none#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
 
   #confirmation-page
     .card

@@ -23,7 +23,8 @@
     - if in_dashboard?
       = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
       = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
-    = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
+    - if in_dashboard? || service_request.has_per_patient_per_visit_services?
+      = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
   - unless in_dashboard?
     .w-100.mt-3#billingLabels{ class: tab == 'billing_strategy' ? '' : 'd-none' }
       %ul.list-unstyled.mb-0

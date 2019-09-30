@@ -37,13 +37,16 @@ get_epic_push_status = () ->
       else
         status_text = data['last_epic_push_status_text']
 
-        $('#pushToEpicStatus').removeClass('alert-success alert-secondary alert-danger').text(data['last_epic_push_status_text'])
+        if status_text
+          $('#pushToEpicStatus').removeClass('d-none alert-success alert-secondary alert-danger').text(status_text)
 
-        if status == 'complete'
-          $('#pushToEpicStatus').addClass('alert-success')
-        else if status == 'failed'
-          $('#pushToEpicStatus').addClass('alert-danger')
+          if status == 'complete'
+            $('#pushToEpicStatus').addClass('alert-success')
+          else if status == 'failed'
+            $('#pushToEpicStatus').addClass('alert-danger')
+          else
+            $('#pushToEpicStatus').addClass('alert-secondary')
         else
-          $('#pushToEpicStatus').addClass('alert-secondary')
+          $('#pushToEpicStatus').addClass('d-none')
     error:
       $('#pushToEpicStatus').addClass('alert-danger').text(I18n.t('proper.confirmation.push_to_epic.failed'))

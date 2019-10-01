@@ -57,6 +57,7 @@ en:
         name_email: "Name, Email"
         super_user: "Super User"
         access_empty_protocols: "Access Empty Protocols:"
+        billing_manager: "Billing Manager Rights"
         catalog_manager: "Catalog Manager"
         edit_historic_data: "Edit Historical Data:"
         service_provider: "Service Provider"

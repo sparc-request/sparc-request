@@ -38,7 +38,7 @@ $('#modalContainer').modal('hide')
 
 <% if @in_admin %>
 # Replace SSR Header
-$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 <% end %>
 
 # Replace Visit

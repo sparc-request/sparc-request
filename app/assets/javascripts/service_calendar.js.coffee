@@ -121,34 +121,6 @@ $ ->
     success: ->
       $('#calendarLoading').removeClass('show active')
 
-(exports ? this).setup_xeditable_fields = (scroll) ->
-  $('.edit-your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (data) ->
-      $('#sub_service_request_header').html(data['header'])
-      $('.selectpicker').selectpicker()
-
-  $('td.your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (response, newValue) ->
-      $('.study_level_activities').bootstrapTable('refresh', silent: true)
-
 (exports ? this).adjustCalendarHeaders = () ->
   zIndex = $('.service-calendar-container').length * 4
 

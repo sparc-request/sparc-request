@@ -20,5 +20,5 @@
 .form-group
   - question.options.each do |option|
     .form-check
-      = radio_button_tag :response_example, '', false, class: 'yes-no-radio form-check-input', disabled: "disabled"
+      = radio_button_tag :response_example, '', false, class: 'yes-no-radio form-check-input mt-1', disabled: "disabled"
       = label_tag :response_example, option.content, class: 'form-check-label'

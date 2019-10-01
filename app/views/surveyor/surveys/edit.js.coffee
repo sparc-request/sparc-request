@@ -70,3 +70,5 @@ $("#modalContainer [id$='-surveyable']").typeahead(
       $("#survey-<%= @survey.id %>-active").prop('disabled', false)
       $("#survey-<%= @survey.id %>-active").tooltip('disable')
 )
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

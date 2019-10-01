@@ -21,7 +21,7 @@
   - question.options.each do |option|
     .form-check.option.mb-1{ data: { question_id: question.id, option_id: option.id } }
       - if ['new', 'edit', 'preview'].include?(action_name)
-        = qr.radio_button :content, option.content.downcase, class: 'form-check-input'
+        = qr.radio_button :content, option.content.downcase, class: 'form-check-input mt-1'
         .form-check-label
           = option.content
       - else

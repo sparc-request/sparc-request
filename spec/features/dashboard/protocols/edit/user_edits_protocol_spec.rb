@@ -30,6 +30,7 @@ RSpec.describe 'User wants to edit a Protocol', js: true do
     @protocol = create(:study_federally_funded, primary_pi: jug2)
 
     visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
     click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
   end
 

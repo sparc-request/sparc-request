@@ -23,7 +23,7 @@ module ProtocolsHelper
     url = in_dashboard? ? dashboard_protocol_path(protocol) : protocol_path(protocol, srid: opts[:srid])
 
     link_to url, remote: true, class: 'btn btn-info mr-1', title: t('protocols.summary.tooltips.details'), data: { toggle: 'tooltip' } do
-      icon('fas', 'eye mr-2') + I18n.t('protocols.view_details.button', protocol_type: protocol.model_name.human)
+      icon('fas', 'eye mr-2') + t('protocols.view_details.button', protocol_type: protocol.model_name.human)
     end
   end
 
@@ -31,7 +31,7 @@ module ProtocolsHelper
     unless in_dashboard? && !opts[:permission]
       url = in_dashboard? ? edit_dashboard_protocol_path(protocol) : edit_protocol_path(protocol, srid: opts[:srid])
       link_to url, class: 'btn btn-warning mr-1', title: t('protocols.summary.tooltips.edit'), data: { toggle: 'tooltip' } do
-        icon('far', 'edit mr-2') + I18n.t('protocols.edit', protocol_type: protocol.model_name.human)
+        icon('far', 'edit mr-2') + t('protocols.edit', protocol_type: protocol.model_name.human)
       end
     end
   end

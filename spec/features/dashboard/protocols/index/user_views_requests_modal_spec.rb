@@ -18,28 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require "rails_helper"
+require 'rails_helper'
 
-RSpec.describe "User resets the filter", js: :true do
-
+RSpec.describe 'User clicks Requests button', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  scenario "and sees filter was reset" do
-    protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
-    protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
+  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: jug2) }
+  let!(:service_request) { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
+  let!(:organization) { create(:organization, :process_ssrs, admin: jug2, type: 'Institution') }
+  let!(:sub_service_request) { create(:sub_service_request, ssr_id: '1234', service_request: service_request, status: 'draft', organization_id: organization.id, protocol_id: protocol.id) }
 
-    visit dashboard_protocols_path
+  it 'should display the requests modal' do
+    visit dashboard_root_path
     wait_for_javascript_to_finish
 
-    find("#filterrific_show_archived").click
-    find("#apply-filter-button").click
+    click_link Protocol.human_attribute_name(:requests)
     wait_for_javascript_to_finish
 
-    find("#reset_filters_link").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content(protocol_unarchived.short_title)
-    expect(page).to_not have_content(protocol_archived.short_title)
+    expect(page).to have_selector('#protocolRequestsModal')
+    expect(page).to have_selector('.service-requests-table')
   end
 end

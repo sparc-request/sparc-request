@@ -20,14 +20,14 @@
 
 $(document).ready ->
 
-  $(document).on 'click', 'button#documents_application',  ->
-    $('.document_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#document_tabs').data('selected', 'application')
-    $('#document-table').bootstrapTable 'refresh', { query: { table: 'application' } }
+  $(document).on 'click', '#documents_application',  ->
+    $('.document_nav').removeClass('btn-primary').addClass('btn-light')
+    $(this).removeClass('btn-light').addClass('btn-primary')
+    $('#documents_tabs').data('selected', 'application')
+    $('#documents-table').bootstrapTable 'refresh', { query: { table: 'application' } }
 
-  $(document).on 'click', 'button#documents_loi',  ->
-    $('.document_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#document_tabs').data('selected', 'loi')
-    $('#document-table').bootstrapTable 'refresh', { query: { table: 'loi' } }
+  $(document).on 'click', '#documents_loi',  ->
+    $('.document_nav').removeClass('btn-primary').addClass('btn-light')
+    $(this).removeClass('btn-light').addClass('btn-primary')
+    $('#documents_tabs').data('selected', 'loi')
+    $('#documents-table').bootstrapTable 'refresh', { query: { table: 'loi' } }

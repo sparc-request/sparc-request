@@ -18,12 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @protocol_filters.count == 0 %>
-$("#savedFilters").html("").addClass('d-none')
-<% else %>
 $('#savedFilters').replaceWith("<%= j render 'dashboard/protocol_filters/saved_searches', protocol_filters: @protocol_filters %>")
-<% end %>
-
 $('#modalContainer').modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 

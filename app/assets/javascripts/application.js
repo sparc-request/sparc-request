@@ -83,6 +83,7 @@
 //= require dashboard/notifications
 //= require dashboard/epic_queues
 //= require dashboard/sub_service_requests
+//= require funding/documents
 
 //= require reporting
 

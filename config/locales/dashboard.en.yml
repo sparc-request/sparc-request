@@ -30,9 +30,9 @@ en:
     #################
     epic_queues:
       tabs:
-        current: "Currently Queued"
-        past: "Previously Queued"
-        protocol_update: "Queued Updates"
+        current: "Current"
+        past: "Past"
+        protocol_update: "Protocol Update"
       headers:
         current: "Queued Epic Protocols"
         past: "Previously Queued Epic Protocols"

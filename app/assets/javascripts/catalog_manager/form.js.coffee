@@ -54,8 +54,10 @@ $ ->
 
       success: ->
         $("#su-access-empty-protocols-#{identity_id}").prop('disabled', !checked)
+        $("#su-billing-manager-#{identity_id}").prop('disabled', !checked)
         if !checked
           $("#su-access-empty-protocols-#{identity_id}").prop('checked', false)
+          $("#su-billing-manager-#{identity_id}").prop('checked', false)
 
   $(document).on 'change', '.catalog-manager-checkbox', ->
     identity_id = $(this).data('identity-id')
@@ -88,6 +90,15 @@ $ ->
     $.ajax
       type: 'PUT'
       url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[access_empty_protocols]=#{access_empty_protocols}"
+
+  $(document).on 'change', '.su-billing-manager', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    billing_manager = $(this).prop('checked')
+
+    $.ajax
+      type: 'PUT'
+      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[billing_manager]=#{billing_manager}"
 
   $(document).on 'change', '.cm-edit-historic-data', ->
     identity_id = $(this).data('identity-id')

@@ -610,7 +610,7 @@ en:
     dashboard:
       navigation:
         short_interaction: "Short Interaction"
-        epic_queue: "Epic Protocols"
+        epic_queue: "Epic Queue"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"

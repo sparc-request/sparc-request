@@ -17,64 +17,27 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-require 'rails_helper'
 
-RSpec.describe 'RMID validated Protocols', js: true do
-  let!(:user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true
-          )
-  end
+require "rails_helper"
 
-  fake_login_for_each_test('johnd')
+RSpec.describe "User checks the archived checkbox and filters", js: :true do
 
-  let!(:study) do
-    create(:study_without_validations,
-            primary_pi: user,
-            rmid_validated: true
-          )
-  end
+  let_there_be_lane
+  fake_login_for_each_test
 
-  stub_config("research_master_enabled", true)
-  
-  before :each do
-    visit dashboard_protocol_path(study)
+  scenario "and sees archived protocols" do
+    protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
+    protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
+
+    visit dashboard_protocols_path
     wait_for_javascript_to_finish
-  end
 
-  describe 'main page' do
-    it 'shows visual cue that the Protocol has been refreshed with RMID data' do
-      expect(page).to have_css(
-        'h6.text-success',
-        text: 'Updated to corresponding Research Master ID Short Title'
-      )
-      expect(page).to have_css(
-        'h6.text-success',
-        text: 'Updated to corresponding Research Master ID Title'
-      )
-    end
-  end
+    bootstrap_toggle("#filterrific_show_archived")
+    click_button I18n.t('actions.filter')
+    wait_for_javascript_to_finish
 
-  describe 'view details' do
-    it 'shows that the Protocol has been refreshed with RMID data' do
-      click_button 'View Study Details'
-      within '.modal-content' do
-        expect(page).to have_css(
-          'h6.text-success',
-          text: 'Updated to corresponding Research Master ID Short Title'
-        )
-        expect(page).to have_css(
-          'h6.text-success',
-          text: 'Updated to corresponding Research Master ID Title'
-        )
-      end
-    end
+    expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
+    expect(page).to have_content(protocol_archived.short_title)
+    expect(page).to_not have_content(protocol_unarchived.short_title)
   end
 end
-

@@ -38,10 +38,10 @@ RSpec.describe "User selects statuses and filters", js: :true do
     wait_for_javascript_to_finish
 
     bootstrap_multiselect("#filterrific_with_status", ["Draft"])
-    find("#apply-filter-button").click
+    click_button I18n.t('actions.filter')
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
     expect(page).to have_content(protocol_draft.short_title)
     expect(page).to_not have_content(protocol_submitted.short_title)
   end

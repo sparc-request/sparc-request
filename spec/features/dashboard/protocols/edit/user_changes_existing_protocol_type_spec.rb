@@ -18,50 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::ProtocolsHelper
-  def break_before_parenthetical(s)
-    i = s.index('(')
-    if i.present?
-      beginning = s[0...i]
-      ending = s[i..-1]
-      raw(beginning +'<br>'+ ending)
-    else
-      s
-    end
+require 'rails_helper'
+
+RSpec.describe 'User wants to change an existing Study to a Project', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
+
+  before :each do
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+
+    visit edit_dashboard_protocol_path(@protocol)
   end
 
-  def protocol_id_link(protocol)
-    link_to protocol.id, dashboard_protocol_path(protocol)
-  end
-
-  def protocol_short_title_link(protocol)
-    link_to protocol.short_title, dashboard_protocol_path(protocol)
-  end
-
-  def pis_display(protocol)
-    if protocol.primary_pi
-      content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
-        content_tag(:span) do
-          icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
-        end + '<br>'.html_safe
-      end
-    else
-      ""
-    end + raw(
-    protocol.principal_investigators.where.not(id: protocol.primary_pi).map do |pi|
-      content_tag(:span) do
-        icon('fas', 'user mr-2') + pi.display_name
-      end
-    end.join('<br>'.html_safe))
-  end
-
-  def display_requests_button(protocol, access)
-    if protocol.sub_service_requests.any? && access
-      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary protocol-requests') do
-        content_tag :span, class: 'd-flex align-items-center' do
-          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.count, class: 'badge badge-pill badge-light ml-2'))
-        end
-      end
-    end
+  it 'should change the Study to a Project' do
+    click_link I18n.t('protocols.change_type.link_text', current_type: Study.model_name.human, new_type: Project.name)
+    confirm_swal
+    wait_for_javascript_to_finish
+    expect(page).to have_current_path(edit_dashboard_protocol_path(@protocol))
+    @protocol = Protocol.find(@protocol.id) # reload doesn't work because of the change to type
+    expect(@protocol.type).to eq(Project.name)
   end
 end

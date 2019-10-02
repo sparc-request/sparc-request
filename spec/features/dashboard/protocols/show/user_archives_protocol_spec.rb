@@ -17,47 +17,45 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 require 'rails_helper'
 
-RSpec.describe 'RMID validated Protocol', js: true do
-  let!(:user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true)
-  end
+RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  fake_login_for_each_test("johnd")
+  context 'archive protocol' do
+    before :each do
+      @project  = create(:unarchived_project_without_validations, primary_pi: jug2)
+                  create(:service_request_without_validations, protocol: @project)
 
-  def visit_protocols_index_page
-    page = Dashboard::Protocols::IndexPage.new
-    page.load
-    page
-  end
-
-  stub_config("research_master_enabled", true)
-  
-  describe 'RMID validated Protocol' do
-    before(:each) do
-      create(:super_user, identity_id: user.id, access_empty_protocols: true)
+      visit dashboard_protocol_path(@project)
+      wait_for_javascript_to_finish
     end
 
-    scenario 'User sees updated RMID validated Protocol' do
-      create(:study_without_validations,
-             primary_pi: user,
-             rmid_validated: true
-            )
+    it 'should archive the protocol' do
+      click_link I18n.t('protocols.summary.archive')
+      wait_for_javascript_to_finish
 
-      page = visit_protocols_index_page
+      expect(@project.reload.archived).to eq(true)
+      expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+    end
+  end
 
-      expect(page).to have_css('h6.text-success', text:
-                               'Updated to corresponding Research Master ID Short Title'
-                              )
+  context 'unarchive protocol' do
+    before :each do
+      @project  = create(:archived_project_without_validations, primary_pi: jug2)
+                  create(:service_request_without_validations, protocol: @project)
+
+      visit dashboard_protocol_path(@project)
+      wait_for_javascript_to_finish
+    end
+
+    it 'should unarchive the protocol' do
+      click_link I18n.t('protocols.summary.unarchive')
+      wait_for_javascript_to_finish
+
+      expect(@project.reload.archived).to eq(false)
+      expect(page).to have_content(I18n.t('protocols.summary.archive'))
     end
   end
 end

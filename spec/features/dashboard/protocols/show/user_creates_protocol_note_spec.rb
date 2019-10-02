@@ -18,26 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require "rails_helper"
+require 'rails_helper'
 
-RSpec.describe "User checks the archived checkbox and filters", js: :true do
-
+RSpec.describe 'User creates a protocol note', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  scenario "and sees archived protocols" do
-    protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
-    protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
+  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: jug2) }
 
-    visit dashboard_protocols_path
+  it 'should create a Protocol note' do
+    visit dashboard_protocol_path(protocol)
     wait_for_javascript_to_finish
 
-    find("#filterrific_show_archived").click
-    find("#apply-filter-button").click
+    click_link Note.model_name.plural.capitalize
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector(".protocols_index_row", count: 1)
-    expect(page).to have_content(protocol_archived.short_title)
-    expect(page).to_not have_content(protocol_unarchived.short_title)
+    fill_in 'note_body', with: 'This is an important reminder'
+    click_button I18n.t('notes.add')
+    wait_for_javascript_to_finish
+
+    expect(protocol.reload.notes.count).to eq(1)
+    expect(page).to have_selector('.note-body p', text: 'This is an important reminder')
   end
 end

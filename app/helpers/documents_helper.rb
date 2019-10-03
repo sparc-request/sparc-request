@@ -50,7 +50,7 @@ module DocumentsHelper
     unless in_dashboard? && !opts[:permission]
       url = in_dashboard? ? edit_dashboard_document_path(document) : edit_document_path(document, srid: opts[:srid])
 
-      link_to icon('far', 'edit'), url, remote: true, class: "btn btn-warning mr-1"
+      link_to icon('far', 'edit'), url, remote: true, class: "btn btn-warning mr-1 edit-document"
     end
   end
 
@@ -58,7 +58,7 @@ module DocumentsHelper
     unless in_dashboard? && !opts[:permission]
       url = in_dashboard? ? dashboard_document_path(document) : document_path(document, srid: opts[:srid])
 
-      link_to icon('fas', 'trash-alt'), url, method: :delete,  remote: true, class: "btn btn-danger", data: { confirm_swal: 'true' }
+      link_to icon('fas', 'trash-alt'), url, method: :delete,  remote: true, class: "btn btn-danger delete-document", data: { confirm_swal: 'true' }
     end
   end
 

@@ -20,25 +20,23 @@
 
 require 'rails_helper'
 
-RSpec.feature 'User wants to edit a document', js: true do
-  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
+RSpec.feature 'User wants to delete a document', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  fake_login_for_each_test("johnd")
+  before :each do
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @document = create(:document, protocol: @protocol, doc_type: 'budget')
 
-  context 'and clicks the Delete button' do
-    scenario 'and sees the document removed' do
-      @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
-                  create(:document, protocol: @protocol, doc_type: 'Protocol')
+    visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
+  end
 
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: @protocol.id)
-      wait_for_javascript_to_finish
+  it 'should delete the document' do
+    find('.delete-document').click
+    confirm_swal
+    wait_for_javascript_to_finish
 
-      @page.documents.first.enabled_remove_button.click
-      accept_confirm
-      wait_for_javascript_to_finish
-
-      expect(@page.documents(text: 'Protocol').count).to eq(0)
-    end
+    expect(@protocol.reload.documents.count).to eq(0)
   end
 end

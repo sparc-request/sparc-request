@@ -18,32 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Relationships with protocols must be created manually through the id's
-# because of validations on protocol
-FactoryBot.define do
-  factory :project_role do
-    project_rights { Faker::Lorem.sentence(word_count: 2) }
-    role {'primary-pi'}
+require 'rails_helper'
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
+RSpec.feature 'User wants to add a document', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-    trait :approve do
-      project_rights {'approve'}
-    end
+  before :each do
+    @protocol       = create(:study_federally_funded, primary_pi: jug2)
+    organization    = create(:organization)
+    service_request = create(:service_request_without_validations, protocol: @protocol)
+                      create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: @protocol)
 
-    trait :with_identity do
-      identity
-    end
+    visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
+  end
 
-    trait :with_protocol do
-      protocol
-    end
+  it 'should add the new document' do
+    click_link I18n.t('documents.new')
+    wait_for_javascript_to_finish
 
-    factory :project_role_with_identity, traits: [:with_identity]
-    factory :project_role_with_identity_and_protocol, traits: [:with_identity, :with_protocol]
-    factory :project_role_approve, traits: [:approve]
-    factory :project_role_without_validations, traits: [:without_validations]
+    bootstrap_select '#document_doc_type', 'Budget'
+    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt'), make_visible: true
+
+    click_button I18n.t('actions.upload')
+    wait_for_javascript_to_finish
+
+    expect(@protocol.reload.documents.count).to eq(1)
+    expect(@protocol.documents.first.doc_type).to eq('budget')
+    expect(@protocol.documents.first.sub_service_requests.to_a).to eq([@protocol.sub_service_requests.first])
   end
 end

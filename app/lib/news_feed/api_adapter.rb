@@ -20,10 +20,12 @@
 
 module NewsFeed
   class ApiAdapter < NewsFeed::Base
-    def initialize(api_string="", content_type='application/json', parameters={limit: NewsFeed::Base::POST_LIMIT})
-      @content_type = content_type
-      @parameters   = parameters
+    def initialize(api_string, opts={})
+      @content_type = opts[:content_type] || 'application/json'
+      @headers      = opts[:headers] || { 'Content-Type' => @content_type }
+      @parameters   = opts[:parameters] || {limit: NewsFeed::Base::POST_LIMIT}
       @url          = NewsFeed::Base::BASE_URL + api_string + parameter_string
+      "aGV3d2VAbXVzYy5lZHU6UWZ1ZUpldG9ydEZlMDBwcFVCandCMUEz"
     end
 
     def add_parameter(key, value)
@@ -31,7 +33,7 @@ module NewsFeed
     end
 
     def get
-      HTTParty.get(@url, headers: { 'Content-Type' => @content_type })
+      HTTParty.get(@url, headers: @headers)
     end
 
     private

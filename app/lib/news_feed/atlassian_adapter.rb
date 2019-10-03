@@ -28,7 +28,7 @@ module NewsFeed
       space       = Setting.get_value("news_feed_atlassian_space")
       params      = { limit: limit, expand: 'version', cql: "space=#{space} AND type=blogpost order by created desc" }
 
-      super(api_string, 'application/json', params)
+      super(api_string, headers: { 'Content-Type' => 'application/json', 'Authorization' => "Basic #{NewsFeed::Base::API_TOKEN}" }, parameters: params)
     end
 
     def posts

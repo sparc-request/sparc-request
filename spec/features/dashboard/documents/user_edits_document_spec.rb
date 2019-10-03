@@ -21,51 +21,26 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to edit a document', js: true do
-  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
-  fake_login_for_each_test("johnd")
+  let_there_be_lane
+  fake_login_for_each_test
 
   before :each do
-    @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
-                create(:document, protocol: @protocol, doc_type: 'Protocol')
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @document = create(:document, protocol: @protocol, doc_type: 'budget')
 
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: @protocol.id)
+    visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
   end
 
-  context 'and clicks the Edit button' do
-    before :each do
-      @page.documents.first.enabled_edit_button.click
-      wait_for_javascript_to_finish
-    end
+  it 'should update the document' do
+    find('.edit-document').click
+    wait_for_javascript_to_finish
 
-    scenario 'and sees the document modal' do
-      expect(@page).to have_document_modal
-    end
+    bootstrap_select '#document_doc_type', 'Consent'
 
-    context 'and edits a field and submits' do
-      before :each do
-        edit_document_fields
-        wait_for_javascript_to_finish
-      end
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
 
-      scenario 'and sees the updated document' do
-        wait_for_javascript_to_finish
-        expect(@page).to have_documents(text: 'Consent')
-      end
-    end
-  end
-
-  def edit_document_fields
-    @page.document_modal.instance_exec do
-      doc_type_dropdown.click
-      wait_until_dropdown_choices_visible
-      dropdown_choices(text: 'Consent').first.click
-    end
-
-    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt')
-
-    @page.document_modal.upload_button.click
+    expect(@document.reload.doc_type).to eq('consent')
   end
 end

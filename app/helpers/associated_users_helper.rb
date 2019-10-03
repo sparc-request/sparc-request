@@ -50,20 +50,24 @@ module AssociatedUsersHelper
     unless in_dashboard? && !opts[:permission]
       data = { id: pr.id, toggle: 'tooltip', placement: 'right', boundary: 'window' }
 
-      if current_user.id == pr.identity_id && in_dashboard? && !opts[:permission] # Dashboard Logic
+      if current_user.id == pr.identity_id && ((in_dashboard? && (current_user.catalog_overlord? || opts[:admin])) || (!in_dashboard? && current_user.catalog_overlord?))
+        # Warn of removing current user but won't redirect if
+        # - in dashboard and current user is an overlord/admin or
+        # - not in dashboard and current user is an overlord
         data[:batch_select] = {
           checkConfirm: 'true',
-          checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
+          checkConfirmSwalText: t('authorized_users.delete.self_remove_warning')
         }
-      elsif current_user.id == pr.identity_id && !in_dashboard? # SPARC Proper logic
+      else
+        # User will be redirected because they will no longer have
+        # permission on this protocol
         data[:batch_select] = {
           checkConfirm: 'true',
-          checkConfirmSwalText: current_user.catalog_overlord? ? t(:authorized_users)[:delete][:self_remove_warning] : t(:authorized_users)[:delete][:self_remove_redirect_warning]
+          checkConfirmSwalText: t('authorized_users.delete.self_remove_redirect_warning')
         }
       end
 
-      content_tag(:button,
-        icon('fas', 'trash-alt'), type: 'button',
+      button_tag(icon('fas', 'trash-alt'), type: 'button',
         title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
         class: ["btn btn-danger actions-button delete-authorized-user", pr.primary_pi? ? 'disabled' : ''],
         data: data

@@ -194,20 +194,8 @@ en:
     # SERVICE CALENDARS #
     #####################
     service_calendars:
-      d:
+      consolidated_request:
         header: "Consolidated Request Summary"
-        protocol_information:
-          header: " Information"
-          srid: "SRID:"
-          short_title: "Short Title:"
-          title: " Title:"
-          sponsor: "Sponsor Name:"
-          funding_source: "Funding Source:"
-        authorized_users:
-          header: "Authorized Users"
-          name: "Name"
-          role: "Role"
-          rights: "Proxy Rights"
         services:
           none: "This protocol does not have any services outside of 'draft' status."
 

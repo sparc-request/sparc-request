@@ -25,7 +25,6 @@ module NewsFeed
       @headers      = opts[:headers] || { 'Content-Type' => @content_type }
       @parameters   = opts[:parameters] || {limit: NewsFeed::Base::POST_LIMIT}
       @url          = NewsFeed::Base::BASE_URL + api_string + parameter_string
-      "aGV3d2VAbXVzYy5lZHU6UWZ1ZUpldG9ydEZlMDBwcFVCandCMUEz"
     end
 
     def add_parameter(key, value)

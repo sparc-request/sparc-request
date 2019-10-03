@@ -77,8 +77,8 @@ class SPARCAccountReport < ReportingModule
 
   # Conditions
   def where args={}
-    fdate = args[:created_at_from].nil? ? self.default_options["Created Date Range"][:from].to_time.strftime("%Y-%m-%d 00:00:00") : args[:created_at_from].to_time.strftime("%Y-%m-%d 00:00:00")
-    tdate = args[:created_at_to].nil? ? self.default_options["Created Date Range"][:to].to_time.strftime("%Y-%m-%d 23:59:59")  : args[:created_at_to].to_time.strftime("%Y-%m-%d 23:59:59") 
+    fdate = (args[:created_at_from].nil? ? self.default_options["Created Date Range"][:from] : DateTime.strptime(args[:created_at_from], "%m/%d/%Y")).to_s(:db)
+    tdate = (args[:created_at_to].nil? ? self.default_options["Created Date Range"][:to] : DateTime.strptime(args[:created_at_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
     created_at = fdate..tdate
     statuses = args[:approved] || [1, 0]
     return {:created_at => created_at, :approved => statuses}

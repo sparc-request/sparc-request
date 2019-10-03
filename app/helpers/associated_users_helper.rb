@@ -42,7 +42,7 @@ module AssociatedUsersHelper
     unless in_dashboard? && !opts[:permission]
       url = in_dashboard? ? edit_dashboard_associated_user_path(pr) : edit_associated_user_path(pr, srid: opts[:srid])
 
-      link_to icon('far', 'edit'), url, remote: true, class: 'btn btn-warning mr-1'
+      link_to icon('far', 'edit'), url, remote: true, class: 'btn btn-warning mr-1 edit-authorized-user'
     end
   end
 
@@ -65,7 +65,7 @@ module AssociatedUsersHelper
       content_tag(:button,
         icon('fas', 'trash-alt'), type: 'button',
         title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
-        class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
+        class: ["btn btn-danger actions-button delete-authorized-user", pr.primary_pi? ? 'disabled' : ''],
         data: data
       )
     end

@@ -31,7 +31,7 @@ module DocumentsHelper
 
   def display_document_title(document, opts={})
     if in_dashboard? && !opts[:permission]
-      document.file_name
+      document.document_file_name
     else
       link_to document.document_file_name, document.document.url, target: :blank
     end

@@ -34,6 +34,12 @@ $("[name='project_role[identity_attributes][<%= attr.to_s %>]']").parents('.form
 <% end %>
 <% end %>
 <% else %>
+
+# Redirect to Dashboard if removing your rights as a user and you don't have admin access
+<% if @protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(@protocol_role.project_rights) %>
+window.location = "<%= dashboard_root_path %>"
+<% end %>
+
 $("#modalContainer").modal('hide')
 $("#authorizedUsersTable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

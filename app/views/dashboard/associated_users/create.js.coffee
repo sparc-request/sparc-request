@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+\# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,18 +34,18 @@ $("[name='project_role[identity_attributes][<%= attr.to_s %>]']").parents('.form
 <% end %>
 <% end %>
 <% else %>
+
+# Refresh content to update user rights
 <% if @protocol_role.identity == current_user %>
 $("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
-$("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
 $("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
-$('.service-request-card:not(:first-of-type').remove()
 $('.service-request-card:not(:eq(0))').remove()
 $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
-$("#authorizedUsersTable").bootstrapTable()
 $("#documentsTable").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
 <% end %>
+
 $("#authorizedUsersTable").bootstrapTable('refresh')
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

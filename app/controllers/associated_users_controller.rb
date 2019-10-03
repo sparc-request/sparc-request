@@ -79,8 +79,6 @@ class AssociatedUsersController < ApplicationController
 
     if updater.successful?
       flash[:success] = t('authorized_users.updated')
-
-      redirect_to dashboard_root_path(method: :get) if @protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(@protocol_role.project_rights)
     else
       @errors = @protocol_role.errors
     end

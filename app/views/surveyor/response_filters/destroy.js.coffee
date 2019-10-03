@@ -19,3 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $("#savedSearches").replaceWith("<%= j render 'surveyor/response_filters/saved_searches' %>")
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

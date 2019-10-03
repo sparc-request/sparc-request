@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def let_there_be_lane
+def let_there_be_lane(opts={})
   let!(:jug2) { create(:identity,
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
       email:                 'glennj@musc.edu',
       credentials:           'ba',
-      catalog_overlord:      true,
+      catalog_overlord:      opts[:catalog_overlord].nil? ? true : opts[:catalog_overlord],
       password:              'p4ssword',
       password_confirmation: 'p4ssword',
       approved:              true

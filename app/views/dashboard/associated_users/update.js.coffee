@@ -34,21 +34,29 @@ $("[name='project_role[identity_attributes][<%= attr.to_s %>]']").parents('.form
 <% end %>
 <% end %>
 <% else %>
-<% if @protocol_role.identity == current_user %>
+
+<% if @protocol_role.identity == current_user && !current_user.catalog_overlord? %>
+
+<% if !@admin && ['none'].include?(@protocol_role.project_rights) %>
+# Redirect to Dashboard if removing your rights as a user and you don't have admin/overlord access
+window.location = "<%= dashboard_root_path %>"
+<% else %>
+# Refresh page contents to reflect updated rights for admins
 $("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
-$("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin %>")
+$("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin %>")
 $("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
 $('.service-request-card:not(:eq(0))').remove()
 $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
-
-$("#authorizedUsersTable").bootstrapTable()
+$("#authorizedUsersTable").bootstrapTable('refresh')
 $("#documentsTable").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
-<% else %>
-$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>
 
+<% else %>
+$("#authorizedUsersTable").bootstrapTable('refresh')
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% end %>
 <% end %>

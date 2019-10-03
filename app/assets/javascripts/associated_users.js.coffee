@@ -22,7 +22,7 @@ $(document).ready ->
   url = if window.location.pathname.startsWith('/dashboard') then '/dashboard/associated_users/' else '/associated_users/'
 
   $(document).on 'load-success.bs.table', '#authorizedUsersTable', ->
-    $('.delete-associated-user-button').batchSelect({
+    $('.delete-authorized-user').batchSelect({
       batchSelectedText: I18n.t('actions.delete_selected')
       type: 'warning'
       ajaxUrl: url

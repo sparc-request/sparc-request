@@ -64,6 +64,7 @@ module Features
     end
 
     def bootstrap_typeahead(class_or_id, text)
+      find("#{class_or_id}").click
       find("#{class_or_id}").fill_in with: text
       wait_for_javascript_to_finish
       expect(page).to have_selector("input#{class_or_id} ~ .tt-menu.tt-open")

@@ -25,42 +25,42 @@ RSpec.describe "User views Consolidated Request", js: true do
   fake_login_for_each_test
 
   context 'with all SSRs' do
-    scenario 'and sees the Consolidated Request modal' do
-      org      = create(:organization)
-      protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol)
+    it 'should show the consolidated request modal' do
+      org       = create(:organization)
+      service   = create(:service, organization: org)
+      protocol  = create(:study_federally_funded, primary_pi: jug2)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      ssr       = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol, status: 'draft')
+                  create(:line_item, sub_service_request: ssr, service_request: sr, service: service)
 
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      find('.view-consolidated').click
-      within '.dropdown.open .dropdown-menu' do
-        first('.view-full-calendar-button').click
-      end
+      find('.view-consolidated-request').click
+      first('.view-consolidated-request + .dropdown-menu .dropdown-item').click
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.full-calendar-modal', visible: true)
+      expect(page).to have_selector('#consolidatedRequestModal')
     end
   end
 
   context 'excluding draft SSRs' do
-    scenario 'and sees the Consolidated Request modal' do
-      org      = create(:organization)
-      protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol)
+    it 'should show the consolidated request modal' do
+      org       = create(:organization)
+      service   = create(:service, organization: org)
+      protocol  = create(:study_federally_funded, primary_pi: jug2)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      ssr       = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol)
+                  create(:line_item, sub_service_request: ssr, service_request: sr, service: service)
 
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
 
-      find('.view-consolidated').click
-      within '.dropdown.open .dropdown-menu' do
-        all('.view-full-calendar-button')[1].click
-      end
+      find('.view-consolidated-request').click
+      all('.view-consolidated-request + .dropdown-menu .dropdown-item').last.click
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.full-calendar-modal', visible: true)
+      expect(page).to have_selector('#consolidatedRequestModal')
     end
   end
 end

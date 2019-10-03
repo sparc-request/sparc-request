@@ -22,7 +22,7 @@
 
 .tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', boundary: 'window' } }
   .dropdown.no-caret
-    %button.btn.btn-success.dropdown-toggle{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
+    %button.btn.btn-success.dropdown-toggle.send-notification{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
       = icon('far', 'envelope', class: in_admin? ? 'mr-2' : '')
       - if in_admin?
         = t('dashboard.notifications.compose')

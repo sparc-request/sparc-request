@@ -614,9 +614,6 @@ en:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
       links:
-        blog:
-          text: "Blog"
-          url: "https://sparcrequestblog.com/"
         about: "About"
         sctr:
           text: "SCTR"

@@ -29,7 +29,7 @@
       = hidden_field_tag :srid, service_request.id, disabled: true
       .d-flex.justify-content-between.mb-1
         - if service_request.protocol.is_study?
-          = link_to dashboard_protocol_path(service_request.protocol, format: :pdf), target: :blank, class: 'btn btn-success' do
+          = link_to dashboard_protocol_path(service_request.protocol, format: :pdf), target: :blank, class: 'btn btn-lg btn-success' do
             = succeed t('dashboard.protocols.service_requests.cost_analysis_report') do
               = icon('fas', 'file-pdf mr-2')
         = render 'service_calendars/master_calendar/pppv/services_toggle'

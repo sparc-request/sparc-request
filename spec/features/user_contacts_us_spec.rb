@@ -24,31 +24,22 @@ RSpec.describe 'User clicks Contact Us', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  scenario 'and sees the contact modal' do
+  it 'should submit a new contact form' do
     visit root_path
     wait_for_javascript_to_finish
 
-    click_link 'Contact Us'
+    find('#helpDropdown').hover
+    find('#helpDropdown + .dropdown-menu .dropdown-item', text: I18n.t('layout.footer.links.contact')).click
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector('#modal-title', text: 'Contact Us', visible: true)
-  end
+    fill_in 'contact_form_subject', with: 'I need help'
+    fill_in 'contact_form_message', with: 'I don\'t know how to write specs'
 
-  context 'and fills in the form and submits' do
-    scenario 'and sees confirmation' do
-      visit root_path
-      wait_for_javascript_to_finish
+    copy = double()
+    expect(ContactMailer).to receive(:contact_us_email).with(instance_of(ContactForm)).and_return(copy)
+    expect(copy).to receive(:deliver_now)
 
-      click_link 'Contact Us'
-      wait_for_javascript_to_finish
-
-      fill_in 'contact_form_email', with: 'abc@def.ghi'
-      fill_in 'contact_form_message', with: 'abcdefghi'
-
-      click_button 'Submit'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Message sent successfully!')
-    end
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
   end
 end

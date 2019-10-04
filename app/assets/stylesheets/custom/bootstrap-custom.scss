@@ -19,20 +19,33 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 /////////////
+/// Alert ///
+/////////////
+
+.alert {
+  &.alert-sm {
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+/////////////
 /// Badge ///
 /////////////
 
 .badge {
-  &.notification-badge {
-    position: absolute;
-    top: -.25rem;
-    right: -.25rem;
+  &.badge-c {
     width: 16px;
     height: 16px;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &.notification-badge {
+    position: absolute;
+    top: -.25rem;
+    right: -.25rem;
   }
 }
 
@@ -53,7 +66,7 @@
 .btn {
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
-    color: white;
+    color: white !important;
   }
 
   &.btn-light:not(.toggle) {
@@ -62,6 +75,16 @@
 
   &.disabled {
     cursor: not-allowed;
+  }
+
+  &.btn-link.bg-white {
+    &:hover {
+      background: darken(#fff, 8%) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background: darken(#fff, 10%) !important;
+    }
   }
 }
 
@@ -202,11 +225,9 @@
 ////////////////
 
 .dropdown {
-  &.no-caret .dropdown-toggle::after {
-    display: none;
-  }
-
   .dropdown-menu {
+    z-index: 1030;
+
     .dropdown-header, .dropdown-item {
       padding-left: 1rem;
       padding-right: 1rem;
@@ -227,6 +248,11 @@
       align-items: center;
     }
   }
+}
+
+.dropdown.no-caret .dropdown-toggle::after,
+.dropdown-toggle.no-caret::after {
+  display: none;
 }
 
 @include media-breakpoint-down(sm) {
@@ -308,6 +334,40 @@ form, .form {
   }
 }
 
+//////////////////
+/// List Group ///
+//////////////////
+
+@each $color, $value in $theme-colors {
+  $hover-background: darken($value, 7.5%);
+  $active-background: darken($value, 10%);
+
+  .list-group-item.list-group-item-#{$color}[data-toggle=collapse] {
+    transition: $btn-transition;
+
+    &:hover {
+      background-color: theme-color-level($color, -8) !important;
+    }
+
+    &.active, &:active, &:focus {
+      background-color: theme-color-level($color, -6) !important;
+      color: theme-color-level($color, 6) !important;
+    }
+  }
+}
+
+/////////////
+/// Modal ///
+/////////////
+
+@include media-breakpoint-up(lg) {
+  .modal {
+    .modal-dialog:not(.modal-xl):not(.modal-lg):not(.modal-sm):not(.modal-xs) {
+      max-width: 600px;
+    }
+  }
+}
+
 ///////////
 /// Nav ///
 ///////////
@@ -330,6 +390,43 @@ form, .form {
         background: theme-color('light');
       }
     }
+  }
+
+  &.nav-pills .nav-link:not(.active):hover {
+    background: theme-color('light');
+  }
+}
+
+.tabs {
+  nav.nav-tabs {
+    &.nav-justified {
+      &+ .tab-content > .tab-pane {
+        &:not(.loading) > .card:first-of-type {
+          border-top: 0;
+        }
+
+        .card:first-of-type .card-header {
+          border-top-right-radius: 0;
+        }
+      }
+    }
+
+    &:not(.nav-justified) {
+      margin-bottom: -1px;
+      z-index: 1037;
+
+      .nav-link:not(.active) {
+        border-bottom: 1px solid $border-color;
+      }
+    }
+
+    .nav-link.active:first-child {
+      border-bottom: 0 !important;
+    }
+  }
+
+  .tab-content .tab-pane .card:first-of-type .card-header {
+    border-top-left-radius: 0;
   }
 }
 
@@ -500,6 +597,18 @@ nav.navbar {
       vertical-align: middle;
     }
   }
+
+  &.table-interactive tbody tr:hover {
+    cursor: pointer;
+  }
+
+  &.table-fixed {
+    table-layout: fixed;
+  }
+
+  thead th {
+    border-bottom: 0;
+  }
 }
 
 .card > .table, .card > .collapse > .table, .card > .collapsing > .table {
@@ -556,5 +665,12 @@ nav.navbar {
 
 .sticky-top {
   position: -webkit-sticky;
+  position: sticky;
   top: 0;
+}
+
+.sticky-bottom {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
 }

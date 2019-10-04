@@ -42,10 +42,6 @@ class ServiceRequest < ApplicationRecord
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id
 
-  validation_group :service_calendar do
-    validate :validate_service_calendar
-  end
-
   attr_accessor :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
@@ -56,24 +52,19 @@ class ServiceRequest < ApplicationRecord
   #after_save :fix_missing_visits
 
   def catalog_valid?
-    errors.add(:line_items, :blank) if self.line_items.empty?
+    self.errors.add(:line_items, :blank) if self.line_items.empty?
     self.errors.none?
   end
 
   def protocol_valid?
-    errors.add(:protocol, :blank) if self.protocol_id.blank?
-    errors.add(:protocol, :invalid) if self.protocol && !self.protocol.valid?
+    self.errors.add(:protocol, :blank) if self.protocol_id.blank?
+    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.valid?
+    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.validate_dates
     self.errors.none?
   end
 
   def service_details_valid?
-    self.errors.add(:protocol, :invalid) unless self.protocol.dates_valid?
-    self.errors.add(:arms, :blank) if self.has_per_patient_per_visit_services? && self.arms.none?
-    self.errors.none?
-  end
-
-  def service_calendar_valid?
-    errors.add(:arms, :invalid) unless self.arms.all?(&:visit_groups_valid?)
+    self.errors.add(:arms, :invalid) unless self.arms.all?(&:visit_groups_valid?)
     self.errors.none?
   end
 
@@ -412,10 +403,6 @@ class ServiceRequest < ApplicationRecord
     self.arms.each do |arm|
       arm.update_minimum_counts
     end
-  end
-
-  def arms_editable?
-    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
   def audit_report( identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc )

@@ -20,3 +20,5 @@
 
 $("#modalContainer").html("<%= j render 'dashboard/protocol_filters/form', protocol_filter: @protocol_filter %>");
 $("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

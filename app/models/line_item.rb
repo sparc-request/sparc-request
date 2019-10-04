@@ -51,12 +51,11 @@ class LineItem < ApplicationRecord
   delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
-  validates :service_id, numericality: true, presence: true
-  validates :service_request_id, numericality:  true
+  validates :service_id, :service_request_id, presence: true
 
-  validates :quantity, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
-  validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
-  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, presence: true, numericality: true, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, if: Proc.new { |li| li.quantity && li.service && li.service.one_time_fee? }
+  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
 
   after_create :build_line_items_visits_if_pppv
   before_destroy :destroy_arms_if_last_pppv_line_item, if: Proc.new { |li| !li.one_time_fee }
@@ -111,17 +110,14 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
-    pricing = self.service.current_effective_pricing_map
-    max = pricing.units_per_qty_max
-    min = pricing.quantity_minimum
-    if quantity.nil?
-      errors.add(:quantity, :blank)
-    else
-      if quantity < min
-        errors.add(:quantity, :min)
-      elsif quantity > max
-        errors.add(:quantity, :max)
-      end
+    pricing           = self.service.current_effective_pricing_map
+    quantity_max      = pricing.units_per_qty_max
+    quantity_min      = pricing.quantity_minimum
+
+    if self.quantity < quantity_min
+      errors.add(:quantity, :min)
+    elsif self.quantity > quantity_max
+      errors.add(:quantity, :max)
     end
   end
 

@@ -54,6 +54,10 @@ $(document).ready ->
 
   $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
     last_selected = $(this).val()
+    po_selected_id = $(this).closest('select').attr('id')
+    if last_selected == '' && po_selected_id != 'select-pro-org-institution'
+      last_selected = $(this).parents("div").prev().find('select').val()
+
     $.ajax
       method: 'get'
       dataType: 'script'

@@ -125,8 +125,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       end
 
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
-
-      redirect_to dashboard_protocol_path(@protocol)
     else
       @errors = @protocol.errors
     end
@@ -200,9 +198,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     action = @protocol.archived ? 'archive' : 'unarchive'
 
     @protocol.notes.create(identity: current_user, body: t("protocols.summary.#{action}_note", protocol_type: @protocol_type))
-    ProtocolMailer.with(protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
 
-    respond_to :js
+    ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
+    (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
+      ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
+    end
+    respond_to do |format|
+      format.js
+    end
   end
 
   def display_requests

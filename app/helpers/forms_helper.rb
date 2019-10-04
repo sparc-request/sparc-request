@@ -30,14 +30,17 @@ module FormsHelper
     if in_review?
       response = Response.where(survey: form, respondable: respondable).first
       response ? view_response_button(response) : link_to(icon('fas', 'eye'), 'javascript:void(0)', class: 'btn btn-info disabled')
-    elsif in_dashboard?
-      response = Response.where(survey: form, respondable: respondable).first
-      [ view_response_button(response),
-        edit_response_button(response),
-        delete_response_button(response)
-      ].join('')
     else
-      complete_form_button(form, respondable)
+      if response = Response.where(survey: form, respondable: respondable).first
+        content_tag :div, class: 'd-flex justify-content-center' do
+          raw([ view_response_button(response),
+            edit_response_button(response),
+            delete_response_button(response)
+          ].join(''))
+        end
+      else
+        complete_form_button(form, respondable)
+      end
     end
   end
 

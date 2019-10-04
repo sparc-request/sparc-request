@@ -18,88 +18,96 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#serviceCalendar, #serviceCalendarReview {
-  .service-calendar-container {
-    .card-header {
-      z-index: 1023;
+#studyScheduleTab #serviceCalendar #billingStrategyTab,
+#studyScheduleTab #serviceCalendar #templateTab {
+  .service-calendar-container .service-calendar-table .visit-group:last-child::before {
+    border-right: 0;
+  }
+}
+
+#serviceCalendar .service-calendar-container {
+  .service-calendar-table {
+    border-left: 0;
+    border-right: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+    table-layout: fixed;
+
+    &> thead > tr > th {
+      @extend .sticky-top;
+      border: 0;
+      background: white;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-right: $table-border-width solid $table-border-color;
+        border-bottom: $table-border-width solid $table-border-color;
+        pointer-events: none;
+      }
     }
 
-    & .service-calendar-table > thead > tr:first-child > th {
-      z-index: 1022;
-    }
-
-    & .service-calendar-table > thead > tr:nth-child(2) > th {
-      z-index: 1021;
-    }
-
-    & .service-calendar-table > thead > tr:nth-child(3) > th {
-      z-index: 1020;
-    }
-
-    .service-calendar-table {
+    tbody th:first-child, tbody td:first-child {
       border-left: 0;
+    }
+
+    &> thead > tr:first-child > th:last-child::before, &> thead > tr.check-visits-row th:last-child::before, tbody th:last-child, tbody td:last-child {
       border-right: 0;
-      margin-bottom: 0;
+    }
+
+    tbody tr:last-child td, tbody tr:last-child th {
       border-bottom: 0;
-      table-layout: fixed;
-
-      &> thead > tr > th {
-        @extend .sticky-top;
-        border: 0;
-        background: white;
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          border-right: $table-border-width solid $table-border-color;
-          border-bottom: $table-border-width solid $table-border-color;
-          pointer-events: none;
-        }
-      }
-
-      tbody th:first-child, tbody td:first-child {
-        border-left: 0;
-      }
-
-      &> thead > tr:first-child > th:last-child::before, .check-visits-row tr th:last-child::before, tbody th:last-child, tbody td:last-child {
-        border-right: 0;
-      }
-
-      tbody tr:last-child td, tbody tr:last-child th {
-        border-bottom: 0;
-      }
-
-      th, td {
-        vertical-align: middle;
-      }
     }
 
-    .visit-group-select .dropdown-menu {
-      li:not(.active) .vg-page-header {
-        @extend .bg-light;
-      }
+    th, td {
+      vertical-align: middle;
+      padding: 0.5rem 0.25rem;
+    }
+  }
 
-      .vg-page-header {
-        @extend .border-top;
-        @extend .border-bottom;
-        @extend .font-weight-bold;
-      }
+  .visit-group-select .dropdown-menu {
+    li:not(.active) .vg-page-header {
+      @extend .bg-light;
     }
 
-    .visit {
-      &:not(.calendar-visit):not(.locked-visit):hover {
+    .vg-page-header {
+      @extend .border-top;
+      @extend .border-bottom;
+      @extend .font-weight-bold;
+    }
+  }
+
+  .visit-group table, .visit table {
+    table-layout: fixed;
+  }
+
+  th.visit-group, th.check-column, td.check-row, td.notes, td.displayed-cost, td.subject-count, td.visit:not(.calendar-visit), td.units-per-quantity, td.quantity {
+    &.editable {
+      transition: $btn-transition;
+
+      &:hover {
         cursor: pointer;
         background: theme-color('light');
-      }
 
-      .visit-quantity {
-        transform: scale(1.5);
-        cursor: pointer;
+        a {
+          @extend .active;
+        }
       }
     }
+
+    .visit-quantity {
+      transform: scale(1.5);
+      cursor: pointer;
+    }
+  }
+
+  tbody td, tbody th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

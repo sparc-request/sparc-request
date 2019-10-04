@@ -28,6 +28,6 @@
   - path_method = method(:table_service_calendars_path)
 
 .d-flex
-  = link_to icon('fas', 'arrow-left'), path_method.call(url_data.merge(page: page - 1)), remote: true, class: ['btn btn-primary mr-2', page == 1 ? 'disabled' : ''], title: t('calendars.pppv.header_fields.page_select.previous'), data: { toggle: 'tooltip' }
+  = link_to icon('fas', 'arrow-left'), path_method.call(url_data.merge(page: page - 1)), remote: true, class: ['btn btn-primary mr-1', page == 1 ? 'disabled' : ''], title: t('calendars.pppv.header_fields.page_select.previous'), data: { toggle: 'tooltip' }
   = Dashboard::ServiceCalendars.build_visits_select(arm, page, path_method.call(url_data))
-  = link_to icon('fas', 'arrow-right'), path_method.call(url_data.merge(page: page + 1)), remote: true, class: ['btn btn-primary ml-2', ((page + 1) * 5) - 4 > arm.visit_count ? 'disabled' : ''], title: t('calendars.pppv.header_fields.page_select.next'), data: { toggle: 'tooltip' }
+  = link_to icon('fas', 'arrow-right'), path_method.call(url_data.merge(page: page + 1)), remote: true, class: ['btn btn-primary ml-1', ((page + 1) * 5) - 4 > arm.visit_count ? 'disabled' : ''], title: t('calendars.pppv.header_fields.page_select.next'), data: { toggle: 'tooltip' }

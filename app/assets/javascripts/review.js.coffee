@@ -18,37 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  if $('#serviceCalendarReview').length
-    adjustCalendarHeaders()
-
-  survey_offered = false
+$ ->
   if $('#use_system_satisfaction').val() == 'true'
-    $(document).one 'click', '.submit-request', (event) ->
-      button = $(this)
-      if !survey_offered
-        event.preventDefault()
-        $.ajax
-          method: 'get'
-          dataType: 'script'
-          url: '/service_request/system_satisfaction_survey'
-          data:
-            srid: getSRId()
+    $(document).one 'click', '#getCostEstimate, #submitRequest', (event) ->
+      event.preventDefault()
+      $this = $(this)
+      $this.addClass('disabled')
 
-        $(document).one 'hide.bs.modal', '#modalContainer', ->
-          form = document.getElementById('serviceRequestForm')
-          Rails.fire(form, 'submit')
-
-    $(document).one 'click', '.get-a-cost-estimate', (event) ->
-      button = $(this)
-      if !survey_offered
-        event.preventDefault()
-        $.ajax
-          method: 'get'
-          dataType: 'script'
-          url: '/service_request/system_satisfaction_survey'
-          data:
-            srid: getSRId()
-
-        $(document).one 'hide.bs.modal', '#modalContainer', ->
-          window.location = button.prop('href')
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: '/service_request/system_satisfaction_survey'
+        data:
+          srid: getSRId()
+        success: ->
+          $(document).one 'hide.bs.modal', ->
+            window.location = $this.prop('href')

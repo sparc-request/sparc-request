@@ -13,9 +13,9 @@ bootstrap-select@^1.13.10:
   integrity sha512-mwfyd+VWHY8wDN4je4Y8PPEaOAzDPUz95z5F5zxzlIqebqxtbrujclFWLrhkVOyETpsgZCL1rsfyEnHpAugtGg==
 
 bootstrap-table@^1.14.2:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/bootstrap-table/-/bootstrap-table-1.15.2.tgz#452a718c45a211ed3b254ee87077fb04338c3dfe"
-  integrity sha512-wStieT+3llzcnuyzhmsWG7i82T13zg3Jv01fL+FdITKltpZ/1bxbEIJjtpXyi6dKhKBrhJ/wZJBlnkl9BFKnkQ==
+  version "1.15.4"
+  resolved "https://registry.yarnpkg.com/bootstrap-table/-/bootstrap-table-1.15.4.tgz#18d8c1aa2b86879a5478188a04cf7603783bf019"
+  integrity sha512-hGp0480hLFQrqilnITEdJDhdes8zNwptQ7688osKhd1itCkRLrYbIIBFZ3eUanfS7oXxxmarN4krEqDLkrAw8Q==
 
 bootstrap4-toggle@^3.4.0:
   version "3.4.0"
@@ -110,6 +110,11 @@ popper.js@^1.14.3, popper.js@^1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
   integrity sha512-w010cY1oCUmI+9KwwlWki+r5jxKfTFDVoadl7MSrIujHU5MJ5OR6HTDj6Xo8aoR/QsA56x8jKjA59qGH4ELtrA==
+
+stickybits@^3.6.6:
+  version "3.6.6"
+  resolved "https://registry.yarnpkg.com/stickybits/-/stickybits-3.6.6.tgz#ce042cbeaecfcc84cda602be6f5bc99b63e2964c"
+  integrity sha512-+++I84+V+IqRXCDIgSn7tGHXF1BtsPn/Nb3Ve3ZEH2NnTauorHyUFbKTW+nycobxtsGQMnl5V0WdHxGTDdmp+A==
 
 sweetalert2@^8.11.4:
   version "8.13.0"

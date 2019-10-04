@@ -17,8 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .form-group
-  .input-group#datetimepicker
-    = text_field_tag :response_example, '', class: 'form-control', disabled: "disabled"
-    %span.input-group-addon
-      %span.glyphicon.glyphicon-calendar
+  .input-group.datetimepicker.date{ id: "questionDatePicker#{question.id}", data: { target_input: 'nearest' } }
+    = text_field_tag :response_example, '', class: 'datetimepicker-input form-control', disabled: true, placeholder: t(:surveyor)[:surveys][:form][:placeholders][:example][:date], data: { target: "questionDatePicker#{question.id}" }
+    .input-group-append
+      %span.input-group-text
+        = icon('fas', 'calendar-alt')

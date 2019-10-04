@@ -37,7 +37,7 @@ class Setting < ApplicationRecord
   end
 
   def self.get_value(key)
-    if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
+    if RequestStore.store[:settings_map].try(:[], key)
       converted_value(RequestStore.store[:settings_map][key][:value], RequestStore.store[:settings_map][key][:data_type])
     else
       Setting.find_by_key(key).value rescue nil

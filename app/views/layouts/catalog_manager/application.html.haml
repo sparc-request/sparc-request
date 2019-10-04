@@ -18,4 +18,26 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render template: 'layouts/application'
+!!!
+%html
+  %head
+    %title
+      = t(:catalog_manager)[:header]
+    = csrf_meta_tags
+    = stylesheet_link_tag    "catalog_manager/application"
+    = javascript_include_tag "catalog_manager/application"
+    = favicon_link_tag asset_path('favicon.ico')
+    = render 'layouts/i18n-js'
+  %body#body
+    #container
+      #header
+        = render 'layouts/catalog_manager/header_logos'
+        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
+      = render 'layouts/catalog_manager/header', user: @user
+      - unless content_for?(:flash)
+        = render 'layouts/flash'
+      #inner-content.row
+        = yield
+  %footer
+    = render 'layouts/catalog_manager/footer'
+    = render 'layouts/modal'

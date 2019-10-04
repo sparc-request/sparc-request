@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, service_request: @service_request %>")
+$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, service_request: @service_request, epic_user: @epic_user %>")
 $("#modalContainer").modal('show')
 
 if ['pi', 'primary-pi', 'business-grants-manager'].includes("<%= @protocol_role.role %>")
@@ -34,7 +34,7 @@ $('#authorizedUserForm').on 'submit', (event) ->
     ConfirmSwal.fire(
       title: I18n.t('authorized_users.form.primary_pi_change.title', protocol_type: "<%= @protocol.model_name.human %>")
       html: I18n.t('authorized_users.form.primary_pi_change.text', new_pi_name: "<%= @protocol_role.identity.full_name %>", current_pi_name: "<%= @protocol.primary_pi.full_name %>")
-    ).then (result) =>
+    ).then (result) ->
       if result.value
         primaryPiConfirmed = true
         Rails.fire(form, 'submit')
@@ -44,7 +44,7 @@ $('#authorizedUserForm').on 'submit', (event) ->
     ConfirmSwal.fire(
       title: I18n.t('authorized_users.form.user_rights_change.title')
       html: I18n.t('authorized_users.form.user_rights_change.proper_text')
-    ).then (result) =>
+    ).then (result) ->
       if result.value
         rightsChangeConfirmed = true
         Rails.fire(form, 'submit')

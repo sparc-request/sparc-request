@@ -17,34 +17,27 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title
-      = I18n.t("surveyor.surveys.form.survey_information.header", klass: survey.class.yaml_klass)
-  .panel-body
+%section.list-group-item
+  %h4.mb-2
+    = I18n.t("surveyor.surveys.form.survey_information.header", klass: survey.model_name.human)
+
+  .form-group
+    = label_tag "survey-#{survey.id}-title", t(:surveyor)[:surveys][:form][:survey_information][:title], class: 'required'
+    = text_field_tag "survey-#{survey.id}-title", survey.title, class: 'form-control'
+  .form-group
+    = label_tag "survey-#{survey.id}-description", t(:surveyor)[:surveys][:form][:survey_information][:description]
+    = text_area_tag "survey-#{survey.id}-description", survey.description, class: 'form-control', placeholder: I18n.t("surveyor.surveys.form.placeholders.survey.description", klass: survey.model_name.human.downcase)
+  .form-group
+    = label_tag "survey-#{survey.id}-access_code", t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'required'
+    = text_field_tag "survey-#{survey.id}-access_code", survey.access_code, class: 'form-control'
+  .form-group
+    = label_tag "survey-#{survey.id}-version", t(:surveyor)[:surveys][:form][:survey_information][:version], class: 'required'
+    = text_field_tag "survey-#{survey.id}-version", survey.version, class: 'form-control'
+  .form-group
+    - if survey.is_a?(Form)
+      = label_tag "survey-#{survey.id}-surveyable", t(:surveyor)[:surveys][:form][:survey_information][:surveyable], class: 'required'
+      = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.try(:name), class: 'form-control', data: { surveyable: survey.surveyable ? "#{survey.surveyable.class}-#{survey.surveyable.id}" : "" }, placeholder: survey.surveyable.try(:name) || t(:surveyor)[:surveys][:form][:placeholders][:survey][:surveyable]
+  - if survey.questions.any?
     .form-group
-      = label_tag "survey-#{survey.id}-title", t(:surveyor)[:surveys][:form][:survey_information][:title], class: 'col-lg-2 control-label required'
-      .col-lg-10
-        = text_field_tag "survey-#{survey.id}-title", survey.title, class: 'form-control', maxlength: 255
-    .form-group
-      = label_tag "survey-#{survey.id}-description", t(:surveyor)[:surveys][:form][:survey_information][:description], class: 'col-lg-2 control-label'
-      .col-lg-10
-        = text_area_tag "survey-#{survey.id}-description", survey.description, class: 'form-control', maxlength: 255, placeholder: I18n.t("surveyor.surveys.form.placeholders.survey.description", klass: survey.class.yaml_klass.downcase)
-    .form-group
-      = label_tag "survey-#{survey.id}-access_code", t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'col-lg-2 control-label required'
-      .col-lg-10
-        = text_field_tag "survey-#{survey.id}-access_code", survey.access_code, class: 'form-control', maxlength: 255
-    .form-group
-      = label_tag "survey-#{survey.id}-version", t(:surveyor)[:surveys][:form][:survey_information][:version], class: 'col-lg-2 control-label required'
-      .col-lg-10
-        = text_field_tag "survey-#{survey.id}-version", survey.version, class: 'form-control', maxlength: 255
-    .form-group
-      - if survey.is_a?(Form)
-        = label_tag "survey-#{survey.id}-surveyable", t(:surveyor)[:surveys][:form][:survey_information][:surveyable], class: 'col-lg-2 control-label required'
-        .col-lg-10
-          = text_field_tag "survey-#{survey.id}-surveyable", survey.surveyable.try(:name), class: 'form-control', data: { surveyable: survey.surveyable ? "#{survey.surveyable.class}-#{survey.surveyable.id}" : "" }, placeholder: survey.surveyable.try(:name) || t(:surveyor)[:surveys][:form][:placeholders][:survey][:surveyable]
-    - if survey.questions.any?
-      .form-group
-        = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'col-lg-2 control-label'
-        .col-lg-10
-          = check_box_tag "survey-#{survey.id}-active", survey.active, survey.active, survey.surveyable_type == 'Identity' ? { title: t(:surveyor)[:forms][:table][:tooltips][:activate], data: { toggle: 'tooltip' }, disabled: 'disabled' } : {}
+      = label_tag "survey-#{survey.id}-active", t(:surveyor)[:surveys][:form][:survey_information][:active], class: 'mr-2'
+      = check_box_tag "survey-#{survey.id}-active", survey.active, survey.active, survey.surveyable_type == 'Identity' ? { title: t(:surveyor)[:forms][:table][:tooltips][:activate], data: { toggle: 'tooltip' }, disabled: 'disabled' } : {}

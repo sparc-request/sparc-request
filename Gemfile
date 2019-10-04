@@ -23,10 +23,10 @@ gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.10'
-gem 'deep_cloneable', '~> 2.4.0'
+gem 'deep_cloneable', '~> 3.0.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.6'
+gem 'devise', '~> 4.7'
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
 gem 'execjs'
@@ -86,12 +86,13 @@ gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
+gem 'x-editable-rails'
 
 group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.6.0' # Check usage
+  gem 'addressable', '~> 2.7.0' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

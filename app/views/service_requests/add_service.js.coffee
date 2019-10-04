@@ -25,7 +25,7 @@ ConfirmSwal.fire(
   text: I18n.t('proper.catalog.new_request.warning')
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
   cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
-).then (result) =>
+).then (result) ->
   if result.value
     $.ajax
       type: 'post'
@@ -52,4 +52,6 @@ if !url.searchParams.get('srid')
   $('input[name=srid]').val("<%= @service_request.id %>")
   $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
   $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
+
+  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

@@ -27,6 +27,6 @@ $(document).ready( function() {
     if (event.target.tagName != 'A' || event.target.getAttribute('href').charAt(0) !== '#')
       NProgress.start();
   }).on('ajaxComplete ajax:complete', function() {
-    NProgress.done()
+    NProgress.done();
   });
 });

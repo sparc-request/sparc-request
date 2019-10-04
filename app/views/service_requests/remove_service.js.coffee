@@ -22,7 +22,7 @@
 ConfirmSwal.fire(
   title: I18n.t('proper.cart.request_submitted.header')
   text: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
-).then (result) =>
+).then (result) ->
   if result.value
     $.ajax
       type: 'delete'
@@ -38,7 +38,7 @@ ConfirmSwal.fire(
   text: I18n.t('proper.cart.last_service.warning')
   confirmButtonText: I18n.t('proper.cart.last_service.confirm')
   cancelButtonText: I18n.t('proper.cart.last_service.cancel')
-).then (result) =>
+).then (result) ->
   if result.value
     $.ajax
       type: 'delete'
@@ -55,4 +55,6 @@ $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_reque
 <% if request.referrer.split('/').last == 'protocol' %>
 $('.service-list').html("<%= j render 'service_requests/protocol/service_list', service_request: @service_request %>")
 <% end %>
+
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

@@ -41,9 +41,10 @@
 //= require bootstrap4-toggle/js/bootstrap4-toggle
 //= require corejs-typeahead/dist/typeahead.bundle.min
 //= require moment/min/moment-with-locales.min
-//= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min
+//= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress
+//= require stickybits/dist/stickybits.min
 
 //////////////////////////////////
 /// Require Our Custom Scripts ///
@@ -60,6 +61,7 @@
 
 /// Replace with //= require_tree . when finished! ///
 
+//= require utilities
 //= require global
 //= require batch-select
 //= require login
@@ -79,9 +81,14 @@
 
 //= require dashboard/protocols
 //= require dashboard/notifications
+//= require dashboard/epic_queues
+//= require dashboard/sub_service_requests
+//= require funding/documents
 
 //= require reporting
 
+//= require surveyor/responses
+//= require surveyor/surveys
 
 // require batch-select
 // require bootstrap-table
@@ -95,8 +102,6 @@
 // require global
 // require associated_users_form
 // require study_schedule_tabs
-// require surveyor/responses
-// require surveyor/surveys
 // require sweetalert.min
 // require feedback
 // require notes

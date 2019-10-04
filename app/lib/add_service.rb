@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AddService
-  def initialize(service_request, service_id, requester, new_request, confirmed)
+  def initialize(service_request, service_id, requester, new_request=false, confirmed=false)
     @service_request  = service_request
     @service          = Service.find(service_id)
     @requester        = requester
@@ -28,6 +28,7 @@ class AddService
   end
 
   def generate_new_service_request
+    @service_request.save
     new_line_items = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false ) || []
     create_sub_service_requests(new_line_items)
   end

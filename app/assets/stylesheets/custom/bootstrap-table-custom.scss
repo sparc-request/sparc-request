@@ -39,7 +39,16 @@
     }
 
     .fixed-table-toolbar, .fixed-table-pagination {
+      @extend .border-top;
       padding: 0 0.75rem;
     }
+
+    .fixed-table-loading {
+      border: 0 !important;
+    }
+  }
+
+  .card-body .bootstrap-table .fixed-table-toolbar > * {
+    margin-top: 0px;
   }
 }

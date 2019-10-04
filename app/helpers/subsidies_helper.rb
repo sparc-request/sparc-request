@@ -28,13 +28,13 @@ module SubsidiesHelper
   end
 
   def approve_subsidy_button(subsidy, opts={})
-    link_to approve_dashboard_subsidy_path, remote: true, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
+    link_to approve_dashboard_subsidy_path(subsidy), remote: true, method: :patch, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
       icon('fas', 'check')
     end
   end
 
   def edit_subsidy_button(subsidy, opts={})
-    url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_dashboard_subsidy_path(subsidy, srid: opts[:srid])
+    url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_subsidy_path(subsidy, srid: opts[:srid])
 
     link_to url, remote: true, class: 'btn btn-warning mr-1' do
       icon('far', 'edit')

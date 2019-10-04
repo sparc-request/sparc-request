@@ -21,7 +21,7 @@
 module Dashboard::EpicQueuesHelper
 
   def format_protocol(protocol)
-    "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
+    link_to "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}", dashboard_protocol_path(protocol)
   end
 
   def format_pis(protocol)
@@ -29,24 +29,26 @@ module Dashboard::EpicQueuesHelper
   end
 
   def epic_queue_delete_button(epic_queue)
-    content_tag(:button,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })),
-      type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
+    link_to icon('fas', 'trash-alt'), dashboard_epic_queue_path(epic_queue.id), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' }
   end
 
   def epic_queue_send_button(epic_queue)
-    content_tag(
-      :a,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
-      data: { protocol_id: epic_queue.protocol.id, permission: 'true',
-              eq_id: epic_queue.id },
-      class: 'btn btn-success push-to-epic')
+    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic mr-1', data: { permission: 'true' }
+  end
+
+  def epic_queue_actions(epic_queue)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        epic_queue_send_button(epic_queue),
+        epic_queue_delete_button(epic_queue)
+      ].join(''))
+    end
   end
 
   def format_epic_queue_date(protocol)
     date = protocol.last_epic_push_time
     if date.present?
-      date.strftime(t(:epic_queues)[:date_formatter])
+      date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
     else
       ''
     end
@@ -54,7 +56,7 @@ module Dashboard::EpicQueuesHelper
 
   def format_epic_queue_created_at(epic_queue)
     created_at = epic_queue.created_at
-    created_at.strftime(t(:epic_queues)[:date_formatter])
+    created_at.strftime(t(:dashboard)[:epic_queues][:date_formatter])
   end
 
   def format_status(protocol)

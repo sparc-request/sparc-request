@@ -28,7 +28,22 @@ module ApplicationHelper
   end
 
   def format_phone(phone)
-    '(' + phone.first(3) + ') ' + phone.from(3).to(2) + '-' + phone.from(6).to(3) + (phone.include?('#') ? phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") : '') rescue ""
+    if phone
+      phone.gsub!(/[^0-9#]/, '')
+
+      formatted = ""
+      begin
+        formatted += "(#{phone.first(3)})"
+        formatted += " #{phone.from(3).to(2)}"
+        formatted += "-#{phone.from(6).to(3)}"
+        formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
+      rescue
+      end
+
+      return formatted
+    else
+      return phone
+    end
   end
 
   def format_currency(amount)
@@ -130,8 +145,8 @@ module ApplicationHelper
   end
 
   def inactive_tag
-    content_tag(:small, class: 'text-danger') do
-      content_tag(:i, t('calendars.inactive'))
+    content_tag(:small, class: 'text-danger ml-1') do
+      content_tag(:em, t('calendars.inactive'))
     end
   end
 
@@ -184,10 +199,14 @@ module ApplicationHelper
   end
 
   def in_dashboard?
-    (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+  end
+
+  def in_admin?
+    @in_admin ||= in_dashboard? && (params[:ssrid].present? || (controller_name == 'sub_service_requests' && !['index', 'show'].include?(action_name)) || (controller_name == 'sub_service_requests' && action_name == 'show' && request.format.html?))
   end
 
   def in_review?
-    action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
+    @in_review ||= action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
   end
 end

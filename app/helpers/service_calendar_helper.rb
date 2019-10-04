@@ -19,9 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ServiceCalendarHelper
-
   def currency_converter cents
     number_to_currency(Service.cents_to_dollars(cents))
+  end
+
+  def calendar_service(liv_or_li)
+    line_item = liv_or_li.is_a?(LineItem) ? liv_or_li : liv_or_li.line_item
+    text      = line_item.service.display_service_name
+    text     += inactive_tag unless line_item.service.is_available
+    raw(text)
   end
 
   def display_service_rate line_item

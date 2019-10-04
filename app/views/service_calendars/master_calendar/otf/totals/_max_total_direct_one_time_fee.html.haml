@@ -22,6 +22,5 @@
   %tr.bg-light.max-total-direct
     %th{ colspan: 10 }
       = t(:calendars)[:otf][:totals][:total_direct]
-    %td.text-center
-      %strong
-        = display_total_direct_cost_per_study_otfs(service_request)
+    %th.text-center{ title: display_total_direct_cost_per_study_otfs(service_request), data: { toggle: 'tooltip' } }
+      = display_total_direct_cost_per_study_otfs(service_request)

@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card
-  .card-header{ class: css_class(organization) }
-    %h4.mb-0.text-white
+  .card-header#organizationHeader{ class: css_class(organization) }
+    %h6.mb-0.text-white
       = organization.name
   .card-body
     - if organization.description.present?

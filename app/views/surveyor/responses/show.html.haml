@@ -22,6 +22,6 @@
     .panel-heading.text-center
       %h4.panel-title
         = @survey.title
-    .form
+    = fields_for @response do |f|
       .panel-body
-        = render 'surveyor/responses/form/show_form', survey: @survey, response: @response
+        = render 'surveyor/responses/form/show_form', survey: @survey, response: @response, f: f

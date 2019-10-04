@@ -49,43 +49,88 @@ nav#stepsNav {
   }
 
   .steps-container {
-    .col:first-child .nav-link {
-      right: -1.5rem;
-      z-index: 7;
+    &.even {
+      .col:first-child .nav-link {
+        right: -0.9vw;
+      }
+
+      .col:nth-child(2) .nav-link {
+        right: -0.55vw;
+      }
+
+      .col:nth-child(3) .nav-link {
+        right: -0.2vw;
+      }
+
+      .col:nth-child(4) .nav-link {
+        left: -0.2vw;
+      }
+
+      .col:nth-child(5) .nav-link {
+        left: -0.55vw;
+      }
+
+      .col:nth-child(6) .nav-link {
+        left: -0.9vw;
+      }
+
+      .nav-link {
+        transform: scaleX(1.225);
+      }
     }
 
-    .col:nth-child(2) .nav-link {
+    &:not(.even) {
+      .nav-link {
+        transform: scale(1.25, .9);
+      }
+
+      .col:first-child .nav-link {
+        right: -1.05vw;
+      }
+
+      .col:nth-child(2) .nav-link {
+        right: -0.55vw;
+      }
+
+      .col:nth-child(4) .nav-link {
+        left: -0.55vw;
+      }
+
+      .col:nth-child(5) .nav-link {
+        left: -1.05vw;
+      }
+    }
+
+    .col:first-child .nav-link {
       z-index: 6;
     }
 
-    .col:nth-child(3) .nav-link {
+    .col:nth-child(2) .nav-link {
       z-index: 5;
     }
 
-    .col:nth-child(4) .nav-link {
+    .col:nth-child(3) .nav-link {
       z-index: 4;
     }
 
-    .col:nth-child(5) .nav-link {
+    .col:nth-child(4) .nav-link {
       z-index: 3;
     }
 
-    .col:nth-child(6) .nav-link {
+    .col:nth-child(5) .nav-link {
       z-index: 2;
     }
 
-    .col:nth-child(7) .nav-link {
+    .col:nth-child(6) .nav-link {
       z-index: 1;
     }
 
     .col:last-child .nav-link {
-      left: -1.5rem;
     }
 
     .nav-link {
       position: absolute;
       width: 100%;
-      transform: scale(1.15, 1);
 
       .step {
         width: 100%;
@@ -117,35 +162,6 @@ nav#stepsNav {
 
 nav#dashboardNav {
   margin-top: -1rem;
-}
-
-//////////////////////////
-/// Form Sticky Navbar ///
-//////////////////////////
-
-.form-navigation {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-
-  .sticky-top {
-    top: 1rem;
-
-    .nav-link {
-      &:not(:last-child) {
-        @extend .border-bottom;
-      }
-
-      &.active {
-        color: white;
-        background-color: theme-color('primary');
-      }
-
-      &:not(.active):hover {
-        background-color: theme-color('light');
-      }
-    }
-  }
 }
 
 /////////////////////////

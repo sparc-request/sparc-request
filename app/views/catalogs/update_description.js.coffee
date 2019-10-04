@@ -19,3 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $('#welcomeMessage').html("<%= j render 'catalogs/description', organization: @organization, service_request: @service_request, locked_org_ids: @locked_org_ids %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

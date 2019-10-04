@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#protocolMilestonesCard
-  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#protocolMilestones' } }
+  .card-header.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolMilestones' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('protocols.milestones.header')
@@ -27,7 +27,7 @@
         = t('protocols.milestones.sub_header')
   .collapse#protocolMilestones{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
     .card-body
-      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || Rails.application.routes.recognize_path(request.referrer)[:action] == 'service_details')
+      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || Rails.application.routes.recognize_path(request.referrer)[:action] == 'protocol')
       = fields_for protocol.becomes(Protocol) do |f|
         .form-row
           .form-group.col-6{ class: show_errors ? @errors.messages[:start_date].any? ? 'is-invalid' : 'is-valid' : '' }

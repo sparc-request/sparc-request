@@ -75,5 +75,11 @@
 
   = render "associated_users/professional_organizations", professional_organization: identity.professional_organization
 
-  .form-group.mb-0
-    = f.submit t(:devise)[:profile][:update], class: 'btn btn-lg btn-block btn-outline-primary'
+- content_for :footer do
+  %footer.card.w-100.mt-3
+    .card-body.py-2.px-xl-5
+      .form-group.mb-0.d-flex.justify-content-between
+        = link_to :back, class: 'btn btn-lg btn-link px-0' do
+          - succeed t('actions.back') do
+            = icon('fas', 'arrow-left mr-2')
+        = submit_tag t(:devise)[:profile][:update], class: 'btn btn-lg btn-outline-success', form: 'edit_identity'

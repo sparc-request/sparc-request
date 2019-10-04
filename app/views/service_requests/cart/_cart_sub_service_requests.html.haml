@@ -19,15 +19,17 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - sub_service_requests.each do |ssr|
-  %div
-    .list-group.list-group-flush
-      .list-group-item{ class: ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger' }
+  .list-group.list-group-flush
+    .list-group-item{ class: [ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
+      %h6.d-flex.align-items-start.mb-0<
+        = icon('fas', 'caret-down pr-1 mr-2')
         = ssr_name_display(ssr)
+    .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
       - ssr.line_items.each do |li|
         .list-group-item
           .row
             .col-10.d-flex.align-items-center.pr-0
-              %h5.mb-0
+              %h6.mb-0<
                 = li.service.abbreviation
                 - if li.service.cpt_code.present?
                   %strong
@@ -36,5 +38,5 @@
                   = inactive_tag
             - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
               .col-2.pl-0.text-right
-                %button.btn.btn-danger.remove-service{ type: 'button', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', line_item_id: li.id } }
+                %button.btn.btn-sm.btn-sq.btn-danger.remove-service{ type: 'button', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', line_item_id: li.id } }
                   = icon('fas', 'trash-alt')

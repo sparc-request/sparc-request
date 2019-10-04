@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def let_there_be_lane
+def let_there_be_lane(opts={})
   let!(:jug2) { create(:identity,
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
       email:                 'glennj@musc.edu',
       credentials:           'ba',
-      catalog_overlord:      true,
+      catalog_overlord:      opts[:catalog_overlord].nil? ? true : opts[:catalog_overlord],
       password:              'p4ssword',
       password_confirmation: 'p4ssword',
       approved:              true
@@ -256,7 +256,8 @@ def build_study
     protocol = build(:study)
     identity = Identity.find_by_ldap_uid('jug2')
     identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, project_roles_attributes: [{identity_id:     identity.id, project_rights:  "approve", role: "primary-pi"}, {identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"}])
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, primary_pi_role_attributes: {identity_id: identity.id, project_rights: "approve", role: "primary-pi"})
+    protocol.project_roles.create({identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"})
     protocol.save validate: false
     service_request.update_attribute(:protocol_id, protocol.id)
     sub_service_request.update_attribute(:protocol_id, protocol.id)

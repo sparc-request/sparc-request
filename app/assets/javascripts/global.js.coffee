@@ -25,7 +25,8 @@ $.ajaxSetup({
   }
 });
 
-$(document).ready ->
+$ ->
+  $('html').addClass('ready')
   initializeSelectpickers()
   initializeDateTimePickers()
   initializeTooltips()
@@ -33,9 +34,10 @@ $(document).ready ->
   initializeToggles()
   initializeTables()
   setRequiredFields()
-  $('html').addClass('ready')
 
-  $(document).on 'load-success.bs.table ajax:complete', ->
+  stickybits('.position-sticky, .sticky-top')
+
+  $(document).on 'load-success.bs.table search.bs.table sort.bs.table column-switch.bs.table ajax:complete', (e) ->
     initializeSelectpickers()
     initializeDateTimePickers()
     initializeTooltips()
@@ -61,7 +63,7 @@ $(document).ready ->
       $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
   # Form validation
-  $(document).on 'keydown change change.datetimepicker', '.is-valid, .is-invalid', ->
+  $(document).on 'keydown change change.datetimepicker', '.is-valid:not(.persist-validation), .is-invalid:not(.persist-validation)', ->
     $(this).removeClass('is-valid is-invalid').find('.form-error').remove()
 
   # Smooth Collapses
@@ -119,38 +121,85 @@ $(document).ready ->
 
   # Phone Field Handler
   $(document).on('keydown', 'input[type=tel]', (event) ->
-    val       = $(this).val()
-    key       = event.keyCode || event.charCode
+    val = $(this).val()
+    key = event.keyCode || event.charCode
+    end = this.selectionEnd
 
     if [8, 46].includes(key) # Backspace or Delete keys
-      if val.length == 2
-        $(this).val('')
-      else if val.length == 7
-        $(this).val(val.substr(0, 5))
-      else if val.length == 11
-        $(this).val(val.substr(0,10))
-      else if val.length == 20
-        $(this).val(val.substr(0, 15))
+      if end == this.selectionStart
+        if val.charAt(end - 2) == '(' && val.length == 2
+          $(this).val('')
+        else if val.charAt(end - 3) == ')' && val.length == 7
+          $(this).val(val.substr(0, 5))
+        else if val.charAt(end - 2) == '-' && val.length == 11
+          $(this).val(val.substr(0,10))
+        else if val.substr(end - 6).slice(0, -1) == " #{I18n.t('constants.phone.extension')} "
+          $(this).val(val.substr(0, 15))
+        else if !val.charAt(end-1).trim().length || isNaN(val.charAt(end - 1))
+          event.stopImmediatePropagation()
+          return false
     else if key == 9 # Allow tabbing
       return true
-    else if (key >= 96 && key <= 105) || (key >= 48 && key <= 57) && !event.shiftKey # Numerical keypresses
-      if val.length == 0
-        $(this).val('(')
-      else if val.length == 4
-        $(this).val(val + ') ')
-      else if val.length == 9
-        $(this).val(val + '-')
-      else if val.length == 14
-        $(this).val(val + " #{I18n.t('constants.phone.extension')} ")
+    else if key == 37 # Allow limited Left Arrow usage
+      if val.substr(end - 4, I18n.t('constants.phone.extension').length) == I18n.t('constants.phone.extension')
+        this.setSelectionRange(end - 4, end - 4)
+      else if val.charAt(end - 1) == '-'
+        this.setSelectionRange(end, end)
+      else if val.charAt(end - 2) == ')'
+        this.setSelectionRange(end - 1, end - 1)
+      else if val.charAt(end - 1) == '('
+        event.stopImmediatePropagation()
+        return false
+    else if key == 39 # Allow limited Right Arrow usage
+      if val.substr(end + 1, I18n.t('constants.phone.extension').length) == I18n.t('constants.phone.extension')
+        this.setSelectionRange(end + 4, end + 4)
+      else if val.charAt(end) == '-'
+        this.setSelectionRange(end, end)
+      else if val.charAt(end) == ')'
+        this.setSelectionRange(end + 1, end + 1)
+    else if (key >= 96 && key <= 105) || (key >= 48 && key <= 57) && !event.shiftKey
+      # Permit numerical keypresses
     else
       event.stopImmediatePropagation()
       return false
   ).on('keyup', 'input[type=tel]', (event) ->
+    val = $(this).val()
     key = event.keyCode || event.charCode
     end = this.selectionEnd
+    keyNumerical  = ((key >= 96 && key <= 105) || (key >= 48 && key <= 57) && !event.shiftKey)
+    keyDelete     = [8, 46].includes(key)
     
-    if key == 9 # Remove range selection when focusing the input
+    if keyNumerical || keyDelete # Only change if editing phone
+      phoneNumerical = val.replace(new RegExp("\\(|\\)|-|\\s|[a-zA-Z]|#{I18n.t('constants.phone.extension')}", 'g'), '')
+      phone = ""
+
+      if phoneNumerical.length > 0
+        phone += "(#{phoneNumerical.slice(0,3)}"
+      if phoneNumerical.length > 3
+        phone += ") #{phoneNumerical.slice(3,6)}"
+      if phoneNumerical.length > 6
+        phone += "-#{phoneNumerical.slice(6,10)}"
+      if phoneNumerical.length > 10
+        phone += " #{I18n.t('constants.phone.extension')} #{phoneNumerical.substr(10)}"
+
+      if keyNumerical
+        if end == 1 || end == 10
+          end += 1
+        else if end == 5
+          end += 2
+        else if end == 15
+          end += " #{I18n.t('constants.phone.extension')} ".length
+      else
+        end = end
+
+      $(this).val(phone)
+
       this.setSelectionRange(end, end)
+
+      if phone.match(new RegExp("^\\(\\d{3}\\) \\d{3}-\\d{4}( #{I18n.t('constants.phone.extension')} \\d+)?$"))
+        $(this).parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+      else
+        $(this).parents('.form-group').removeClass('is-valid').addClass('is-invalid')
   )
 
 (exports ? this).initializeSelectpickers = () ->
@@ -176,64 +225,14 @@ $(document).ready ->
   $('[data-toggle=table]').bootstrapTable()
 
 (exports ? this).setRequiredFields = () ->
-  $('.required:not(.has-indicator)').addClass('has-indicator').append('<span class="required-indicator text-danger ml-1">*</span>')
+  $('.required:not(.has-indicator)').addClass('has-indicator').append("<span class='required-indicator text-danger ml-1'>#{I18n.t('constants.required_fields.indicator')}</span>")
   $('.has-indicator:not(.required)').removeClass('has-indicator').children('.required-indicator').remove()
 
 (exports ? this).getSRId = ->
   $("input[name='srid']").val()
 
 (exports ? this).getSSRId = ->
-  $("input[name='sub_service_request_id']").val()
+  $("input[name='ssrid']").val()
 
 (exports ? this).getProtocolId = ->
   $("input[name=protocol_id]").val()
-
-VALID_MONETARY_KEYS = [
-  8, # backspace
-  37, 38, 39, 40, # arrow keys
-  46, # Delete
-  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, # 0-9
-  96, 97, 98, 99, 100, 101, 102, 103, 104, 105, # numpad 0-9
-  110, # decimal
-  190 # period
-]
-
-(exports ? this).validateMonetaryInput = (e) ->
-  charCode = if e.which then e.which else event.keyCode
-  element  = e.target
-
-  # dont allow multiple decimal points
-  if (charCode == 110 || charCode == 190) && $(element).val().indexOf('.') >= 0
-    e.preventDefault()
-
-  # make sure only valid keys are allowed
-  if !VALID_MONETARY_KEYS.includes(charCode)
-    e.preventDefault()
-
-(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
-  s = if n < 0 then "-#{c}" else c
-  i = Math.abs(n).toFixed(2)
-  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
-  s += i.substr(0, j) + t if j
-  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
-
-(exports ? this).humanize_string = (string) ->
-  new_str = ''
-  arr     = string.split('_')
-  for word in arr
-    new_str += word.charAt(0).toUpperCase() + word.slice(1) + ' '
-  return new_str
-
-(exports ? this).dateSorter = (a, b) ->
-  if !a && !b
-    return 0
-  else if a && !b
-    return 1
-  else if !a && b
-    return -1
-  else
-    sort_a = new Date(a)
-    sort_b = new Date(b)
-    return 1 if sort_a > sort_b
-    return -1 if sort_a < sort_b
-    return 0

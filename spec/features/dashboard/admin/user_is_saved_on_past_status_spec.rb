@@ -26,24 +26,17 @@ RSpec.describe "User views Status History tab", js: true do
 
   scenario "and changes the status of the SSR to a new status" do
     organization    = create(:organization, process_ssrs: true)
-    super_user      = create(:super_user,
-                              identity_id: jug2.id,
-                              organization_id: organization.id)
+    super_user      = create(:super_user,identity_id: jug2.id,organization_id: organization.id)
     protocol        = create(:protocol_without_validations, primary_pi: jug2)
     service_request = create(:service_request_without_validations, protocol: protocol)
-    ssr             = create(:sub_service_request_without_validations,
-                              organization: organization,
-                              service_request: service_request,
-                              status: 'draft',
-                              protocol: protocol,
-                              submitted_at: Date.today)
-    survey          = create(:survey,
-                              access_code: 'sctr-customer-satisfaction-survey')
+    ssr             = create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol: protocol, submitted_at: Date.today)
 
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 
-    bootstrap_select("#sub_service_request_status", "On Hold")
+    find('#requestStatus').click
+    find('#requestStatus + .dropdown-menu .dropdown-item', text: 'On Hold').click
+    wait_for_javascript_to_finish
 
     expect(PastStatus.first.changed_by_id).to eq(jug2.id)
   end

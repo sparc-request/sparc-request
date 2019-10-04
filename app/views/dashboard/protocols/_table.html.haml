@@ -38,11 +38,11 @@
     %table.table-interactive#protocolsTable{ data: { toggle: 'table', url: dashboard_protocols_path(filterrific: filterrific.to_hash, format: :json), show_columns: 'true', show_refresh: 'true', show_export: 'true', pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#protocolsTableToolbar' } }
       %thead.bg-light
         %tr
-          %th{ data: { field: 'id', align: 'center', sortable: 'true' } }
+          %th.w-10{ data: { field: 'id', align: 'center', sortable: 'true' } }
             = Protocol.human_attribute_name(:id)
-          %th{ data: { field: 'short_title', sortable: 'true' } }
+          %th.w-40{ data: { field: 'short_title', sortable: 'true' } }
             = Protocol.human_attribute_name(:short_title)
-          %th{ data: { field: 'pis', sortable: 'true' } }
+          %th.w-40{ data: { field: 'pis', sortable: 'true' } }
             = Protocol.human_attribute_name(:principal_investigators)
-          %th{ data: { field: 'requests', align: 'center', sortable: 'true' } }
+          %th.w-10{ data: { field: 'requests', align: 'center', sortable: 'true' } }
             = Protocol.human_attribute_name(:requests)

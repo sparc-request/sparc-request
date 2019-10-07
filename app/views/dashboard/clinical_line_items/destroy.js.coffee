@@ -26,10 +26,8 @@ $('.form-error').remove()
 $("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% else %>
-$('#serviceCalendarHeader').replaceWith("<%= j render 'service_calendars/header', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
-$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
-
-adjustCalendarHeaders()
+$('#serviceCalendar').replaceWith("<%= j render 'service_calendars/tabs', service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages %>")
+loadServiceCalendar()
 
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

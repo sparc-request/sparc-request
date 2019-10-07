@@ -23,8 +23,8 @@ module ApplicationHelper
     date.strftime('%D') rescue ""
   end
 
-  def format_datetime(datetime)
-    datetime.strftime('%D %l:%M %p') rescue ""
+  def format_datetime(datetime, opts={})
+    datetime.strftime(opts[:format] ? opts[:format] : '%D %l:%M %p') rescue ""
   end
 
   def format_phone(phone)

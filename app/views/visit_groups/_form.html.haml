@@ -30,10 +30,7 @@
         = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          - if action_name == 'new'
-            = t('visit_groups.new')
-          - else
-            = t('visit_groups.edit', visit_name: visit_group.name)
+          = t("visit_groups.#{action_name}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body

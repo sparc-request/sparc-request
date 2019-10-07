@@ -30,12 +30,16 @@
         - if sub_service_request
           = render "dashboard/notifications/dropdown", sub_service_request: sub_service_request
           %hr
-        %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox<
-          = icon('fas', 'inbox mr-2')
-          = t(:dashboard)[:notifications][:table][:inbox]
-        %button.btn.btn-default.btn-block.notification_nav#notifications_sent<
-          = icon('fas', 'paper-plane mr-2')
-          = t(:dashboard)[:notifications][:table][:sent]
+        %div
+          .list-group.list-group-flush
+            .list-group-item.p-0
+              %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox<
+                = icon('fas', 'inbox mr-2')
+                = t(:dashboard)[:notifications][:table][:inbox]
+            .list-group-item.p-0
+              %button.btn.btn-default.btn-block.notification_nav#notifications_sent<
+                = icon('fas', 'paper-plane mr-2')
+                = t(:dashboard)[:notifications][:table][:sent]
       .col-10.pl-0{ role: 'tabpanel' }
         #notifications-custom-toolbar
           %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}

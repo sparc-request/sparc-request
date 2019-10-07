@@ -20,3 +20,5 @@
 
 $("#modalContainer").html("<%= j render 'dashboard/study_level_activities/form', sub_service_request: @sub_service_request, line_item: @line_item %>")
 $("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

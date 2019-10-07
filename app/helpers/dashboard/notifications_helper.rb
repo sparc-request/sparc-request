@@ -46,22 +46,17 @@ module Dashboard::NotificationsHelper
     content_tag :span do
       raw(
         content_tag(:strong, display_user_role(project_role), class: 'mr-2') + "#{project_role.identity.full_name}" + 
-      if project_role.identity_id == ssr.service_requester_id
-        content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1')
-      else
-        ''
-      end)
+        (project_role.identity_id == ssr.service_requester_id ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1') : '')
+      )
     end
   end
 
   def display_service_provider(service_provider, ssr)
     content_tag :span do
-      service_provider.identity.full_name +
-      if service_provider.identity_id == ssr.owner_id
-        content_tag(:small, content_tag(:em, t('dashboard.notifications.table.owner')), class: 'text-primary ml-1')
-      else
-        ''
-      end
+      raw(
+        service_provider.identity.full_name +
+        (service_provider.identity_id == ssr.owner_id ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.owner')), class: 'text-primary ml-1') : '')
+      )
     end
   end
 end

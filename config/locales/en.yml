@@ -850,7 +850,7 @@ en:
   ################
   visit_groups:
     new: "Add Visit"
-    edit: "Edit %{visit_name}"
+    edit: "Edit Visit"
     delete: "Delete Visit"
     created: "Visit created!"
     updated: "Visit updated!"

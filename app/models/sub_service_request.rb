@@ -174,11 +174,11 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def has_one_time_fee_services?
-    one_time_fee_line_items.count > 0
+    @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end
 
   def has_per_patient_per_visit_services?
-    per_patient_per_visit_line_items.count > 0
+    @has_clinical_services ||= per_patient_per_visit_line_items.count > 0
   end
 
   # Returns the total direct costs of the sub-service-request

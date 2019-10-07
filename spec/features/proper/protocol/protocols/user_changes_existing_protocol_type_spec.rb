@@ -20,29 +20,30 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User wants to edit a Protocol', js: true do
+RSpec.describe 'User wants to change an existing Study to a Project', js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_study_type_question_groups
   build_study_type_questions
 
   before :each do
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
     @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
-    visit dashboard_protocol_path(@protocol)
-    click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
+    visit edit_protocol_path(@protocol, srid: @sr.id)
     wait_for_javascript_to_finish
   end
 
-  it 'should update the Protocol' do
-    fill_in 'protocol_short_title', with: 'Fresh Prince of Bel-Air'
-    fill_in 'protocol_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
-
-    click_button I18n.t('actions.save')
+  it 'should change the Study to a Project' do
+    click_link I18n.t('protocols.change_type.link_text', current_type: Study.model_name.human, new_type: Project.name)
+    confirm_swal
     wait_for_javascript_to_finish
-
-    expect(page).to have_current_path(dashboard_protocol_path(@protocol))
-    expect(@protocol.reload.short_title).to eq('Fresh Prince of Bel-Air')
-    expect(@protocol.reload.title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
+    expect(page).to have_current_path(edit_protocol_path(@protocol, srid: @sr.id))
+    @protocol = Protocol.find(@protocol.id) # reload doesn't work because of the change to type
+    expect(@protocol.type).to eq(Project.name)
   end
 end

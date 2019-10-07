@@ -20,29 +20,33 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User wants to edit a Protocol', js: true do
+RSpec.describe 'User sets milestone dates', js: true do
   let_there_be_lane
+
   fake_login_for_each_test
-  build_study_type_question_groups
-  build_study_type_questions
 
   before :each do
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
     @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
-    visit dashboard_protocol_path(@protocol)
-    click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
+    visit protocol_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish
   end
 
-  it 'should update the Protocol' do
-    fill_in 'protocol_short_title', with: 'Fresh Prince of Bel-Air'
-    fill_in 'protocol_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
+  it 'should update the milestones' do
+    bootstrap_datepicker '#protocol_start_date', '01/02/2016'
+    first('.card-header').click
+    bootstrap_datepicker '#protocol_end_date', '03/04/2016'
+    first('.card-header').click
 
-    click_button I18n.t('actions.save')
+    click_button I18n.t('proper.navigation.bottom.save_and_continue.full')
     wait_for_javascript_to_finish
 
-    expect(page).to have_current_path(dashboard_protocol_path(@protocol))
-    expect(@protocol.reload.short_title).to eq('Fresh Prince of Bel-Air')
-    expect(@protocol.reload.title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
+    expect(@protocol.reload.start_date.to_date).to eq('2/1/2016'.to_date)
+    expect(@protocol.reload.end_date.to_date).to eq('4/3/2016'.to_date)
   end
 end

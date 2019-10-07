@@ -20,38 +20,32 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User edits an arm', js: true do
+RSpec.describe 'User wants to edit an authorized user', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
+  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
+
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, name: "Armahgurdness")
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit protocol_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
   end
 
-  context 'and clicks the edit button, fills out the form, and submits' do
-    scenario 'and sees the updated arm' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
+  it 'should update the user' do
+    first('.edit-authorized-user').click
+    wait_for_javascript_to_finish
 
-      first('.edit-arm-button').click
-      wait_for_javascript_to_finish
+    bootstrap_select '#project_role_identity_attributes_credentials', 'PhD'
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
 
-      fill_in 'arm_name', with: 'Armania'
-
-      click_button 'Save'
-      wait_for_javascript_to_finish
-
-      # Screening date + new arm
-      expect(@protocol.arms.last.name).to eq('Armania')
-    end
+    expect(@protocol.reload.primary_pi.credentials).to eq('phd')
   end
 end

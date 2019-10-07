@@ -20,36 +20,30 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User wants to delete an authorized user', js: true do
+RSpec.describe 'User wants to make a new Project', js: true do
   let_there_be_lane
-  let_there_be_j
-
   fake_login_for_each_test
 
+  stub_config("use_epic", true)
+
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-    @auth_u     = create(:project_role, identity: jpl6, protocol: @protocol, role: 'technician')
+    visit dashboard_root_path
+    wait_for_javascript_to_finish
+    click_button I18n.t('dashboard.protocols.new')
+    click_link I18n.t('protocols.new', protocol_type: Project.model_name.human)
   end
 
-  context 'and clicks the delete button' do
-    scenario 'and sees the user deleted' do
-      visit protocol_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
+  it 'should create a new Project' do
+    fill_in 'protocol_short_title', with: 'asd'
+    fill_in 'protocol_title', with: 'asd'
+    bootstrap_typeahead '#primary_pi', 'Julia'
+    bootstrap_select '#protocol_funding_status', 'Funded'
+    bootstrap_select '#protocol_funding_source', 'Federal'
 
-      all('.delete-associated-user-button').last.click
-      wait_for_javascript_to_finish
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').click
-      wait_for_javascript_to_finish
-
-      expect(ProjectRole.count).to eq(1)
-    end
+    expect(Project.count).to eq(1)
+    expect(page).to have_current_path(dashboard_protocol_path(Protocol.last))
   end
 end

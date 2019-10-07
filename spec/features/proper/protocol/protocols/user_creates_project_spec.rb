@@ -20,29 +20,37 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User wants to edit a Protocol', js: true do
+RSpec.describe 'User creates project', js: true do
   let_there_be_lane
   fake_login_for_each_test
-  build_study_type_question_groups
-  build_study_type_questions
+
+  stub_config("use_epic", true)
 
   before :each do
-    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    org     = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @sr     = create(:service_request_without_validations, status: 'first_draft')
+    ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'first_draft')
+              create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
-    visit dashboard_protocol_path(@protocol)
-    click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
+    visit protocol_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.form.header.new', protocol_type: Project.model_name.human)
     wait_for_javascript_to_finish
   end
 
-  it 'should update the Protocol' do
-    fill_in 'protocol_short_title', with: 'Fresh Prince of Bel-Air'
-    fill_in 'protocol_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
+  it 'should create a new project' do
+    fill_in 'protocol_short_title', with: 'asd'
+    fill_in 'protocol_title', with: 'asd'
+    bootstrap_typeahead '#primary_pi', 'Julia'
+    bootstrap_select '#protocol_funding_status', 'Funded'
+    bootstrap_select '#protocol_funding_source', 'Federal'
 
     click_button I18n.t('actions.save')
     wait_for_javascript_to_finish
 
-    expect(page).to have_current_path(dashboard_protocol_path(@protocol))
-    expect(@protocol.reload.short_title).to eq('Fresh Prince of Bel-Air')
-    expect(@protocol.reload.title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
+    expect(Project.count).to eq(1)
+    expect(@sr.reload.protocol.becomes(Project)).to eq(Project.last)
+    expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
   end
 end

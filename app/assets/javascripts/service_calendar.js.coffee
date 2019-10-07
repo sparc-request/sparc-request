@@ -74,7 +74,7 @@ $ ->
   # Change Visit Page #
   #####################
 
-  $(document).on 'change', '.visit-group-select .selectpicker', ->
+  $(document).on 'changed.bs.select', '.visit-group-select .selectpicker', ->
     $.ajax
       method: 'GET'
       dataType: 'script'

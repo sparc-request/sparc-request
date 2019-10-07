@@ -20,34 +20,27 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User deletes an arm', js: true do
+RSpec.describe 'User wants to change a new Study to a Project', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, name: "Armahgurdness")
-                  create(:arm, protocol: @protocol, name: "Armageddon")
+    org     = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @sr     = create(:service_request_without_validations, status: 'first_draft')
+    ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'first_draft')
+              create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit new_protocol_path(type: Study.name, srid: @sr.id)
+    wait_for_javascript_to_finish
   end
 
-  context 'and and clicks the delete button' do
-    scenario 'and sees the arm was removed' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
-
-      first('.delete-arm-button').click
-      accept_alert
-      wait_for_javascript_to_finish
-
-      expect(@protocol.arms.count).to eq(1)
-    end
+  it 'should change the Study to a Project' do
+    click_link I18n.t('protocols.change_type.link_text', current_type: Study.model_name.human, new_type: Project.name)
+    confirm_swal
+    wait_for_javascript_to_finish
+    expect(page).to have_current_path(new_protocol_path(type: Project.name, srid: @sr.id))
   end
 end

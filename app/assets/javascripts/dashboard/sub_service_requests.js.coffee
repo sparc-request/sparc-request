@@ -106,10 +106,17 @@ $ ->
   ##############################
 
   $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
-    $.ajax
-      method: 'get'
-      dataType: 'script'
-      url: '/dashboard/study_level_activities/new'
-      data: $('#studyLevelActivitiesForm').serialize()
+    if $('#studyLevelActivitiesForm').hasClass('.new_line_item')
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: '/dashboard/study_level_activities/new'
+        data: $('#studyLevelActivitiesForm').serialize()
+    else
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: $('#studyLevelActivitiesForm').prop('action') + "/edit"
+        data: $('#studyLevelActivitiesForm').serialize()
 
   # SERVICE REQUEST INFO LISTENERS END

@@ -38,6 +38,11 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
       setup_calendar_pages
 
       add_service.generate_new_service_request
+
+      unless @service_request.arms.any?
+        @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, new_with_draft: true)
+      end
+
       flash[:success] = t('line_items.created')
     else
       line_item = @service_request.line_items.new

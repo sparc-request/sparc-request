@@ -18,17 +18,39 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
+require 'rails_helper'
 
-<% @errors.each do |message| %>
-$("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% else %>
-$('#serviceCalendar').replaceWith("<%= j render 'service_calendars/tabs', service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages %>")
-loadServiceCalendar()
+RSpec.describe 'User creates project', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-$("#modalContainer").modal('hide')
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
-<% end %>
+  stub_config("use_epic", true)
+
+  before :each do
+    org     = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @sr     = create(:service_request_without_validations, status: 'first_draft')
+    ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'first_draft')
+              create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit protocol_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.form.header.new', protocol_type: Project.model_name.human)
+    wait_for_javascript_to_finish
+  end
+
+  it 'should create a new project' do
+    fill_in 'protocol_short_title', with: 'asd'
+    fill_in 'protocol_title', with: 'asd'
+    bootstrap_typeahead '#primary_pi', 'Julia'
+    bootstrap_select '#protocol_funding_status', 'Funded'
+    bootstrap_select '#protocol_funding_source', 'Federal'
+
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
+
+    expect(Project.count).to eq(1)
+    expect(@sr.reload.protocol.becomes(Project)).to eq(Project.last)
+    expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
+  end
+end

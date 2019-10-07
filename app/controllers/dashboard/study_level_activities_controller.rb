@@ -51,6 +51,8 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def edit
+    @line_item.service_id = line_item_params[:service_id] if params[:line_item] && line_item_params[:service_id]
+
     respond_to :js
   end
 

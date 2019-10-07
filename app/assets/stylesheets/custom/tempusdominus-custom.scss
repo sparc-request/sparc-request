@@ -21,6 +21,7 @@
 .datetimepicker {
   .bootstrap-datetimepicker-widget {
     width: initial;
+    z-index: 1039;
 
     .datepicker {
       th.prev, th.next, th.dow, td.day {

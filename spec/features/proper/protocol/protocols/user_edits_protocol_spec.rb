@@ -20,36 +20,36 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User creates an arm', js: true do
+RSpec.describe 'User edits protocol', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit protocol_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
+    wait_for_javascript_to_finish
   end
 
-  context 'and clicks the \'Add Arm\', fills out the form, and submits' do
-    scenario 'and sees the created arm' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
-      click_button 'Add Arm'
-      wait_for_javascript_to_finish
 
-      fill_in 'arm_name', with: 'Armania'
+  it 'should update the Protocol' do
+    fill_in 'protocol_short_title', with: 'Fresh Prince of Bel-Air'
+    fill_in 'protocol_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
 
-      click_button 'Add'
-      wait_for_javascript_to_finish
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
 
-      # Screening date + new arm
-      expect(@protocol.arms.count).to eq(2)
-    end
+    expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
+    expect(@protocol.reload.short_title).to eq('Fresh Prince of Bel-Air')
+    expect(@protocol.reload.title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
   end
 end

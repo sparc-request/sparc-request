@@ -226,14 +226,14 @@
 
 .dropdown {
   .dropdown-menu {
-    z-index: 1030;
+    z-index: 1039;
 
     .dropdown-header, .dropdown-item {
       padding-left: 1rem;
       padding-right: 1rem;
     }
 
-    a.dropdown-header, a.dropdown-item {
+    a.dropdown-header:not(.active), a.dropdown-item:not(.active) {
       &:hover {
         background: theme-color('light');
       }

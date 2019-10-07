@@ -18,17 +18,32 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
+require 'rails_helper'
 
-<% @errors.each do |message| %>
-$("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% else %>
-$('#serviceCalendar').replaceWith("<%= j render 'service_calendars/tabs', service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages %>")
-loadServiceCalendar()
+RSpec.describe 'User wants to change an existing Study to a Project', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
-$("#modalContainer").modal('hide')
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
-<% end %>
+  before :each do
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit edit_protocol_path(@protocol, srid: @sr.id)
+    wait_for_javascript_to_finish
+  end
+
+  it 'should change the Study to a Project' do
+    click_link I18n.t('protocols.change_type.link_text', current_type: Study.model_name.human, new_type: Project.name)
+    confirm_swal
+    wait_for_javascript_to_finish
+    expect(page).to have_current_path(edit_protocol_path(@protocol, srid: @sr.id))
+    @protocol = Protocol.find(@protocol.id) # reload doesn't work because of the change to type
+    expect(@protocol.type).to eq(Project.name)
+  end
+end

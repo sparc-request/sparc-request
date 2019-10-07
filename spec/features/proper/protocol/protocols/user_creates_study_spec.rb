@@ -20,38 +20,41 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User sets timeline dates', js: true do
+RSpec.describe 'User creates study', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
+
+  stub_config("use_epic", true)
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program, pricing_map_count: 1)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:pricing_setup, organization: program)
+    org     = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
+    @sr     = create(:service_request_without_validations, status: 'first_draft')
+    ssr     = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'first_draft')
+              create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+
+    visit protocol_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.form.header.new', protocol_type: Study.model_name.human)
+    wait_for_javascript_to_finish
   end
 
-  context 'and submits the form' do
-    scenario 'and sees the dates applied to the protocol' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
+  it 'should create a new study' do
+    fill_in 'protocol_short_title', with: 'asd'
+    fill_in 'protocol_title', with: 'asd'
+    bootstrap_typeahead '#primary_pi', 'Julia'
+    find("[for='protocol_selected_for_epic_false']").click
+    bootstrap_select '#protocol_funding_status', 'Funded'
+    bootstrap_select '#protocol_funding_source', 'Federal'
+    fill_in 'protocol_sponsor_name', with: 'asd'
 
-      bootstrap_datepicker '#study_start_date', '01/02/2016'
-      first('.page-header').click
-      bootstrap_datepicker '#study_end_date', '03/04/2016'
-      first('.page-header').click
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
 
-      click_link 'Save and Continue →'
-      wait_for_javascript_to_finish
-
-      expect(@protocol.reload.start_date.to_date).to eq('2/1/2016'.to_date)
-      expect(@protocol.reload.end_date.to_date).to eq('4/3/2016'.to_date)
-    end
+    expect(Study.count).to eq(1)
+    expect(@sr.reload.protocol.becomes(Study)).to eq(Study.last)
+    expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
   end
 end

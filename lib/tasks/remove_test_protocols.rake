@@ -12,12 +12,12 @@ task remove_test_protocols: :environment do
                   13593, 13620, 13681, 13687, 13695, 13721, 13761, 13794]
   count = 0                
   CSV.open("tmp/deleted_protocols_report.csv", "w+") do |csv|
-    csv << ['Protocol ID', 'Title', 'Primary PI']
+    csv << ['Protocol ID', 'Title', 'Primary PI', 'Archived']
     protocol_ids.each do |id|
       protocol = Protocol.where(id: id).first
       if protocol
         puts "Removing protocol #{id}"
-        csv << [id, protocol.title, protocol.primary_principal_investigator.display_name]
+        csv << [id, protocol.title, protocol.primary_principal_investigator.display_name, protocol.archived?]
         protocol.destroy
         count += 1
       else

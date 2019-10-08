@@ -44,7 +44,9 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     respond_to do |format|
       format.html
-      format.js
+      format.js {
+        @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
+      }
       format.json {
         load_responses
       }

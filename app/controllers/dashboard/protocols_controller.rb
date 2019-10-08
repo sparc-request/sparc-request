@@ -60,6 +60,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.js {
+        @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.json {

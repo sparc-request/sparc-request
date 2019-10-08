@@ -44,11 +44,14 @@ $(document).ready ->
 
   $(document).on "submit", "#reporting-form", (event) ->
     empty = $('.required').filter ->
-      this.value == ""
+      $("##{$(this).prop('for')}").selectpicker('val') == ""
 
     if empty.length
+      $("[name^='report']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+      $('.form-error').remove()
+      empty.each ->
+        $("[name='report[#{$(this).prop('for')}]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'>#{I18n.t('constants.required_fields.required')}</small>")
       event.preventDefault()
-      alert(I18n.t('reporting.actions.errors'))
 
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through

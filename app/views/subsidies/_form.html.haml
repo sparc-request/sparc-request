@@ -32,13 +32,13 @@
       .modal-body
         %table.table.table-bordered
           %tr
-            %td.col-6
+            %td.w-50
               .d-flex.justify-content-between
                 %span{ title: t(:subsidies)[:tooltips][:request_cost],  data: { toggle: 'tooltip' } }
                   = Subsidy.human_attribute_name(:request_cost)
                 %span#subsidy_form_table_request_cost{ data: { cost:  subsidy.total_request_cost } }
                   = number_to_currency(subsidy.total_request_cost / 100.0)
-            %td.col-6
+            %td.w-50
               .d-flex.justify-content-between
                 %span{ title: t(:subsidies)[:tooltips][:cost], data: {  toggle: 'tooltip' } }
                   = Subsidy.human_attribute_name(:subsidy_cost)

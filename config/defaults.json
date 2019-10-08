@@ -550,6 +550,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "news_feed_api_token",
+    "value":          "aGV3d2VAbXVzYy5lZHU6UWZ1ZUpldG9ydEZlMDBwcFVCandCMUEz",
+    "friendly_name":  "News Feed API Token",
+    "description":    "This is the optional token used by the News Feed API to retrieve posts.<br>For Atlassian API Tokens, see https://developer.atlassian.com/cloud/jira/platform/jira-rest-api-basic-authentication/.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed_api",
+    "parent_value":   "true"
+  },
+  {
     "key":            "news_feed_atlassian_space",
     "value":          "RD",
     "friendly_name":  "Atlassian Space ID",

@@ -20,7 +20,7 @@
 
 %aside#protocolFilters
   .card
-    = form_for_filterrific filterrific, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |f|
+    = form_for_filterrific filterrific, url: dashboard_protocols_path, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |f|
       .card-header.bg-primary.text-white
         %h3.mb-0.mr-auto
           = t('dashboard.protocol_filters.header')

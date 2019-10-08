@@ -233,7 +233,8 @@
       padding-right: 1rem;
     }
 
-    a.dropdown-header:not(.active), a.dropdown-item:not(.active) {
+    a.dropdown-header:not(.active):not(.selected),
+    a.dropdown-item:not(.active):not(.selected) {
       &:hover {
         background: theme-color('light');
       }

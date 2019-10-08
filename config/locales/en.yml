@@ -519,6 +519,7 @@ en:
     required_fields:
       indicator: "*"
       message: "required fields"
+      required: "Required"
     search:
       loading: "Loading..."
       no_results: "No Results"

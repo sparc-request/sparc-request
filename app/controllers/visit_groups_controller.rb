@@ -45,7 +45,8 @@ class VisitGroupsController < ApplicationController
   end
 
   def create
-    @visit_group  = VisitGroup.new(visit_group_params)
+    @visit_group  = VisitGroup.new(visit_group_params.except(:position))
+    @visit_group.assign_attributes(position: visit_group_params[:position])
     @arm          = @visit_group.arm
     @tab          = params[:tab]
 

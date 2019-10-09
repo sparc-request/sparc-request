@@ -21,7 +21,7 @@
 module FormsHelper
   def form_completed_display(completed)
     icon = completed ? icon('fas', 'check') : icon('fas', 'times')
-    klass = completed ? 'text-success' : 'text-danger'
+    klass = completed ? 'text-success complete' : 'text-danger incomplete'
 
     content_tag(:h4, content_tag(:span, icon, class: klass))
   end

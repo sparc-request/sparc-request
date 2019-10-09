@@ -49,7 +49,7 @@ RSpec.describe 'Service Provider clicks Short Interaction', js: true do
     bootstrap_select '#short_interaction_subject', 'General Question'
     bootstrap_select '#short_interaction_interaction_type', 'Email'
 
-    click_button I18n.t('actions.submitt')
+    click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
 
     expect(jug2.short_interactions.count).to eq(1)

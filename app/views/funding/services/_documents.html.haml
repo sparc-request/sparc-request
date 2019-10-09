@@ -19,14 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 #documentsTableToolbar
   .btn-group#documents_tabs{data: {selected: "loi"}}
-    %button.btn.btn-primary.mr-3.document_nav#documents_loi<
+    %button.btn.btn-primary.mr-3.document_nav#loi<
       = icon('fas', 'file mr-2')
       = t(:funding)[:download][:loi]
-    %button.btn.btn-light.document_nav#documents_application<
+      = icon('fa', 'sync ml-2')
+    %button.btn.btn-light.document_nav#application<
       = icon('fas', 'file mr-2')
       = t(:funding)[:download][:application]
+      = icon('fa', 'sync ml-2 d-none')
 - url = documents_funding_service_path(id: service.id, table: "loi", format: :json )
-%table.table-no-bordered#documents-table{ data: {pagination: 'true', 'page-size' => 25, 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', 'export-types' => ['csv'], toggle: 'table', search: "true", url: url, 'sort-name' => 'srid', 'sort-order' => 'asc', toolbar: "#documentsTableToolbar"}}
+%table.table-no-bordered#documents-table{ data: {pagination: 'true', 'page-size' => 25, 'show-columns' => 'true', 'show-export' => 'true', toggle: 'table', search: "true", url: url, 'sort-name' => 'srid', 'sort-order' => 'asc', toolbar: "#documentsTableToolbar"}}
   %thead.bg-light
     %tr
       %th{data: {class: 'srid', align: "left", sortable: "true", field: "srid"}}

@@ -26,32 +26,34 @@ class Funding::ServicesController < ApplicationController
   before_action :authorize_funding_admin
   before_action :find_funding_opp,  only: [:show]
 
+  respond_to :json, :js, :html
+
   def set_highlighted_link
     @highlighted_link = 'sparc_funding'
   end
 
   def index
+    @services = Service.funding_opportunities
+    current_user = current_user
+  end
+
+  def show
     respond_to do |format|
-      format.html
-      format.json{
-        @services = Service.funding_opportunities
-        current_user = current_user
+      format.html {
+        @service = find_funding_opp
+        cookies["doc-table-#{@service.id}"] ||= 'loi'
       }
     end
   end
 
-  def show
-    @service = Service.find(params[:id])
-  end
-
   def documents
-    @table = params[:table]
-    @service_id = params[:id]
-    @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
-
+    @table = params[:table] || cookies["doc-table-#{@service.id}"]
     respond_to do |format|
-      format.json
+      format.json{
+        @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct 
+      }
       format.csv{
+        @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
         send_data to_csv(@funding_documents), filename: "#{@table.upcase}.csv"
       }
     end

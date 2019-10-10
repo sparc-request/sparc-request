@@ -46,273 +46,121 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 
-    click_link 'Clinical Services'
+    find('#adminTabs .nav-link', text: /^#{I18n.t('dashboard.sub_service_requests.study_schedule.header')}$/).click
     wait_for_javascript_to_finish
   end
 
-  context 'in the Template Tab' do
+  context 'visit group' do
+    it 'should update the visit group' do
+      first('.visit-group a').click
+      wait_for_javascript_to_finish
 
+      fill_in 'visit_group_window_before', with: 5
+      fill_in 'visit_group_day', with: 10
+      fill_in 'visit_group_window_after', with: 5
+      fill_in 'visit_group_name', with: 'Visit Me More Often'
+
+      click_button I18n.t('actions.submit')
+      wait_for_javascript_to_finish
+
+      expect(@vg.reload.window_before).to eq(5)
+      expect(@vg.day).to eq(10)
+      expect(@vg.window_after).to eq(5)
+      expect(page).to have_selector('.visit-group a', text: 'Visit Me More Often')
+    end
+  end
+
+  context 'subject count' do
+    it 'should update the subject count and header cost' do
+      first('td.subject-count a').click
+      wait_for_javascript_to_finish
+      fill_in 'line_items_visit_subject_count', with: '5'
+      click_button I18n.t('actions.submit')
+      wait_for_javascript_to_finish
+
+      expect(@liv.reload.subject_count).to eq(5)
+      expect(page).to have_selector('td.subject-count a', text: 5)
+      expect(page).to have_selector('#displayCost', text: '$6.00')
+    end
+  end
+
+  context 'your cost' do
     before :each do
-      click_link 'Template Tab'
+      first('td.displayed-cost a').click
+      wait_for_javascript_to_finish
+      fill_in 'line_item_displayed_cost', with: '100.00'
+      click_button I18n.t('actions.submit')
       wait_for_javascript_to_finish
     end
 
-    context 'to a valid value' do
+    it 'updates your cost' do
+      expect(page).to have_selector('td.displayed-cost a', text: '$100.00')
+    end
+  end
 
-      context 'visit (checkbox)' do
-        before :each do
-          @visit_quantity = find('.visit-quantity', match: :first)
-          @visit_quantity.click
-          wait_for_javascript_to_finish
-        end
-
-        it 'should check the checkbox' do
-          expect( @visit_quantity).to be_checked
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$21.00')
-        end
+  context 'in the Template Tab' do
+    context 'visit (checkbox)' do
+      before :each do
+        first('.visit-quantity').click
+        wait_for_javascript_to_finish
       end
 
-      context 'check row' do
-        before :each do
-          first('.service-calendar-row').click
-          accept_confirm
-          wait_for_javascript_to_finish
-        end
-
-        it 'should check the checkbox' do
-          expect(find('.visit-quantity', match: :first)).to be_checked
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$21.00')
-        end
-      end
-
-       context 'check column' do
-        before :each do
-          first('.service-calendar-column').click
-          accept_confirm
-          wait_for_javascript_to_finish
-        end
-
-        it 'should check the checkbox' do
-          expect(find('.visit-quantity', match: :first)).to be_checked
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$21.00')
-        end
-      end
-
-      context 'subject count' do
-        before :each do
-          find('.edit-subject-count.editable').click
-          find('.editable-input input').set(5)
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'updates subject count' do
-          expect(@liv.reload.subject_count).to eq(5)
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$6.00')
-        end
-      end
-
-      context 'your cost' do
-        before :each do
-          find('.edit-your-cost.editable', match: :first).click
-          find('.editable-input input').set(100)
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'updates your cost' do
-          expect(page).to have_css('.edit-your-cost', text: '$100.00')
-        end
+      it 'should update the checkbox and header cost' do
+        expect(first('.visit-quantity')).to be_checked
+        expect(page).to have_selector('#displayCost', text: '$21.00')
       end
     end
 
-    context 'to an invalid value' do
-      context 'subject count' do
-        before :each do
-          find('.edit-subject-count.editable').click
-          find('.editable-input input').set('a number')
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
+    context 'check row' do
+      before :each do
+        first('.check-row').click
+        confirm_swal
+        wait_for_javascript_to_finish
+      end
 
-        it 'should throw error' do
-          expect(page).to have_selector('.editable-error-block', visible: true)
-          expect(page).to have_content('Subject Count is not a number')
-        end
+      it 'should update the checkbox and header cost' do
+        expect(first('.visit-quantity')).to be_checked
+        expect(page).to have_selector('#displayCost', text: '$21.00')
+      end
+    end
 
-        it 'should not update header total' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
+     context 'check column' do
+      before :each do
+        first('.check-column').click
+        confirm_swal
+        wait_for_javascript_to_finish
+      end
+
+      it 'should update the checkbox and header cost' do
+        expect(first('.visit-quantity')).to be_checked
+        expect(page).to have_selector('#displayCost', text: '$21.00')
       end
     end
   end
 
   context 'in the Quantity/Billing Tab' do
     before :each do
-      click_link 'Quantity/Billing Tab'
+      click_link I18n.t('calendars.tabs.billing')
       wait_for_javascript_to_finish
     end
 
-    context 'to a valid value' do
-      context 'subject count' do
-        before :each do
-          find('.edit-subject-count.editable').click
-          find('.editable-input input').set(5)
-          find('.editable-submit').click
-          wait_for_javascript_to_finish
-        end
+    context 'r/t/%' do
+      before :each do
+        first('td.visit a').click
+        wait_for_javascript_to_finish
 
-        it 'should update subject count' do
-          expect(@liv.reload.subject_count).to eq(5)
-        end
-
-        it 'should update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$6.00')
-        end
+        fill_in 'visit_research_billing_qty', with: 5
+        fill_in 'visit_insurance_billing_qty', with: 5
+        fill_in 'visit_effort_billing_qty', with: 5
+        click_button I18n.t('actions.submit')
+        wait_for_javascript_to_finish
       end
 
-      context 'r' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_research_billing_qty', with: 5
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should update r' do
-          expect(@arm.visits.first.research_billing_qty).to eq(5)
-        end
-
-        it 'should update header total cost' do
-         expect(page).to have_css('.display_cost', text: '$61.00')
-        end
-      end
-
-      context 't' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_insurance_billing_qty', with: 5
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should update t' do
-          expect(@arm.visits.first.insurance_billing_qty).to eq(5)
-        end
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context '%' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_effort_billing_qty', with: 5
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should update %' do
-          expect(@arm.visits.first.effort_billing_qty).to eq(5)
-        end
-
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-    end
-
-    context 'to an invalid value' do
-      context 'subject count' do
-        before :each do
-          find('.edit-subject-count.editable').click
-          find('.editable-input input').set('a number')
-          find('.editable-submit').click
-        end
-
-        it 'should throw an error' do
-          expect(page).to have_selector('.editable-error-block', visible: true)
-          expect(page).to have_content('Subject Count is not a number')
-        end
-
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context 'r' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_research_billing_qty', with: 'string'
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should throw an error' do
-          expect(page).to have_content("Research Billing Quantity is not a number")
-        end
-
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context 't' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_insurance_billing_qty', with: 'string'
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should throw an error' do
-          expect(page).to have_content("Insurance Billing Quantity is not a number")
-        end
-
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
-      end
-
-      context '%' do
-        before :each do
-          find('a.edit-billing-qty', match: :first).click
-          wait_for_javascript_to_finish
-
-          fill_in 'visit_effort_billing_qty', with: 'string'
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        it 'should throw an error' do
-          expect(page).to have_content("Effort Billing Quantity is not a number")
-        end
-
-        it 'should not update header total cost' do
-          expect(page).to have_css('.display_cost', text: '$11.00')
-        end
+      it 'should update r, t, \%, and header cost' do
+        expect(@arm.visits.first.research_billing_qty).to eq(5)
+        expect(@arm.visits.first.insurance_billing_qty).to eq(5)
+        expect(@arm.visits.first.effort_billing_qty).to eq(5)
+        expect(page).to have_selector('#displayCost', text: '$61.00')
       end
     end
   end

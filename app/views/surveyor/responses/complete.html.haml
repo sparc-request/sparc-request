@@ -17,14 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-6.col-sm-offset-3
-  .panel.panel-default
-    .panel-body
-      .page-header.text-center
-        %h1
-          = t(:surveyor)[:responses][:complete][:header]
-      .text-center
-        .alert.alert-info.text-center
-          = t(:surveyor)[:responses][:complete][:thanks]
-      .text-center
-        = link_to t(:surveyor)[:responses][:complete][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'
+.card.w-100#surveyCard
+  .card-body.pt-2.text-center
+    %h1
+      = t(:surveyor)[:responses][:complete][:header]
+    %h4.text-muted
+      = @survey.title
+    .alert.alert-info.text-center
+      = t(:surveyor)[:responses][:complete][:thanks]
+    = link_to t(:surveyor)[:responses][:complete][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'

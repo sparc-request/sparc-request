@@ -19,4 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
-window.location = "<%= dashboard_protocol_path(id: @protocol.id) %>"
+window.location = "<%= dashboard_protocol_path(@protocol) %>"

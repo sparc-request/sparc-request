@@ -20,20 +20,24 @@
 
 %tr
   %th.text-center{ colspan: 2, rowspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:service]
+    = LineItem.human_attribute_name(:service)
   %th.text-center{ rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:pppv][:header_fields][:notes]
+      = Note.model_name.plural.capitalize
   %th.text-center{ rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:otf][:header_fields][:status]
+      = LineItem.human_attribute_name(:status)
   %th.text-center{ colspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:unit_cost]
-  %th.text-center{ colspan: 2, rowspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:unit_type]
-  %th.text-center{ colspan: 2, rowspan: 2 }
+    = LineItem.human_attribute_name(:unit_costs)
+  %th.text-center{ rowspan: 2 }
+    = LineItem.human_attribute_name(:units_per_quantity)
+  %th.text-center{ rowspan: 2 }
+    = LineItem.human_attribute_name(:unit_type)
+  %th.text-center{ rowspan: 2 }
+    = LineItem.human_attribute_name(:quantity)
+  %th.text-center{ rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:otf][:header_fields][:qty_type]
+      = LineItem.human_attribute_name(:quantity_type)
   %th.text-center{ colspan: 1, rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:total_per_study], data: { toggle: 'tooltip', placement: 'top' } }
       = t(:calendars)[:otf][:header_fields][:total_per_study]
@@ -41,7 +45,7 @@
 %tr
   %th.text-center
     %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top' } }
-      = t(:calendars)[:otf][:header_fields][:service_rate]
+      = raw LineItem.human_attribute_name(:service_rate).gsub(' ', '<br>')
   %th.text-center
     %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top' } }
-      = raw(t(:calendars)[:otf][:header_fields][:your_cost])
+      = raw LineItem.human_attribute_name(:displayed_cost).gsub(' ', '<br>')

@@ -235,15 +235,15 @@ class Identity < ApplicationRecord
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request?(sr)
-    sr.sub_service_requests.where(service_requester: self).any? || (sr.protocol && can_edit_protocol?(sr.protocol)) || self.catalog_overlord?
+    self.catalog_overlord? || sr.sub_service_requests.where(service_requester: self).any? || (sr.protocol && can_edit_protocol?(sr.protocol))
   end
 
   def can_view_protocol?(protocol)
-    protocol.project_roles.where(identity_id: self.id, project_rights: ['view', 'approve', 'request']).any?
+    self.catalog_overlord? || protocol.project_roles.where(identity_id: self.id, project_rights: ['view', 'approve', 'request']).any?
   end
 
   def can_edit_protocol?(protocol)
-    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
+    self.catalog_overlord? || protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.

@@ -44,8 +44,7 @@
             = f.label :indirect_cost_rate
             .input-group
               .input-group-append
-                %span.input-group-text
-                  = t('constants.currency')
+                = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
               = f.text_field :indirect_cost_rate, class: 'form-control'
         - if protocol.is_a?(Study)
           .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
@@ -80,8 +79,7 @@
               = f.label :indirect_cost_rate
               .input-group
                 .input-group-append
-                  %span.input-group-text
-                    = t('constants.currency')
+                  = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
                 = f.text_field :indirect_cost_rate, class: 'form-control'
 
       - if protocol.is_a?(Study)

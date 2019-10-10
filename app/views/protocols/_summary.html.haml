@@ -18,25 +18,29 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- milestone_fields = [:start_date, :end_date, :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services]
+
 .card.w-100#protocolSummaryCard
-  .card-header.justify-content-between.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolSummary' } }
+  .card-header.justify-content-between.bg-primary.text-white{ class: action_name == 'protocol' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolSummary' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human)
     .protocol-links-container<
       - if in_dashboard?
-        = notes_button(protocol.becomes(Protocol), protocol_id: protocol.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
+        = notes_button(protocol, protocol_id: protocol.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
         = protocol_details_button(protocol)
         = edit_protocol_button(protocol, permission: permission_to_edit || admin)
         = archive_protocol_button(protocol, permission: permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol))
       - else
-        = notes_button(protocol.becomes(Protocol), srid: service_request.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
+        = notes_button(protocol, srid: service_request.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
         = protocol_details_button(protocol, srid: service_request.id)
         - unless in_review?
           = edit_protocol_button(protocol, srid: service_request.id)
-  - if @errors
-    = render 'layouts/modal_errors', errors: @errors, margin: false, rounded: false
-  .collapse#protocolSummary{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
+  -# Do we have errors that aren't related to the milestone fields?
+  - if @errors && (@errors.details.keys - milestone_fields).any?
+    - messages = @errors.messages.reject{ |m, _| milestone_fields.include?(m) }.map{ |m, _| @errors.full_messages_for(m) }.flatten
+    = render 'layouts/modal_errors', messages: messages, margin: false, rounded: false
+  .collapse#protocolSummary{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
     %table.table.mb-0
       - if Setting.get_value("research_master_enabled") && protocol.is_study?
         %tr.d-flex

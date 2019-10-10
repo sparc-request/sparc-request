@@ -19,11 +19,11 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#authorizedUsersCard
-  .card-header.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? 'collapsed' : 'show', data: { toggle: 'collapse', target: '#authorizedUsers' } }
+  .card-header.bg-primary.text-white{ class: action_name == 'protocol' && service_request.previously_submitted? ? 'collapsed' : 'show', data: { toggle: 'collapse', target: '#authorizedUsers' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('authorized_users.header')
-  .collapse#authorizedUsers{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
+  .collapse#authorizedUsers{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar
       - if in_dashboard?
         = new_authorized_user_button(protocol_id: protocol.id, permission: permission_to_edit || admin)

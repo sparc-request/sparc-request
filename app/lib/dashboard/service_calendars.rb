@@ -31,8 +31,6 @@ module Dashboard
 
       path_method = if @merged
         method(:merged_calendar_service_request_service_calendars_path)
-      elsif @review
-        method(:refresh_service_calendar_service_request_path)
       else
         method(:table_service_request_service_calendars_path)
       end
@@ -134,7 +132,7 @@ module Dashboard
     end
 
     def self.build_visits_select(arm, page, url)
-      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url }
+      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url, dropup_auto: 'false' }
     end
 
     def self.visits_select_options(arm, cur_page=1)

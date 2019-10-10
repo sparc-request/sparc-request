@@ -1,7 +1,6 @@
 json.total @epic_queues.count
 json.rows do
   json.(@epic_queues.limit(params[:limit]).offset(params[:offset])) do |eq|
-    json.protocol_id  eq.protocol_id
     json.protocol     format_protocol(eq.protocol)
     json.pis          format_pis(eq.protocol)
     json.date         format_epic_queue_date(eq.protocol)

@@ -43,6 +43,8 @@
         = hidden_field_tag :protocol_id, @protocol.id, disabled: true
       - if @service_request
         = hidden_field_tag :srid, @service_request.id, disabled: true
+      - if @sub_service_request
+        = hidden_field_tag :ssrid, @sub_service_request.id, disabled: true
       - unless content_for?(:flash)
         = render 'layouts/flash'
       = content_for?(:content) ? yield(:content) : yield

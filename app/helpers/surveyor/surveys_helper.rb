@@ -21,66 +21,19 @@
 module Surveyor::SurveysHelper
   ### Surveys Table ###
   def survey_active_display(survey)
-    klass = survey.active? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
+    if survey.active?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
 
-    content_tag(:h4, content_tag(:span, '', class: klass))
   end
 
   def survey_options(survey)
     render 'surveyor/surveys/actions_dropdown.html', survey: survey
   end
 
-  def preview_survey
-    content_tag(:span, '', class: 'glyphicon glyphicon-search text-info', aria: { hidden: 'true' }) +
-    content_tag(:span, t(:actions)[:preview], class: 'text text-info')
-  end
-
-  def activate_survey(survey, disabled)
-    context_class =
-      if disabled
-        ''
-      elsif survey.active?
-        'text-danger'
-      else
-        'text-success'
-      end
-
-    content_tag(:span, '', class: [context_class, survey.active? ? 'glyphicon glyphicon-remove' : 'glyphicon glyphicon-ok'], aria: { hidden: 'true' }) +
-    content_tag(:span, (survey.active? ? t(:actions)[:disable] : t(:actions)[:activate]), class: ['text', context_class])
-  end
-
-  def copy_survey
-    content_tag(:span, '', class: 'glyphicon glyphicon-copy text-primary', aria: { hidden: 'true' }) +
-    content_tag(:span, t(:actions)[:copy], class: 'text text-primary')
-  end
-
-  def edit_survey(disabled)
-    content_tag(:span, '', class: ['glyphicon glyphicon-edit', disabled ? '' : 'text-warning'], aria: { hidden: 'true' }) +
-    content_tag(:span, t(:actions)[:edit], class: ['text', disabled ? '' : 'text-warning'])
-  end
-
-  def delete_survey(disabled)
-    content_tag(:span, '', class: ['glyphicon glyphicon-trash', disabled ? '' : 'text-danger'], aria: { hidden: 'true' }) +
-    content_tag(:span, t(:actions)[:delete], class: ['text', disabled ? '' : 'text-danger'])
-  end
-
   ### Surveys Form ###
-  def add_section_content
-    raw(
-      [ content_tag(:span, '', class: 'glyphicon glyphicon-th-list'),
-        t(:surveyor)[:surveys][:form][:content][:section][:add]
-      ].join("")
-    )
-  end
-
-  def add_question_content
-    raw(
-      [ content_tag(:span, '', class: 'glyphicon glyphicon-plus'),
-        t(:surveyor)[:surveys][:form][:content][:question][:add]
-      ].join("")
-    )
-  end
-
   def us_states
     [
       ['Alabama', 'AL'],

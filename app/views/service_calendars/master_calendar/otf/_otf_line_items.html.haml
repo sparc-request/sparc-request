@@ -26,7 +26,7 @@
       = t('calendars.no_line_items')
 
 - line_items.each do |ssr, line_items|
-  - locked = !ssr.can_be_edited? && !admin
+  - locked = !ssr.can_be_edited? && !in_admin?
 
   -# SSR Header Row
   %tr{ class: locked ? 'alert-danger' : 'alert-primary' }
@@ -44,28 +44,21 @@
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center{ title: display_service_rate(line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(line_item)
-      - your_cost = currency_converter(line_item.applicable_rate)
-      - modified = line_item.admin_rates.present?
-      %td.your-cost.text-center{ title: modified ? t('calendars.tooltips.modified_rate', cost: your_cost) : your_cost, data: { toggle: 'tooltip', html: 'true' } }
-        - if modified
-          %span.text-warning
-            = your_cost
-        - else
-          = your_cost
+      = render 'service_calendars/displayed_cost', service_request: service_request, sub_service_request: sub_service_request, line_item: line_item, merged: merged
       - if line_item.otf_unit_type == 'N/A'
         %td.unit-type.text-center{ colspan: 2, title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
       - else
+        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
         %td.unit-type.text-center{ title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
-        = render 'service_calendars/master_calendar/otf/units_per_quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
 
-      = render 'service_calendars/master_calendar/otf/quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
+      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
 
       %td.quantity-type.text-center{ title: line_item.quantity_type, data: { toggle: 'tooltip' } }
         = line_item.quantity_type
 
       = render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item
 
-- unless review
+- unless in_review?
   = render 'service_calendars/master_calendar/otf/totals/otf_totals', service_request: service_request

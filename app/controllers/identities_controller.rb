@@ -28,7 +28,7 @@ class IdentitiesController < ApplicationController
     if !@identity.try(:approved)
       @identity.update_attribute(:approved, true)
       Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
-      flash[:success] = t('devise.approvals.approved')
+      flash[:success] = t('devise.approvals.approved', login: @identity.email)
     else
       flash[:alert] = t('devise.approvals.already_approved')
     end
@@ -45,7 +45,7 @@ class IdentitiesController < ApplicationController
       Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
       flash[:success] = t('devise.approvals.disapproved')
     else
-      flash[:alert] = t('devise.approvals.already_disapproved')
+      flash[:alert] = t('devise.approvals.already_disapproved', login: @identity.email)
     end
 
     redirect_to root_path

@@ -30,13 +30,13 @@ $("[name='line_items_visit[<%= attr.to_s %>]']").parents('.form-group').removeCl
 <% else %>
 $('#modalContainer').modal('hide')
 
-<% if @admin %>
+<% if @in_admin %>
 # Replace SSR Header
-$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 <% end %>
 
 # Replace Field Cell
-$(".line-items-visit-<%= @line_items_visit.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/master_calendar/pppv/#{@field}", liv: @line_items_visit, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, tab: @tab, merged: false, locked: @locked %>')
+$(".line-items-visit-<%= @line_items_visit.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", liv: @line_items_visit, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, tab: @tab, merged: false, locked: @locked %>')
 
 # Replace Per Patient / Study Totals
 $(".line-items-visit-<%= @line_items_visit.id %>:visible .total-per-patient").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")

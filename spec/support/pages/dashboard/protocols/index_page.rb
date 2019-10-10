@@ -27,26 +27,29 @@ module Dashboard
       set_url "/dashboard/protocols"
 
       # Pane on the left of page with 'Filter Protocols' as header
-      section :filter_protocols, ".panel", text: "Filter Protocols" do
-        element :save_link, "a", text: "Save"
-        element :reset_link, "a", text: "Reset"
+      section :filter_protocols, "#protocolFiltersForm", text: I18n.t('dashboard.protocol_filters.header') do
 
+        element :search_select, :button, "#filterrific_search_query_search_drop + .dropdown-toggle"
         element :search_field, "#filterrific_search_query_search_text"
 
-        element :archived_checkbox, :field, "Archived"
-        element :status_select, "div.status-select button"
-        elements :status_options, "div.status-select li"
-        element :core_select, "div.core-select button"
-        elements :core_options, "div.core-select li"
+        element :status_select, :button, "#filterrific_with_status + .dropdown-toggle"
+        elements :status_options, "#filterrific_with_status + .dropdown-menu .dropdown-item"
+        
+        element :organization_select, :button, "#filterrific_with_organization + .dropdown-toggle"
+        elements :organization_options, "#filterrific_with_organization + .dropdown-menu .dropdown-item"
 
         # these appear if user is an admin
-        element :owner_select, "div.owner-select button"
-        elements :owner_options, "div.owner-select li"
-        element :my_protocols_checkbox, ".identity-protocols input"
-        element :my_admin_organizations_checkbox, ".admin-protocols input"
-        element :empty_protocols_checkbox, ".empty-protocols input"
+        element :owner_select, :button, "#filterrific_with_owner + .dropdown-toggle"
+        elements :owner_options, "#filterrific_with_owner + .dropdown-menu .dropdown-item"
 
-        element :apply_filter_button, :button, "Filter"
+        element :archived_toggle, "[name='filterrific[show_archived]'] + .toggle"
+        
+        element :my_protocols, "[id^='filterrific_admin_filter_for_identity']"
+        element :my_admin_organizations, ".admin-protocols input"
+
+        element :filter_button, :button, I18n.t('actions.filter')
+        element :save_button, "button", text: I18n.t('actions.save')
+        element :reset_button, "a", text: I18n.t('actions.reset')
 
         # select a status from :status_select by text
         def select_status(*statuses)
@@ -66,11 +69,11 @@ module Dashboard
           page.filter_protocols.search_field.set(search_term.to_s)
         end
 
-        # select a core for :core_select by core
-        def select_core(*cores)
-          core_select.click
+        # select a core for :organization_select by core
+        def select_organization(*organizations)
+          organization_select.click
           wait_for_core_options
-          cores.each do |core|
+          organizations.each do |core|
             core_options(text: /\A#{core}\Z/).first.click
           end
           page.find("body").click # seems like Capybara page is available in this context

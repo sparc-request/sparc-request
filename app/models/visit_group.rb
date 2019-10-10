@@ -42,16 +42,16 @@ class VisitGroup < ApplicationRecord
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
   after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
   
-  before_update :move_previous_visit_days, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
+  before_update :move_consecutive_visit, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
 
   before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
-  validates :name, presence: true
+  validates :name, :position, :day, :window_before, :window_after, presence: true
+
   validates :position, presence: true
-  validates :window_before,
-            :window_after,
-            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :day, presence: true, numericality: { only_integer: true }
+  validates :window_before, :window_after, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new{ |vg| vg.day.present? }
+
+  validates :day, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
 
   validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
 
@@ -64,6 +64,18 @@ class VisitGroup < ApplicationRecord
 
   def self.admin_day_multiplier
     5
+  end
+
+  def position=(position)
+    # Because we have to insert before using position - 1,
+    # increment position
+    if position.blank? || self.arm.blank?
+      write_attribute(:position, nil)
+    elsif position == self.arm.visit_count
+      write_attribute(:position, position)
+    else
+      write_attribute(:position, position.to_i + 1)
+    end
   end
 
   def identifier
@@ -91,7 +103,11 @@ class VisitGroup < ApplicationRecord
   end
 
   def moved_and_days_need_update?
-    position_changed? && day_changed? && self.day == self.higher_item.day
+    # Two Cases:
+    # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+    # The Visit Group has been moved and now we need to move consecutive visits
+    (self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) ||
+    (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day))
   end
 
   def in_order?
@@ -123,9 +139,15 @@ class VisitGroup < ApplicationRecord
     self.arm.decrement!(:visit_count)
   end
 
-  def move_previous_visit_days
-    self.higher_items.select{ |vg| vg.higher_item.nil? || (vg.day.present? && vg.day == vg.higher_item.day + 1) }.sort_by(&:position).each do |v|
-      v.update_attribute(:day, v.day - 1)
+  def move_consecutive_visit
+    # The Visit Group has been moved and now we need to move consecutive visits
+    if position_changed?
+      vg = self.arm.visit_groups.find_by(position: self.position)
+      # This actually increments position when position= is called
+      vg.update_attributes(day: vg.day + 1, position: vg.position)
+    else # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+      vg = self.lower_items.where.not(id: self.id, day: nil).first
+      vg.update_attributes(day: vg.day + 1, position: vg.position - 1)
     end
   end
 

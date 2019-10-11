@@ -48,8 +48,8 @@
         .col.text-right
           - if action_name == 'review'
             = link_to confirmation_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
-              = t('proper.navigation.bottom.submit')
-              = icon('fas', 'arrow-right ml-2')
+              - succeed icon('fas', 'arrow-right ml-2') do
+                = t('proper.navigation.bottom.submit')
           - else
             %button.btn.btn-lg.btn-outline-success{ type: 'submit' }<
               = t('proper.navigation.bottom.save_and_continue.full')

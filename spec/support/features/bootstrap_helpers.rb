@@ -30,16 +30,6 @@ module Features
       wait_for_javascript_to_finish
     end
 
-    def bootstrap3_select(class_or_id, choice)
-      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_select.click
-
-      expect(page).to have_selector('.dropdown-menu.open')
-      first('.dropdown-menu.open span.text', text: choice).click
-      wait_for_javascript_to_finish
-    end
-
     def bootstrap_multiselect(class_or_id, selections = ['all'])
       expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
@@ -79,6 +69,43 @@ module Features
       wait_for_javascript_to_finish
       expect(page).to have_selector("input#{class_or_id} ~ .tt-menu.tt-open")
       first('.tt-menu.tt-open .tt-suggestion', text: text).click
+    end
+
+
+    # Bootstrap 3 Helpers for Catalog Manager
+
+    def bootstrap3_select(class_or_id, choice)
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select.click
+
+      expect(page).to have_selector('.dropdown-menu.open')
+      first('.dropdown-menu.open span.text', text: choice).click
+      wait_for_javascript_to_finish
+    end
+
+    def bootstrap3_multiselect(class_or_id, selections = ['all'])
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_multiselect.click
+
+      expect(page).to have_selector('.dropdown-menu.open')
+      if selections.first == 'all'
+        first('.dropdown-menu.open span.text', text: 'Select all').click
+      else
+        selections.each do |selection|
+          first('.dropdown-menu.open span.text', text: selection).click
+        end
+      end
+      find('body').click # Click away
+      wait_for_javascript_to_finish
+    end
+
+    def bootstrap3_datepicker(element)
+      e = page.find(element)
+      e.click
+      e.set(Date.today.strftime('%Y-%m-%d'))
+      find(".dropdown-menu td.today").click
     end
   end
 end

@@ -95,6 +95,7 @@ class SearchController < ApplicationController
         name:           item.name,
         abbreviation:   item.abbreviation,
         type:           item.model_name.human,
+        klass:          item.is_a?(Service) ? Service.name : Organization.name,
         text_color:     "text-#{item.class.name.downcase}",
         cpt_code_text:  item.is_a?(Service) ? helpers.cpt_code_text(item) : "",
         eap_id_text:    item.is_a?(Service) ? helpers.eap_id_text(item) : "",

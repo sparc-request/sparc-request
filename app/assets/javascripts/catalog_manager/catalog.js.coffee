@@ -152,7 +152,7 @@ initialize_org_search = () ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    type = suggestion.type
+    type = suggestion.klass
     id = suggestion.id
     $.ajax
       type: 'GET'

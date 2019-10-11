@@ -288,6 +288,8 @@ en:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
+            selected_for_epic:
+              inclusion: "can't be blank"
             start_date:
               invalid: "Start Date must come before End Date"
             study_type_answers:
@@ -519,6 +521,7 @@ en:
     required_fields:
       indicator: "*"
       message: "required fields"
+      required: "Required"
     search:
       loading: "Loading..."
       no_results: "No Results"
@@ -850,7 +853,7 @@ en:
   ################
   visit_groups:
     new: "Add Visit"
-    edit: "Edit %{visit_name}"
+    edit: "Edit Visit"
     delete: "Delete Visit"
     created: "Visit created!"
     updated: "Visit updated!"

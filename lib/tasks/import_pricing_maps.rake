@@ -81,6 +81,7 @@ namespace :data do
                                               :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :unit_type => row['unit_type'],
                                               :quantity_type => row['quantity_type'],
+                                              :otf_unit_type => row['otf_unit_type'],
                                               :unit_factor => row['unit_factor'],
                                               :unit_minimum => row['unit_minimum'],
                                               :quantity_minimum => row['quantity_minimum'],

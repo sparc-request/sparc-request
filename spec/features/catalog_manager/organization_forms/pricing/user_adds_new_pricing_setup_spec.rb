@@ -60,13 +60,13 @@ RSpec.describe 'User adds Organization Pricing Setup', js: true do
         fill_in 'pricing_setup_other', with: "100.00"
         fill_in 'pricing_setup_member', with: "100.00"
 
-        bootstrap_select('#pricing_setup_college_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_federal_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_industry_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_investigator_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_internal_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_foundation_rate_type', 'Federal Rate')
-        bootstrap_select('#pricing_setup_unfunded_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_college_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_federal_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_industry_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_investigator_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_internal_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_foundation_rate_type', 'Federal Rate')
+        bootstrap3_select('#pricing_setup_unfunded_rate_type', 'Federal Rate')
 
         click_button 'Save'
         wait_for_javascript_to_finish

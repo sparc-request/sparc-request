@@ -18,12 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- hide_calendar = in_dashboard? && !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
+
 .mb-3#serviceCalendarHeader
   - unless service_request.protocol.locked?
     - if in_dashboard?
       = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
-      = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
-    - if in_dashboard? || service_request.has_per_patient_per_visit_services?
+      - unless hide_calendar
+        = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
+    - unless hide_calendar
       = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
   - unless in_dashboard?
     .w-100.mt-3#billingLabels{ class: tab == 'billing_strategy' ? '' : 'd-none' }

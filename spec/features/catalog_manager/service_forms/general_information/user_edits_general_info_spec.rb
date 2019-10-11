@@ -51,7 +51,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        bootstrap_select('#service_program', @program1.name)
+        bootstrap3_select('#service_program', @program1.name)
         click_button 'Save'
         wait_for_javascript_to_finish
 
@@ -64,7 +64,7 @@ RSpec.describe 'User edits Service General Info', js: true do
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish
 
-        bootstrap_select('#service_core', @core.name)
+        bootstrap3_select('#service_core', @core.name)
         click_button 'Save'
         wait_for_javascript_to_finish
 
@@ -109,7 +109,7 @@ RSpec.describe 'User edits Service General Info', js: true do
       end
 
       it 'should select a tag' do
-        bootstrap_select('#service_tag_list', 'Epic')
+        bootstrap3_select('#service_tag_list', 'Epic')
         find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish

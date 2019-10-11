@@ -27,10 +27,14 @@
   .card-body
     .row
       .col-2
-        %nav.nav.nav-pills.flex-column{ role: 'tablist' }
-          = link_to t(:dashboard)[:sub_service_requests][:history][:status_history][:header], '#statusHistoryTab', id: 'statusHistoryLink', class: ['nav-link text-center', tab == 'status_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'statusHistoryTab', selected: (tab == 'status_history').to_s }
-          = link_to t(:dashboard)[:sub_service_requests][:history][:approval_history][:header], '#approvalHistoryTab', id: 'approvalHistoryLink', class: ['nav-link text-center', tab == 'approval_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'approvalHistoryTab', selected: (tab == 'approval_history').to_s }
-          = link_to t(:dashboard)[:sub_service_requests][:history][:subsidy_history][:header], '#subsidyHistoryTab', id: 'subsidyHistoryLink', class: ['nav-link text-center', tab == 'subsidy_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'subsidyHistoryTab', selected: (tab == 'subsidy_history').to_s }
+        %nav.nav.nav-pills.flex-column.list-group.list-group-flush{ role: 'tablist' }
+          .list-group-item.p-0
+            = link_to t(:dashboard)[:sub_service_requests][:history][:status_history][:header], '#statusHistoryTab', id: 'statusHistoryLink', class: ['nav-link text-center', tab == 'status_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'statusHistoryTab', selected: (tab == 'status_history').to_s }
+          .list-group-item.p-0
+            = link_to t(:dashboard)[:sub_service_requests][:history][:approval_history][:header], '#approvalHistoryTab', id: 'approvalHistoryLink', class: ['nav-link text-center', tab == 'approval_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'approvalHistoryTab', selected: (tab == 'approval_history').to_s }
+          - if sub_service_request.eligible_for_subsidy?
+            .list-group-item.p-0
+              = link_to t(:dashboard)[:sub_service_requests][:history][:subsidy_history][:header], '#subsidyHistoryTab', id: 'subsidyHistoryLink', class: ['nav-link text-center', tab == 'subsidy_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'subsidyHistoryTab', selected: (tab == 'subsidy_history').to_s }
       .tab-content.col-10.pl-0
         .tab-pane.fade#statusHistoryTab{ role: 'tabpanel', class: tab == 'status_history' ? 'show active' : '', aria: { labelledby: 'statusHistoryTabLink' } }
           = render 'dashboard/sub_service_requests/history/status_history', sub_service_request: sub_service_request

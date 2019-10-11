@@ -43,7 +43,7 @@ RSpec.describe 'User manages associated surveys', js: true do
 
   context ' and the organization does not have associated surveys' do
     it 'should add the associated survey for the organization' do
-      bootstrap_select('.new_associated_survey', "Version #{@survey.version}")
+      bootstrap3_select('.new_associated_survey', "Version #{@survey.version}")
       find("button.add-associated-survey").click
       wait_for_javascript_to_finish
 

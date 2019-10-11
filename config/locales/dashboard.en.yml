@@ -263,6 +263,7 @@ en:
         header: "Non-Clinical Services"
         none: "This request does not have any Non-Clinical Services."
         new: "Add Non-Clinical Service"
+        edit: "Edit Non-Clinical Service"
         created: "Non-clinical Service Added!"
         updated: "Non-clinical Service Updated!"
         destroyed: "Non-clinical Service Deleted!"

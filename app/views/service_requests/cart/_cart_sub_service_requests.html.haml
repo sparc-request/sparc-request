@@ -26,7 +26,7 @@
         = ssr_name_display(ssr)
     .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
       - ssr.line_items.each do |li|
-        .list-group-item
+        .list-group-item.line-item
           .row
             .col-10.d-flex.align-items-center.pr-0
               %h6.mb-0<

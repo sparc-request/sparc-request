@@ -97,7 +97,7 @@ RSpec.describe 'User edits organization general info', js: true do
       end
 
       it 'should select a color' do
-        bootstrap_select('#organization_css_class', 'blue')
+        bootstrap3_select('#organization_css_class', 'blue')
         click_button 'Save'
         wait_for_javascript_to_finish
 

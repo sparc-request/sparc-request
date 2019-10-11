@@ -40,7 +40,7 @@
             - if show_errors
               - @errors[:start_date].each do |message|
                 %small.form-text.form-error
-                  = message
+                  = message.capitalize
           .form-group.col-6{ class: show_errors ? @errors.messages[:end_date].any? ? 'is-invalid' : 'is-valid' : '' }
             = f.label :end_date, class: 'required', title: t('protocols.tooltips.end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
             .input-group.datetimepicker.date.milestone-field#protocolEndDatePicker{ data: { target_input: 'nearest' } }
@@ -51,7 +51,7 @@
             - if show_errors
               - @errors[:end_date].each do |message|
                 %small.form-text.form-error
-                  = message
+                  = message.capitalize
 
         - if protocol.has_clinical_services?
           .form-row
@@ -65,7 +65,7 @@
               - if show_errors
                 - @errors[:recruitment_start_date].each do |message|
                   %small.form-text.form-error
-                    = message
+                    = message.capitalize
             .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_end_date].any? ? 'is-invalid' : 'is-valid' : '' }
               = f.label :recruitment_end_date, title: t('protocols.tooltips.recruitment_end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
               .input-group.datetimepicker.date.milestone-field#protocolRecruitmentEndDatePicker{ data: { target_input: 'nearest' } }
@@ -76,7 +76,7 @@
               - if show_errors
                 - @errors[:recruitment_end_date].each do |message|
                   %small.form-text.form-error
-                    = message
+                    = message.capitalize
         - if protocol.industry_funded?
           .form-row
             .form-group.col-6{ class: show_errors ? 'is-valid' : '' }

@@ -111,7 +111,7 @@ $(document).ready( function() {
         that.toggleGroups(true);
 
         if ($el.data('batch-select') && $el.data('batch-select').checkConfirm) {
-          that.checkConfirmSwal($check);
+          that.checkConfirmSwal($el, $check);
           that.showBatchSelected($el);
         } else {
           that.toggleCheckbox($check);
@@ -143,13 +143,13 @@ $(document).ready( function() {
 
     $check.on('click', function(event) {
       var $check = $(this),
-          $el = $check.siblings();
+          $el = $check.siblings('[data-batch-select]');
 
       // Cancel out the click event
       $check.prop('checked', !$check.prop('checked'));
 
-      if ($el.data('batch-select') && $el.data('batch-select').checkConfirm) {
-        that.checkConfirmSwal($check);
+      if ($check.prop('checked') == false && $el.data('batch-select') && $el.data('batch-select').checkConfirm) {
+        that.checkConfirmSwal($el, $check);
       } else {
         that.toggleCheckbox($check);
       }
@@ -227,12 +227,12 @@ $(document).ready( function() {
     });
   };
 
-  BatchSelect.prototype.checkConfirmSwal = function($check) {
+  BatchSelect.prototype.checkConfirmSwal = function($el, $check) {
     var that = this;
 
     Swal.fire({
-      title: that.options.checkConfirmSwalTitle,
-      text: that.options.checkConfirmSwalText,
+      title: $el.data('batch-select').checkConfirmSwalTitle || that.options.checkConfirmSwalTitle,
+      text: $el.data('batch-select').checkConfirmSwalText || that.options.checkConfirmSwalText,
       type: that.options.type,
       showCancelButton: true,
       confirmButtonColor: that.options.swalConfirmColor || determineSwalConfirmColor(that.options.type)
@@ -270,12 +270,12 @@ $(document).ready( function() {
   }
 
   $.fn.batchSelect = function (option) {
-    var $this = $(this),
-        data = $this.data('batch.select'),
-        options = $.extend({}, BatchSelect.DEFAULTS, $this.data('batch-select'), typeof option === 'object' && option);
+    var $batch = $(this),
+        data = $batch.data('batch.select'),
+        options = $.extend({}, BatchSelect.DEFAULTS, typeof option === 'object' && option);
 
     if (!data) {
-      $this.data('batch.select', (data = new BatchSelect(this, options)));
+      $batch.data('batch.select', (data = new BatchSelect(this, options)));
     }
 
     return this;

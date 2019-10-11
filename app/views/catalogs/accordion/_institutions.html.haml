@@ -22,9 +22,9 @@
   - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
     - locked = locked_ids.include?(i.id)
 
-    .card
+    .card.institution{ id: "institution#{i.id} " }
       .card-header.p-0{ id: "institution#{i.id}Header" }
-        %button.org-link.btn.btn-block{ class: [css_class(i), index == 0 ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
+        %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), index == 0 ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
           %h6.d-flex.align-items-start.mb-0
             = organization_name_display(i, locked, i.providers.any?)
       .collapse{ class: index == 0 ? 'show' : '', id: "institution#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }

@@ -35,6 +35,11 @@ module Features
         find('.swal2-container .swal2-cancel').click
       end
     end
+
+    def cancel_swal
+      expect(page).to have_selector('.swal2-shown', visible: true)
+      find('.swal2-container .swal2-cancel').click
+    end
   end
 end
 

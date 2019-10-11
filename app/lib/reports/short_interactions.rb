@@ -76,8 +76,8 @@ class ShortInteractionsReport < ReportingModule
 
   # Conditions
   def where args={}
-    fdate = args[:short_interaction_created_at_from].nil? ? self.default_options["Created Date Range"][:from].to_time.strftime("%Y-%m-%d 00:00:00") : args[:short_interaction_created_at_from].to_time.strftime("%Y-%m-%d 00:00:00")
-    tdate = args[:short_interaction_created_at_to].nil? ? self.default_options["Created Date Range"][:to].to_time.strftime("%Y-%m-%d 23:59:59")  : args[:short_interaction_created_at_to].to_time.strftime("%Y-%m-%d 23:59:59") 
+    fdate = (args[:short_interaction_created_at_from].nil? ? self.default_options["Created Date Range"][:from] : DateTime.strptime(args[:short_interaction_created_at_from], "%m/%d/%Y")).to_s(:db)
+    tdate = (args[:short_interaction_created_at_to].nil? ? self.default_options["Created Date Range"][:to] : DateTime.strptime(args[:short_interaction_created_at_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
     created_at = fdate..tdate
 
     organizations = Organization.all

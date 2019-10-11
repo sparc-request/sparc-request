@@ -87,8 +87,9 @@ class SurveyResponseReport < ReportingModule
 
   # Conditions
   def where args={}
-    created_at = (args[:created_at_from] ? args[:created_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:created_at_to] ? args[:created_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
-
+    created_at_from = (args[:created_at_from] ? DateTime.strptime(args[:created_at_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).to_s(:db)
+    created_at_to = (args[:created_at_to] ? DateTime.strptime(args[:created_at_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).strftime("%Y-%m-%d 23:59:59")
+    created_at = created_at_from..created_at_to
     return :responses => {:created_at => created_at, :survey_id => args[:system_survey_id]}
   end
 
@@ -111,8 +112,8 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    start_date                = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
-    end_date                  = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
+    start_date                = (params[:created_at_from] ? DateTime.strptime(params[:created_at_from], "%m/%d/%Y") : "2012-03-01".to_date).to_s(:db)
+    end_date                  = (params[:created_at_to] ? DateTime.strptime(params[:created_at_to], "%m/%d/%Y") : Date.today).strftime("%Y-%m-%d 23:59:59")
     # assumes the first question where only one option can be picked is the satisfaction question
     survey                    = Survey.find(params[:system_survey_id])
     questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))

@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    root_path
+    root_path(srid: @service_request.try(:id))
   end
 
   def configure_permitted_params

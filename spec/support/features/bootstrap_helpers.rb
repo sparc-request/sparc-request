@@ -30,6 +30,16 @@ module Features
       wait_for_javascript_to_finish
     end
 
+    def bootstrap3_select(class_or_id, choice)
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select.click
+
+      expect(page).to have_selector('.dropdown-menu.open')
+      first('.dropdown-menu.open span.text', text: choice).click
+      wait_for_javascript_to_finish
+    end
+
     def bootstrap_multiselect(class_or_id, selections = ['all'])
       expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")

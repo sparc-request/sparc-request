@@ -114,6 +114,10 @@ class Organization < ApplicationRecord
     where(is_available: true)
   }
 
+  scope :not_available, -> {
+    where(is_available: false)
+  }
+
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label

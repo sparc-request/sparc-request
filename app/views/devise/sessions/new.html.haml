@@ -24,10 +24,10 @@
 .form-row
   - if Setting.get_value("use_cas")
     .form-group.col
-      = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_cas_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
+      = button_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_cas_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
   - if Setting.get_value("use_shibboleth")
     .form-group.col
-      = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
+      = button_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
   - if Setting.get_value('use_cas') || Setting.get_value('use_shibboleth')
     .form-group.col
       %button.btn.btn-lg.btn-block.btn-outline-primary#outsideUserLogin

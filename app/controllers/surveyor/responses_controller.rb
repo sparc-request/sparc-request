@@ -73,13 +73,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @response.question_responses.build
     @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
-    respond_to do |format|
-      format.html {
-        existing_response = Response.where(survey: @survey, identity: current_user, respondable: @respondable).first
-        redirect_to surveyor_response_complete_path(existing_response) if existing_response
-      }
-      format.js
-    end
+    respond_to :js
   end
 
   def edit

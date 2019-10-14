@@ -26,34 +26,34 @@ class Funding::ServicesController < ApplicationController
   before_action :authorize_funding_admin
   before_action :find_funding_opp,  only: [:show]
 
-  respond_to :json, :js, :html
-
   def set_highlighted_link
     @highlighted_link = 'sparc_funding'
   end
 
   def index
-    @services = Service.funding_opportunities
-    current_user = current_user
-  end
-
-  def show
     respond_to do |format|
-      format.html {
-        @service = find_funding_opp
-        cookies["doc-table-#{@service.id}"] ||= 'loi'
+      format.html
+      format.json{
+        @services = Service.funding_opportunities
+        current_user = current_user
       }
     end
   end
 
+  def show
+    @service = Service.find(params[:id])
+    cookies["table-type-#{@service.id}"] ||= 'loi'
+  end
+
   def documents
-    @table = params[:table] || cookies["doc-table-#{@service.id}"]
+    @table = params[:table]
+    @service_id = params[:id]
+    cookies["table-type-#{@service_id}"] = @table
+    @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
+
     respond_to do |format|
-      format.json{
-        @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct 
-      }
+      format.json
       format.csv{
-        @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
         send_data to_csv(@funding_documents), filename: "#{@table.upcase}.csv"
       }
     end
@@ -71,7 +71,7 @@ class Funding::ServicesController < ApplicationController
     CSV.generate do |csv|
       ##Insert headers
       csv << ["SRID", "Primary PI", "Institution", "Protocol Short Title", "Document Name", "Uploaded", "SSR Status"]
-      ##Insert data for each protocol
+      ##Insert table row for each document
       documents.each do |d|
         ssr = d.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first
         p = ssr.protocol

@@ -24,7 +24,7 @@
       = t('funding.index.header')
 
   #fundingsTableToolbar
-  %table#fundings_table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundings-custom-toolbar' } }
+  %table#fundings_table{ data: { toggle: 'table', url: funding_services_path(format: :json), search: 'true', pagination: 'true', page_size: '20', sort_name: 'created', sort_order: 'desc', toolbar: '#fundingsTableToolbar' } }
     %thead.bg-light
       %tr
         %th{ data: { class: 'title', field: "title", align: "left", sortable: 'true' } }

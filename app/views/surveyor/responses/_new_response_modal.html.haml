@@ -25,8 +25,31 @@
           = survey.title
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
-      .modal-body
-        = render 'surveyor/responses/form/new_form', f: f, survey: survey, respondable: respondable
+      .modal-body#survey-response
+        = f.hidden_field :identity_id, value: current_user.id
+        = f.hidden_field :survey_id, value: survey.id
+        = f.hidden_field :respondable_id, value: respondable.id
+        = f.hidden_field :respondable_type, value: respondable.class.name
+        - unless survey.description.blank?
+          .form-group
+            %p.survey-description
+              = raw(survey.description)
+        .row
+          .list-group.list-group-flush.survey-sections.w-100
+            - survey.sections.eager_load(questions: :options).each do |section|
+              %section.list-group-item
+                %h4.mb-2
+                  = section.title
+                - unless section.description.blank?
+                  .form-group
+                    %p.section-description
+                      = raw(section.description)
+                - unless section.questions.none?
+                  = render 'layouts/required_fields'
+
+                - section.questions.each_with_index do |question, index|
+                  = f.fields_for :question_responses do |qr|
+                    = render 'surveyor/responses/form/response_question', qr: qr, question_response: qr.object, section: section, question: question, index: index
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

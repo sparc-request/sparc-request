@@ -187,7 +187,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def system_satisfaction_survey
-    @survey = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
+    @survey   = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
+    @forward  = params[:forward]
 
     respond_to :js
   end

@@ -22,11 +22,10 @@ require 'rails_helper'
 
 RSpec.describe 'User sets each Service Calendar field', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization, admin: jug2, service_provider: jug2, process_ssrs: true)
+    org       = create(:organization)
     pricing   = create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
     otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
@@ -41,12 +40,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
     @arm      = create(:arm, protocol: protocol, subject_count: 10)
     @vg       = @arm.visit_groups.first
     @liv      = @arm.line_items_visits.first
-    visit     = create(:visit, line_items_visit: @liv, visit_group: @vg, research_billing_qty: 1)
 
-    visit dashboard_sub_service_request_path(ssr)
-    wait_for_javascript_to_finish
-
-    find('#adminTabs .nav-link', text: /^#{I18n.t('dashboard.sub_service_requests.study_schedule.header')}$/).click
+    visit service_details_service_request_path(srid: sr.id)
     wait_for_javascript_to_finish
   end
 
@@ -71,7 +66,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
   end
 
   context 'subject count' do
-    it 'should update the subject count and header cost' do
+    it 'should update the subject count' do
       first('td.subject-count a').click
       wait_for_javascript_to_finish
       fill_in 'line_items_visit_subject_count', with: '5'
@@ -79,22 +74,32 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
       wait_for_javascript_to_finish
 
       expect(@liv.reload.subject_count).to eq(5)
-      expect(page).to have_selector('td.subject-count a', text: 5)
-      expect(page).to have_selector('#displayCost', text: '$6.00')
+      expect(page).to have_selector('.subject-count a', text: 5)
     end
   end
 
-  context 'your cost' do
-    before :each do
-      first('td.displayed-cost a').click
+  context 'unit type #' do
+    it 'should update the unit type #' do
+      first('td.units-per-quantity a').click
       wait_for_javascript_to_finish
-      fill_in 'line_item_displayed_cost', with: '100.00'
+      fill_in 'line_item_units_per_quantity', with: '100'
       click_button I18n.t('actions.submit')
       wait_for_javascript_to_finish
-    end
 
-    it 'updates your cost' do
-      expect(page).to have_selector('td.displayed-cost a', text: '$100.00')
+      expect(@otf_li.reload.units_per_quantity).to eq(100)
+    end
+  end
+
+  context 'quantity type #' do
+    it 'should update the quantity type #' do
+      quantity = @otf_li.service.current_effective_pricing_map.units_per_qty_max
+      first('td.quantity a').click
+      wait_for_javascript_to_finish
+      fill_in 'line_item_quantity', with: quantity
+      click_button I18n.t('actions.submit')
+      wait_for_javascript_to_finish
+
+      expect(@otf_li.reload.quantity).to eq(quantity)
     end
   end
 
@@ -105,9 +110,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
       end
 
-      it 'should update the checkbox and header cost' do
+      it 'should update the checkbox' do
         expect(first('.visit-quantity')).to be_checked
-        expect(page).to have_selector('#displayCost', text: '$21.00')
       end
     end
 
@@ -118,9 +122,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
       end
 
-      it 'should update the checkbox and header cost' do
+      it 'should update the checkbox' do
         expect(first('.visit-quantity')).to be_checked
-        expect(page).to have_selector('#displayCost', text: '$21.00')
       end
     end
 
@@ -131,9 +134,8 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
       end
 
-      it 'should update the checkbox and header cost' do
+      it 'should update the checkbox' do
         expect(first('.visit-quantity')).to be_checked
-        expect(page).to have_selector('#displayCost', text: '$21.00')
       end
     end
   end
@@ -156,11 +158,10 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
         wait_for_javascript_to_finish
       end
 
-      it 'should update r, t, \%, and header cost' do
+      it 'should update r, t, \%' do
         expect(@arm.visits.first.research_billing_qty).to eq(5)
         expect(@arm.visits.first.insurance_billing_qty).to eq(5)
         expect(@arm.visits.first.effort_billing_qty).to eq(5)
-        expect(page).to have_selector('#displayCost', text: '$61.00')
       end
     end
   end

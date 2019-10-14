@@ -61,6 +61,7 @@ gem 'net-ldap', '~> 0.16.0'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
+gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit' # Check usage
 gem 'prawn-table'

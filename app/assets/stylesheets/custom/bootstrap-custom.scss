@@ -403,10 +403,10 @@ form, .form {
     &.nav-justified {
       &+ .tab-content > .tab-pane {
         &:not(.loading) > .card:first-of-type {
-          border-top: 0;
         }
 
-        .card:first-of-type .card-header {
+        .card:first-of-type, .card:first-of-type .card-header {
+          border-top-left-radius: 0;
           border-top-right-radius: 0;
         }
       }

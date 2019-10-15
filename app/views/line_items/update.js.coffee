@@ -30,7 +30,7 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% else %>
 $('#modalContainer').modal('hide')
 
-<% if @line_item.service.one_time_fee? %>
+<% if @in_dashboard && @line_item.service.one_time_fee? %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
 <% else %>
 # Replace Field Cell

@@ -207,10 +207,8 @@ class Arm < ApplicationRecord
   end
 
   def update_liv_subject_counts
-    self.line_items_visits.each do |liv|
-      if !liv.subject_count.present? && liv.line_item.sub_service_request.can_be_edited?
-        liv.update_attributes(subject_count: self.subject_count)
-      end
+    self.line_items_visits.select{ |liv| (liv.sub_service_request.can_be_edited? && liv.subject_count.nil?) || liv.subject_count > self.subject_count }.each do |liv|
+      liv.update_attributes(subject_count: self.subject_count)
     end
   end
 

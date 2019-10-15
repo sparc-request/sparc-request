@@ -20,12 +20,6 @@
 
 module Surveyor::ResponsesHelper
 
-  def complete_display(response)
-    klass = response.completed? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
-
-    content_tag(:h4, content_tag(:span, '', class: klass))
-  end
-
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
 
@@ -52,10 +46,11 @@ module Surveyor::ResponsesHelper
         current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       end
 
-    [ view_response_button(response, view_permissions),
+    content_tag(:div,
+    raw([ view_response_button(response, view_permissions),
       edit_response_button(response, edit_permissions),
       resend_survey_button(response, resend_permissions)
-    ].join('')
+    ].join('')), class: 'd-flex')
   end
 
   def view_response_button(response, permissions=true)

@@ -25,27 +25,7 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
-      .form#survey-response
-        - unless survey.description.blank?
-          .form-group
-            %p.survey-description
-              = raw(survey.description)
-        .row
-          .list-group.list-group-flush.survey-sections.w-100
-            = fields_for @response do |f|
-              - survey.sections.eager_load(questions: :options).each do |section|
-                %section.list-group-item
-                  %h4.mb-2
-                    = section.title
-                  - unless section.description.blank?
-                    .form-group
-                      %p.section-description
-                        = raw(section.description)
-                  - unless section.questions.none?
-                    = render 'layouts/required_fields'
-
-                  = f.fields_for :question_responses, @response.question_responses.select{ |subqr| subqr.question.section_id == section.id } do |qr|
-                    = render 'surveyor/responses/form/response_question', section: section, question: qr.object.question, question_response: qr.object, index: qr.options[:child_index], qr: qr
+      = render 'surveyor/responses/form/show_form', survey: @survey, response: @response
     .modal-footer
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
         = t(:actions)[:close]

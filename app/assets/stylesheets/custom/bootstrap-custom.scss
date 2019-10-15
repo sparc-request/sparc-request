@@ -581,6 +581,22 @@ nav.navbar {
   }
 }
 
+///////////////
+/// Popover ///
+///////////////
+
+@include media-breakpoint-up(md) {
+  .popover {
+    max-width: 384px;
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  .popover {
+    max-width: 512px;
+  }
+}
+
 //////////////
 /// Tables ///
 //////////////

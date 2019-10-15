@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- hide_calendar = in_dashboard? && !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
+- hide_calendar = !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
 
 .mb-3#serviceCalendarHeader
   - unless service_request.protocol.locked?

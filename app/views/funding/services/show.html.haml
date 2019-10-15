@@ -22,6 +22,10 @@
 %header.d-flex.mb-2.default
   %h2.p-2.mr-auto
     = t('funding.download.header')
+  %h3.p-2
+    = link_to "/funding" do
+      = icon('fas', 'arrow-left mr-2')
+      = t('funding.download.back')
 
 .p1#documentsList
   .card

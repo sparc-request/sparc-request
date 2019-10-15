@@ -31,13 +31,8 @@ class Funding::ServicesController < ApplicationController
   end
 
   def index
-    respond_to do |format|
-      format.html
-      format.json{
-        @services = Service.funding_opportunities
-        current_user = current_user
-      }
-    end
+    @services = Service.funding_opportunities
+    respond_to :json, :html
   end
 
   def show

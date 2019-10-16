@@ -39,7 +39,7 @@
                   - if note.identity == current_user
                     = edit_note_button(note, srid: @service_request.try(:id), ssrid: @sub_service_request.try(:id), protocol_id: @protocol.try(:id))
                     = delete_note_button(note, srid: @service_request.try(:id), ssrid: @sub_service_request.try(:id), protocol_id: @protocol.try(:id))
-              .note-body
+              .note-body.text-break
                 = simple_format(note.body)
                 = note_date(note)
       - if notes.empty?

@@ -20,9 +20,16 @@
 
 module Surveyor::ResponsesHelper
 
+  def complete_display(response)
+    if response.completed?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
+  end
+
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
-
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
         current_user.is_site_admin?

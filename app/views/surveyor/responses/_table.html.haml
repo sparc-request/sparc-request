@@ -37,7 +37,11 @@
             = t('surveyor.responses.table.headers.title', type: type)
           %th{ data: { class: 'completed-by w-auto', align: 'center', sortable: 'true', field: 'by' } }
             = t(:surveyor)[:responses][:table][:headers][:by]
+          %th{ data: { class: 'complete w-auto', align: 'center', sortable: 'true', field: 'complete', visible: 'false' } }
+            = t(:surveyor)[:responses][:table][:headers][:complete]
           %th{ data: { class: 'completion-date w-auto', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
             = t(:surveyor)[:responses][:table][:headers][:date]
+          %th{ data: {class: 'survey-sent-date w-auto', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'survey_sent_date', visible: 'false'} }
+            = t(:surveyor)[:responses][:table][:headers][:survey_sent_date]
           %th{ data: { class: 'actions w-auto', align: 'center', sortable: 'false', field: 'actions' } }
             = t(:surveyor)[:responses][:table][:headers][:actions]

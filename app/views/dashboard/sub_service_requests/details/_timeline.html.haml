@@ -18,25 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card.w-100
-  .card-header.bg-primary.text-white
-    %h3.mb-0<
-      = t(:dashboard)[:sub_service_requests][:request_details][:timeline][:header]
-  .card-body
-    = form_for sub_service_request do |f|
-      .form-row
-        .form-group.col-6
-          = f.label :consult_arranged_date
-          .input-group.datetimepicker.date#consultArrangedDatePicker{ data: { target_input: 'nearest' } }
-            = f.text_field :consult_arranged_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.consult_arranged_date), data: { target: '#consultArrangedDatePicker' }
-            .input-group-append{ data: { toggle: 'datetimepicker', target: '#consultArrangedDatePicker' } }
-              %span.input-group-text
-                = icon('fas', 'calendar-alt')
-        .form-group.col-6
-          = f.label :requester_contacted_date
-          .input-group.datetimepicker.date#requesterContactedDatePicker{ data: { target_input: 'nearest' } }
-            = f.text_field :requester_contacted_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.requester_contacted_date), data: { target: '#requesterContactedDatePicker' }
-            .input-group-append{ data: { toggle: 'datetimepicker', target: '#requesterContactedDatePicker' } }
-              %span.input-group-text
-                = icon('fas', 'calendar-alt')
+= form_for sub_service_request, html: { class: 'w-100' } do |f|
+  .form-row
+    .form-group.col-6
+      = f.label :consult_arranged_date
+      .input-group.datetimepicker.date#consultArrangedDatePicker{ data: { target_input: 'nearest' } }
+        = f.text_field :consult_arranged_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.consult_arranged_date), data: { target: '#consultArrangedDatePicker' }
+        .input-group-append{ data: { toggle: 'datetimepicker', target: '#consultArrangedDatePicker' } }
+          %span.input-group-text
+            = icon('fas', 'calendar-alt')
+    .form-group.col-6
+      = f.label :requester_contacted_date
+      .input-group.datetimepicker.date#requesterContactedDatePicker{ data: { target_input: 'nearest' } }
+        = f.text_field :requester_contacted_date, class: 'datetimepicker-input form-control', value: format_date(sub_service_request.requester_contacted_date), data: { target: '#requesterContactedDatePicker' }
+        .input-group-append{ data: { toggle: 'datetimepicker', target: '#requesterContactedDatePicker' } }
+          %span.input-group-text
+            = icon('fas', 'calendar-alt')
 

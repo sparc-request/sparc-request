@@ -18,22 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card.w-100
-  .card-header.bg-primary.text-white
-    %h3.mb-0<
-      = t('dashboard.sub_service_requests.request_details.approvals.header')
-  .card-body
-    = fields_for sub_service_request do |f|
-      .d-flex.justify-content-between
-        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :nursing_nutrition_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.nursing_nutrition_approved? }
-          = f.label :nursing_nutrition_approved, class: 'custom-control-label'
-        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :lab_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.lab_approved? }
-          = f.label :lab_approved, class: 'custom-control-label'
-        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-          = f.check_box :imaging_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.imaging_approved? }
-          = f.label :imaging_approved, class: 'custom-control-label'
-        .custom-control.custom-checkbox.custom-control-lg.custom-control-inline.mr-0<>
-          = f.check_box :committee_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.committee_approved? }
-          = f.label :committee_approved, class: 'custom-control-label'
+= fields_for sub_service_request do |f|
+  .form-row
+    .form-group.col-3
+      .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
+        = f.check_box :nursing_nutrition_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.nursing_nutrition_approved? }
+        = f.label :nursing_nutrition_approved, class: 'custom-control-label'
+    .form-group.col-3
+      .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
+        = f.check_box :lab_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.lab_approved? }
+        = f.label :lab_approved, class: 'custom-control-label'
+    .form-group.col-3
+      .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
+        = f.check_box :imaging_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.imaging_approved? }
+        = f.label :imaging_approved, class: 'custom-control-label'
+    .form-group.col-3
+      .custom-control.custom-checkbox.custom-control-lg.custom-control-inline.mr-0<>
+        = f.check_box :committee_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.committee_approved? }
+        = f.label :committee_approved, class: 'custom-control-label'

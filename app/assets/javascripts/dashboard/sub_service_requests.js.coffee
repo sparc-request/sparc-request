@@ -72,13 +72,19 @@ $ ->
 
   # Approvals
   $(document).on 'change', '.approval-check', ->
-    data = $(this).serialize()
-    $(this).prop('disabled', true)
-    $.ajax
-      method: 'put'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}"
-      data: data
+    $check = $(this)
+    $check.prop('checked', false)
+    ConfirmSwal.fire({}).then (result) ->
+      if result.value
+        $check.prop('checked', true)
+        data = $check.serialize()
+        $check.prop('disabled', true)
+
+        $.ajax
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/sub_service_requests/#{getSSRId()}"
+          data: data
 
   # Milestones
   $(document).on 'keyup', '#consultArrangedDatePicker input, #requesterContactedDatePicker input', (event) ->

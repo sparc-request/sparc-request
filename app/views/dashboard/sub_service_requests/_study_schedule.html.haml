@@ -19,9 +19,6 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#studyScheduleManagement
-  .card-header.bg-primary.text-white
-    %h3.mb-0
-      = t('dashboard.sub_service_requests.study_schedule.header')
   - unless sub_service_request.has_per_patient_per_visit_services?
     .alert.alert-warning.mb-0.rounded-0
       = t(:dashboard)[:sub_service_requests][:study_schedule][:none]

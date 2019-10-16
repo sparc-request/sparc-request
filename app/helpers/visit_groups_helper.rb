@@ -62,7 +62,7 @@ module VisitGroupsHelper
             day.try(:-, 1)
           end
       else
-        min = arm.visit_groups.maximum(:day) + 1
+        min = arm.visit_groups.maximum(:day).try(:+, 1)
         max = nil
       end
 

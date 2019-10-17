@@ -267,7 +267,7 @@ class SubServiceRequest < ApplicationRecord
   def ready_for_fulfillment?
     # return true if the request is already in fulfillmentt and fulfillment_contingent_on_catalog_manager is turned off
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    (self.in_work_fulfillment && !Setting.get_value("fulfillment_contingent_on_catalog_manager")) || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
+    self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
   end
 
   ########################

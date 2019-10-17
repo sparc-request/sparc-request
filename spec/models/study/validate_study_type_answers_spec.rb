@@ -34,7 +34,7 @@ RSpec.describe Protocol, type: :model do
   end
 
   describe 'should validate study_type_answers for study' do
-    it 'should not raise an exception if the first answer is true' do
+    it 'should not add errors if the first answer is true' do
       answers = [true, nil, nil, nil, nil]
       update_answers(answers)
       study.validate_study_type_answers
@@ -42,7 +42,7 @@ RSpec.describe Protocol, type: :model do
       expect(study).to be_valid
     end
 
-    it 'should not raise an exception if all questions are answered' do
+    it 'should not add errors if all questions are answered' do
       answers = [false, false, true, true, true]
       update_answers(answers)
       study.validate_study_type_answers
@@ -50,43 +50,43 @@ RSpec.describe Protocol, type: :model do
       expect(study).to be_valid
     end
 
-    it 'should raise an exception if questions are left unanswered' do
+    it 'should add errors if questions are left unanswered' do
       answers = [false, nil, nil, nil, nil]
       update_answers(answers)
       study.validate_study_type_answers
-      expect(study.errors.messages).to eq({:study_type_answers=>["must be selected"]})
+      expect(study.errors.messages).to eq({:study_type_answers=>[{"higher_level_of_privacy"=>"can't be blank"}]})
       expect(study).not_to be_valid
     end
 
-    it 'should raise an exception if questions are left unanswered' do
+    it 'should add errors if questions are left unanswered' do
       answers = [false, true, nil, nil, nil]
       update_answers(answers)
       study.validate_study_type_answers
-      expect(study.errors.messages).to eq({:study_type_answers=>["must be selected"]})
+      expect(study.errors.messages).to eq({:study_type_answers=>[{"epic_inbasket"=>"can't be blank"}]})
       expect(study).not_to be_valid
     end
 
-    it 'should raise an exception if questions are left unanswered' do
+    it 'should add errors if questions are left unanswered' do
       answers = [false, true, false, nil, nil]
       update_answers(answers)
       study.validate_study_type_answers
-      expect(study.errors.messages).to eq({:study_type_answers=>["must be selected"]})
+      expect(study.errors.messages).to eq({:study_type_answers=>[{"research_active"=>"can't be blank"}]})
       expect(study).not_to be_valid
     end
 
-    it 'should raise an exception if questions are left unanswered' do
+    it 'should add errors if questions are left unanswered' do
       answers = [false, true, false, true, nil]
       update_answers(answers)
       study.validate_study_type_answers
-      expect(study.errors.messages).to eq({:study_type_answers=>["must be selected"]})
+      expect(study.errors.messages).to eq({:study_type_answers=>[{"restrict_sending"=>"can't be blank"}]})
       expect(study).not_to be_valid
     end
 
-    it 'should raise an exception if all questions are left unanswered' do
+    it 'should add errors if all questions are left unanswered' do
       answers = [nil, nil, nil, nil, nil]
       update_answers(answers)
       study.validate_study_type_answers
-      expect(study.errors.messages).to eq({:study_type_answers=>["must be selected"]})
+      expect(study.errors.messages).to eq({:study_type_answers=>[{"certificate_of_conf"=>"can't be blank"}]})
       expect(study).not_to be_valid
     end
   end

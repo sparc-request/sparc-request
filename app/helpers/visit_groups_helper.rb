@@ -33,7 +33,7 @@ module VisitGroupsHelper
 
   def visit_position_options(arm, visit_group=nil)
     last_position = arm.visit_count
-    position = visit_group.position_changed? ? visit_group.position - 1 : visit_group.position
+    position = visit_group.position_changed? && visit_group.position ? visit_group.position - 1 : visit_group.position
 
     if visit_group.position
       options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), Proc.new{ |vg| vg.position - 1 }, :insertion_name, position) +

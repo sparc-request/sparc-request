@@ -73,8 +73,6 @@ class VisitGroupsController < ApplicationController
   end
 
   def update
-    # Decrement position because it will be incremented by the model
-    params[:visit_group][:position] = params[:visit_group][:position].to_i - 1
     @arm = @visit_group.arm
     @tab = params[:tab]
 

@@ -19,33 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-  sequence :position do |n|
-    n
-  end
-
-  sequence :day do |n|
-    n * VisitGroup.admin_day_multiplier
-  end
-
-  sequence :name do |n|
-    "Visit #{n}"
-  end
-
   factory :visit_group do
-    position
-    day
-  	name
-    window_before {0}
-    window_after  {0}
+    sequence(:name)     { |n| "Visit #{n}" }
+    sequence(:day)      { |n| n }
+    sequence(:position) { |n| n }
+    window_before       { 0 }
+    window_after        { 0 }
 
-  trait :without_validations do
-    to_create { |instance| instance.save(validate: false) }
-  end
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
 
-  trait :with_arm do
-    arm         { FactoryBot.create(:arm) }
-  end
+    trait :with_arm do
+      arm { create(:arm) }
+    end
 
-  factory :visit_group_without_validations, traits: [:without_validations]
+    factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

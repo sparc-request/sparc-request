@@ -39,16 +39,12 @@ FactoryBot.define do
       if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
         sr = evaluator.service_request || create(:service_request_without_validations)
 
-        arm.default_visit_days
-
         evaluator.line_item_count.times do |n|
           li = create(:line_item_with_service, service_request: sr)
         end
 
         arm.reload
       end
-
-      arm.default_visit_days
     end
 
     factory :arm_without_validations, traits: [:without_validations]

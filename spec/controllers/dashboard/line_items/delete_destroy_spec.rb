@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe 'DELETE #destroy' do
 
     context 'one time fee' do

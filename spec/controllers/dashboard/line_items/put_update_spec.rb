@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe "PUT #update" do
     context "params[:line_item] is a valid update to LineItem" do
       before(:each) do

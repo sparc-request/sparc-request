@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe "POST #create" do
     context "params[:line_item][:service_id] blank" do
       before(:each) do

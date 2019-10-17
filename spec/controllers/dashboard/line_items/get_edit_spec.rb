@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe "GET #edit" do
     context "LineItem is a one time fee" do
       before(:each) do

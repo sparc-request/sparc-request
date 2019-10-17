@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe "GET #new" do
     context "params[:one_time_fee] present" do
       before(:each) do

@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::LineItemsController do
+RSpec.describe Dashboard::StudyLevelActivitiesController do
   describe "GET #index" do
     before(:each) do
       @sub_service_request = findable_stub(SubServiceRequest) do

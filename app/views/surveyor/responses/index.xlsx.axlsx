@@ -79,7 +79,7 @@ sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', ali
 
 @responses.includes(:question_responses).order("surveys.title, surveys.version").group_by(&:survey).each do |survey, responses|
   version = "v#{survey.version}"
-  wb.add_worksheet(name: "#{survey.full_title.truncate(30 - version.length)} #{version}") do |sheet|
+  wb.add_worksheet(name: "#{survey.full_title.truncate(30 - version.length).gsub(/[\[\]\:\/\\\?\*]/, "-")} #{version}") do |sheet|
     sheet.add_row survey_header(survey), style: header_style
     sheet.add_row ["Title:", survey.title], style: [bold, default]
     sheet.add_row ["Version:", survey.version], style: [bold, default]

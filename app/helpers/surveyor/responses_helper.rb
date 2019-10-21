@@ -21,14 +21,15 @@
 module Surveyor::ResponsesHelper
 
   def complete_display(response)
-    klass = response.completed? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
-
-    content_tag(:h4, content_tag(:span, '', class: klass))
+    if response.completed?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
   end
 
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
-
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
         current_user.is_site_admin?
@@ -52,10 +53,11 @@ module Surveyor::ResponsesHelper
         current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       end
 
-    [ view_response_button(response, view_permissions),
+    content_tag(:div,
+    raw([ view_response_button(response, view_permissions),
       edit_response_button(response, edit_permissions),
       resend_survey_button(response, resend_permissions)
-    ].join('')
+    ].join('')), class: 'd-flex')
   end
 
   def view_response_button(response, permissions=true)

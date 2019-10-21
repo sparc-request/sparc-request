@@ -20,31 +20,38 @@
 
 require 'rails_helper'
 
-RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
-  let_there_be_lane
+RSpec.describe 'dashboard/sub_service_requests/_details', type: :view do
+  let!(:org)      { create(:organization, :ctrc) }
+  let!(:protocol) { create(:protocol, :without_validations, selected_for_epic: true) }
+  let!(:sr)       { create(:service_request, :without_validations, protocol: protocol) }
+  let!(:ssr)      { create(:sub_service_request, protocol: protocol, service_request: sr, organization: org) }
 
-  def render_service_requests(protocol, permission_to_edit=false)
-    render 'dashboard/service_requests/service_requests',
-      protocol: protocol,
-      user: jug2,
-      permission_to_edit: permission_to_edit,
-      view_only: false,
-      show_view_ssr_back: false
+  context "SubServiceRequest associated with CTRC Organization" do
+    it "should display Adnministrative Approvals checkboxes" do
+      render 'dashboard/sub_service_requests/details', sub_service_request: ssr
+
+      expect(response).to have_selector('#sub_service_request_nursing_nutrition_approved')
+      expect(response).to have_selector('#sub_service_request_lab_approved')
+      expect(response).to have_selector('#sub_service_request_imaging_approved')
+      expect(response).to have_selector('#sub_service_request_committee_approved')
+    end
   end
 
-  it 'should render Service Requests' do
-    protocol        = create(:unarchived_study_without_validations, primary_pi: jug2)
-    service_request = create(:service_request_without_validations, protocol: protocol)
+  context "SubServiceRequest eligible for Subsidy" do
+    before :each do
+      allow(ssr).to receive(:eligible_for_subsidy?).and_return(true)
+    end
 
-    render_service_requests(protocol)
+    it "should render subsidies" do
+      render 'dashboard/sub_service_requests/details', sub_service_request: ssr
 
-    expect(response).to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
-    locals: {
-      service_request: service_request,
-      user: jug2,
-      permission_to_edit: false,
-      view_only: false
-    }
-  )
+      expect(response).to render_template(partial: "subsidies/_subsidy", locals: { sub_service_request: ssr, admin: true, collapse: false })
+    end
+  end
+
+  context "SubServiceRequest not eligible for Subsidy" do
+    it "should not render subsidies" do
+      expect(response).to_not render_template(partial: "subsidies/_subsidy")
+    end
   end
 end

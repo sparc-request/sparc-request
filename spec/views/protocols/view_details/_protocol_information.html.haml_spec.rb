@@ -20,34 +20,24 @@
 
 require 'rails_helper'
 
-RSpec.describe 'protocols/view_details/study_information', type: :view do
-  def render_information_for protocol
-    render 'protocols/view_details/study_information', protocol: protocol
+RSpec.describe 'protocols/view_details/_protocol_information', type: :view do
+  context 'viewing project' do
+    let!(:protocol) { create(:project_without_validations, primary_pi: create(:identity), research_master_id: 1234) }
+
+    it 'should not show the RMID column' do
+      render 'protocols/view_details/protocol_information', protocol: protocol
+
+      expect(response).to have_no_content(1234)
+    end
   end
 
-  context 'Protocol is a Study' do
-    context 'RMID is enabled' do
-      stub_config('research_master_enabled', true)
+  context 'viewing study' do
+    let!(:protocol) { create(:study_without_validations, primary_pi: create(:identity), research_master_id: 1234) }
 
-      it 'should display Research Master ID' do
-        protocol = build_stubbed(:study, research_master_id: 1234)
+    it 'should show the RMID column' do
+      render 'protocols/view_details/protocol_information', protocol: protocol
 
-        render_information_for protocol
-
-        expect(response).to have_content('1234')
-      end
-    end
-
-    context 'RMID is disabled' do
-      stub_config('research_master_enabled', false)
-
-      it 'should not display Research Master ID' do
-        protocol = build_stubbed(:study, research_master_id: 1234)
-
-        render_information_for protocol
-
-        expect(response).to_not have_content('1234')
-      end
+      expect(response).to have_content(1234)
     end
   end
 end

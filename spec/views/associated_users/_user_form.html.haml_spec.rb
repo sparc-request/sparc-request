@@ -24,64 +24,92 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
   let_there_be_lane
 
-  def render_user_form
+  def render_user_form(opts={})
     protocol = create(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: true)
     project_role = build(:project_role, id: 1, protocol_id: protocol.id, identity_id: jug2.id, role: 'consultant', epic_access: 0)
     service_request = build(:service_request_without_validations)
     dashboard = false
     assign(:user, jug2)
-    render "/associated_users/user_form", header_text: "Edit Authorized User",
+    render "/associated_users/user_form", opts.merge({
                                                    identity: jug2,
                                                    protocol: protocol,
-                                                   current_pi: jug2,
-                                                   project_role: project_role,
-                                                   dashboard: dashboard,
+                                                   protocol_role: project_role,
                                                    service_request: service_request,
-                                                   admin: false
+                                                  })
   end
 
-  context 'When the user views the associated users form' do
-    context 'epic configuration turned off' do
-      stub_config("use_epic", false)
+  describe 'header' do
+    context 'new user' do
+      it 'should display the correct header' do
+        render_user_form(action_name: 'new')
 
-      it 'should show the correct header and labels' do
-        render_user_form
-        expect(response).to have_selector('h4', text: "Edit Authorized User")
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:credentials])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:institution])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:college])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:department])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:phone])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:role])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:rights][:header])
-        expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:college])
-      end
-
-      it 'should show the correct buttons' do
-        render_user_form
-        expect(response).to have_selector('button', text: t(:actions)[:close])
-        expect(response).to have_selector('button', text: t(:actions)[:save])
-        expect(response).to have_selector('button.close')
-        expect(response).to have_selector('button', count: 3)
-      end
-
-      it 'should show the correct form fields when not using epic and protocol is not selected for epic' do
-        render_user_form
-        expect(response).to have_selector('.radio', count: 3)
-        expect(response).to have_selector('.radio-inline', count: 0)
-        expect(response).not_to have_selector('label', text: 'No')
-        expect(response).not_to have_selector('label', text: 'Yes')
+        expect(response).to have_text(I18n.t('authorized_users.new'))
       end
     end
 
-    context 'epic configuration turned on' do
-      stub_config("use_epic", true)
+    context 'edit user' do
+      it 'should display the correct header' do
+        render_user_form(action_name: 'edit')
 
-      it 'should show the correct form fields when using epic and protocol is selected for epic' do
+        expect(response).to have_text(I18n.t('authorized_users.edit'))
+      end
+    end
+  end
+
+  describe 'epic radios' do
+    context 'epic turned on' do
+      stub_config('use_epic', true)
+
+      it 'should display the radios' do
         render_user_form
-        expect(response).to have_selector('label', text: 'No')
-        expect(response).to have_selector('label', text: 'Yes')
-        expect(response).to have_selector('.radio-inline', count: 2)
+
+        expect(response).to have_content(ProjectRole.human_attribute_name(:epic_access))
+        expect(response).to have_selector('#project_role_epic_access_true')
+        expect(response).to have_selector('#project_role_epic_access_false')
+      end
+
+      context 'validate epic users turned on' do
+        stub_config('validate_epic_users', true)
+
+        context 'epic user is active' do
+          before :each do
+            allow(EpicUser).to receive(:is_active?).with('').and_return(true)
+          end
+
+          it 'should allow editing' do
+            render_user_form({ epic_user: '' })
+
+            expect(response).to have_selector('#project_role_epic_access_true:not([disabled=disabled])')
+            expect(response).to have_selector('#project_role_epic_access_false:not([disabled=disabled])')
+            expect(response).to have_content(I18n.t('authorized_users.form.no_epic_access'))
+          end
+        end
+
+        context 'epic user is not active' do
+          before :each do
+            allow(EpicUser).to receive(:is_active?).with('').and_return(false)
+          end
+
+          it 'should not allow editing' do
+            render_user_form({ epic_user: '' })
+
+            expect(response).to have_selector('#project_role_epic_access_true[disabled=disabled]')
+            expect(response).to have_selector('#project_role_epic_access_false[disabled=disabled]')
+            expect(response).to have_content(I18n.t('authorized_users.form.no_epic_access'))
+          end
+        end
+      end
+    end
+
+    context 'epic turned off' do
+      stub_config('use_epic', false)
+
+      it 'should not display the radios' do
+        render_user_form
+
+        expect(response).to have_no_content(ProjectRole.human_attribute_name(:epic_access))
+        expect(response).to have_no_selector('#project_role_epic_access_true')
+        expect(response).to have_no_selector('#project_role_epic_access_false')
       end
     end
   end

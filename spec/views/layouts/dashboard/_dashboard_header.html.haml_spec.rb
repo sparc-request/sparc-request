@@ -35,33 +35,34 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
     expect(session[:breadcrumbs]).to receive(:breadcrumbs).and_return('All those other pages.')
   end
 
+  it 'should display breadcrumbs by sending :breadcrumbs to session[:breadcrumbs]' do
+    render 'layouts/dashboard/dashboard_header', current_user: @user
+
+    expect(response).to have_content('All those other pages.')
+  end
+
   context 'epic configuration turned on' do
     stub_config("use_epic", true)
     stub_config("epic_queue_access", ['jug2'])
 
     it 'should display view epic queue button' do
-      render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
+      render 'layouts/dashboard/dashboard_header', current_user: @user
 
-      expect(response).to have_selector('button#epic-queue-btn', text: 'Epic Queue')
+      expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.epic_queue'))
     end
   end
 
-  it 'should display number of unread notifications (for user)' do
-    render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
+  context 'short interaction turned on' do
+    stub_config('use_short_interaction', true)
 
-    expect(response).to have_selector('button#messages-btn span.badge', text: '2')
-  end
+    before :each do
+      allow(@user).to receive(:is_service_provider?).and_return(true)
+    end
 
-  it 'should display breadcrumbs by sending :breadcrumbs to session[:breadcrumbs]' do
-    render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
+    it 'should display the short interaction button' do
+      render 'layouts/dashboard/dashboard_header', current_user: @user
 
-    expect(response).to have_content('All those other pages.')
-  end
-
-  it 'should display welcome message to user' do
-    render 'layouts/dashboard/dashboard_header', user: @user, current_user: @user
-
-    expect(response).to have_content(t(:dashboard)[:navbar][:logged_in_as] + "user@email.com")
-    expect(response).to have_tag('a', text: "Logout")
+      expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.protocol_merge'))
+    end
   end
 end

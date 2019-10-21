@@ -445,6 +445,7 @@ en:
       units_per_quantity: "Edit Units per Quantity"
     merged_totals:
       header: "Study Cost Totals"
+      direct_cost: "Total Direct Cost"
       grand_total: "Grand Total"
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'

@@ -24,11 +24,9 @@ RSpec.describe 'protocols/summary', type: :view do
   def render_summary_for protocol, action_name=nil
     render '/protocols/summary',
       protocol: protocol,
-      protocol_type: protocol.type,
       user: jug2,
       action_name: action_name,
-      service_request: build_stubbed(:service_request),
-      sub_service_request_id: 1
+      service_request: build_stubbed(:service_request)
   end
 
   let_there_be_lane
@@ -37,9 +35,9 @@ RSpec.describe 'protocols/summary', type: :view do
     it 'should be titled "Study Summary"' do
       protocol = build_stubbed(:study_federally_funded, primary_pi: jug2)
 
-      render_summary_for protocol
+      render_summary_for protocol, 'protocol'
 
-      expect(response).to have_content('Study Summary')
+      expect(response).to have_content(I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human))
     end
 
     describe 'Edit button' do
@@ -49,17 +47,21 @@ RSpec.describe 'protocols/summary', type: :view do
 
           render_summary_for protocol, 'protocol'
 
-          expect(response).to have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_selector('.edit-protocol', text: I18n.t('protocols.edit', protocol_type: protocol.model_name.human))
         end
       end
 
       context 'in Review' do
-        it 'should show the edit button' do
+        before :each do
+          allow(view).to receive(:in_review?).and_return(true)
+        end
+
+        it 'should not show the edit button' do
           protocol = build_stubbed(:study_without_validations, primary_pi: jug2)
 
           render_summary_for protocol, 'review'
 
-          expect(response).to have_no_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_no_selector('.edit-protocol', text: I18n.t('protocols.edit', protocol_type: protocol.model_name.human))
         end
       end
     end
@@ -132,6 +134,30 @@ RSpec.describe 'protocols/summary', type: :view do
         expect(response).to have_content('College Department')
       end
     end
+
+    context 'In Dashboard' do
+      before :each do
+        allow(view).to receive(:in_dashboard?).and_return(true)
+      end
+
+      it 'should display the archive button' do
+        protocol = build_stubbed(:unarchived_study_without_validations, primary_pi: jug2)
+
+        render '/protocols/summary', protocol: protocol, current_user: jug2, action_name: 'show', permission_to_edit: true, admin: true
+
+        expect(response).to have_selector('.archive-protocol', text: I18n.t('protocols.summary.archive'))
+      end
+    end
+
+    context 'not in Dashboard' do
+      it 'should not display the archive button' do
+        protocol = build_stubbed(:unarchived_study_without_validations, primary_pi: jug2)
+
+        render '/protocols/summary', protocol: protocol, service_request: build_stubbed(:service_request), current_user: jug2, action_name: 'protocol', permission_to_edit: true, admin: true
+
+        expect(response).to have_no_selector('.archive-protocol', text: I18n.t('protocols.summary.archive'))
+      end
+    end
   end
 
   context 'Protocol is a Project' do
@@ -140,7 +166,7 @@ RSpec.describe 'protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_content('Project Summary')
+      expect(response).to have_content(I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human))
     end
 
     describe 'Edit button' do
@@ -150,17 +176,21 @@ RSpec.describe 'protocols/summary', type: :view do
 
           render_summary_for protocol, 'protocol'
 
-          expect(response).to have_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_selector('.edit-protocol', text: I18n.t('protocols.edit', protocol_type: protocol.model_name.human))
         end
       end
 
       context 'in Review' do
+        before :each do
+          allow(view).to receive(:in_review?).and_return(true)
+        end
+
         it 'should show the edit button' do
           protocol = build_stubbed(:project_without_validations, primary_pi: jug2)
 
           render_summary_for protocol, 'review'
 
-          expect(response).to have_no_selector('.edit-protocol-information-button', text: I18n.t('protocols.edit', protocol_type: protocol.type))
+          expect(response).to have_no_selector('.edit-protocol', text: I18n.t('protocols.edit', protocol_type: protocol.model_name.human))
         end
       end
     end
@@ -207,6 +237,30 @@ RSpec.describe 'protocols/summary', type: :view do
         expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
+      end
+    end
+
+    context 'In Dashboard' do
+      before :each do
+        allow(view).to receive(:in_dashboard?).and_return(true)
+      end
+
+      it 'should display the archive button' do
+        protocol = build_stubbed(:unarchived_project_without_validations, primary_pi: jug2)
+
+        render '/protocols/summary', protocol: protocol, current_user: jug2, action_name: 'show', permission_to_edit: true, admin: true
+
+        expect(response).to have_selector('.archive-protocol', text: I18n.t('protocols.summary.archive'))
+      end
+    end
+
+    context 'not in Dashboard' do
+      it 'should not display the archive button' do
+        protocol = build_stubbed(:unarchived_project_without_validations, primary_pi: jug2)
+
+        render '/protocols/summary', protocol: protocol, service_request: build_stubbed(:service_request), current_user: jug2, action_name: 'show', permission_to_edit: true, admin: true
+
+        expect(response).to have_no_selector('.archive-protocol', text: I18n.t('protocols.summary.archive'))
       end
     end
   end

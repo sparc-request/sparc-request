@@ -18,30 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='protocol']:not([type='hidden']):not(.research-involving, .study-type, .impact-area, .affiliation)").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('#studyTypeQuestionsContainer').removeClass('is-valid')
-$('.form-error').remove()
+require 'rails_helper'
 
-<% @errors.messages.select{ |attr| attr != :study_type_answers }.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='protocol[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% end %>
+RSpec.describe "protocols/_view_details.html.haml", type: :view do
 
-<% @protocol.primary_pi_role.errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% end %>
+  context 'viewing project' do
+    let!(:protocol) { create(:project_without_validations, primary_pi: create(:identity)) }
 
-<% if @errors.messages[:study_type_answers][0] %>
-<% @errors.messages[:study_type_answers][0].each do |question_id, message| %>
-$("#study_type_answer_<%= question_id %>").children('.form-group:last-of-type').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
-<% end %>
-<% end %>
+    it 'should render protocol and financial information' do
+      render 'protocols/view_details', protocol: protocol
 
-$('html, body').animate({ scrollTop: $('.is-invalid').first().offset().top }, 'slow')
-<% else %>
-window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
-<% end %>
+      expect(response).to render_template('protocols/view_details/_protocol_information')
+      expect(response).to render_template('protocols/view_details/_financial_information')
+      expect(response).to_not render_template('protocols/view_details/_research_involving')
+      expect(response).to_not render_template('protocols/view_details/_other_details')
+    end
+  end
+
+  context 'viewing study' do
+    let!(:protocol) { create(:study_without_validations, primary_pi: create(:identity)) }
+
+    it 'should render protocol, financial, research involving, and other details' do
+      render 'protocols/view_details', protocol: protocol
+
+      expect(response).to render_template('protocols/view_details/_protocol_information')
+      expect(response).to render_template('protocols/view_details/_financial_information')
+      expect(response).to render_template('protocols/view_details/_research_involving')
+      expect(response).to render_template('protocols/view_details/_other_details')
+    end
+  end
+end

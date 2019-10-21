@@ -18,35 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-# TODO rewrite with stubs
 require 'rails_helper'
 
-RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
-  let_there_be_lane
+RSpec.describe 'dashboard/protocol_filters/_saved_searches', type: :view do
+  context 'no ProtocolFilters present' do
+    before :each do
+      render 'dashboard/protocol_filters/saved_searches', protocol_filters: []
+    end
 
-  def render_requests_modal(protocol)
-    render 'dashboard/protocols/requests_modal',
-      protocol: protocol,
-      user: jug2,
-      permission_to_edit: false,
-      view_only: true,
-      show_view_ssr_back: true
+    it 'should not display the filters list' do
+      expect(response).to have_selector('#savedFilters.d-none')
+    end
   end
 
-  it 'should render Service Requests' do
-    protocol                  = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)
-    service_request_with_ssr  = create(:service_request_without_validations, protocol: protocol)
-                                create(:sub_service_request, service_request: service_request_with_ssr, organization: create(:organization), status: 'draft')
+  context 'ProtocolFilters present' do
+    before(:each) do
+      filters = [double('protocol_filter', 
+        id: 1,
+        search_name: 'My Awesome Filter',
+        href: ''
+      )]
+      
+      render 'dashboard/protocol_filters/saved_searches', protocol_filters: filters
+    end
 
-    render_requests_modal(protocol)
+    it 'should display list' do
+      expect(response).to have_selector('#savedFilters:not(.d-none)')
+    end
 
-    expect(response).to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
-      locals: {
-        service_request: service_request_with_ssr,
-        user: jug2,
-        permission_to_edit: false,
-        view_only: true
-      }
-    )
+    it 'should display their names' do
+      expect(response).to have_selector('a', text: 'My Awesome Filter')
+    end
   end
 end

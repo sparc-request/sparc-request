@@ -20,33 +20,56 @@
 
 require 'rails_helper'
 
-RSpec.describe 'dashboard/documents/documents_table', type: :view do
-  def render_documents_for(protocol, permission_to_edit=false)
-    render 'dashboard/documents/documents_table',
-      protocol: protocol,
-      protocol_type: protocol.type,
-      permission_to_edit: permission_to_edit
-  end
-
+RSpec.describe 'dashboard/protocol_filters/_filter_protocols_form', type: :view do
   let_there_be_lane
 
-  context 'User has permission to edit' do
-    it 'should render documents_table' do
-      protocol = build(:unarchived_study_without_validations, primary_pi: jug2)
+  before(:each) do
+    @filterrific = double('filterrific', :to_hash => {},
+      select_options: {
+        with_status: [],
+        with_organization: [],
+        sorted_by: "id_asc",
+        with_owner: []
+      },
+      with_status: [],
+      search_query: '',
+      show_archived: 0,
+      admin_filter: "for_identity #{jug2.id}",
+      with_organization: false,
+      sorted_by: "id_asc",
+      with_owner: ["#{jug2.id}"]
+    )
+  end
 
-      render_documents_for(protocol, true)
+  context 'user is not an admin' do
+    before(:each) do
+      render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: jug2, protocol_filters: [], reset_filterrific_url: '', admin: false
+    end
 
-      expect(response).to have_selector('#document-new:not(.disabled)')
+    it 'should not show "My Protocols" radio' do
+      expect(response).not_to have_content('My Protocols')
+    end
+
+    it 'should not show "My Admin Protocols" radio' do
+      expect(response).not_to have_content('My Admin Protocols')
+    end
+
+    it 'should show "Organization" select' do
+      expect(response).to have_content('Organization')
     end
   end
 
-  context 'User does not have permission to edit' do
-    it 'should not render documents_table' do
-      protocol = build(:unarchived_study_without_validations, primary_pi: jug2)
+  context 'user is an admin' do
+    before(:each) do
+      render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: jug2, protocol_filters: [], reset_filterrific_url: '', admin: true
+    end
 
-      render_documents_for(protocol)
+    it 'should show "My Protocols" radio' do
+      expect(response).to have_selector('label', text: 'My Protocols')
+    end
 
-      expect(response).to have_selector('#document-new.disabled')
+    it 'should show "My Admin Protocols" radio' do
+      expect(response).to have_selector('label', text: 'My Admin Protocols')
     end
   end
 end

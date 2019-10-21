@@ -61,7 +61,7 @@ send_update_request = (obj, val) ->
       if attribute == 'question_type' || attribute == 'content'
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
-build_dependents_selectpicker = (survey_id) ->
+(exports ? this).build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

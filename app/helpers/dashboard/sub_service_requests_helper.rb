@@ -37,7 +37,7 @@ module Dashboard::SubServiceRequestsHelper
         if current_user.go_to_cwf_rights?(sub_service_request.organization)
           if sub_service_request.imported_to_fulfillment?
             # In fulfillment, and user has rights to view in Fulfillment
-            link_to "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: :blank, id: 'fulfillmentStatus', class: 'btn btn-success' do
+            link_to "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: :blank, id: 'goToFulfillment', class: 'btn btn-success' do
               icon('fas', 'eye mr-2') + t('dashboard.sub_service_requests.header.fulfillment.go_to_fulfillment')
             end
           else

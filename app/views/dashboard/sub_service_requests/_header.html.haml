@@ -27,7 +27,7 @@
     %h3.mb-0<
       = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.display_id})"
     .ssr-links-container.d-flex<
-      = notes_button(sub_service_request, model: sub_service_request, class: 'mr-1', ssrid: sub_service_request.id)
+      = notes_button(sub_service_request, model: t('dashboard.sub_service_requests.header.notes_label'), class: 'mr-1', ssrid: sub_service_request.id)
       = export_ssr_button(sub_service_request)
       .mx-3
       - unless sub_service_request.in_work_fulfillment? || sub_service_request.is_complete?

@@ -22,26 +22,9 @@ require 'rails_helper'
 
 RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#obtain_research_pricing' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
-    it 'should call before_filter #validate_step' do
-      expect(before_filters.include?(:validate_step)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
     it 'should update previous_submitted_at' do
       org      = create(:organization)
       service  = create(:service, organization: org, one_time_fee: true)

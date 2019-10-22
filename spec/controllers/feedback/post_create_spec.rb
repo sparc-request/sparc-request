@@ -18,30 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require "rails_helper"
+require 'rails_helper'
 
-RSpec.describe Dashboard::StudyLevelActivitiesController do
-  describe "GET #index" do
-    before(:each) do
-      @sub_service_request = findable_stub(SubServiceRequest) do
-        build_stubbed(:sub_service_request)
+RSpec.describe FeedbackController, type: :controller do
+  class Feedback < ApplicationRecord
+    audited
+
+    validates_presence_of :name, :email, :message
+    validates_format_of :email, with: Devise::email_regexp
+  end
+
+  stub_config('use_redcap_api', false)
+
+  describe '#create' do
+    context 'Redcap API disabled' do
+      it 'should send an email' do
+        expect(Notifier).to receive_message_chain(:provide_feedback, :deliver_now)
+
+        post :create, params: { feedback: attributes_for(:feedback, :standard), format: :js }
       end
-      allow(@sub_service_request).to receive(:one_time_fee_line_items).
-        and_return("my otf line items")
-
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
-      get :index, params: { sub_service_request_id: @sub_service_request.id, format: :json }
     end
-
-    it "should assign @sub_service_request from params[:sub_service_request_id]" do
-      expect(assigns(:sub_service_request)).to eq(@sub_service_request)
-    end
-
-    it "should assign @line_items from one time fee LineItems of SubServiceRequest" do
-      expect(assigns(:line_items)).to eq("my otf line items")
-    end
-
-    it { is_expected.to render_template "dashboard/line_items/index" }
-    it { is_expected.to respond_with :ok }
   end
 end

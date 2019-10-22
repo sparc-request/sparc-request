@@ -22,18 +22,9 @@ require 'rails_helper'
 
 RSpec.describe SearchController do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#services' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
     it 'should return services with similar name' do
       sr    = create(:service_request_without_validations)
       inst  = create(:institution)

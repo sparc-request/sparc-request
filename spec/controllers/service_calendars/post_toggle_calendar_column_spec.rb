@@ -22,7 +22,6 @@ require 'rails_helper'
 
 RSpec.describe ServiceCalendarsController do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_column' do
@@ -129,37 +128,6 @@ RSpec.describe ServiceCalendarsController do
         }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')
-      end
-    end
-
-    context 'editing sub service request' do
-      it 'should not update other sub service requests statuses' do
-        org       = create(:organization)
-        org2      = create(:organization)
-                    create(:service_provider, organization: org, identity: logged_in_user)
-        service   = create(:service, organization: org, pricing_map_count: 1)
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-        ssr2      = create(:sub_service_request_without_validations, organization: org2, service_request: sr, status: 'on_hold')
-        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        li2       = create(:line_item, service_request: sr, sub_service_request: ssr2, service: service)
-        arm       = create(:arm, protocol: protocol)
-
-        session[:identity_id] = logged_in_user.id
-
-        post :toggle_calendar_column, params: {
-          visit_group_id: arm.visit_groups.first.id,
-          sub_service_request_id: ssr.id,
-          service_request_id: sr.id,
-          page: '1',
-          check: 'true',
-          admin: 'false',
-          portal: 'true'
-        }, xhr: true
-
-        expect(ssr.reload.status).to eq('draft')
-        expect(ssr2.reload.status).to eq('on_hold')
       end
     end
   end

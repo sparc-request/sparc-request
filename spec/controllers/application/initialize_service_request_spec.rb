@@ -20,63 +20,36 @@
 
 require 'rails_helper'
 
-RSpec.describe Surveyor::QuestionsController, type: :controller do
+RSpec.describe ApplicationController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
-  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-  stub_config("site_admins", ["weh6@musc.edu"])
-  
-  before :each do
-    session[:identity_id] = logged_in_user.id
-  end
+  let_there_be_lane
 
-  describe '#delete' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+  describe '#initialize_service_request' do
+    context 'params[:srid] is present' do
+      it 'should assign @service_request' do
+        sr = findable_stub(ServiceRequest) { build_stubbed(:service_request) }
+        allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
+        controller.send(:initialize_service_request)
+        expect(assigns(:service_request)).to eq(sr)
+      end
     end
 
-    it 'should call before_filter #authorize_survey_builder_access' do
-      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
+    context 'action_name == \'add_service\'' do
+      it 'should create a new service request' do
+        allow(controller).to receive(:action_name).and_return('add_service')
+        controller.send(:initialize_service_request)
+        sr = ServiceRequest.first
+        expect(assigns(:service_request)).to eq(sr)
+        expect(sr.status).to eq('first_draft')
+      end
     end
 
-    it 'should assign @question to the question' do
-      question = create(:question_without_validations)
-
-      delete :destroy, params: {
-        id: question.id
-      }, xhr: true
-
-      expect(assigns(:question)).to eq(question)
-    end
-
-    it 'it should delete the question' do
-      question = create(:question_without_validations)
-
-      expect{
-        delete :destroy, params: {
-          id: question.id
-        }, xhr: true
-      }.to change{ Question.count }.by(-1)
-    end
-
-    it 'should render template' do
-      question = create(:question_without_validations)
-
-      delete :destroy, params: {
-        id: question.id
-      }, xhr: true
-
-      expect(controller).to render_template(:destroy)
-    end
-
-    it 'should respond ok' do
-      question = create(:question_without_validations)
-
-      delete :destroy, params: {
-        id: question.id
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
+    context 'service request not yet created' do
+      it '@service_request is unsaved' do
+        controller.send(:initialize_service_request)
+        sr = assigns(:service_request)
+        expect(sr.new_record?).to eq(true)
+      end
     end
   end
 end

@@ -22,19 +22,7 @@ require 'rails_helper'
 RSpec.describe ContactFormsController, type: :controller do
   stub_controller
 
-  describe 'GET #create' do
-    it 'should assign @contact_form' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
-
-      expect(assigns(:contact_form).class).to eq(ContactForm)
-    end
-
+  describe '#create' do
     context 'contact form valid' do
       it 'should send email' do
         expect {
@@ -61,42 +49,6 @@ RSpec.describe ContactFormsController, type: :controller do
           }, xhr: true
         }.to change(ActionMailer::Base.deliveries, :count).by(0)
       end
-
-      it 'should assign @errors' do
-        post :create, params: {
-          contact_form: {
-            subject: '',
-            email: '',
-            message: ''
-          }
-        }, xhr: true
-
-        expect(assigns(:errors)).to be
-      end
-    end
-
-    it 'should render template' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
-
-      expect(controller).to render_template(:create)
-    end
-
-    it 'returns http success' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
     end
   end
 end

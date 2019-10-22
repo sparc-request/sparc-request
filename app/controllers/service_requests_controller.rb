@@ -72,7 +72,7 @@ class ServiceRequestsController < ApplicationController
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if !@has_subsidy && !@eligible_for_subsidy
+    unless @has_subsidy || @eligible_for_subsidy
       redirect_to document_management_service_request_path(srid: @service_request.id)
     end
   end
@@ -159,8 +159,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    page            = Rails.application.routes.recognize_path(request.referrer)[:action]
-    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, page, params[:confirmed] == 'true')
+    @page           = Rails.application.routes.recognize_path(request.referrer)[:action]
+    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
     if remove_service.confirm_previously_submitted?
       @confirm_previously_submitted = true
@@ -169,7 +169,6 @@ class ServiceRequestsController < ApplicationController
     else
       remove_service.remove_service
       flash[:alert] = t('line_items.deleted')
-      redirect_to root_path(method: :get, srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
 
     respond_to :js

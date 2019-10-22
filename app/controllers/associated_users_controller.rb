@@ -51,6 +51,7 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
+    redirect_to root_path
     creator         = AssociatedUserCreator.new(project_role_params, current_user)
     @protocol_role  = creator.protocol_role
 
@@ -107,7 +108,10 @@ class AssociatedUsersController < ApplicationController
   private
 
   def project_role_params
-    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    if params[:project_role][:identity_attributes]
+      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    end
+
     params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(

@@ -204,9 +204,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
       ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
-    respond_to do |format|
-      format.js
-    end
+    
+    respond_to :js
   end
 
   def display_requests

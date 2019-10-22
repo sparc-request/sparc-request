@@ -20,44 +20,16 @@
 
 require 'rails_helper'
 
-RSpec.describe Dashboard::ProtocolFiltersController do
+RSpec.describe FeedbackController, type: :controller do
+  describe '#create' do
+    context 'Redcap API enabled' do
+      stub_config('use_redcap_api', true)
 
-  describe 'POST #create' do
+      it 'should emit a Redcap Survey' do
+        expect_any_instance_of(RedcapSurveyEmitter).to receive(:send_form)
 
-    context 'successful' do
-
-      before(:each) do
-        @user = build(:identity, protocol_filter_count: 3)
-
-        @protocol_filter = build(:protocol_filter, identity_id: @user.id)
-
-        log_in_dashboard_identity(obj: @user)
+        post :create, params: { feedback: attributes_for(:feedback, :redcap), format: :js }
       end
-
-      it "creates a protocol filter record" do
-        expect{ post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true }.to change{ ProtocolFilter.count }.by(1)
-      end
-
-      it "adds the filter to the user's protocol filter list" do
-        expect{ post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true }.to change{ @user.protocol_filters.count }.by(1)
-      end
-
-      it "saves the correct attributes for the protocol filter" do
-        post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true
-        expect( ProtocolFilter.last.attributes.except( 'id', 'created_at', 'updated_at' ) ).to eq(
-          "identity_id" => @user.id, "search_name" => "", "show_archived" => nil, "search_query" => "", "with_organization" => [], "with_status" => [], "admin_filter" => "", "with_owner" => [])
-      end
-
-      it "flashes the correct message" do
-        post :create, params: { protocol_filter: @protocol_filter.attributes }, xhr: true
-        expect( flash[:success] ).to eq( 'Search Saved!' )
-      end
-
     end
-
-    #Leaving this section in in case we add validation to the protocol filter model
-    #context 'unsuccessful' do
-
   end
-
 end

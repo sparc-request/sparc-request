@@ -26,7 +26,7 @@ $(document).ready ->
     else if $(this).children("#form-modal").length > 0
       $('.form-table').bootstrapTable('refresh')
 
-  $(document).on 'change', '.select-depender, .select-question-type', ->
+  $(document).on 'change', 'select.select-depender, select.select-question-type', ->
     send_update_request($(this), $(this).val())
 
   $(document).on 'focusout', '#survey-modal input[type="text"], #form-modal input[type="text"]:not([id$="-surveyable"]), #survey-modal textarea, #form-modal textarea', ->

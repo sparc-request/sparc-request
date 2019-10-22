@@ -19,6 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% @questions.each do |question| %>
 $("#question-<%=question.id%> select.select-depender").selectpicker('destroy')
-$("#question-<%=question.id%> select.select-depender").replaceWith("<%= j render 'surveyor/surveys/form/dependent_dropdown', survey: @survey, question: question %>")
+$("#question-<%=question.id%> #dependentsFields<%=question.id%>").replaceWith("<%= j render 'surveyor/surveys/form/dependent_dropdown', survey: @survey, question: question %>")
 $("#question-<%=question.id%> select.select-depender").selectpicker()
 <% end %>

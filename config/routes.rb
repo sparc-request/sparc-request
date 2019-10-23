@@ -257,8 +257,6 @@ SparcRails::Application.routes.draw do
 
     resources :messages, only: [:index, :new, :create]
 
-    resources :projects, controller: :protocols, except: [:destroy]
-
     resources :protocols, except: [:destroy] do
       resource :study_type_answers, only: [:edit]
 
@@ -286,8 +284,6 @@ SparcRails::Application.routes.draw do
     end
 
     resources :protocol_filters, only: [:new, :create, :destroy]
-
-    resources :studies, controller: :protocols, except: [:destroy]
 
     resources :subsidies, except: [:index, :show] do
       member do

@@ -41,7 +41,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
 
     end
 
@@ -61,7 +61,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     it 'should return services with cpt code' do
@@ -80,7 +80,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     it 'should not return unavailable services' do
@@ -99,7 +99,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     # Can we verify this?
@@ -126,7 +126,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s2.id)
+      expect(results[0]['service_id']).to eq(s2.id)
     end
   end
 end

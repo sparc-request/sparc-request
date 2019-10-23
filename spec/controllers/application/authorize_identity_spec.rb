@@ -21,51 +21,85 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
-  stub_controller
-  let_there_be_lane
+  let!(:logged_in_user) { create(:identity) }
 
   describe '#authorize_identity' do
+    before :each do
+      allow(controller).to receive(:authenticate_identity!)
+      allow(controller).to receive(:current_user).and_return(logged_in_user)
+    end
+
     context '@service_request is \'first_draft\'' do
-      it 'should return true' do
-        sr = build(:service_request, status: 'first_draft')
-        controller.instance_variable_set(:@service_request, sr)
-        expect(controller).to_not receive(:authorization_error)
-        controller.send(:authorize_identity)
+      context 'viewing the catalog' do
+        it 'should return permit' do
+          sr = build(:service_request, status: 'first_draft')
+          controller.instance_variable_set(:@service_request, sr)
+          allow(controller).to receive(:action_name).and_return('catalog')
+          expect(controller).to_not receive(:authorization_error)
+          controller.send(:authorize_identity)
+        end
+      end
+
+      context 'JS request sent from the catalog' do
+        it 'should permit' do
+          sr = build(:service_request, status: 'first_draft')
+          controller.instance_variable_set(:@service_request, sr)
+          allow(controller).to receive_message_chain(:request, :referrer).and_return('/service_request/catalog')
+          allow(controller).to receive_message_chain(:request, :format, :js?).and_return(true)
+          expect(controller).to_not receive(:authorization_error)
+          controller.send(:authorize_identity)
+        end
+      end
+
+      context 'sent from a different page' do
+        it 'should not permit' do
+          sr = build(:service_request, status: 'first_draft')
+          controller.instance_variable_set(:@service_request, sr)
+          allow(controller).to receive_message_chain(:request, :referrer).and_return('/service_request/protocol')
+          allow(controller).to receive_message_chain(:request, :format, :js?).and_return(false)
+          expect(controller).to receive(:authorization_error)
+          controller.send(:authorize_identity)
+        end
       end
     end
 
     context '@service_request is not \'first_draft\'' do
-      context 'Identity logged in' do
-        before(:each) do
-          allow(controller).to receive(:current_user).and_return(jug2)
+      context 'user logged in' do
+        before :each do
+          allow(controller).to receive(:authenticate_identity!)
+          allow(controller).to receive(:current_user).and_return(logged_in_user)
         end
 
-        context 'user can edit @service_request' do
-          it 'should authorize identity' do
+        context 'user can edit service request' do
+          it 'should permit' do
             sr = build(:service_request, status: 'draft')
             controller.instance_variable_set(:@service_request, sr)
-            allow(jug2).to receive(:can_edit_service_request?).with(sr).and_return(true)
+            allow(logged_in_user).to receive(:can_edit_service_request?).with(sr).and_return(true)
             expect(controller).to_not receive(:authorization_error)
             controller.send(:authorize_identity)
           end
         end
 
-        context 'user can not edit @service_request' do
-          it 'should authorize identity' do
+        context 'user can\'t edit service request' do
+          it 'should not permit' do
             sr = build(:service_request, status: 'draft')
             controller.instance_variable_set(:@service_request, sr)
-            allow(jug2).to receive(:can_edit_service_request?).with(sr).and_return(false)
-            expect(controller).to receive(:authorization_error)
+            allow(logged_in_user).to receive(:can_edit_service_request?).with(sr).and_return(true)
+            expect(controller).to_not receive(:authorization_error)
             controller.send(:authorize_identity)
           end
         end
       end
 
-      context 'Identity not logged in' do
-        it 'should call \'authenticate_identity!\'' do
-          service_request = instance_double('ServiceRequest', status: 'draft')
-          controller.instance_variable_set(:@service_request, service_request)
-          allow(controller).to receive(:not_signed_in?).and_return(true)
+      context 'user not logged in' do
+        before :each do
+          allow(controller).to receive(:authenticate_identity!)
+          allow(controller).to receive(:current_user).and_return(nil)
+        end
+
+        it 'should require a login' do
+          sr = build(:service_request, status: 'draft')
+          controller.instance_variable_set(:@service_request, sr)
           expect(controller).to receive(:authenticate_identity!)
           expect(controller).to_not receive(:authorization_error)
           controller.send(:authorize_identity)

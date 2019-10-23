@@ -20,24 +20,21 @@
 require 'rails_helper'
 
 RSpec.describe AssociatedUsersController, type: :controller do
-  let!(:logged_in_user) { create(:identity) }
-  let!(:other_user)     { create(:identity) }
+  stub_controller
 
   describe '#destroy' do
     context 'use_epic is true and protocol.selected_for_epic is true and epic_access is true and queue_epic is false' do
       stub_config("use_epic", true)
       
       it 'should notify primary pi' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user, selected_for_epic: true)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        pr        = create(:project_role, identity: other_user, protocol: protocol, epic_access: true)
+        protocol  = create(:protocol_without_validations, primary_pi: build_stubbed(:identity), selected_for_epic: true)
+        pr        = create(:project_role, identity: build_stubbed(:identity), protocol: protocol, epic_access: true)
         
-        expect {
-          delete :destroy, params: {
-            service_request_id: sr.id,
-            id: pr.id
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        expect(Notifier).to receive_message_chain(:notify_primary_pi_for_epic_user_removal, :deliver)
+
+        delete :destroy, params: {
+          id: pr.id
+        }, xhr: true
       end
     end
   end

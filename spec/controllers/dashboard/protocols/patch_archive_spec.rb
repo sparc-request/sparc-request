@@ -25,7 +25,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
   let!(:logged_in_user) { create(:identity) }
   describe 'PATCH #archive' do
-    it 'should toggle archived field of Protocol and email' do
+    it 'should send an email' do
       allow(controller).to receive(:current_user).and_return(logged_in_user)
 
       protocol  = create(:study_without_validations, primary_pi: logged_in_user, archived: false)
@@ -34,8 +34,6 @@ RSpec.describe Dashboard::ProtocolsController do
       expect {
         patch :archive, params: { id: protocol.id }, xhr: true
       }.to change(ActionMailer::Base.deliveries, :count).by(1)
-
-      expect(protocol.reload.archived).to eq(true)
     end
   end
 end

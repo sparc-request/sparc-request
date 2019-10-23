@@ -20,26 +20,36 @@
 
 require 'rails_helper'
 
-RSpec.describe Dashboard::EpicQueueRecordsController, type: :controller do
+RSpec.describe Dashboard::BaseController, type: :controller do
+  let!(:logged_in_user) { create(:identity) }
+  let!(:protocol)       { create(:protocol_without_validations) }
 
-  describe '#index' do
-    it 'should have a success status' do
-      log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
-
-      get :index, params: { format: :json }
-
-      expect(response).to be_success
-    end
+  before :each do
+    log_in_dashboard_identity(obj: logged_in_user)
+    controller.instance_variable_set(:@protocol, protocol)
   end
 
-  describe "for creepy hacker doods" do
-    before(:each) do
-      log_in_dashboard_identity(obj: build_stubbed(:identity))
-      get :index, params: { format: :json }
+  describe '#find_admin_for_protocol' do
+    context 'user has empty protocol access' do
+      before :each do
+        create(:super_user, :access_empty_protocols, identity: logged_in_user)
+
+        allow(protocol).to receive(:sub_service_requests).and_return(SubServiceRequest.none)
+      end
+
+      it 'should permit' do
+        controller.send(:find_admin_for_protocol)
+
+        expect(assigns(:admin)).to eq(true)
+      end
     end
 
-    it { is_expected.to_not render_template "dashboard/epic_queues/index" }
-    it { is_expected.to respond_with 200 }
+    context 'user does not have empty protocol access' do
+      it 'should check admin rights' do
+        expect(Protocol).to receive(:for_admin).with(logged_in_user.id).and_return([@protocol])
+
+        controller.send(:find_admin_for_protocol)
+      end
+    end
   end
 end
-

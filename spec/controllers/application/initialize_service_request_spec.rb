@@ -26,7 +26,7 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe '#initialize_service_request' do
     context 'params[:srid] is present' do
-      it 'should assign @service_request' do
+      it 'should get the existing service request' do
         sr = findable_stub(ServiceRequest) { build_stubbed(:service_request) }
         allow(controller).to receive(:params).and_return({srid: sr.id.to_s})
         controller.send(:initialize_service_request)
@@ -34,18 +34,8 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
-    context 'action_name == \'add_service\'' do
-      it 'should create a new service request' do
-        allow(controller).to receive(:action_name).and_return('add_service')
-        controller.send(:initialize_service_request)
-        sr = ServiceRequest.first
-        expect(assigns(:service_request)).to eq(sr)
-        expect(sr.status).to eq('first_draft')
-      end
-    end
-
-    context 'service request not yet created' do
-      it '@service_request is unsaved' do
+    context 'params[:srid] is not present (new request)' do
+      it 'should initialize a new service request' do
         controller.send(:initialize_service_request)
         sr = assigns(:service_request)
         expect(sr.new_record?).to eq(true)

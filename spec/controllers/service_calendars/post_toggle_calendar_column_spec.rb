@@ -83,7 +83,11 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    context '@admin false' do
+    context '@in_admin false' do
+      before :each do
+        controller.instance_variable_set(:@in_admin, false)
+      end
+
       it 'should update sub service requests to draft' do
         org       = create(:organization)
         service   = create(:service, organization: org, pricing_map_count: 1)
@@ -99,15 +103,18 @@ RSpec.describe ServiceCalendarsController do
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
-          check: 'true',
-          admin: 'false'
+          check: 'true'
         }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
     end
 
-    context '@admin true' do
+    context '@in_admin true' do
+      before :each do
+        controller.instance_variable_set(:@in_admin, true)
+      end
+
       it 'should not update sub service requests to draft' do
         org       = create(:organization)
         service   = create(:service, organization: org, pricing_map_count: 1)
@@ -123,8 +130,7 @@ RSpec.describe ServiceCalendarsController do
           visit_group_id: arm.visit_groups.first.id,
           service_request_id: sr.id,
           page: '1',
-          check: 'true',
-          admin: 'true'
+          check: 'true'
         }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')

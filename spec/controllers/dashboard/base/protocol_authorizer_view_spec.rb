@@ -20,22 +20,53 @@
 
 require 'rails_helper'
 
-RSpec.describe FeedbackController, type: :controller do
-  class Feedback < ApplicationRecord
-    audited
+RSpec.describe Dashboard::BaseController, type: :controller do
+  let!(:logged_in_user) { create(:identity) }
+  let!(:protocol)       { create(:protocol_without_validations) }
 
-    validates_presence_of :name, :email, :message
-    validates_format_of :email, with: Devise::email_regexp
+  before :each do
+    log_in_dashboard_identity(obj: logged_in_user)
+    controller.instance_variable_set(:@protocol, protocol)
   end
 
-  stub_config('use_redcap_api', false)
+  describe '#protocol_authorizer_view' do
+    context 'user can view protocol' do
+      before :each do
+        allow_any_instance_of(ProtocolAuthorizer).to receive(:can_view?).and_return(true)
+      end
 
-  describe '#create' do
-    context 'Redcap API disabled' do
-      it 'should send an email' do
-        expect(Notifier).to receive_message_chain(:provide_feedback, :deliver_now)
+      it 'should permit' do
+        expect(controller).to_not receive(:authorization_error)
 
-        post :create, params: { feedback: attributes_for(:feedback, :standard), format: :js }
+        controller.send(:protocol_authorizer_view)
+      end
+    end
+
+    context 'user is an admin' do
+      before :each do
+        allow_any_instance_of(ProtocolAuthorizer).to receive(:can_view?).and_return(false)
+
+        controller.instance_variable_set(:@admin, true)
+      end
+
+      it 'should permit' do
+        expect(controller).to_not receive(:authorization_error)
+
+        controller.send(:protocol_authorizer_view)
+      end
+    end
+
+    context 'user does not have permission' do
+      before :each do
+        allow_any_instance_of(ProtocolAuthorizer).to receive(:can_view?).and_return(false)
+
+        controller.instance_variable_set(:@admin, false)
+      end
+
+      it 'should not permit' do
+        expect(controller).to receive(:authorization_error)
+
+        controller.send(:protocol_authorizer_view)
       end
     end
   end

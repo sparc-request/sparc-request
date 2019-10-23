@@ -23,32 +23,10 @@ RSpec.describe ContactFormsController, type: :controller do
   stub_controller
 
   describe '#create' do
-    context 'contact form valid' do
-      it 'should send email' do
-        expect {
-          post :create, params: {
-            contact_form: {
-              subject: 'candy land',
-              email: 'not@fake.com',
-              message: 'illuminati'
-            }
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(1)
-      end
-    end
+    it 'should send an email' do
+      expect(ContactMailer).to receive_message_chain(:contact_us_email, :deliver_now)
 
-    context 'contact form invalid' do
-      it 'should not send email' do
-        expect {
-          post :create, params: {
-            contact_form: {
-              subject: '',
-              email: '',
-              message: ''
-            }
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(0)
-      end
+      post :create, params: { contact_form: build(:contact_form).attributes }, xhr: true
     end
   end
 end

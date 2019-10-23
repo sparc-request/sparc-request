@@ -24,19 +24,25 @@ RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
   let!(:logged_in_user) { create(:identity) }
 
+  let!(:org)      { create(:organization) }
+  let!(:service)  { create(:service, organization: org, one_time_fee: true) }
+  let!(:protocol) { create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study') }
+  let!(:sr)       { create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-02-10') }
+  let!(:ssr)      { create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id) }
+  let!(:li)       { create(:line_item, service_request: sr, sub_service_request: ssr, service: service) }
+
   describe '#service_calendar' do
-    it 'should redirect if !@has_subsidy && !@eligible_for_subsidy' do
-      org      = create(:organization)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
+    context 'not eligible for subsidies' do
+      before :each do
+        allow_any_instance_of(SubServiceRequest).to receive(:has_subsidy?).and_return(false)
+        allow_any_instance_of(SubServiceRequest).to receive(:eligible_for_subsidy?).and_return(false)
+      end
 
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
+      it 'should redirect to document management' do
+        get :service_subsidy, params: { srid: sr.id }, xhr: true
 
-      expect(controller).to redirect_to(document_management_service_request_path(srid: sr.id))
+        expect(controller).to redirect_to(document_management_service_request_path(srid: sr.id))
+      end
     end
   end
 end

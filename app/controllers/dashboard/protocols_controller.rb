@@ -169,11 +169,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       else
         @errors = @protocol.errors
       end
-
-      if params[:sub_service_request]
-        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-        render "/dashboard/sub_service_requests/update"
-      end
     end
 
     respond_to :js

@@ -159,14 +159,6 @@ class ApplicationController < ActionController::Base
     redirect_to authorization_error_path(error: error, format: request.format.html? ? :html : :js)
   end
 
-  def clean_errors errors
-    errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
-  end
-
-  def clean_messages errors
-    errors.map {|k,v| v}.flatten
-  end
-
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])

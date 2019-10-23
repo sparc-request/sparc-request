@@ -132,16 +132,16 @@ class Study < Protocol
         answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
       end
 
-      if answers['certificate_of_conf'].answer.nil?
+      if answers['certificate_of_conf'].try(:answer).try(&:nil?)
         error = 'certificate_of_conf'
-      elsif answers['certificate_of_conf'].answer == false
-        if (answers['higher_level_of_privacy'].answer.nil?)
+      elsif answers['certificate_of_conf'].try(:answer).try(:==, false)
+        if (answers['higher_level_of_privacy'].try(:answer).try(&:nil?))
           error = 'higher_level_of_privacy'
-        elsif (answers['epic_inbasket'].answer.nil?)
+        elsif (answers['epic_inbasket'].try(:answer).try(&:nil?))
           error = 'epic_inbasket'
-        elsif (answers['research_active'].answer.nil?)
+        elsif (answers['research_active'].try(:answer).try(&:nil?))
           error = 'research_active'
-        elsif (answers['restrict_sending'].answer.nil?)
+        elsif (answers['restrict_sending'].try(:answer).try(&:nil?))
           error = 'restrict_sending'
         end
       end

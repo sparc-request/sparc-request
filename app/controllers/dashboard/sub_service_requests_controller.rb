@@ -37,7 +37,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       format.html { # Admin Edit
         cookies["admin-tab-#{@sub_service_request.id}"] ||= 'details'
 
-        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(crumb: :notifications)
 
         @service_request  = @sub_service_request.service_request
         @protocol         = @sub_service_request.protocol
@@ -83,7 +83,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
       flash[:alert] = t('dashboard.sub_service_requests.deleted')
-      session[:breadcrumbs].clear(:sub_service_request_id)
+      session[:breadcrumbs].clear(crumb: :sub_service_request_id)
     end
   end
 

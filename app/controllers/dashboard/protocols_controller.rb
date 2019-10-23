@@ -53,19 +53,21 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       ) || return
 
     #toggles the display of the breadcrumbs, navbar always displays
-    session[:breadcrumbs].clear
+    session[:breadcrumbs].clear(filters: params.slice(:filterrific).permit!)
 
     respond_to do |format|
       format.html {
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.js {
-        @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
+        if params.slice(:filterrific).permit!.keys.any?
+          @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
+        end
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.json {
         @protocol_count = @filterrific.find.length
-        @protocols      = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
+        @protocols      = @filterrific.find.includes(:primary_pi, :principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
       }
       format.csv {
         @protocols = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order])

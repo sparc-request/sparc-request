@@ -48,7 +48,7 @@ module Dashboard::ProtocolsHelper
     else
       ""
     end + raw(
-    protocol.principal_investigators.where.not(id: protocol.primary_pi).map do |pi|
+    protocol.principal_investigators.select{ |pi| pi != protocol.primary_pi }.map do |pi|
       content_tag(:span) do
         icon('fas', 'user mr-2') + pi.display_name
       end
@@ -59,7 +59,7 @@ module Dashboard::ProtocolsHelper
     if protocol.sub_service_requests.any? && access
       link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary protocol-requests') do
         content_tag :span, class: 'd-flex align-items-center' do
-          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.count, class: 'badge badge-pill badge-c badge-light ml-2'))
+          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests.length, class: 'badge badge-pill badge-c badge-light ml-2'))
         end
       end
     end

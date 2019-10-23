@@ -125,23 +125,23 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id && self.study_type_answers.any?
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
         answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
       end
 
-      if answers['certificate_of_conf'].try(:answer).try(&:nil?)
+      if answers['certificate_of_conf'].answer.nil?
         error = 'certificate_of_conf'
-      elsif answers['certificate_of_conf'].try(:answer).try(:==, false)
-        if (answers['higher_level_of_privacy'].try(:answer).try(&:nil?))
+      elsif answers['certificate_of_conf'].answer == false
+        if answers['higher_level_of_privacy'].answer.nil?
           error = 'higher_level_of_privacy'
-        elsif (answers['epic_inbasket'].try(:answer).try(&:nil?))
+        elsif answers['epic_inbasket'].answer.nil?
           error = 'epic_inbasket'
-        elsif (answers['research_active'].try(:answer).try(&:nil?))
+        elsif answers['research_active'].answer.nil?
           error = 'research_active'
-        elsif (answers['restrict_sending'].try(:answer).try(&:nil?))
+        elsif answers['restrict_sending'].answer.nil?
           error = 'restrict_sending'
         end
       end

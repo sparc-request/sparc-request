@@ -20,19 +20,15 @@
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study()
   build_study_type_question_groups()
   build_study_type_questions()
+
+  let!(:study) { create(:study_federally_funded, selected_for_epic: true, study_type_question_group_id: StudyTypeQuestionGroup.active.ids.first) }
+
   build_study_type_answers()
 
   stub_config("use_epic", true)
   
-  before :each do 
-    study.update_attribute(:selected_for_epic, true)
-  end
-
   describe 'should validate study_type_answers for study' do
     it 'should not add errors if the first answer is true' do
       answers = [true, nil, nil, nil, nil]

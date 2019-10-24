@@ -63,13 +63,13 @@ class VisitGroup < ApplicationRecord
   end
 
   def position=(position)
-    # Because we have to insert before using position - 1,
-    # increment position
     if position.blank?
       write_attribute(:position, nil)
-    elsif self.arm && position == self.arm.visit_count
+    elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
       write_attribute(:position, position)
     else
+      # Because we have to insert before using position - 1,
+      # increment position when changed
       write_attribute(:position, position.to_i + 1)
     end
   end

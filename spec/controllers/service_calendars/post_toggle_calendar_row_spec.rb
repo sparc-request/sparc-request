@@ -65,7 +65,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
@@ -98,7 +98,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
         session[:identity_id] = logged_in_user.id
@@ -128,7 +128,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
         session[:identity_id] = logged_in_user.id

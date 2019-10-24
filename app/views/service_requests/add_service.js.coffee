@@ -42,6 +42,7 @@ AlertSwal.fire(
   title: I18n.t('proper.cart.duplicate_service.header')
 )
 <% else %>
+$('.profile').replaceWith("<%= j render 'layouts/profile' %>")
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
 $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 

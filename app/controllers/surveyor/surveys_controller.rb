@@ -116,8 +116,9 @@ class Surveyor::SurveysController < Surveyor::BaseController
     
     results.map!{ |r|
       {
-        parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
+        breadcrumb:     helpers.breadcrumb_text(r),
         klass:          r.is_a?(Service) ? 'Service' : 'Organization',
+        org_color:     "text-#{r.class.name.downcase}",
         label:          r.name,
         value:          r.id,
         cpt_code:       r.try(:cpt_code),

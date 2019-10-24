@@ -61,4 +61,16 @@ module ServicesHelper
       end
     end
   end
+
+  def breadcrumb_text(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.reverse.each do |parent|
+        breadcrumb << content_tag(:span, "#{parent.abbreviation}", class: "text-#{parent.type.downcase}")
+        breadcrumb << " " + icon('fas', 'caret-right') + " "
+      end
+      breadcrumb.pop
+      breadcrumb.join
+    end
+  end
 end

@@ -49,10 +49,12 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
+    initialize_service_request
     stored_location_for(resource) || root_path(srid: @service_request.try(:id))
   end
 
   def after_sign_out_path_for(resource)
+    initialize_service_request
     root_path(srid: @service_request.try(:id))
   end
 

@@ -26,7 +26,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       format.html{
         session[:breadcrumbs].
           add_crumbs(notifications: true).
-          clear(:edit_protocol)
+          clear(crumb: :edit_protocol)
       }
       format.json{
         @table = params[:table]

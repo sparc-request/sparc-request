@@ -22,13 +22,14 @@
 - use_fulfillment = Setting.get_value('fulfillment_contingent_on_catalog_manager')
 - request_valid = sub_service_request.service_request.service_details_valid?
 
-.card#subServiceRequestSummary
+.card.mb-5#subServiceRequestSummary
   .card-header.justify-content-between.bg-primary.text-white
     %h3.mb-0<
       = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.display_id})"
     .ssr-links-container.d-flex<
-      = notes_button(sub_service_request, model: sub_service_request, class: 'mr-1', ssrid: sub_service_request.id)
+      = notes_button(sub_service_request, model: t('dashboard.sub_service_requests.header.notes_label'), class: 'mr-1', ssrid: sub_service_request.id)
       = export_ssr_button(sub_service_request)
+      .mx-3
       - unless sub_service_request.in_work_fulfillment? || sub_service_request.is_complete?
         .tooltip-wrapper{ title: t('dashboard.sub_service_requests.tooltips.delete'), data: { toggle: 'tooltip' } }
           = link_to icon('fas', 'trash-alt'), dashboard_sub_service_request_path(sub_service_request), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true', html: t('dashboard.sub_service_requests.confirm.delete.text') }

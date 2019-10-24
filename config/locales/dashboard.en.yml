@@ -245,6 +245,7 @@ en:
           resend: "Resend Surveys"
           last_sent: "Surveys last sent out on %{date}"
           completed: "All surveys completed"
+        notes_label: "Admin"
         cost: "%{provider} Cost"
         user_cost: "Total Cost"
       request_details:

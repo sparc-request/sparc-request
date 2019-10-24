@@ -33,13 +33,13 @@ module VisitGroupsHelper
 
   def visit_position_options(arm, visit_group=nil)
     last_position = arm.visit_count
-    position = visit_group.position_changed? ? visit_group.position - 1 : visit_group.position
+    position = visit_group.position_changed? && visit_group.position ? visit_group.position - 1 : visit_group.position
 
     if visit_group.position
       options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), Proc.new{ |vg| vg.position - 1 }, :insertion_name, position) +
       content_tag(:option, t(:constants)[:add_as_last], value: last_position, selected: position == last_position)
     else
-      options_from_collection_for_select(arm.visit_groups, Proc.new{ |vg| vg.position - 1 }, :insertion_name) +
+      options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), Proc.new{ |vg| vg.position - 1 }, :insertion_name) +
       content_tag(:option, t(:constants)[:add_as_last], value: last_position)
     end
   end
@@ -62,7 +62,7 @@ module VisitGroupsHelper
             day.try(:-, 1)
           end
       else
-        min = arm.visit_groups.maximum(:day) + 1
+        min = arm.visit_groups.maximum(:day).try(:+, 1)
         max = nil
       end
 

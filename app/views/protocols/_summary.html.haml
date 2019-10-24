@@ -61,14 +61,14 @@
             = protocol.class.human_attribute_name(:title)
         %td.d-inline-block.col-10
           = protocol.try(:title)
-          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
+          = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:title))
       %tr.d-flex
         %td.d-inline-block.col-2
           %label.mb-0{ title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' } }<
             = Protocol.human_attribute_name(:short_title)
         %td.d-inline-block.col-10
           = protocol.short_title
-          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
+          = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
       - if protocol.is_a?(Study)
         %tr.d-flex
           %td.d-inline-block.col-2

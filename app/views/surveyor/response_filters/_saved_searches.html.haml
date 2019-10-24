@@ -26,6 +26,6 @@
     %ul.list-group.list-group-flush.border-0
       - ResponseFilter.latest_for_user(current_user.id).each do |rf|
         %li.list-group-item.d-flex.align-items-center<
-          = link_to rf.name, rf.href, remote: true, class: 'apply-filter mr-auto'
+          = link_to rf.name, rf.href, remote: true, class: 'apply-filter mr-auto text-break'
           = link_to surveyor_response_filter_path(rf), class: 'text-danger delete-filter', method: :delete, remote: true do
             = icon('fas', 'trash-alt')

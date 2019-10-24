@@ -22,5 +22,6 @@ window.history.pushState({}, null, "<%= @url %>")
 
 $('#filterResponses').replaceWith("<%= j render 'surveyor/responses/filter_responses_form', filterrific: @filterrific %>")
 $('#responsesList').replaceWith("<%= j render 'surveyor/responses/table', type: @type %>")
+$('#responsesList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

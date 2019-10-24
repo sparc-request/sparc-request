@@ -73,6 +73,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     params.require(:super_user).permit(
       :identity_id,
       :organization_id,
-      :access_empty_protocols)
+      :access_empty_protocols,
+      :billing_manager)
   end
 end

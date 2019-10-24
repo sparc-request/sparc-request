@@ -21,21 +21,9 @@
 require 'rails_helper'
 
 RSpec.describe Fulfillment, type: :model do
-  describe '#formatted_date' do
-    context 'date present' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m/%d/%Y")) }
-      it 'should return date in format: m/%d/%Y' do
-        expect(fulfillment.date.strftime("%m/%d/%Y")).to eq '01/02/2001'
-      end
-    end
-
-    context 'date not present' do
-      it 'should return nil' do
-        fulfillment = build(:fulfillment, date: nil)
-        expect(fulfillment).not_to be_valid
-      end
-    end
-  end
+  it { is_expected.to validate_presence_of :date }
+  it { is_expected.to validate_presence_of :time }
+  it { is_expected.to validate_presence_of :timeframe }
 
   describe 'time validation' do
     it 'should validate the format of time' do

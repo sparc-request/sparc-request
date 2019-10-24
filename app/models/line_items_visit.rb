@@ -170,10 +170,6 @@ class LineItemsVisit < ApplicationRecord
 
   ### end audit reporting methods ###
 
-  def any_visit_quantities_customized?
-    visits.any?(&:quantities_customized?)
-  end
-
   private
 
   def build_visits

@@ -713,7 +713,6 @@ en:
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
-      rmid_title: "Title"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"

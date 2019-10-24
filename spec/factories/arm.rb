@@ -45,6 +45,9 @@ FactoryBot.define do
 
         arm.reload
       end
+
+      # Add days to visit groups created through the mass_create_visit_groups method
+      arm.visit_groups.each_with_index { |vg, i| vg.update_attribute(:day, i+1) }
     end
 
     factory :arm_without_validations, traits: [:without_validations]

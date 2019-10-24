@@ -63,13 +63,13 @@ class VisitGroup < ApplicationRecord
   end
 
   def position=(position)
-    # Because we have to insert before using position - 1,
-    # increment position
     if position.blank?
       write_attribute(:position, nil)
-    elsif self.arm && position == self.arm.visit_count
+    elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
       write_attribute(:position, position)
     else
+      # Because we have to insert before using position - 1,
+      # increment position when changed
       write_attribute(:position, position.to_i + 1)
     end
   end
@@ -99,7 +99,7 @@ class VisitGroup < ApplicationRecord
     # The Visit Group is new and is being inserted between two other consecutive-day visits
     # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
     # The Visit Group has been moved and now we need to move consecutive visits
-    @moved_and_update ||= (self.new_record? && self.arm && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
+    @moved_and_update ||= (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
                           (self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) ||
                           (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day))
   end

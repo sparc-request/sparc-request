@@ -22,7 +22,7 @@
 window.history.pushState({}, null, "<%= @url %>")
 <% end %>
 
-$("#dashboardNav").replaceWith("<%= j render '/layouts/dashboard/dashboard_navbar' %>")
+$("#dashboardHeader").replaceWith("<%= j render '/layouts/dashboard/dashboard_header' %>")
 $("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, protocol_filters: @protocol_filters, admin: @admin %>")
 $("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/table', filterrific: @filterrific %>")
 

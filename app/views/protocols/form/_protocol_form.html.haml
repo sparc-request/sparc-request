@@ -21,7 +21,7 @@
 .w-100.position-relative
   = render 'protocols/form/navigation', protocol: protocol
   %main.col-8.mx-auto
-    = form_for (in_dashboard? ? [:dashboard, protocol] : protocol), as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
+    = form_for (in_dashboard? ? [:dashboard, protocol.becomes(Protocol)] : protocol.becomes(Protocol)), remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
       = hidden_field_tag :srid, @service_request.try(:id)
       = f.hidden_field :type
       = f.hidden_field :requester_id, value: current_user.id

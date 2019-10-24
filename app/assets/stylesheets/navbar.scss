@@ -160,7 +160,7 @@ nav#stepsNav {
 /// Dashboard Navbar ///
 ////////////////////////
 
-nav#dashboardNav {
+nav#dashboardHeader {
   margin-top: -1rem;
 }
 
@@ -226,7 +226,7 @@ nav#dashboardNav {
     }
   }
 
-  nav#dashboardNav {
+  nav#dashboardHeader {
     .navbar-nav {
       flex: 1 0;
     }

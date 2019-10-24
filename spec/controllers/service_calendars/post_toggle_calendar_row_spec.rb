@@ -22,7 +22,6 @@ require 'rails_helper'
 
 RSpec.describe ServiceCalendarsController do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#toggle_calendar_row' do
@@ -66,7 +65,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
@@ -85,7 +84,11 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    context '@admin false' do
+    context '@in_admin false' do
+      before :each do
+        controller.instance_variable_set(:@in_admin, false)
+      end
+
       it 'should update sub service request to draft' do
         org       = create(:organization)
         service   = create(:service, pricing_map_count: 1)
@@ -95,7 +98,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
         session[:identity_id] = logged_in_user.id
@@ -104,15 +107,18 @@ RSpec.describe ServiceCalendarsController do
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
           page: '1',
-          check: 'true',
-          admin: 'false'
+          check: 'true'
         }, xhr: true
 
         expect(ssr.reload.status).to eq('draft')
       end
     end
 
-    context '@admin true' do
+    context '@in_admin true' do
+      before :each do
+        controller.instance_variable_set(:@in_admin, true)
+      end
+
       it 'should not update sub service requests to draft' do
         org       = create(:organization)
         service   = create(:service, pricing_map_count: 1)
@@ -122,7 +128,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
         liv       = create(:line_items_visit, line_item: li, arm: arm)
-        vg        = create(:visit_group, arm: arm)
+        vg        = arm.visit_groups.first
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
         session[:identity_id] = logged_in_user.id
@@ -131,8 +137,7 @@ RSpec.describe ServiceCalendarsController do
           service_request_id: sr.id,
           line_items_visit_id: liv.id,
           page: '1',
-          check: 'true',
-          admin: 'true'
+          check: 'true'
         }, xhr: true
 
         expect(ssr.reload.status).to eq('on_hold')

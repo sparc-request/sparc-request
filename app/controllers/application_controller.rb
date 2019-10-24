@@ -49,10 +49,12 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
+    initialize_service_request
     stored_location_for(resource) || root_path(srid: @service_request.try(:id))
   end
 
   def after_sign_out_path_for(resource)
+    initialize_service_request
     root_path(srid: @service_request.try(:id))
   end
 
@@ -157,14 +159,6 @@ class ApplicationController < ActionController::Base
     error  += t('error_pages.authorization_error.reference', ref: ref) if ref
 
     redirect_to authorization_error_path(error: error, format: request.format.html? ? :html : :js)
-  end
-
-  def clean_errors errors
-    errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
-  end
-
-  def clean_messages errors
-    errors.map {|k,v| v}.flatten
   end
 
   def initialize_service_request

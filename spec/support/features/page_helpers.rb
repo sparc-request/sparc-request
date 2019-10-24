@@ -22,7 +22,7 @@ module Features
   module PageHelpers
     def accept_confirm(&block)
       block.call if block_given?
-      page.driver.browser.switch_to.alert.accept
+      page.accept_alert
     end
 
     def confirm_swal

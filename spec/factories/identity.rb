@@ -31,7 +31,7 @@ FactoryBot.define do
     ldap_uid
     last_name             { Faker::Name.last_name }
     first_name            { Faker::Name.first_name }
-    email
+    email                 { Faker::Internet.email }
     era_commons_name      { Faker::Internet.user_name }
     credentials           { Faker::Name.suffix }
     subspecialty          { Faker::Lorem.word }

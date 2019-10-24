@@ -42,7 +42,7 @@ RSpec.describe Dashboard::Breadcrumber do
       it 'should remove that breadcrumb' do
         @breadcrumber.add_crumb(:protocol_id, 1)
 
-        @breadcrumber.clear(:protocol_id)
+        @breadcrumber.clear(criumb: :protocol_id)
 
         breadcrumbs = @breadcrumber.breadcrumbs
         expect(breadcrumbs).to have_tag('a', count: 1)

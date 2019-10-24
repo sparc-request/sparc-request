@@ -45,7 +45,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: PermissibleValue.get_inverted_hash('status'),
+          with_status: PermissibleValue.get_inverted_hash('status').sort_by(&:first),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
@@ -171,11 +171,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       else
         @errors = @protocol.errors
       end
-
-      if params[:sub_service_request]
-        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-        render "/dashboard/sub_service_requests/update"
-      end
     end
 
     respond_to :js
@@ -206,9 +201,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
       ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
-    respond_to do |format|
-      format.js
-    end
+    
+    respond_to :js
   end
 
   def display_requests

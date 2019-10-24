@@ -252,7 +252,7 @@ class Service < ApplicationRecord
   # Find a pricing map with an effective date corresponding to the given
   # date.
   def effective_pricing_map_for_date(date=Date.today)
-    self.pricing_maps.where(PricingMap.arel_table[:effective_date].lteq(date.to_date)).order(:effective_date).first
+    self.pricing_maps.where(PricingMap.arel_table[:effective_date].lteq(date.to_date)).order(:effective_date).last
   end
 
   # Find the rate maps for the given display_date and service_rate

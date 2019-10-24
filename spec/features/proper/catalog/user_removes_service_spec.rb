@@ -32,12 +32,12 @@ RSpec.describe 'User removes service from cart', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft')
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service, optional: true)
-
-    visit root_path(srid: @sr.id)
-    wait_for_javascript_to_finish
   end
 
-  it 'and the service is removed' do
+  it 'should remove the service' do
+    visit root_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+
     find('.line-item .remove-service').click
     wait_for_javascript_to_finish
 
@@ -45,5 +45,43 @@ RSpec.describe 'User removes service from cart', js: true do
     expect(@sr.reload.sub_service_requests.count).to eq(0)
     expect(page).to have_no_content(@service.abbreviation)
     expect(page).to have_no_content(@program.name)
+  end
+
+  context 'service request was previously submitted' do
+    it 'should remove the service after confirming' do
+      @sr.update_attribute(:submitted_at, Date.today)
+
+      visit root_path(srid: @sr.id)
+      wait_for_javascript_to_finish
+
+      find('.line-item .remove-service').click
+      confirm_swal
+      wait_for_javascript_to_finish
+
+      expect(@sr.reload.line_items.count).to eq(0)
+      expect(@sr.reload.sub_service_requests.count).to eq(0)
+      expect(page).to have_no_content(@service.abbreviation)
+      expect(page).to have_no_content(@program.name)
+    end
+  end
+
+  context 'from a page other than the catalog' do
+    context 'and this is the last service' do
+      it 'should redirect to the catalog' do
+        visit protocol_service_request_path(srid: @sr.id)
+        wait_for_javascript_to_finish
+
+        find('.sub-service-request').click
+        find('.line-item .remove-service').click
+        confirm_swal
+        wait_for_javascript_to_finish
+
+        expect(page).to have_current_path(catalog_service_request_path(srid: @sr.id))
+        expect(@sr.reload.line_items.count).to eq(0)
+        expect(@sr.reload.sub_service_requests.count).to eq(0)
+        expect(page).to have_no_content(@service.abbreviation)
+        expect(page).to have_no_content(@program.name)
+      end
+    end
   end
 end

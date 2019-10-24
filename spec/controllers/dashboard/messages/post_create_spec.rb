@@ -22,88 +22,22 @@ require "rails_helper"
 
 RSpec.describe Dashboard::MessagesController do
   describe "POST #create" do
-    context "params[:message][:body] not empty" do
-      before(:each) do
-        ssr = build_stubbed(
-          :sub_service_request,
-          protocol: build_stubbed(:protocol),
-          organization: build_stubbed(:organization)
-        )
-        @notification = findable_stub(Notification) do
-          build_stubbed(:notification, sub_service_request: ssr)
-        end
-        allow(@notification).to receive(:messages).and_return("MyMessages")
-        allow(@notification).to receive(:set_read_by)
+    before :each do
+      @logged_in_user = build_stubbed(:identity)
+      log_in_dashboard_identity(obj: @logged_in_user)
 
-        @to_identity = create(:identity)
-        @from_identity = create(:identity)
-        @new_message_attr = {
-          notification_id: @notification.id.to_s,
-          to: @to_identity.id.to_s,
-          from: @from_identity.id.to_s,
-          email: "jay@email.com",
-          body: "hey"
-        }.stringify_keys
-
-        @new_message = Message.new(@new_message_attr)
-        allow(Message).to receive(:create).and_return(@new_message)
-
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        post :create, params: { message: @new_message_attr }, xhr: true
-      end
-
-      it "should create a Message" do
-        expect(Message).to have_received(:create).with controller_params(@new_message_attr)
-      end
-
-      it "should mark new Message as read by recipient" do
-        expect(@notification).to have_received(:set_read_by).
-          with(@to_identity, false)
-      end
-
-      it "should set @notification from params[:notification_id]" do
-        expect(assigns(:notification)).to eq(@notification)
-      end
-
-      it "should set @messages to the Messages of Notification from params[:notification_id]" do
-        expect(assigns(:messages)).to eq("MyMessages")
-      end
+      @notification = findable_stub(Notification) { build_stubbed(:notification) }
+      @sender = create(:identity)
+      @recipient = create(:identity)
     end
 
-    context "params[:message][:body] empty" do
-      before(:each) do
-        ssr = build_stubbed(
-          :sub_service_request,
-          protocol: build_stubbed(:protocol),
-          organization: build_stubbed(:organization)
-        )
-        @notification = findable_stub(Notification) do
-          build_stubbed(:notification, sub_service_request: ssr)
-        end
-        allow(@notification).to receive(:messages).and_return("MyMessages")
+    it 'should send an email' do
+      message = build_stubbed(:message, notification: @notification, sender: @sender, recipient: @recipient)
+      attrs = message.attributes
 
-        @to_identity = build_stubbed(:identity)
-        @from_identity = build_stubbed(:identity)
+      expect(UserMailer).to receive_message_chain(:notification_received, :deliver)
 
-        allow(Message).to receive(:create)
-
-        log_in_dashboard_identity(obj: build_stubbed(:identity))
-        post :create, params: { message: { notification_id: @notification.id,
-          to: @to_identity.id.to_s, from: @from_identity.id.to_s, email: "jay@email.com",
-          body: "" } }, xhr: true
-      end
-
-      it "should not create a Message" do
-        expect(Message).not_to have_received(:create)
-      end
-
-      it "should set @notification from params[:notification_id]" do
-        expect(assigns(:notification)).to eq(@notification)
-      end
-
-      it "should set @messages to the Messages of Notification from params[:notification_id]" do
-        expect(assigns(:messages)).to eq("MyMessages")
-      end
+      post :create, params: { message: attrs }, xhr: true
     end
   end
 end

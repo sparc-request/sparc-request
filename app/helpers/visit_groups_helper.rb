@@ -39,7 +39,7 @@ module VisitGroupsHelper
       options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), Proc.new{ |vg| vg.position - 1 }, :insertion_name, position) +
       content_tag(:option, t(:constants)[:add_as_last], value: last_position, selected: position == last_position)
     else
-      options_from_collection_for_select(arm.visit_groups, Proc.new{ |vg| vg.position - 1 }, :insertion_name) +
+      options_from_collection_for_select(arm.visit_groups.where.not(id: visit_group.id), Proc.new{ |vg| vg.position - 1 }, :insertion_name) +
       content_tag(:option, t(:constants)[:add_as_last], value: last_position)
     end
   end

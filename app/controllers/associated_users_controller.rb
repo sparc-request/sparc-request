@@ -50,7 +50,6 @@ class AssociatedUsersController < ApplicationController
   end
 
   def create
-    redirect_to root_path
     creator         = AssociatedUserCreator.new(project_role_params, current_user)
     @protocol_role  = creator.protocol_role
 

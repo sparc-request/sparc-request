@@ -35,24 +35,24 @@ RSpec.describe 'User activates a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Activate/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Activate/)
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the activated survey' do
       expect(@survey.reload.active).to eq(true)
-      expect(page).to have_selector('.glyphicon-ok.text-success')
+      expect(page).to have_selector('.fa-check')
     end
 
     context 'and changes their mind and clicks disable' do
       before :each do
-        bootstrap_select '.survey-actions', /Disable/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Disable/)
         wait_for_javascript_to_finish
       end
 
       scenario 'and sees the disabled survey' do
         expect(@survey.reload.active).to eq(false)
-        expect(page).to have_selector('.glyphicon-remove.text-danger')
+        expect(page).to have_selector('.fa-times')
       end
     end
   end
@@ -68,24 +68,24 @@ RSpec.describe 'User activates a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Activate/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Activate/)
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the activated form' do
       expect(@form.reload.active).to eq(true)
-      expect(page).to have_selector('.glyphicon-ok.text-success')
+      expect(page).to have_selector('.fa-check')
     end
 
     context 'and changes their mind and clicks disable' do
       before :each do
-        bootstrap_select '.survey-actions', /Disable/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Disable/)
         wait_for_javascript_to_finish
       end
 
       scenario 'and sees the disabled form' do
         expect(@form.reload.active).to eq(false)
-        expect(page).to have_selector('.glyphicon-remove.text-danger')
+        expect(page).to have_selector('.fa-times')
       end
     end
   end

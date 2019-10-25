@@ -51,6 +51,11 @@ module Features
       page.find("button.selectpicker[data-id='#{element}'][title='#{choice}']")
     end
 
+    def bootstrap_dropdown(class_or_id, choice)
+      find(class_or_id).click
+      find("#{class_or_id} + .dropdown-menu.show .dropdown-item", text: choice).click
+    end
+
     def bootstrap_datepicker(element, text)
       e = page.find(element)
       e.click

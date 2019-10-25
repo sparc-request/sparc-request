@@ -28,23 +28,23 @@ RSpec.describe 'User deletes a survey', js: true do
   
   context 'surveys' do
     before :each do
-      create(:system_survey)
+      @survey = create(:system_survey)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the survey is deleted' do
-      bootstrap_select '.survey-actions', /Delete/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Delete/)
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').click
+      confirm_swal
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.survey-table td', text: 'No matching records found')
+      expect(page).to have_selector('.system-survey-table td', text: 'No matching records found')
       expect(SystemSurvey.count).to eq(0)
     end
   end
@@ -53,17 +53,17 @@ RSpec.describe 'User deletes a survey', js: true do
     before :each do
       org = create(:institution)
       create(:super_user, organization: org, identity: jug2)
-      create(:form, surveyable: org)
+      @form = create(:form, surveyable: org)
 
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
     end
 
     scenario 'and sees the form is deleted' do
-      bootstrap_select '.survey-actions', /Delete/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Delete/)
       wait_for_javascript_to_finish
 
-      find('.sweet-alert.visible button.confirm').click
+      confirm_swal
       wait_for_javascript_to_finish
 
       visit surveyor_surveys_path

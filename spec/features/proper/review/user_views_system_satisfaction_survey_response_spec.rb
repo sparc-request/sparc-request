@@ -41,7 +41,8 @@ RSpec.describe 'User views a System Satisfaction Survey response', js: true do
 
     expect(page).to have_content('System Satisfaction Survey')
     expect(page).to have_selector('.question', count: 1)
-    expect(page).to have_selector('.likert-group.disabled', count: 1)
+    expect(page).to have_selector('.likert-group', count: 1)
     expect(page).to have_selector('.likert input[checked="checked"]', count: 1)
+    expect(page).to have_selector('.likert input[disabled="disabled"]', count: 2)
   end
 end

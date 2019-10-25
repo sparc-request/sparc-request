@@ -38,7 +38,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -53,7 +53,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -69,7 +69,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -89,10 +89,12 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-option').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.option')
@@ -105,10 +107,12 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-option').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
@@ -130,7 +134,7 @@ RSpec.describe 'User edits option fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("option-#{@option.id}-content", with: 'This is a Terrible Option')
@@ -145,7 +149,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -161,7 +165,7 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-option').click
@@ -181,10 +185,12 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-option').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.option')
@@ -197,10 +203,12 @@ RSpec.describe 'User edits option fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-option').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)

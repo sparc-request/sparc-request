@@ -46,11 +46,17 @@ $("#modalContainer [id$='-surveyable']").typeahead(
     limit: 100,
     templates: {
       suggestion: (s) -> [
-        "<button class='text-left'>",
-          if s.parents then "<strong>{{{parents}}}</strong><br>",
-          "<span><strong>{{label}}</strong></span>",
-          if s.cpt_code then "<br><span><strong>CPT Code: {{cpt_code}}</strong></span>",
-        "</button>')"].join('')
+          "<div class='tt-suggestion'>"
+            "<div class='w-100'>",
+              "<h5 class=''>",
+                "<span class=#{s.org_color}>#{s.klass}: </span>",
+                "<span>#{s.label}</span>",
+              "</h5>",
+            "</div>",
+            if s.breadcrumb then "<div>#{s.breadcrumb}</div>",
+            if s.cpt_code then "<div class='w-100'><span>CPT Code: #{s.cpt_code}</span></div>",
+          "</div>"
+        ].join('')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
   }

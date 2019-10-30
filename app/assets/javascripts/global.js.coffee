@@ -227,12 +227,3 @@ $ ->
 (exports ? this).setRequiredFields = () ->
   $('.required:not(.has-indicator)').addClass('has-indicator').append("<span class='required-indicator text-danger ml-1'>#{I18n.t('constants.required_fields.indicator')}</span>")
   $('.has-indicator:not(.required)').removeClass('has-indicator').children('.required-indicator').remove()
-
-(exports ? this).getSRId = ->
-  $("input[name='srid']").val()
-
-(exports ? this).getSSRId = ->
-  $("input[name='ssrid']").val()
-
-(exports ? this).getProtocolId = ->
-  $("input[name=protocol_id]").val()

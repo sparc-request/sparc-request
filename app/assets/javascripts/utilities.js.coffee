@@ -74,3 +74,12 @@ VALID_MONETARY_KEYS = [
       replace(/"/g,'&quot;').replace(/'/g,'&#039;')
   else
     return text
+
+(exports ? this).getSRId = ->
+  $("input[name='srid']").val()
+
+(exports ? this).getSSRId = ->
+  $("input[name='ssrid']").val()
+
+(exports ? this).getProtocolId = ->
+  $("input[name=protocol_id]").val()

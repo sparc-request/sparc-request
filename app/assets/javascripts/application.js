@@ -62,7 +62,6 @@
 /// Replace with //= require_tree . when finished! ///
 
 //= require utilities
-//= require global
 //= require batch-select
 //= require login
 //= require profile_form
@@ -90,18 +89,4 @@
 //= require surveyor/responses
 //= require surveyor/surveys
 
-// require batch-select
-// require bootstrap-table
-// require bootstrap-table-export
-// require tableExport
-// require bootstrap-table-custom
-// require jquery.remotipart
-// require twitter/typeahead.min
-// require handlebars-v4.0.5
-
-// require global
-// require associated_users_form
-// require study_schedule_tabs
-// require sweetalert.min
-// require feedback
-// require notes
+//= require global

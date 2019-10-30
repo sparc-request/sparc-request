@@ -816,7 +816,7 @@ en:
     created: "Subsidy created successfully"
     updated: "Subsidy updated successfully"
     destroyed: "Subsidy deleted successfully"
-    approved: "Subsidy has been approved"
+    approve: "Subsidy has been approved"
     disapproval_message: "Subsidy has been disapproved"
     delete_confirm: "Are you sure that you would like to delete this subsidy?"
     approved:

@@ -300,6 +300,10 @@ en:
           subsidy_cost: "Subsidy Cost"
           approved_by: "Approved By"
           date: "Date Approved"
+          action: "Action"
+          actions:
+            overridden: "Overridden"
+            deleted: "Deleted"
         tooltips:
           status_history: "Status log of request"
           approval_history: "Time stamp log of approvals"

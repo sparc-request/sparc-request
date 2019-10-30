@@ -27,6 +27,8 @@ $(document).ready ->
   ####################
 
   if $('#protocolStartDatePicker').length && $('#protocolEndDatePicker').length
+    $('#protocolStartDatePicker, #protocolEndDatePicker').datetimepicker({ format: 'L' })
+
     startDate = $('#protocolStartDatePicker').data().date
     endDate   = $('#protocolEndDatePicker').data().date
 
@@ -56,6 +58,8 @@ $(document).ready ->
   ################################
 
   if $('#protocolRecruitmentStartDatePicker').length && $('#protocolRecruitmentEndDatePicker').length
+    $('#protocolRecruitmentStartDatePicker, #protocolRecruitmentEndDatePicker').datetimepicker({ format: 'L' })
+
     recruitmentStartDate = $('#protocolRecruitmentStartDatePicker').data().date
     recruitmentEndDate   = $('#protocolRecruitmentEndDatePicker').data().date
 

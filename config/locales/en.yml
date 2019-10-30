@@ -401,7 +401,7 @@ en:
       billing: "Quantity/Billing"
       pricing: "Consolidated Request"
     inactive: "(Inactive)"
-    no_line_items: "No line items to show."
+    no_line_items: "No Services to show"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"

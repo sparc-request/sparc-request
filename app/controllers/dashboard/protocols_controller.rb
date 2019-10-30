@@ -67,7 +67,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       }
       format.json {
         @protocol_count = @filterrific.find.length
-        @protocols      = @filterrific.find.eager_load(:primary_pi, :principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
+        @protocols      = @filterrific.find.includes(:primary_pi, :principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
       }
       format.csv {
         @protocols = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order])

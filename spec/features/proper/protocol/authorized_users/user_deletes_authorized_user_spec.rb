@@ -41,6 +41,9 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
     end
 
     it 'should delete the user' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       first('.delete-authorized-user:not(.disabled)').click
       confirm_swal
       wait_for_javascript_to_finish
@@ -63,6 +66,9 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
     end
 
     it 'should redirect to the dashboard landing page' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       first('.delete-authorized-user:not(.disabled)').click
       confirm_swal
       wait_for_javascript_to_finish

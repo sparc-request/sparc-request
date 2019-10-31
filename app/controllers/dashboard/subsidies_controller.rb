@@ -73,9 +73,10 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def approve
+    authorization_error if !@admin
     @subsidy = @subsidy.grant_approval(current_user)
     @sub_service_request.reload
-    flash[:success] = t(:subsidies)[:approved]
+    flash[:success] = t(:subsidies)[:approve]
 
     respond_to :js
   end
@@ -83,7 +84,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   private
 
   def find_subsidy
-    @subsidy = action_name == 'destroy' ? Subsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
+    @subsidy = action_name == 'destroy' ? ApprovedSubsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
   end
 
   def find_sub_service_request

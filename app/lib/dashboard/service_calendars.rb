@@ -104,7 +104,7 @@ module Dashboard
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
       statuses_hidden = 
-        if opts[:merged] && opts[:consolidated] && opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
+        if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
           []

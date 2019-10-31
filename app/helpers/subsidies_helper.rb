@@ -48,4 +48,12 @@ module SubsidiesHelper
       icon('fas', 'trash-alt')
     end
   end
+
+  def subsidy_history_action(past_subsidy)
+    if past_subsidy.overridden?
+      content_tag(:span, t('dashboard.sub_service_requests.history.subsidy_history.action.overridden'), class: 'text-warning')
+    else
+      content_tag(:span, t('dashboard.sub_service_requests.history.subsidy_history.action.deleted'), class: 'text-danger')
+    end
+  end
 end

@@ -72,6 +72,8 @@ class Identities::RegistrationsController < Devise::RegistrationsController
     params[:identity][:professional_organization_id]  = params[:project_role].nil? ? nil :  params[:project_role][:identity_attributes][:professional_organization_id]
 
     params.require(:identity).permit(
+      :first_name,
+      :last_name,
       :orcid,
       :credentials,
       :credentials_other,

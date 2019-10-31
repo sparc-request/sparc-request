@@ -18,60 +18,53 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- first_name_disabled = Setting.get_value("noneditable_identity_fields").include?("first_name")
+- last_name_disabled = Setting.get_value("noneditable_identity_fields").include?("last_name")
+- email_disabled = Setting.get_value("noneditable_identity_fields").include?("email")
+
 = form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, method: :put do |f|
   .form-row
-    .form-group.col-4
-      = f.label :email, t(:devise)[:profile][:email], class: 'col-form-label required'
-    .form-group.col-8
-      .input-group
-        .input-group-prepend
-          %span.input-group-text
-            = icon('far', 'envelope')
-        = f.text_field :email, class: 'form-control'
-
+    .form-group.col-12.col-xl-6
+      = f.label :first_name, class: 'required'
+      = f.text_field :first_name, class: 'form-control', disabled: first_name_disabled
+    .form-group.col-12.col-xl-6
+      = f.label :last_name, class: 'required'
+      = f.text_field :last_name, class: 'form-control', disabled: last_name_disabled
   .form-row
-    .form-group.col-4
-      = f.label :phone, t(:devise)[:profile][:phone], class: 'col-form-label'
-    .form-group.col-8
+    .form-group.col-12.col-xl-6
+      = f.label :email, class: 'required'
       .input-group
         .input-group-prepend
-          %span.input-group-text
-            = icon('fas', 'phone')
+          = f.label :email, icon('far', 'envelope'), class: 'input-group-text'
+        = f.email_field :email, class: 'form-control', disabled: email_disabled
+    .form-group.col-12.col-xl-6
+      = f.label :phone
+      .input-group
+        .input-group-prepend
+          = f.label :phone, icon('fas', 'phone'), class: 'input-group-text'
         = f.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder'), value: format_phone(identity.phone)
       %span.form-text.text-muted
         = t('constants.phone.note')
-
   .form-row
-    .form-group.col-4
+    .form-group.col-12.col-xl-6
       = f.label :orcid, class: 'col-form-label'
-    .form-group.col-8
       = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
       %small.form-text
         = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :blank
-
-  .form-row
-    .form-group.col-4
+    .form-group.col-12.col-xl-6
       = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-form-label'
-    .form-group.col-8
       = f.text_field :era_commons_name, class: 'form-control'
-
-  .form-row
-    .form-group.col-4
-      = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-form-label'
-    .form-group.col-8
-      = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'selectpicker'
-
   .form-row
     .form-group.col-4
       = f.label :credentials, t(:devise)[:profile][:credentials], class: 'col-form-label'
-    .form-group.col-8
       = f.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:devise)[:profile][:credentials_prompt] }, class: 'selectpicker'
-
-  .form-row#credentialsOtherContainer{ class: f.object.credentials == 'other' ? '' : 'd-none' }
-    .form-group.col-4
-      = f.label :credentials_other, t('constants.prompts.please_specify')
-    .form-group.col-8
+    .form-group.col-4#credentialsOtherContainer{ class: f.object.credentials == 'other' ? '' : 'd-none' }
+      = f.label :credentials_other, t('constants.prompts.please_specify'), class: 'col-form-label'
       = f.text_field :credentials_other, class: 'form-control'
+    .form-group.col-4
+      = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-form-label'
+      = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'selectpicker'
+
 
   = render "associated_users/professional_organizations", professional_organization: identity.professional_organization
 

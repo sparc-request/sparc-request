@@ -128,7 +128,7 @@ en:
     # Profile #
     ###########
     profile:
-      header: "User Profile"
+      header: "Edit Profile"
       update: "Save Changes"
       full_name: "Full Name"
       email: "Email"

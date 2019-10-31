@@ -14,12 +14,15 @@ Software requirements:
 From a brand new server:
 - Install Apache
 - Install MySQL
+- Install Node.js
+- Install Yarn
 - Install the dependencies for Ruby
 - Install Ruby either from source or by using RVM (instructions for installing RVM can be found at rvm.io)
 - Verify that ruby is the correct version, ruby –version
 - Clone the git repository to a location on the server (/var/www/rails is a good location)
 
 - Depending on the environment that is configured (staging/production/testing/etc) go into the application folder and run
+- yarn install
 - RAILS_ENV=environment_chosen bundle install
 - RAILS_ENV=environment_chosen rake db:create
 - RAILS_ENV=environment_chosen rake db:migrate

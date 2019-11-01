@@ -278,6 +278,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :abbreviation,
       :ack_language,
       :process_ssrs,
+      :ontology_tag,
       :is_available,
       :use_default_statuses,
       { tag_list:  [] },

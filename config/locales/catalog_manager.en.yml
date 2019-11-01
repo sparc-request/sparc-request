@@ -139,6 +139,7 @@ en:
       charge_code: "Charge Code"
       cm_rights: "Catalog Manager Rights"
       color_blank: "Select a Color"
+      ontology_blank: "Select Ontology Tag"
       core_facility: "Core/Facility Based Services"
       core: "Core"
       cpt_code: "CPT Code"

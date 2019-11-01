@@ -151,7 +151,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         click_link 'Pricing'
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('#new_pricing_map_link[disabled=disabled]')
+        expect(page).to have_selector('#new_pricing_map_link.disabled')
         expect(page).to have_content('There must be a pricing setup defined in order to add a pricing map.')
       end
     end

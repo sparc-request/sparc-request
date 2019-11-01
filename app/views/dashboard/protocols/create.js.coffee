@@ -40,6 +40,8 @@ $("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.f
 $("#study_type_answer_<%= question_id %>").children('.form-group:last-of-type').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
 <% end %>
 <% end %>
+
+$('html, body').animate({ scrollTop: $('.is-invalid').first().offset().top }, 'slow')
 <% else %>
 window.location = "<%= dashboard_protocol_path(@protocol) %>"
 <% end %>

@@ -20,7 +20,7 @@
 
 - url = action_name == 'new' ? dashboard_study_level_activities_path : dashboard_study_level_activity_path(line_item)
 
-.modal-dialog.modal-sm{ role: 'document' }
+.modal-dialog{ role: 'document' }
   .modal-content
     = form_for [:dashboard, line_item], url: url, method: action_name == 'new' ? :post : :put, remote: true, html: { id: 'studyLevelActivitiesForm' } do |f|
       = hidden_field_tag :ssrid, sub_service_request.id

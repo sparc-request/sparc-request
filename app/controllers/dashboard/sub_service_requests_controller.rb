@@ -70,6 +70,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def update
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
+      @sub_service_request.generate_approvals(current_user)
       flash[:success] = t('dashboard.sub_service_requests.updated')
     else
       @errors = @sub_service_request.errors

@@ -63,6 +63,6 @@ class ApprovedSubsidy < Subsidy
   private
 
   def create_past_subsidy
-    PastSubsidy.create(self.attributes.except(:id, :status, :created_at, :updated_at, :deleted_at, :overridden))
+    PastSubsidy.create(self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
   end
 end

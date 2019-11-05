@@ -31,7 +31,6 @@ class Surveyor::ResponseFiltersController < ApplicationController
     @response_filter = current_user.response_filters.new(create_params)
 
     if @response_filter.save
-      fix_dates_for_saved_searches(@response_filter)
       flash[:success] = t(:surveyor)[:response_filters][:created]
     else
       @errors = @response_filter.errors
@@ -74,13 +73,4 @@ class Surveyor::ResponseFiltersController < ApplicationController
       with_survey: []
     )
   end
-
-  def fix_dates_for_saved_searches(response_filter)
-    response_filter.update_attributes(
-      start_date: response_filter.start_date.to_date.try(:strftime, '%m/%d/%Y'),
-      end_date: response_filter.end_date.to_date.try(:strftime, '%m/%d/%Y')
-    )
-  end
-
 end
-

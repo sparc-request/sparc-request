@@ -19,52 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on('keydown', '#project_role_identity_attributes_orcid', (event) ->
-    key = event.keyCode || event.charCode
-    val = $(this).val()
-    isDelete = [8, 46].includes(key)
-
-    # Key must be numerical OR key must be X and last character of ID
-    if !((key >= 96 && key <= 105) || (key >= 48 && key <= 57)) && !(key == 88 && val.length == 18) && !isDelete
-      event.stopImmediatePropagation()
-      return false
-    else if isDelete && [6, 11, 16].includes(val.length)
-      $(this).val(val.substr(0, val.length - 1))
-    if !isDelete && [4, 9, 14].includes(val.length)
-      $(this).val(val + "-")
-    else if !isDelete && [5, 10, 15].includes(val.length) && val[val.length-1] != "-"
-      $(this).val(val.substr(0, val.length - 1) + "-" + val.substr(val.length - 1, val.length))
-    else if key == 88 && val.length == 18
-      event.stopImmediatePropagation()
-      $(this).val(val.substr(0, val.length) + String.fromCharCode(key).toUpperCase())
-  ).on('keyup', '#project_role_identity_attributes_orcid', (event) ->
-    key = event.keyCode || event.charCode
-    val = $(this).val()
-    isDelete = [8, 46].includes(key)
-
-    if !isDelete && [4, 9, 14].includes(val.length)
-      $(this).val(val + "-")
-  )
-
-  $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
-    if $(this).val() == 'other'
-      $('#credentialsOtherContainer').removeClass('d-none')
-    else
-      $('#credentialsOtherContainer').addClass('d-none')
-
-  $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
-    last_selected = $(this).val()
-    po_selected_id = $(this).closest('select').attr('id')
-    if last_selected == '' && po_selected_id != 'select-pro-org-institution'
-      last_selected = $(this).parents("div").prev().find('select').val()
-
-    $.ajax
-      method: 'get'
-      dataType: 'script'
-      url: '/associated_users/update_professional_organizations'
-      data:
-        last_selected_id: last_selected
-
   $(document).on 'changed.bs.select', '#project_role_role', ->
     $('input[name="project_role[project_rights]"]').trigger('change')
 

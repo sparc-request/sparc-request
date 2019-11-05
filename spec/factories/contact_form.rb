@@ -20,8 +20,9 @@
 
 FactoryBot.define do
   factory :contact_form, class: ContactForm do
-    subject {'SPARC-Request'}
-    email {'example@example.com'}
-    message {'this is a sample message'}
+    name    { Faker::Name.name }
+    email   { Faker::Internet.email }
+    subject { Faker::Lorem.sentence }
+    message { Faker::Lorem.sentence }
   end
 end

@@ -5,4 +5,5 @@ json.(@subsidies) do |subsidy|
   json.pi_contribution  number_to_currency(subsidy.pi_contribution/100.0)
   json.subsidy_cost     number_to_currency(subsidy.approved_cost)
   json.approved_by      subsidy.approver.try(:full_name)
+  json.action           subsidy_history_action(subsidy)
 end

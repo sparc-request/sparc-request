@@ -26,30 +26,26 @@ RSpec.describe 'User deletes a form response', js: true do
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    form        = create(:form, :with_question, surveyable: service, active: true)
-    @response   = create(:response, survey: form, respondable: ssr)
-                  create(:question_response, response: @response, question: form.questions.first, content: 'Respondability')
+    org       = create(:organization, :with_subsidy_map, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1, one_time_fee: true)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+    @form     = create(:form, :with_question, surveyable: service, active: true)
+    @response = create(:response, survey: @form, respondable: @ssr)
+                create(:question_response, response: @response, question: @form.questions.first, content: 'Respondability')
+
+    visit document_management_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
   end
 
-  scenario 'and sees the response was deleted' do
-    visit document_management_service_request_path(srid: @sr)
+  it 'should delete the response' do
+    find('.delete-response').click
+    confirm_swal
     wait_for_javascript_to_finish
 
-    first('.delete-response').click
-    wait_for_javascript_to_finish
-
-    find('.sweet-alert.visible button.confirm').click
-    wait_for_javascript_to_finish
-
-    expect(Response.count).to eq(0)
+    expect(@form.reload.responses.count).to eq(0)
+    expect(page).to have_selector('span.incomplete')
   end
 end

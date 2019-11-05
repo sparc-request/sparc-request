@@ -22,33 +22,32 @@
 require 'rails_helper'
 
 RSpec.describe 'dashboard/notifications/_dropdown', type: :view do
+  let_there_be_lane
+
+  let!(:logged_in_user) { create(:identity) }
 
   describe "recipient dropdown" do
     before(:each) do
-      protocol = build_stubbed(:protocol)
-      an_authorized_user = build_stubbed(:identity, first_name: "Jane", last_name: "Doe")
-      allow(protocol).to receive(:project_roles).
-        and_return([build_stubbed(:project_role,
-          identity: an_authorized_user,
-          protocol: protocol)])
-
-      service_request = build_stubbed(:service_request, protocol: protocol)
-
-      clinical_provider = build_stubbed(:identity, first_name: "Dr.", last_name: "Feelgood")
-      organization = build_stubbed(:organization)
-      allow(organization).to receive_message_chain(:service_providers, :includes).
-        with(:identity).
-        and_return([build_stubbed(:clinical_provider, identity: clinical_provider, organization: organization)])
-
-      @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization, protocol: protocol)
-
-      @logged_in_user = build_stubbed(:identity)
+      org       = create(:organization)
+                  create(:service_provider, organization: org, identity: logged_in_user)
+      protocol  = create(:study_federally_funded, primary_pi: jug2)
+      sr        = create(:service_request, protocol: protocol)
+      @ssr      = create(:sub_service_request, service_request: sr, protocol: protocol, organization: org)
     end
-    it "should show clinical providers and authorized users" do
-      render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user
 
-      expect(response.include?("Primary-pi: Jane Doe")).to eq(true);
-      expect(response.include?("Dr. Feelgood")).to eq(true);
+    it "should show clinical providers and authorized users" do
+      render "dashboard/notifications/dropdown", sub_service_request: @ssr, current_user: logged_in_user
+
+      expect(response).to have_selector('a.dropdown-item', text: jug2.full_name)
+      expect(response).to have_selector('a.dropdown-item', text: logged_in_user.full_name)
+    end
+
+    context 'user is the logged in user' do
+      it 'should not allow the user to message themself' do
+        render "dashboard/notifications/dropdown", sub_service_request: @ssr, current_user: logged_in_user
+
+        expect(response).to have_selector('a.dropdown-item.disabled', text: logged_in_user.full_name)
+      end
     end
   end
 end

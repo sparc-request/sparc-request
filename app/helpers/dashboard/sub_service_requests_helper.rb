@@ -123,12 +123,12 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def view_ssr_button(ssr)
-    link_to icon('fas', 'eye'), dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.tooltips.view'), class: 'btn btn-info mx-1', data: { toggle: 'tooltip', boundary: 'window' }
+    link_to icon('fas', 'eye'), dashboard_sub_service_request_path(ssr), remote: true, title: t('dashboard.service_requests.tooltips.view'), class: 'btn btn-info mx-1 view-request', data: { toggle: 'tooltip', boundary: 'window' }
   end
 
   def admin_edit_ssr_buttton(ssr, admin_access)
     if admin_access
-      link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning", data: { toggle: 'tooltip', boundary: 'window' }
+      link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning edit-request", data: { toggle: 'tooltip', boundary: 'window' }
     end
   end
 end

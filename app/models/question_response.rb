@@ -86,10 +86,14 @@ class QuestionResponse < ActiveRecord::Base
   end
 
   def depender_selected?
-    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id }.try(:content).try(:downcase) == self.depender.content.downcase
+    self.depender && split_options(self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id }.try(:content).try(:downcase)).include?(self.depender.content.downcase)
   end
 
   private
+
+  def split_options(content)
+    !content.nil? && content.start_with?("[\"") && content.end_with?("\"]") ? content.tr("[]\"", "").split(',').map(&:strip) : content
+  end
 
   def remove_unanswered
     return false if self.required? && self.content.blank?

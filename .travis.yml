@@ -13,7 +13,7 @@ before_install:
   - gem update --system
   - gem install bundler
   - "export TZ=America/New_York"
-  - nvm install node 10.16.3
+  - nvm install node 12.10.0
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml

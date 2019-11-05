@@ -216,6 +216,8 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+      sub_service_request:
+        srid: "SRID"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -399,7 +401,7 @@ en:
       billing: "Quantity/Billing"
       pricing: "Consolidated Request"
     inactive: "(Inactive)"
-    no_line_items: "No line items to show."
+    no_line_items: "No Services to show"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"
@@ -443,6 +445,7 @@ en:
       units_per_quantity: "Edit Units per Quantity"
     merged_totals:
       header: "Study Cost Totals"
+      direct_cost: "Total Direct Cost"
       grand_total: "Grand Total"
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'
@@ -622,7 +625,7 @@ en:
           text: "SCTR"
           url: "http://sctr.musc.edu"
         contact: "Contact Us"
-        listserv: 
+        listserv:
           text: "Listserv"
           subject: "SPARCRequest Listserv"
         faqs:
@@ -813,7 +816,7 @@ en:
     created: "Subsidy created successfully"
     updated: "Subsidy updated successfully"
     destroyed: "Subsidy deleted successfully"
-    approved: "Subsidy has been approved"
+    approve: "Subsidy has been approved"
     disapproval_message: "Subsidy has been disapproved"
     delete_confirm: "Are you sure that you would like to delete this subsidy?"
     approved:

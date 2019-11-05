@@ -28,11 +28,11 @@ class Option < ActiveRecord::Base
   validates :content,
             presence: true
 
-  before_destroy :update_dependents
+  before_destroy :update_dependents, prepend: true
 
   private
 
   def update_dependents
-    self.dependents.update_all(depender_id: nil)
+    self.dependents.update_all(is_dependent: false, depender_id: nil)
   end
 end

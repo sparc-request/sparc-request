@@ -17,11 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%select.selectpicker.select-depender{ id: "question-#{question.id}-depender_id", disabled: question.survey.has_responses? }
-  %option{ value: "" }
-    = t(:constants)[:prompts][:none]
-  - question.previous_questions.each do |q|
-    %optgroup{ label: q.content }
-      - q.options.each do |option|
-        %option{ value: option.id, selected: question.depender_id == option.id }
-          = option.content
+
+.col-10{ id: "dependentsFields#{question.id}" }
+  .row
+    .form-group.col-3.d-flex.align-items-center
+      = label_tag "question-#{question.id}-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'my-0 mr-1'
+      = check_box_tag "question-#{question.id}-is_dependent", question.is_dependent, question.is_dependent, class: 'is-dependent', disabled: question.previous_questions.empty? || question.survey.has_responses?
+      = text_field_tag '', '', class: 'form-control invisible'
+    .form-group.col-9.dependent-dropdown-container{ class: question.is_dependent ? '' : 'd-none' }
+      .d-flex.justify-content-between
+        .w-20
+          = label_tag "question-#{question.id}-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-form-label'
+        .w-80
+          %select.selectpicker.select-depender{ id: "question-#{question.id}-depender_id", disabled: question.survey.has_responses? }
+            %option{ value: "" }
+              = t(:constants)[:prompts][:none]
+            - question.previous_questions.each do |q|
+              %optgroup{ label: q.content }
+                - q.options.each do |option|
+                  %option{ value: option.id, selected: question.depender_id == option.id }
+                    = option.content

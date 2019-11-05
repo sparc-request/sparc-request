@@ -21,15 +21,9 @@
 require 'rails_helper'
 
 RSpec.describe FormsController, type: :controller do
-  stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   context '#index' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
     context "params[:complete] == 'false'" do
       it 'should assign @forms to the service request\'s associated forms' do
         org       = create(:provider)

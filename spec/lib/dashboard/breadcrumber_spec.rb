@@ -42,7 +42,7 @@ RSpec.describe Dashboard::Breadcrumber do
       it 'should remove that breadcrumb' do
         @breadcrumber.add_crumb(:protocol_id, 1)
 
-        @breadcrumber.clear(:protocol_id)
+        @breadcrumber.clear(criumb: :protocol_id)
 
         breadcrumbs = @breadcrumber.breadcrumbs
         expect(breadcrumbs).to have_tag('a', count: 1)
@@ -63,20 +63,29 @@ RSpec.describe Dashboard::Breadcrumber do
   end
 
   describe '#add_crumbs' do
-    it 'should add multiple breadcrumbs' do
-      allow(Protocol).to receive(:find).with(1).and_return(instance_double(Protocol, short_title: "My Protocol"))
-      allow(SubServiceRequest).to receive(:find).with(2).and_return(
-          instance_double(SubServiceRequest, organization: instance_double(Organization, label: "MegaCorp")))
+    let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
+    let(:org)       { create(:organization, abbreviation: 'SPEW') }
+    let(:protocol)  { create(:protocol_without_validations, type: "Study", short_title: "My Protocol") }
+    let(:service_request) { create(:service_request_without_validations, protocol: protocol) }
+    let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request, owner: build(:identity)) }
 
-      @breadcrumber.add_crumbs(protocol_id: 1, sub_service_request_id: 2)
+    it 'should add multiple breadcrumbs' do
+      @breadcrumber.add_crumbs(protocol_id: protocol.id, sub_service_request_id: ssr.id)
 
       breadcrumbs = @breadcrumber.breadcrumbs
       expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "(1) My Protocol" )
-      expect(breadcrumbs).to have_tag('li', text: "MegaCorp")
+      expect(breadcrumbs).to have_tag('li', text: "(#{ssr.ssr_id}) SPEW")
     end
   end
 
   describe '#breadcrumbs' do
+
+    let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
+    let(:org)       { create(:organization, abbreviation: 'SPEW') }
+    let(:protocol)  { create(:protocol_without_validations, type: "Study", short_title: "My Protocol") }
+    let(:service_request) { create(:service_request_without_validations, protocol: protocol) }
+    let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request, owner: build(:identity)) }
+
     context 'with no crumbs' do
       it 'should return link to Dashboard' do
         breadcrumbs = @breadcrumber.breadcrumbs
@@ -87,17 +96,13 @@ RSpec.describe Dashboard::Breadcrumber do
 
     context 'with crumbs' do
       it 'should render the links with the correct text in the correct order' do
-        allow(Protocol).to receive(:find).with(1).and_return(instance_double(Protocol, short_title: "My Protocol"))
-        allow(SubServiceRequest).to receive(:find).with(2).and_return(
-            instance_double(SubServiceRequest, organization: instance_double(Organization, label: "MegaCorp")))
-        
-        @breadcrumber.add_crumbs(protocol_id: 1, sub_service_request_id: 2, edit_protocol: 1)
+        @breadcrumber.add_crumbs(protocol_id: protocol.id, sub_service_request_id: ssr.id, edit_protocol: 1)
 
         breadcrumbs = @breadcrumber.breadcrumbs
 
         expect(breadcrumbs).to have_tag('a', count: 3) # expect correct number of links, so the following is exhaustive
         expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols" }, text: "Dashboard")
-        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "(1) My Protocol")
+        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/#{protocol.id}" }, text: "(#{protocol.id}) My Protocol")
         expect(breadcrumbs).to have_tag('li', text: "Edit")
         expect(breadcrumbs).to match(/Dashboard.*My Protocol.*Edit/) # expect correct order
       end

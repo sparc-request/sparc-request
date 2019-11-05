@@ -361,11 +361,28 @@ form, .form {
 /// Modal ///
 /////////////
 
-@include media-breakpoint-up(lg) {
-  .modal {
-    .modal-dialog:not(.modal-xl):not(.modal-lg):not(.modal-sm):not(.modal-xs) {
-      max-width: 600px;
-    }
+.modal-dialog {
+  width: 40vw;
+  max-width: 40vw;
+
+  &.modal-sm {
+    width: 20vw;
+    max-width: 20vw;  
+  }
+
+  &.modal-lg {
+    width: 60vw;
+    max-width: 60vw;
+  }
+
+  &.modal-xl {
+    width: 80vw;
+    max-width: 80vw;
+  }
+
+  &.modal-2x {
+    width: 90vw;
+    max-width: 90vw;
   }
 }
 

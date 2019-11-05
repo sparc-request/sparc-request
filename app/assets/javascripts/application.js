@@ -64,6 +64,7 @@
 //= require utilities
 //= require global
 //= require batch-select
+//= require identities
 //= require service_requests
 //= require protocols
 //= require protocol_form

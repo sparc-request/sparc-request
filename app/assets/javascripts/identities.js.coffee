@@ -20,6 +20,7 @@
 
 $(document).ready ->
   $(document).on 'click', '#outsideUserLogin', ->
+    console.log 'test'
     $('form#new_identity').removeClass('d-none')
 
   $(document).on('keydown', '#identity_orcid, #project_role_identity_attributes_orcid', (event) ->

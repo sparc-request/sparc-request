@@ -9,6 +9,8 @@ task fix_arm_data: :environment do
       bad_arms << ["#{arm.id}", "#{arm.protocol_id}", "#{arm.visit_count}", "#{arm.visit_groups.count}"]
       puts "Bad arm found. ID: #{arm.id}   Protocol ID: #{arm.protocol_id}"
       puts "arm.visit_count = #{arm.visit_count}   visits = #{arm.visit_groups.count}"
+      arm.visit_count = arm.visit_groups.count
+      arm.save(validate: false)
       count += 1
     end
   end

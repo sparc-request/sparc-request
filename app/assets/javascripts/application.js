@@ -87,7 +87,6 @@
 //= require surveyor/responses
 //= require surveyor/surveys
 
-// require batch-select
 // require bootstrap-table
 // require bootstrap-table-export
 // require tableExport

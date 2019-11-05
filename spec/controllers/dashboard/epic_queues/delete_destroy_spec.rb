@@ -33,7 +33,7 @@ RSpec.describe Dashboard::EpicQueuesController do
         and_return(@epic_queue)
     end
 
-    describe "for overlord users" do
+    describe "for users with epic queue access" do
       before(:each) do
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
         delete :destroy, params: { id: @epic_queue.id }, xhr: true
@@ -58,7 +58,7 @@ RSpec.describe Dashboard::EpicQueuesController do
       end
 
       it { is_expected.to_not render_template "dashboard/epic_queues/destroy"}
-      it { is_expected.to respond_with 200 }
+      it { is_expected.to respond_with 302 }
     end
   end
 end

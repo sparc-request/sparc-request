@@ -35,9 +35,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def show
     respond_to do |format|
       format.html { # Admin Edit
-        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
-        session[:service_calendar_pages] = params[:pages] if params[:pages]
-        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        cookies["admin-tab-#{@sub_service_request.id}"] ||= 'details'
+
+        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(crumb: :notifications)
 
         @service_request  = @sub_service_request.service_request
         @protocol         = @sub_service_request.protocol
@@ -56,10 +56,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @service_request        = @sub_service_request.service_request
         @protocol               = @service_request.protocol
         @tab                    = 'calendar'
-        @portal                 = true
-        @admin                  = false
-        @review                 = true
-        @merged                 = false
+        @merged                 = true
         @consolidated           = false
         @pages                  = {}
         @service_request.arms.each do |arm|
@@ -71,16 +68,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    if params[:check_sr_calendar] == 'true'
-      sr = @sub_service_request.service_request
-      sr.validate_service_calendar
-      if sr.errors[:base].length > 0
-        raise 'error'
-      end
-    end
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
-      flash[:success] = 'Request Updated!'
+      @sub_service_request.generate_approvals(current_user)
+      flash[:success] = t('dashboard.sub_service_requests.updated')
     else
       @errors = @sub_service_request.errors
     end
@@ -92,65 +83,33 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       notifier_logic = NotifierLogic.new(@sub_service_request.service_request, current_user)
       notifier_logic.ssr_deletion_emails(deleted_ssr: @sub_service_request, ssr_destroyed: false, request_amendment: false, admin_delete_ssr: true)
 
-      flash[:alert] = 'Request Destroyed!'
-      session[:breadcrumbs].clear(:sub_service_request_id)
+      flash[:alert] = t('dashboard.sub_service_requests.deleted')
+      session[:breadcrumbs].clear(crumb: :sub_service_request_id)
     end
-  end
-
-  def refresh_service_calendar
-    @service_request  = @sub_service_request.service_request
-    arm_id            = params[:arm_id].to_s if params[:arm_id]
-    @arm              = Arm.find arm_id if arm_id
-    @portal           = params[:portal] if params[:portal]
-    @thead_class      = @portal == 'true' ? 'default_calendar' : 'red-provider'
-    page              = params[:page] if params[:page]
-
-    if params[:pages]
-      session[:service_calendar_pages] = params[:pages].permit!.to_h
-    end
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
-    end
-
-    @tab = 'calendar'
   end
 
   def push_to_epic
-    sr = @sub_service_request.service_request
-    sr.validate_service_calendar
-    unless sr.errors[:base].length > 0
-      begin
-        @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
-        flash[:success] = 'Request Pushed to Epic!'
-      rescue
-        flash[:alert] = $!.message
-      end
-    else
-      raise 'error'
+    begin
+      @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
+      flash[:success] = t('dashboard.sub_service_requests.pushed_to_epic')
+    rescue
+      @error = $!.message
     end
   end
 
   def resend_surveys
     if @sub_service_request.surveys_completed?
-      @refresh = true # Refresh the details options
       flash[:alert] = 'All surveys have already been completed.'
     else
       @sub_service_request.distribute_surveys
-      @refresh = true
       flash[:success] = 'Surveys re-sent!'
     end
   end
 
   #History Table Methods Begin
   def change_history_tab
-    #Replaces currently displayed ssr history bootstrap table
-    history_path = 'dashboard/sub_service_requests/history/'
-    @partial_to_render = history_path + params[:partial]
-    @tab = params[:partial]
+    @tab = params[:tab]
+    cookies["history-tab-ssr-#{@sub_service_request.id}"] = @tab
   end
 
   def status_history
@@ -170,15 +129,15 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
   #History Table Methods End
 
-  #Tab Change Ajax
   def refresh_tab
-    @service_request = @sub_service_request.service_request
-    @protocol = Protocol.find(params[:protocol_id])
-    @partial_name = params[:partial_name]
+    @service_request  = @sub_service_request.service_request
+    @tab              = params[:tab]
+    cookies["admin-tab-#{@sub_service_request.id}"] = @tab
+
+    setup_calendar_pages if @tab == 'study_schedule'
   end
 
-
-private
+  private
 
   def sub_service_request_params
       params.require(:sub_service_request).permit(:service_request_id,

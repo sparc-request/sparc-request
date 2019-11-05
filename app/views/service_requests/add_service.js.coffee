@@ -42,6 +42,7 @@ AlertSwal.fire(
   title: I18n.t('proper.cart.duplicate_service.header')
 )
 <% else %>
+$('.profile').replaceWith("<%= j render 'layouts/profile' %>")
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
 $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
@@ -52,4 +53,6 @@ if !url.searchParams.get('srid')
   $('input[name=srid]').val("<%= @service_request.id %>")
   $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
   $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
+
+  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

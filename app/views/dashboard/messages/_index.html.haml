@@ -22,12 +22,12 @@
   .modal-content
     .modal-header
       %h3.modal-title
-        = notification_subject_line(notification, false)
+        = notification_subject_line(notification)
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - messages.each do |msg|
-        .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-right callout-secondary float-right' : 'callout-info' }
+        .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-right callout-success float-right' : 'callout-info' }
           .card-body
             %h5.card-title.mb-2
               = msg.sender.full_name

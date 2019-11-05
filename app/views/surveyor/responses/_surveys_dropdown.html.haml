@@ -23,4 +23,4 @@
   - surveys.order(:title).group_by(&:title).each do |title, surveys|
     %optgroup{ label: title }
       - surveys.each do |survey|
-        %option{ value: survey.id, disabled: filterrific.with_state && filterrific.with_state.length > 0 && !filterrific.with_state.include?(survey.active ? 1 : 0), selected: filterrific.with_survey && filterrific.with_survey.include?(survey.id), data: { active: survey.active ? '1' : '0', content: "<span class='hidden'>#{survey.title}</span><span>Version #{survey.version} (#{I18n.t(:surveyor)[:response_filters][:fields][:state_filters][survey.active ? :active : :inactive]})</span>" } }
+        %option{ value: survey.id, disabled: filterrific.with_state && filterrific.with_state.length > 0 && !filterrific.with_state.include?(survey.active ? 1 : 0), selected: filterrific.with_survey && filterrific.with_survey.include?(survey.id), data: { active: survey.active ? '1' : '0', content: "<span>#{t(:surveyor)[:response_filters][:fields][:form_filter][:version]} #{survey.version} (#{I18n.t(:surveyor)[:response_filters][:fields][:state_filters][survey.active ? :active : :inactive]})</span>" } }

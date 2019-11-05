@@ -22,7 +22,6 @@
   .container-fluid.d-flex.flex-column.align-items-center.justify-content-center.p-3
     .d-flex.mb-3
       %nav.flex-column.nav.px-5
-        = link_to t('layout.footer.links.blog.text'), t('layout.footer.links.blog.url'), target: :blank, class: 'mb-1'
         = link_to t('layout.footer.links.about'), Setting.get_value("about_sparc_url"), target: :blank, class: 'mb-1'
         = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :blank, class: 'mb-0'
       %nav.flex-column.nav.px-5

@@ -21,9 +21,9 @@
 - providers.select{ |prov| prov.is_available != false }.each do |p|
   - locked = locked_ids.include?(p.id)
 
-  .card
+  .card.provider{ id: "provider#{p.id}" }
     .card-header.p-0{ id: "provider#{p.id}Header" }
-      %button.org-link.btn.btn-block.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{p.id}Collapse", id: p.id }, aria: { expanded: 'true', controls: "provider#{p.id}Collapse" } }
+      %button.provider-link.org-link.btn.btn-block.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{p.id}Collapse", id: p.id }, aria: { expanded: 'true', controls: "provider#{p.id}Collapse" } }
         %h6.d-flex.align-items-start.mb-0
           = organization_name_display(p, locked, p.programs.any?)
     .collapse{ id: "provider#{p.id}Collapse", data: { parent: "#institution#{i.id}Collapse" }, aria: { labelledby: "provider#{p.id}Header" } }

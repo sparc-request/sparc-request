@@ -28,7 +28,7 @@ module SubsidiesHelper
   end
 
   def approve_subsidy_button(subsidy, opts={})
-    link_to approve_dashboard_subsidy_path, remote: true, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
+    link_to approve_dashboard_subsidy_path(subsidy), remote: true, method: :patch, class: 'btn btn-success mr-1', title: t('actions.approve'), data: { toggle: 'tooltip' } do
       icon('fas', 'check')
     end
   end
@@ -36,7 +36,7 @@ module SubsidiesHelper
   def edit_subsidy_button(subsidy, opts={})
     url = in_dashboard? ? edit_dashboard_subsidy_path(subsidy) : edit_subsidy_path(subsidy, srid: opts[:srid])
 
-    link_to url, remote: true, class: 'btn btn-warning mr-1' do
+    link_to url, remote: true, class: 'btn btn-warning mr-1 edit-subsidy' do
       icon('far', 'edit')
     end
   end
@@ -44,8 +44,16 @@ module SubsidiesHelper
   def delete_subsidy_button(subsidy, opts={})
     url = in_dashboard? ? dashboard_subsidy_path(subsidy) : subsidy_path(subsidy, srid: opts[:srid])
 
-    link_to url, remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' } do
+    link_to url, remote: true, method: :delete, class: 'btn btn-danger delete-subsidy', data: { confirm_swal: 'true' } do
       icon('fas', 'trash-alt')
+    end
+  end
+
+  def subsidy_history_action(past_subsidy)
+    if past_subsidy.overridden?
+      content_tag(:span, t('dashboard.sub_service_requests.history.subsidy_history.action.overridden'), class: 'text-warning')
+    else
+      content_tag(:span, t('dashboard.sub_service_requests.history.subsidy_history.action.deleted'), class: 'text-danger')
     end
   end
 end

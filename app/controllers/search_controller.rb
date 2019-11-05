@@ -64,7 +64,7 @@ class SearchController < ApplicationController
         service_id:     s.id,
         name:           s.display_service_name,
         description:    s.description,
-        breadcrumb:     breadcrumb_text(s),
+        breadcrumb:     helpers.breadcrumb_text(s),
         abbreviation:   s.abbreviation,
         cpt_code_text:  helpers.cpt_code_text(s),
         eap_id_text:    helpers.eap_id_text(s),
@@ -95,6 +95,7 @@ class SearchController < ApplicationController
         name:           item.name,
         abbreviation:   item.abbreviation,
         type:           item.model_name.human,
+        klass:          item.is_a?(Service) ? Service.name : Organization.name,
         text_color:     "text-#{item.class.name.downcase}",
         cpt_code_text:  item.is_a?(Service) ? helpers.cpt_code_text(item) : "",
         eap_id_text:    item.is_a?(Service) ? helpers.eap_id_text(item) : "",
@@ -122,18 +123,6 @@ class SearchController < ApplicationController
 
   def inactive_text(item)
     text = item.is_available ? "" : "(Inactive)"
-  end
-
-  def breadcrumb_text(item)
-    if item.parents.any?
-      breadcrumb = []
-      item.parents.reverse.each do |parent|
-        breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
-        breadcrumb << helpers.icon('fas', 'caret-right') + " "
-      end
-      breadcrumb.pop
-      breadcrumb.join.html_safe
-    end
   end
 
   def breadcrumb_text_bs3(item)

@@ -28,7 +28,7 @@
       = hidden_field_tag :tab, params[:tab]
       .modal-header
         %h3.modal-title
-          = t("calendars.pppv.editable_fields.#{params[:field]}")
+          = t("calendars.editable_fields.#{params[:field]}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body

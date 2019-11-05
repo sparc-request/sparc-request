@@ -38,7 +38,7 @@ $('#authorizedUserForm').on 'submit', (event) ->
       if result.value
         primaryPiConfirmed = true
         Rails.fire(form, 'submit')
-  else if "<%= @identity == current_user %>" == 'true' && "<%= @admin %>" == 'false' && ['member'].includes($('input[name="project_role[project_rights]"]:checked').val()) && !rightsChangeConfirmed
+  else if "<%= @identity == current_user %>" == 'true' && "<%= @admin %>" == 'false' && "<%= current_user.catalog_overlord? %>" == 'false' && ['none'].includes($('input[name="project_role[project_rights]"]:checked').val()) && !rightsChangeConfirmed
     event.preventDefault()
     event.stopImmediatePropagation()
     ConfirmSwal.fire(

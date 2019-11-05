@@ -18,5 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".tab-pane#history").html("<%= escape_javascript(render(partial: @partial_to_render, locals: { sub_service_request: @sub_service_request, tab: @tab })) %>")
-$(".ssr_history_table").bootstrapTable()
+$("#historyTab").html('<%= j render "dashboard/sub_service_requests/history", sub_service_request: @sub_service_request%>')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

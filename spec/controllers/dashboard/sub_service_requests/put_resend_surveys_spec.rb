@@ -45,8 +45,8 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         put :resend_surveys, params: { id: @ssr.id, format: :js }, xhr: true
       end
       
-      it 'should assign @refresh' do
-        expect(assigns(:refresh)).to eq(true)
+      it 'should not distribute surveys' do
+        expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
       end
     end
 
@@ -60,18 +60,6 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       it 'should distribute surveys' do
         expect(@ssr).to have_received(:distribute_surveys)
       end
-    end
-
-    it 'should render template' do
-      put :resend_surveys, params: { id: @ssr.id, format: :js }, xhr: true
-
-      expect(controller).to render_template(:resend_surveys)
-    end
-
-    it 'should respond ok' do
-      put :resend_surveys, params: { id: @ssr.id, format: :js }, xhr: true
-
-      expect(controller).to respond_with(:ok)
     end
   end
 end

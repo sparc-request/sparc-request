@@ -21,7 +21,7 @@
 .alert.alert-warning.rounded-0.mb-0
   %h4.alert-heading.mb-0
     = t(:subsidies)[:pending][:header]
-%table.table.table-bordered.table-centered.mb-0
+%table.table.table-bordered.table-centered.mb-0.pending-subsidy
   %thead.bg-light
     %tr
       %th
@@ -45,11 +45,12 @@
       %td
         = number_to_currency(subsidy.pi_contribution/100.0)
       %td.text-center<
-        - if in_dashboard?
-          - if admin
-            = approve_subsidy_button(subsidy)
-          = edit_subsidy_button(subsidy)
-          = delete_subsidy_button(subsidy)
-        - else
-          = edit_subsidy_button(subsidy, srid: service_request.id)
-          = delete_subsidy_button(subsidy, srid: service_request.id)
+        .d-flex.justify-content-center
+          - if in_dashboard?
+            - if admin
+              = approve_subsidy_button(subsidy)
+            = edit_subsidy_button(subsidy)
+            = delete_subsidy_button(subsidy)
+          - else
+            = edit_subsidy_button(subsidy, srid: service_request.id)
+            = delete_subsidy_button(subsidy, srid: service_request.id)

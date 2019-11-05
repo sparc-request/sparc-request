@@ -20,13 +20,13 @@
 
 - sub_service_requests.each do |ssr|
   .list-group.list-group-flush
-    .list-group-item{ class: [ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
+    .list-group-item.sub-service-request{ class: [ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
       %h6.d-flex.align-items-start.mb-0<
         = icon('fas', 'caret-down pr-1 mr-2')
         = ssr_name_display(ssr)
     .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
       - ssr.line_items.each do |li|
-        .list-group-item
+        .list-group-item.line-item
           .row
             .col-10.d-flex.align-items-center.pr-0
               %h6.mb-0<

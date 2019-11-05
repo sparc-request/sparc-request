@@ -21,7 +21,7 @@
 module Dashboard::EpicQueuesHelper
 
   def format_protocol(protocol)
-    "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
+    link_to "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}", dashboard_protocol_path(protocol)
   end
 
   def format_pis(protocol)
@@ -33,7 +33,7 @@ module Dashboard::EpicQueuesHelper
   end
 
   def epic_queue_send_button(epic_queue)
-    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic', data: { permission: 'true' }
+    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic mr-1', data: { permission: 'true' }
   end
 
   def epic_queue_actions(epic_queue)

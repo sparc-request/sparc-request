@@ -1,0 +1,47 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- tab = cookies["admin-tab-#{sub_service_request.id}"] || 'details'
+
+.tabs.w-100#adminTabs
+  %nav.nav.nav-tabs.nav-justified.border-bottom-0{ role: 'tablist' }
+    = link_to t('dashboard.sub_service_requests.request_details.header'), refresh_tab_dashboard_sub_service_request_path(sub_service_request, tab: 'details'), remote: true, id: 'detailsTabLink', class: ['nav-link nav-item h4 mb-0', tab == 'details' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'detailsTab', selected: (tab == 'details').to_s }
+    - if sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?(is_available: true)
+      = link_to t('dashboard.sub_service_requests.study_schedule.header'), refresh_tab_dashboard_sub_service_request_path(sub_service_request, tab: 'study_schedule'), remote: true, id: 'studyScheduleTabLink', class: ['nav-link nav-item h4 mb-0', tab == 'study_schedule' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyScheduleTab', selected: (tab == 'study_schedule').to_s }
+    - if sub_service_request.process_ssrs_organization.has_one_time_fee_services?(is_available: true)
+      = link_to t('dashboard.sub_service_requests.study_level_activities.header'), refresh_tab_dashboard_sub_service_request_path(sub_service_request, tab: 'study_level_activities'), remote: true, id: 'studyLevelActivitiesTabLink', class: ['nav-link nav-item h4 mb-0', tab == 'study_level_activities' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'studyLevelActivitiesTab', selected: (tab == 'study_level_activities').to_s }
+    = link_to t('dashboard.sub_service_requests.history.header'), refresh_tab_dashboard_sub_service_request_path(sub_service_request, tab: 'history'), remote: true, id: 'historyTabLink', class: ['nav-link nav-item h4 mb-0', tab == 'history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'historyTab', selected: (tab == 'history').to_s }
+    = link_to refresh_tab_dashboard_sub_service_request_path(sub_service_request, tab: 'notifications'), remote: true, id: 'notificationsTabLink', class: ['nav-link nav-item h4 mb-0', tab == 'notifications' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsTab', selected: (tab == 'notifications').to_s } do
+      %span.d-flex.align-items-center.justify-content-center
+        = t('dashboard.sub_service_requests.notifications.header')
+        %span.badge.badge-pill.badge-c.ml-1{ class: tab == 'notifications' ? 'badge-light' : 'badge-secondary' }
+          %small
+            = format_count(current_user.unread_notification_count(sub_service_request.id))
+  .tab-content
+    .tab-pane.fade#detailsTab{ role: 'tabpanel', class: tab == 'details' ? 'show active' : '', aria: { labelledby: 'detailsTabLink' } }
+    .tab-pane.fade#studyScheduleTab{ role: 'tabpanel', class: tab == 'study_schedule' ? 'show active' : '', aria: { labelledby: 'studyScheduleTabLink' } }
+    .tab-pane.fade#studyLevelActivitiesTab{ role: 'tabpanel', class: tab == 'study_level_activities' ? 'show active' : '', aria: { labelledby: 'studyLevelActivitiesTabLink' } }
+    .tab-pane.fade#historyTab{ role: 'tabpanel', class: tab == 'history' ? 'show active' : '', aria: { labelledby: 'historyTabLink' } }
+    .tab-pane.fade#notificationsTab{ role: 'tabpanel', class: tab == 'notifications' ? 'active' : '', aria: { labelledby: 'notificationsTabLink' } }
+    .tab-pane.fade.show.active.loading#requestLoading
+      .card
+        .card-body.text-center
+          %h3.d-flex.justify-content-center.align-items-center.mb-0
+            = t('constants.search.loading')

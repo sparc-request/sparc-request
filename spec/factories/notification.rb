@@ -21,6 +21,9 @@
 FactoryBot.define do
 
   factory :notification do
+    read_by_originator  { true }
+    read_by_other_user  { false }
+
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end

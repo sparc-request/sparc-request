@@ -19,12 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubsidiesController < ApplicationController
+  before_action :find_subsidy,              only: [:edit, :update, :destroy, :approve]
+  before_action :find_sub_service_request
   before_action :initialize_service_request
   before_action :authorize_identity
   before_action :in_admin?
 
   def new
-    @sub_service_request      = SubServiceRequest.find(params[:ssrid])
     @subsidy                  = @sub_service_request.build_pending_subsidy
     @subsidy.percent_subsidy  = (@subsidy.default_percentage / 100.0)
 
@@ -32,23 +33,22 @@ class SubsidiesController < ApplicationController
   end
 
   def create
-    @sub_service_request  = SubServiceRequest.find(params[:ssrid])
-    @subsidy              = @sub_service_request.build_pending_subsidy(subsidy_params)
-    @subsidy.save
-    flash[:success] = t(:subsidies)[:created]
+    @subsidy = @sub_service_request.build_pending_subsidy(subsidy_params)
+    
+    if @subsidy.save
+      flash[:success] = t(:subsidies)[:created]
+    else
+      @errors = @subsidy.errors
+    end
 
     respond_to :js
   end
 
   def edit
-    @subsidy = PendingSubsidy.find(params[:id])
-
     respond_to :js
   end
 
   def update
-    @subsidy              = PendingSubsidy.find(params[:id])
-    @sub_service_request  = @subsidy.sub_service_request
     @subsidy.update_attributes(subsidy_params)
     flash[:success] = t(:subsidies)[:updated]
 
@@ -56,8 +56,6 @@ class SubsidiesController < ApplicationController
   end
 
   def destroy
-    @subsidy              = Subsidy.find(params[:id])
-    @sub_service_request  = @subsidy.sub_service_request
     @subsidy.destroy
     flash[:alert] = t(:subsidies)[:destroyed]
 
@@ -65,6 +63,14 @@ class SubsidiesController < ApplicationController
   end
 
   private
+
+  def find_subsidy
+    @subsidy = action_name == 'destroy' ? Subsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
+  end
+
+  def find_sub_service_request
+    @sub_service_request = @subsidy ? @subsidy.sub_service_request : SubServiceRequest.find(params[:ssrid])
+  end
 
   def in_admin?
     @admin = false
@@ -76,9 +82,6 @@ class SubsidiesController < ApplicationController
     end
 
     params.require(:subsidy).permit(
-      :sub_service_request_id,
-      :overridden,
-      :status,
       :percent_subsidy
     )
   end

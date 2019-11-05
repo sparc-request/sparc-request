@@ -17,22 +17,25 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#survey-response
+
+.form#survey-response
   - unless survey.description.blank?
     .form-group
-      %p.survey-description.no-margin
+      %p.survey-description
         = raw(survey.description)
-  .survey-sections
-    - survey.sections.each do |section|
-      .panel.panel-default.section
-        .panel-heading
-          %h4.panel-title
-            = section.title
-        .panel-body
-          - unless section.description.blank?
-            .form-group
-              .col-lg-12.no-padding
+  .row
+    .list-group.list-group-flush.survey-sections.w-100
+      = fields_for response do |f|
+        - survey.sections.eager_load(questions: :options).each do |section|
+          %section.list-group-item
+            %h4.mb-2
+              = section.title
+            - unless section.description.blank?
+              .form-group
                 %p.section-description
                   = raw(section.description)
-          - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
-            = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index
+            - unless section.questions.none?
+              = render 'layouts/required_fields'
+
+            = f.fields_for :question_responses, response.question_responses.select{ |subqr| subqr.question.section_id == section.id } do |qr|
+              = render 'surveyor/responses/form/response_question', section: section, question: qr.object.question, question_response: qr.object, index: qr.options[:child_index], qr: qr

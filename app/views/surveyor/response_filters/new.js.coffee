@@ -19,3 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#modalContainer').html("<%= j render 'surveyor/response_filters/form', response_filter: @response_filter %>")
 $("#modalContainer").modal('show')
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

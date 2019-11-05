@@ -35,15 +35,13 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def create
     @subsidy = @sub_service_request.build_pending_subsidy(subsidy_params)
 
-    if @admin && subsidy_params[:percent_subsidy] != 0
+    if @admin && @subsidy.percent_subsidy != 0
       @subsidy.save(validate: false)
     else
       @subsidy.save
     end
 
     flash[:success] = t(:subsidies)[:created]
-
-    redirect_to dashboard_sub_service_request_path(@sub_service_request) unless @admin
 
     respond_to :js
   end
@@ -53,16 +51,15 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def update
-    if @admin && (subsidy_params[:percent_subsidy] != 0)
-      @subsidy.assign_attributes(subsidy_params)
+    @subsidy.assign_attributes(subsidy_params)
+
+    if @admin && @subsidy.percent_subsidy != 0
       @subsidy.save(validate: false)
     else
-      @subsidy.update_attributes(subsidy_params)
+      @subsidy.save
     end
 
     flash[:success] = t(:subsidies)[:updated]
-
-    redirect_to dashboard_sub_service_request_path(@sub_service_request) unless @admin
 
     respond_to :js
   end
@@ -76,8 +73,10 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def approve
+    authorization_error if !@admin
     @subsidy = @subsidy.grant_approval(current_user)
-    flash[:success] = t(:subsidies)[:approved]
+    @sub_service_request.reload
+    flash[:success] = t(:subsidies)[:approve]
 
     respond_to :js
   end
@@ -85,7 +84,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   private
 
   def find_subsidy
-    @subsidy = action_name == 'destroy' ? Subsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
+    @subsidy = action_name == 'destroy' ? ApprovedSubsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
   end
 
   def find_sub_service_request

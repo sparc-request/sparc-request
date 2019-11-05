@@ -31,6 +31,4 @@ $ ->
         url: '/service_request/system_satisfaction_survey'
         data:
           srid: getSRId()
-        success: ->
-          $(document).one 'hide.bs.modal', ->
-            window.location = $this.prop('href')
+          forward: $this.prop('href')

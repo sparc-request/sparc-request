@@ -22,52 +22,37 @@ require "rails_helper"
 
 RSpec.describe Dashboard::NotificationsController do
   describe "GET #index" do
-    context "params[:table] == 'inbox'" do
-      before(:each) do
-        @logged_in_user = build_stubbed(:identity)
-
-        allow(Notification).to receive(:in_inbox_of).
-          with(@logged_in_user.id, "SubServiceRequest id").
-          and_return(["inbox notification1", "inbox notification1", "inbox notification2"])
-
-        log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, params: { table: "inbox", sub_service_request_id: "SubServiceRequest id" }
-      end
-
-      it "should asssign @table to params[:table]" do
-        expect(assigns(:table)).to eq("inbox")
-      end
-
-      it "should assign @notifications to current user's inbox (with no duplicates) restricted by SubServiceRequest" do
-        expect(assigns(:notifications)).to eq(["inbox notification1", "inbox notification2"])
-      end
-
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/notifications/index" }
+    before :each do
+      @logged_in_user = build_stubbed(:identity)
+      log_in_dashboard_identity(obj: @logged_in_user)
     end
 
-    context "params[:table] != 'inbox'" do
-      before(:each) do
-        @logged_in_user = build_stubbed(:identity)
+    context 'inbox' do
+      before :each do
+        allow(Notification).to receive(:in_inbox_of).
+          with(@logged_in_user.id, anything).
+          and_return(Notification.none)
+      end
 
+      it 'should return received messages' do
+        expect(Notification).to receive(:in_inbox_of)
+
+        get :index, params: { table: "inbox", sub_service_request_id: "1234", format: :json }
+      end
+    end
+
+    context 'sent' do
+      before :each do
         allow(Notification).to receive(:in_sent_of).
-          with(@logged_in_user.id, "SubServiceRequest id").
-          and_return(["sent notification1", "sent notification1", "sent notification2"])
-
-        log_in_dashboard_identity(obj: @logged_in_user)
-        get :index, params: { table: "not-inbox", sub_service_request_id: "SubServiceRequest id" }
+          with(@logged_in_user.id, anything).
+          and_return(Notification.none)
       end
 
-      it "should asssign @table to params[:table]" do
-        expect(assigns(:table)).to eq("not-inbox")
-      end
+      it 'should return sent messages' do
+        expect(Notification).to receive(:in_sent_of)
 
-      it "should assign @notifications to current user's inbox (with no duplicates) restricted by SubServiceRequest" do
-        expect(assigns(:notifications)).to eq(["sent notification1", "sent notification2"])
+        get :index, params: { table: "not-inbox", sub_service_request_id: "", format: :json }
       end
-
-      it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/notifications/index" }
     end
   end
 end

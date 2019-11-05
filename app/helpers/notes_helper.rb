@@ -20,10 +20,16 @@
 
 module NotesHelper
   def notes_button(notable, opts={})
-    has_notes = notable.notes.length > 0
+    has_notes     = notable.notes.length > 0
+    notable_type  = 
+      if notable.is_a?(Subsidy) || notable.is_a?(Protocol)
+        notable.class.superclass.name
+      else
+        notable.class.name
+      end
 
-    link_to notes_path(note: { notable_id: notable.id, notable_type: notable.class.name }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, id: "#{notable.class.name.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : '', opts[:model] ? '' : 'btn-sq'], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
-      raw(icon('far', 'sticky-note') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, opts[:model].model_name.human + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
+    link_to notes_path(note: { notable_id: notable.id, notable_type: notable_type }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, id: "#{notable_type.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:disabled] ? 'disabled' : '', opts[:model] ? '' : 'btn-sq'], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
+      raw(icon('far', 'sticky-note') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill badge-c notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, (opts[:model].is_a?(String) ? opts[:model] : opts[:model].model_name.human) + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
     end
   end
 
@@ -53,6 +59,8 @@ module NotesHelper
         " " + content_tag(:small, "#{notable.model_name.human} ##{notable.id}", class: 'text-muted')
       elsif [LineItem, LineItemsVisit].include?(notable.class)
         " " + content_tag(:small, "#{notable.service.display_service_name}", class: 'text-muted')
+      else
+        ""
       end
 
     raw(header)

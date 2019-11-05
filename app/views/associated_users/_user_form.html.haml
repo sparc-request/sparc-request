@@ -62,7 +62,7 @@
               = ff_i.label :orcid
               = ff_i.text_field :orcid, class: 'form-control', placeholder: t('authorized_users.form.placeholders.orcid'), maxlength: 19
               %small.form-text
-                = link_to t('authorized_users.form.links.orcid')
+                = link_to t('authorized_users.form.links.orcid'), t('authorized_users.form.links.orcid')
 
           .form-group#eraCommonsNameContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
             = ff_i.label :era_commons_name
@@ -87,7 +87,7 @@
         .form-row
           .form-group.col-6
             = f.label :role, class: 'required'
-            = f.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), protocol_role.role), { include_blank: true }, class: 'selectpicker'
+            = f.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), protocol_role.role), { include_blank: true }, class: 'selectpicker', disabled: protocol_role.role == 'primary-pi'
           .form-group.col-6#roleOtherContainer{ class: protocol_role.role == 'other' ? '' : 'd-none' }
             = f.label :role_other, t('constants.prompts.please_specify'), class: 'required'
             = f.text_field :role_other, class: 'form-control'

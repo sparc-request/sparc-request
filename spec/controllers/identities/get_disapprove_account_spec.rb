@@ -24,38 +24,22 @@ RSpec.describe IdentitiesController do
   stub_controller
 
   describe '#disapprove_account' do
-    it 'should assign @identity' do
-      identity = create(:identity)
+    context 'account not already disapproved' do
+      it 'should update and email' do
+        identity = create(:identity, approved: nil)
 
-      get :disapprove_account, params: {
-        id: identity.id
-      }, xhr: true
+        expect {
+          get :disapprove_account, params: {
+            id: identity.id
+          }, xhr: true
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
 
-      expect(assigns(:identity)).to eq(identity)
+        expect(identity.reload.approved).to eq(false)
+      end
     end
 
-    it 'should render template' do
-      identity = create(:identity)
-
-      get :disapprove_account, params: {
-        id: identity.id
-      }, xhr: true
-
-      expect(controller).to render_template(:disapprove_account)
-    end
-
-    it 'should respond ok' do
-      identity = create(:identity)
-
-      get :disapprove_account, params: {
-        id: identity.id
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
-    end
-
-    context 'identity.approved is false' do
-      it 'should send not notifications' do
+    context 'account already disapproved' do
+      it 'should not update or email' do
         identity = create(:identity, approved: false)
 
         expect {
@@ -65,50 +49,5 @@ RSpec.describe IdentitiesController do
         }.to change(ActionMailer::Base.deliveries, :count).by(0)
       end
     end
-
-    context 'identity.approved is true' do
-      it 'should send notifications' do
-        identity = create(:identity, approved: true)
-
-        expect {
-          get :disapprove_account, params: {
-            id: identity.id
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(1)
-      end
-
-      it 'should update approved status' do
-        identity = create(:identity, approved: true)
-
-        get :disapprove_account, params: {
-            id: identity.id
-        }, xhr: true
-
-        expect(identity.reload.approved).to eq(false)
-      end
-    end
-
-    context 'Identity.approved is nil' do
-      it 'should update approved status' do
-      identity = create(:identity)
-
-        get :disapprove_account, params: {
-            id: identity.id
-        }, xhr: true
-
-        expect(identity.reload.approved).to eq(false)
-      end
-
-      it 'should send notifications' do
-      identity = create(:identity)
-
-        expect {
-          get :approve_account, params: {
-            id: identity.id
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(1)
-      end
-    end
-
   end
 end

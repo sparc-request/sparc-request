@@ -20,17 +20,23 @@
 
 class Dashboard::Breadcrumber
   include ActionView::Helpers::TagHelper
+  include Rails.application.routes.url_helpers
 
   def initialize
     clear
   end
 
-  def clear(crumb = nil)
-    if crumb
-      @crumbs.delete(crumb)
+  def clear(opts={})
+    if opts[:crumb]
+      @crumbs.delete(opts[:crumb])
     else
       @crumbs = Hash.new
     end
+
+    if opts[:filters]
+      @filters = opts[:filters]
+    end
+
     self
   end
 
@@ -55,7 +61,7 @@ class Dashboard::Breadcrumber
         notifications_label_and_url
     ].compact!
 
-    crumbs = [content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_url))]
+    crumbs = [content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_path(@filters)))]
     labels_and_urls.each_with_index do |breadcrumb_array, index|
       label, url = breadcrumb_array
       if index == labels_and_urls.size - 1
@@ -70,10 +76,6 @@ class Dashboard::Breadcrumber
 
   private
 
-  def dashboard_protocols_url
-    "/dashboard/protocols"
-  end
-
   def protocol_label_and_url
     protocol_id = @crumbs[:protocol_id]
     protocol_id ? ["(#{protocol_id}) " + Protocol.find(protocol_id).try(:short_title), "/dashboard/protocols/#{protocol_id}"] : nil
@@ -81,11 +83,13 @@ class Dashboard::Breadcrumber
 
   def ssr_label_and_url
     sub_service_request_id = @crumbs[:sub_service_request_id]
-    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).organization.label, "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
+    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).label, "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
   end
 
   def notifications_label_and_url
-    @crumbs[:notifications] ? ["Notifications", "/dashboard/notifications"] : nil
+    self.clear(crumb: :protocol_id)
+    self.clear(crumb: :sub_service_request_id)
+    @crumbs[:notifications] ? [I18n.t('dashboard.notifications.header'), "/dashboard/notifications"] : nil
   end
 
   def edit_protocol_label_and_url

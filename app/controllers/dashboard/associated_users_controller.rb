@@ -55,7 +55,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_role      = controller.instance_variable_get(:@protocol_role)
     @permission_to_edit = @protocol_role.can_edit?
     @errors             = controller.instance_variable_get(:@errors)
-
     respond_to :js
   end
 
@@ -69,7 +68,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @identity       = controller.instance_variable_get(:@identity)
     @protocol_role  = controller.instance_variable_get(:@protocol_role)
     @epic_user      = controller.instance_variable_get(:@epic_user)
-
     respond_to :js
   end
 
@@ -80,8 +78,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
     if updater.successful?
       flash[:success] = t('authorized_users.updated')
-
-      redirect_to dashboard_root_path if @protocol_role.identity == current_user && !@admin && ['none'].include?(@protocol_role.project_rights)
     else
       @errors = updater.protocol_role.errors
     end
@@ -97,7 +93,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_roles.destroy_all
 
     if @current_user_destroyed
-      @redirect           = @current_user_destroyed && !@admin
       @permission_to_edit = false
     end
 
@@ -109,7 +104,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   private
 
   def project_role_params
-    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    if params[:project_role][:identity_attributes]
+      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    end
+
     params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(

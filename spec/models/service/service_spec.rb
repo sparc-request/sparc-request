@@ -225,12 +225,6 @@ RSpec.describe Service, type: :model do
 
   describe 'current_effective_pricing_map' do
 
-    it 'should raise an exception if there are no pricing maps' do
-      service = create(:service)
-      service.pricing_maps.delete_all
-      expect(lambda { service.current_effective_pricing_map }).to raise_exception(ArgumentError)
-    end
-
     it 'should return the only pricing map if there is one pricing map and it is in the past' do
       service = create(:service, pricing_map_count: 1)
       service.pricing_maps[0].effective_date = Date.today - 1
@@ -253,12 +247,6 @@ RSpec.describe Service, type: :model do
   end
 
   describe 'effective_pricing_map_for_date' do
-    it 'should raise an exception if there are no pricing maps' do
-      service = create(:service)
-      service.pricing_maps.delete_all
-      expect(lambda { service.current_effective_pricing_map }).to raise_exception(ArgumentError)
-    end
-
     it 'should return the pricing map for the given date if there is a pricing map with a effective date of that date' do
       service = create(:service, pricing_map_count: 5)
       base_date = Date.parse('2012-01-01')

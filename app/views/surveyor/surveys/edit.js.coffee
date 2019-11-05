@@ -22,7 +22,7 @@ $('#modalContainer').modal('show')
 $('.selectpicker').selectpicker()
 
 <% if @survey.is_a?(SystemSurvey) %>
-$('.survey-table').bootstrapTable('refresh')
+$('.system-survey-table').bootstrapTable('refresh')
 <% end %>
 
 surveyable_bloodhound = new Bloodhound(
@@ -45,15 +45,18 @@ $("#modalContainer [id$='-surveyable']").typeahead(
     source: surveyable_bloodhound,
     limit: 100,
     templates: {
-      suggestion: Handlebars.compile('<button class="text-left">
-                                        {{#if parents}}
-                                          <strong>{{{parents}}}</strong><br>
-                                        {{/if}}
-                                        <span><strong>{{label}}</strong></span>
-                                        {{#if cpt_code}}
-                                          <br><span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                        {{/if}}
-                                      </button>')
+      suggestion: (s) -> [
+          "<div class='tt-suggestion'>"
+            "<div class='w-100'>",
+              "<h5 class=''>",
+                "<span class=#{s.org_color}>#{s.klass}: </span>",
+                "<span>#{s.label}</span>",
+              "</h5>",
+            "</div>",
+            if s.breadcrumb then "<div>#{s.breadcrumb}</div>",
+            if s.cpt_code then "<div class='w-100'><span>CPT Code: #{s.cpt_code}</span></div>",
+          "</div>"
+        ].join('')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
   }
@@ -73,3 +76,5 @@ $("#modalContainer [id$='-surveyable']").typeahead(
       $("#survey-<%= @survey.id %>-active").prop('disabled', false)
       $("#survey-<%= @survey.id %>-active").tooltip('disable')
 )
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

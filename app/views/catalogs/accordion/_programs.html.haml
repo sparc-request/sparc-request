@@ -21,6 +21,6 @@
 - programs.select{ |prog| prog.is_available != false }.each do |p|
   - locked = locked_ids.include?(p.id)
 
-  %button.org-link.btn.btn-block.btn-link.border-top.rounded-0.m-0{ class: locked ? 'locked' : 'bg-white', type: 'button', data: { id: p.id } }
+  %button.program-link.org-link.btn.btn-block.btn-link.border-top.rounded-0.m-0{ class: locked ? 'locked' : 'bg-white', type: 'button', data: { id: p.id } }
     %h6.d-flex.align-items-start.mb-0
       = organization_name_display(p, locked, false)

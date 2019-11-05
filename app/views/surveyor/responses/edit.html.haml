@@ -17,13 +17,35 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-8.col-sm-offset-2
-  .panel.panel-default#survey-panel
-    .panel-heading.text-center
-      %h4.panel-title
+.card.w-100#surveyCard
+  = form_for @response, url: surveyor_response_path(@response), method: :put, remote: true do |f|
+    .card-header.bg-primary.text-white
+      %h3.mb-0
         = @survey.title
-    = form_for @response, url: surveyor_response_path(@response), method: :put, remote: true do |f|
-      .panel-body
-        = render 'surveyor/responses/form/edit_form', f: f, survey: @survey, response: @response
-      .panel-footer.justify-content-end
-        = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+
+    .card-body.pt-2
+      #survey-response
+        - unless @survey.description.blank?
+          .form-group
+            %p.survey-description.no-margin
+              = raw(@survey.description)
+
+        .row
+          .list-group.list-group-flush.survey-sections.w-100
+            - @survey.sections.eager_load(questions: :options).each do |section|
+              %section.list-group-item
+                %h4.mb-2
+                  = section.title
+                - unless section.description.blank?
+                  .form-group
+                    %p.section-description
+                      = raw(section.description)
+                - unless section.questions.none?
+                  = render 'layouts/required_fields'
+
+                - section.questions.each_with_index do |question, index|
+                  = f.fields_for :question_responses do |qr|
+                    = render 'surveyor/responses/form/response_question', qr: qr, question_response: qr.object, section: section, question: question, index: index
+
+    .card-footer.justify-content-end
+      = f.submit t(:actions)[:submit], class: 'btn btn-primary'

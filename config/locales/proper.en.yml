@@ -74,14 +74,6 @@ en:
     # SERVICE DETAILS #
     ###################
     service_details:
-      arms:
-        header: "Arm Information"
-        sub_header: "Used to build your Calendar Structure"
-
-    ####################
-    # SERVICE CALENDAR #
-    ####################
-    service_calendar:
       move_visit:
         header: "Move Visit"
       legend:
@@ -124,10 +116,10 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
-      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
-      cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
+      confirmation_warning: "An email has been sent to each of your Service Providers and they should be contacting you soon.<br>If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
+      cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
-      download_request: "Download Service Request"
+      download_request: "Download Request"
       to_dashboard: "Go to Dashboard"
       table_fields:
         request_id: "Request ID"
@@ -158,14 +150,14 @@ en:
         header: "This service is already in your cart"
       request_submitted:
         header: "This request was previously submitted"
-        warning: "Deleting this service from your cart is irreversible and will cause it to be removed from this %{protocol_type}. Are you sure you want to proceed?"
+        warning: "Deleting this service from your cart is irreversible and will cause it to be removed from this %{protocol_type}.<br><br>Are you sure you want to proceed?"
       submit_error:
         header: "Submission Error"
         warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
         service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
       last_service:
         header: "Remove last service from cart?"
-        warning: "You will be returned to the service catalog and any unsaved changes may be lost. Are you sure you want to proceed?"
+        warning: "You will be returned to the service catalog and any unsaved changes may be lost.<br><br>Are you sure you want to proceed?"
         confirm: "Yes<br/>Browse Service Catalog"
         cancel: "No<br/>Don't Remove Service"
 
@@ -190,43 +182,38 @@ en:
           sub_header: "Fill in relevant information about your Protocol"
         service_details:
           step_text:
-            full: "Step 3<br/>Milestones &<br/>Calendar Structure"
-            short: "Step 3<br/>Milestones"
+            full: "Step 3<br/>Service<br/>Details"
+            short: "Step 3<br/>Details"
             xs: "Step 3"
-          header: "Step 3: Milestone & Calendar Structure"
-          sub_header: "Fill in milestones & arm details"
-        service_calendar:
-          step_text:
-            full: "Step 4<br/>Service<br/>Details"
-            short: "Step 4<br/>Details"
-            xs: "Step 4"
-          header: "Step 4: Service Details"
+          header: "Step 3: Service Details"
           sub_header: "Study timeline & service indications"
         service_subsidy:
           step_text:
-            full: "Step 4a<br/>Subsidy<br/>Information"
-            short: "Step 4a<br/>Subsidies"
-            xs: "Step 4a"
-          header: "Step 4a: Subsidy Information"
+            full: "Step 3a<br/>Subsidy<br/>Information"
+            short: "Step 3a<br/>Subsidies"
+            xs: "Step 3a"
+          header: "Step 3a: Subsidy Information"
           sub_header: "Request a subsidy for eligible services"
         document_management:
           step_text:
-            full: "Step 5<br/>Documents<br/>& Forms"
-            short: "Step 5<br/>Documents"
-            xs: "Step 5"
-          header: "Step 5: Documents & Forms"
+            full: "Step 4<br/>Documents<br/>& Forms"
+            short: "Step 4<br/>Documents"
+            xs: "Step 4"
+          header: "Step 4: Documents & Forms"
           sub_header: "Upload documents and complete forms"
         review:
           step_text:
-            full: "Step 6<br/>Review Your<br/>Request"
-            short: "Step 6<br/>Review"
-            xs: "Step 6"
-          header: "Step 6: Review Your Request"
+            full: "Step 5<br/>Review Your<br/>Request"
+            short: "Step 5<br/>Review"
+            xs: "Step 5"
+          header: "Step 5: Review Your Request"
           sub_header: "Review your request and make changes if necessary"
         obtain_research_pricing:
           header: "Get a Cost Estimate"
+          sub_header: "You have successfully submitted a request to get a cost estimate"
         confirmation:
           header: "Submission Confirmation"
+          sub_header: "Thank you for submitting your request through SPARCRequest"
       bottom:
         back:
           full: "Go Back"
@@ -242,4 +229,4 @@ en:
         getting_cost: "Getting Cost..."
       save_as_draft:
         title: "Save as Draft?"
-        text: "This %{protocol_type} will be saved as a draft and no notifications or emails will be sent to service providers. Are you sure you want to proceed?"
+        text: "This Protocol will be saved as a draft and no notifications or emails will be sent to service providers.<br><br>Are you sure you want to proceed?"

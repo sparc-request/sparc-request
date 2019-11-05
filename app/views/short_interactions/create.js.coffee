@@ -29,5 +29,5 @@ $("#short_interaction_<%= attr.to_s %>").removeClass('is-valid').addClass('is-in
 <% end %>
 <% else %>
 $("#modalContainer").modal('hide')
-$('.flash').html("<%= j render 'layouts/flash' %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

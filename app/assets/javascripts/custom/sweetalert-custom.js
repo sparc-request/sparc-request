@@ -19,6 +19,8 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const ConfirmSwal = Swal.mixin({
+  title: I18n.t('confirm.title'),
+  text: I18n.t('confirm.text'),
   type: 'warning',
   showCloseButton: true,
   showCancelButton: true,

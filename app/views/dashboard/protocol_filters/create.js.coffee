@@ -28,7 +28,7 @@ $("[name='protocol_filter[<%= attr.to_s %>]']").parents('.form-group').removeCla
 <% end %>
 <% end %>
 <% else %>
-$('#savedFilters').html("<%= j render 'dashboard/protocol_filters/saved_searches', protocol_filters: @protocol_filters %>")
+$('#savedFilters').replaceWith("<%= j render 'dashboard/protocol_filters/saved_searches', protocol_filters: @protocol_filters %>")
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

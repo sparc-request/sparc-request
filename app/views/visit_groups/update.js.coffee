@@ -28,7 +28,10 @@ $("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('
 <% end %>
 <% end %>
 <% else %>
-$('.visit-group-<%= @visit_group.id %>:visible').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/visit_group', service_request: @service_request, visit_group: @visit_group, tab: @tab, page: @page, pages: @pages, portal: @portal, merged: @merged %>")
-$('.visit-group-select:visible').html("<%= j render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: @service_request, sub_service_request: @sub_service_request, arm: @visit_group.arm, tab: @tab, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated %>")
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+
+adjustCalendarHeaders()
+
 $('#modalContainer').modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

@@ -39,6 +39,12 @@ if Setting.get_value("use_redcap_api")
     def persisted?
       false
     end
+
+    def attributes
+      [:name, :email, :date, :typeofrequest, :priority, :browser, :version, :sparc_request_id, :letters].map do |a|
+        [a, self.send(a)]
+      end.to_h
+    end
   end
 else
   class Feedback < ApplicationRecord

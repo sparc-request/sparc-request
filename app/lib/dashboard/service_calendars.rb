@@ -31,8 +31,6 @@ module Dashboard
 
       path_method = if @merged
         method(:merged_calendar_service_request_service_calendars_path)
-      elsif @review
-        method(:refresh_service_calendar_service_request_path)
       else
         method(:table_service_request_service_calendars_path)
       end
@@ -91,7 +89,7 @@ module Dashboard
             includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
-            where.not( "research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
+            where.not("research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
         end
       else
         (sub_service_request || service_request).line_items_visits.
@@ -106,7 +104,7 @@ module Dashboard
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
       statuses_hidden = 
-        if opts[:merged] && opts[:consolidated] && opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
+        if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
           []
@@ -134,7 +132,7 @@ module Dashboard
     end
 
     def self.build_visits_select(arm, page, url)
-      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url }
+      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url, dropup_auto: 'false' }
     end
 
     def self.visits_select_options(arm, cur_page=1)

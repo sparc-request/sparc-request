@@ -41,7 +41,7 @@ $('[id^=survey][id$=version]').siblings('.help-block').remove()
 
 <% if @field == 'active' %>
 if $('#modalContainer:visible').length == 0
-  $(".<%=@object.class.yaml_klass.downcase%>-table").bootstrapTable('refresh')
+  $(".<%=@object.class.name.snakecase.dasherize.downcase%>-table").bootstrapTable('refresh')
 <% end %>
 
 <% if @object.is_a?(Question) %>

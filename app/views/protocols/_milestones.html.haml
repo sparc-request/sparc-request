@@ -19,15 +19,15 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#protocolMilestonesCard
-  .card-header.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolMilestones' } }
+  .card-header.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolMilestones' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('protocols.milestones.header')
       %small.text-light
         = t('protocols.milestones.sub_header')
-  .collapse#protocolMilestones{ class: controller_name == 'service_requests' && service_request.previously_submitted? ? '' : 'show' }
+  .collapse#protocolMilestones{ class: controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date ? '' : 'show' }
     .card-body
-      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || Rails.application.routes.recognize_path(request.referrer)[:action] == 'service_details')
+      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || Rails.application.routes.recognize_path(request.referrer)[:action] == 'protocol')
       = fields_for protocol.becomes(Protocol) do |f|
         .form-row
           .form-group.col-6{ class: show_errors ? @errors.messages[:start_date].any? ? 'is-invalid' : 'is-valid' : '' }
@@ -40,7 +40,7 @@
             - if show_errors
               - @errors[:start_date].each do |message|
                 %small.form-text.form-error
-                  = message
+                  = message.capitalize
           .form-group.col-6{ class: show_errors ? @errors.messages[:end_date].any? ? 'is-invalid' : 'is-valid' : '' }
             = f.label :end_date, class: 'required', title: t('protocols.tooltips.end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
             .input-group.datetimepicker.date.milestone-field#protocolEndDatePicker{ data: { target_input: 'nearest' } }
@@ -51,7 +51,7 @@
             - if show_errors
               - @errors[:end_date].each do |message|
                 %small.form-text.form-error
-                  = message
+                  = message.capitalize
 
         - if protocol.has_clinical_services?
           .form-row
@@ -65,7 +65,7 @@
               - if show_errors
                 - @errors[:recruitment_start_date].each do |message|
                   %small.form-text.form-error
-                    = message
+                    = message.capitalize
             .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_end_date].any? ? 'is-invalid' : 'is-valid' : '' }
               = f.label :recruitment_end_date, title: t('protocols.tooltips.recruitment_end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
               .input-group.datetimepicker.date.milestone-field#protocolRecruitmentEndDatePicker{ data: { target_input: 'nearest' } }
@@ -76,7 +76,7 @@
               - if show_errors
                 - @errors[:recruitment_end_date].each do |message|
                   %small.form-text.form-error
-                    = message
+                    = message.capitalize
         - if protocol.industry_funded?
           .form-row
             .form-group.col-6{ class: show_errors ? 'is-valid' : '' }

@@ -43,6 +43,7 @@ en:
     delete_selected: "Delete Selected"
     disable: "Disable"
     edit: "Edit"
+    export: "Export"
     filter: "Filter"
     preview: "Preview"
     print: "Print"
@@ -52,6 +53,7 @@ en:
     save: "Save"
     search: "Search"
     send: "Send"
+    sync: "Sync"
     submit: "Submit"
     upload: "Upload"
     view: "View"
@@ -85,7 +87,9 @@ en:
         title: "Title"
         completed: "Completed"
       fulfillment:
+        date: "Date Fulfilled"
         time: "Quantity"
+        timeframe: "Qty Type"
       human_subjects_info:
         approval_pending: "Pending Approval?"
         initial_irb_approval_date: "Initial IRB Approval Date"
@@ -120,6 +124,20 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      line_item:
+        id: "Service"
+        status: "Status"
+        unit_costs: "Unit Costs"
+        service_rate: "Service Rate"
+        displayed_cost: "Your Cost"
+        units_per_quantity: "Units Requested"
+        unit_type: "Unit Type"
+        quantity: "Qty Requested"
+        quantity_type: "Qty Type"
+        clinical_quantity_type: "Clinical Qty Type"
+        created_at: "Date Received"
+        in_process_date: "Date Processed"
+        complete_date: "Date Completed"
       line_items_visit:
         subject_count: "Subject Count"
       message:
@@ -191,12 +209,15 @@ en:
         ip_patents: "IP/Patents"
       service:
         abbreviation: "Abbreviation"
+        charge_code: "Charge Code"
       service_request:
         id: "SRID"
         organization: "Organization"
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+      sub_service_request:
+        srid: "SRID"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -214,6 +235,13 @@ en:
         pi_contribution: "PI Contribution"
         request_cost: "Current Request Cost"
         subsidy_cost: "Subsidy Cost"
+      sub_service_request:
+        committee_approved: "Committee Approved"
+        consult_arranged_date: "Consult Arranged Date"
+        imaging_approved: "Imaging Approved"
+        lab_approved: "Lab Approved"
+        nursing_nutrition_approved: "Nursing/Nutrition Approved"
+        requester_contacted_date: "Requester Contact Date"
       survey:
         active: ""
       vertebrate_animals_info:
@@ -234,6 +262,8 @@ en:
       models:
         arm:
           attributes:
+            name:
+              invalid: "The following characters are not allowed: [ ] * / \\ ? :"
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
@@ -241,6 +271,10 @@ en:
           attributes:
             active:
               taken: "A different version of this Form is already active"
+        fulfillment:
+          attributes:
+            time:
+              invalid: "Can only have two decimal places"
         line_item:
           attributes:
             quantity:
@@ -254,6 +288,8 @@ en:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
+            selected_for_epic:
+              inclusion: "can't be blank"
             start_date:
               invalid: "Start Date must come before End Date"
             study_type_answers:
@@ -284,6 +320,8 @@ en:
       service:
         one: "Service"
         other: "Services"
+      system_survey: "Survey"
+      sub_service_request: "Request"
 
   ########
   # ARMS #
@@ -291,10 +329,12 @@ en:
   arms:
     new: "Add Arm"
     edit: "Edit Arm"
-    remove: "Remove Arm"
+    delete: "Delete Arm"
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"
+    form:
+      visit_count_note: "Note: Lowering the %{visit_count} will delete visits from this arm's calendar."
     tooltips:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
@@ -326,12 +366,12 @@ en:
         orcid: "XXXX-XXXX-XXXX-XXXX"
       primary_pi_change:
         title: "Change this %{protocol_type}'s Primary PI?"
-        text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br/>Are you sure you want to proceed?"
+        text: "<bold>%{new_pi_name}</bold> will become the new Primary PI.<br/>The current Primary PI, <bold>%{current_pi_name}</bold> will be changed to a General Access User.<br><br>Are you sure you want to proceed?"
       user_rights_change:
         title: "Change your Proxy Rights?"
-        proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard. Are you sure you want to proceed?"
+        proper_text: "If you change your Proxy Rights you will be taken back to your Dashboard.<br><br>Are you sure you want to proceed?"
         dashboard_text: >
-          If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard. Are you sure you want to proceed?
+          If you change your Proxy Rights to <bold>Member Only</bold> you will be taken back to your Dashboard.<br><br>Are you sure you want to proceed?
     rights:
       none: Member Only
       view: "View Rights"
@@ -361,23 +401,15 @@ en:
       billing: "Quantity/Billing"
       pricing: "Consolidated Request"
     inactive: "(Inactive)"
-    no_line_items: "No line items to show."
+    no_line_items: "No Services to show"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"
       header_fields:
-        notes: "Notes"
-        service: "Service Name"
-        status: "Status"
-        unit_cost: "Unit Costs"
-        service_rate: "Service<br>Rate"
-        your_cost: "Your<br>Cost"
-        quantity_type: "Clinical<br>Qty Type"
         subject_count: "N"
-        day: "Day"
         page_select:
-          previous: "View Previous"
-          next: "View Next"
+          previous: "Previous Page"
+          next: "Next Page"
           header: "Visits %{start} - %{stop} of %{total}"
         total_per_patient: "Total Per<br>Patient"
         total_per_study: "Total Per<br>Study"
@@ -385,17 +417,6 @@ en:
         third_party: "T"
         percent: "%"
         edit_billing_modal: "Edit Billing Quantities"
-      editable_fields:
-        your_cost: "Edit Your Cost"
-        subject_count: "Edit Subject Count"
-        row_select:
-          check: "Check Row"
-          uncheck: "Uncheck Row"
-          confirm: "This will reset custom values for this row, do you wish to continue?"
-        column_select:
-          check: "Check Column"
-          uncheck: "Uncheck Column"
-          confirm: "This will reset custom values for this column, do you wish to continue?"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -403,22 +424,28 @@ en:
     otf:
       header: "Non-clinical Services"
       header_fields:
-        service: "Service Name"
-        status: "Status"
-        unit_cost: "Unit Costs"
-        service_rate: "Service Rate"
-        your_cost: "Your Cost"
-        unit_type: "Unit Type #"
-        qty_type: "Qty Type #"
         total_per_study: "Total Per Study"
-      editable_fields:
-        quantity: "Edit Quantity"
-        units_per_quantity: "Edit Units per Quantity"
       totals:
         total_direct: "Total Direct Costs (Non-clinical Services) Per Study"
         total_costs: "Total Costs (Non-clinical Services) Per Study"
+    editable_fields:
+      your_cost: "Edit Your Cost"
+      displayed_cost: "Edit Your Cost"
+      modified_rate: "Modified Rate: %{rate}"
+      subject_count: "Edit Subject Count"
+      row_select:
+        check: "Check Row"
+        uncheck: "Uncheck Row"
+        confirm: "This will reset custom values for this row, do you wish to continue?"
+      column_select:
+        check: "Check Column"
+        uncheck: "Uncheck Column"
+        confirm: "This will reset custom values for this column, do you wish to continue?"
+      quantity: "Edit Quantity"
+      units_per_quantity: "Edit Units per Quantity"
     merged_totals:
       header: "Study Cost Totals"
+      direct_cost: "Total Direct Cost"
       grand_total: "Grand Total"
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'
@@ -480,7 +507,7 @@ en:
       select: "---Please Select---"
       select_action: "Select an action"
       select_one: "Select One"
-    add_as_last: "Add as last"
+    add_as_last: "Last Visit"
     other: "Other"
     show: "Show Details"
     hide: "Hide Details"
@@ -495,6 +522,7 @@ en:
     required_fields:
       indicator: "*"
       message: "required fields"
+      required: "Required"
     search:
       loading: "Loading..."
       no_results: "No Results"
@@ -556,6 +584,7 @@ en:
   #########
   forms:
     none: "You don't have any forms to complete"
+    srid: "SRID"
 
   ##########
   # LAYOUT #
@@ -580,26 +609,23 @@ en:
       help:
         header: "Get Help"
       profile:
-        notifications: "Notifications"
+        messages: "Messages"
         edit: "Edit Profile"
     dashboard:
       navigation:
         short_interaction: "Short Interaction"
-        epic_queue: "Epic Protocols"
+        epic_queue: "Epic Queue"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
       links:
-        blog:
-          text: "Blog"
-          url: "https://sparcrequestblog.com/"
         about: "About"
         sctr:
           text: "SCTR"
           url: "http://sctr.musc.edu"
         contact: "Contact Us"
-        listserv: 
+        listserv:
           text: "Listserv"
           subject: "SPARCRequest Listserv"
         faqs:
@@ -619,6 +645,15 @@ en:
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
     back_to_top: "Go to Top"
+
+  ##############
+  # Line Items #
+  ##############
+  line_items:
+    new: "Add Service"
+    delete: "Delete Service"
+    created: "Service added!"
+    deleted: "Service removed!"
 
   ###########
   # MAILERS #
@@ -679,7 +714,6 @@ en:
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
-      rmid_title: "Title"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
@@ -782,7 +816,7 @@ en:
     created: "Subsidy created successfully"
     updated: "Subsidy updated successfully"
     destroyed: "Subsidy deleted successfully"
-    approved: "Subsidy has been approved"
+    approve: "Subsidy has been approved"
     disapproval_message: "Subsidy has been disapproved"
     delete_confirm: "Are you sure that you would like to delete this subsidy?"
     approved:
@@ -806,8 +840,6 @@ en:
   #############################
   validation_errors:
     user_note: "Fields marked with an asterisk ( * ) are required"
-    arms:
-      bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
     line_items:
       displayed_cost_numeric: 'must be a number'
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
@@ -820,13 +852,17 @@ en:
   # VISIT GROUPS #
   ################
   visit_groups:
+    new: "Add Visit"
     edit: "Edit Visit"
+    delete: "Delete Visit"
+    created: "Visit created!"
+    updated: "Visit updated!"
+    deleted: "Visit deleted!"
     before: "Before"
     form:
       arm: "Arm"
       visit: "Visit"
-      position: "Move To"
-      move_note: "Note: Previous visits will have their day changed as well."
+      move_note: "Note: Consecutive visits will also have their days changed."
 
 
 

@@ -28,7 +28,7 @@ module ApplicationHelper
   end
 
   def format_phone(phone)
-    if phone
+    if phone.present?
       phone.gsub!(/[^0-9#]/, '')
 
       formatted = ""

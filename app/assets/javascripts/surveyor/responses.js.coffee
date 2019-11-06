@@ -31,11 +31,12 @@ $(document).ready ->
     $(this).find('input').prop('checked', true)
 
   $(document).on 'change', '.option input', ->
-    if ($(this).prop('type') == 'checkbox' && $(this).prop('id').endsWith('for_dependent')) || $(this).prop('type') == 'radio'
+    if $(this).prop('type') == 'checkbox' || $(this).prop('type') == 'radio'
       question_id = $(this).parents('.option').data('question-id')
       option_id = $(this).parents('.option').data('option-id')
 
-      $(".dependent-for-question-#{question_id}").addClass('d-none')
+      if $(this).prop('type') == 'radio'
+        $(".dependent-for-question-#{question_id}").addClass('d-none')
 
       if $(this).is(":checked")
         $(".dependent-for-option-#{option_id}").removeClass('d-none')

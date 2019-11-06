@@ -19,6 +19,57 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+
+  ############
+  ### Cart ###
+  ############
+
+  $(document).on 'click', '.add-service', ->
+    $this = $(this)
+    $this.prop('disabled', true)
+    $.ajax
+      method: 'post'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        srid:       getSRId()
+        service_id: $(this).data('service-id')
+      success: ->
+        $this.prop('disabled', false)
+
+  $(document).on 'click', '.remove-service', ->
+    $this = $(this)
+    $(this).prop('disabled', true)
+    $.ajax
+      method: 'delete'
+      dataType: 'script'
+      url: '/service_request/remove_service'
+      data:
+        srid:         getSRId()
+        line_item_id: $(this).data('line-item-id')
+      success: ->
+        $(this).prop('disabled', false)
+
+  #####################
+  ### Save As Draft ###
+  #####################
+
+  $(document).on 'click', '#saveAsDraft', ->
+    ConfirmSwal.fire(
+      title: I18n.t('proper.navigation.save_as_draft.title')
+      html: I18n.t('proper.navigation.save_as_draft.text')
+    ).then (result) ->
+      if result.value
+        $.ajax
+          method: 'PUT'
+          dataTyp: 'script'
+          url: '/service_request/save_and_exit'
+          data: $('.milestone-field input').serialize() + "&srid=#{getSRId()}"
+
+  ###############
+  ### Catalog ###
+  ###############
+
   $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
     id = $(this).data('id')
 

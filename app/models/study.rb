@@ -40,8 +40,8 @@ class Study < Protocol
   # validates :guarantor_state, length: { maximum: 2 }
   # validates :guarantor_zip, length: { maximum: 9 }
 
-  validates_format_of :guarantor_email, with: Devise::email_regexp, allow_blank: true
-  validates_format_of :guarantor_phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
+  validates_format_of :guarantor_email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true
+  validates_format_of :guarantor_phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true
 
   validates :guarantor_contact, length: { maximum: 192 }
 

@@ -89,12 +89,14 @@ SparcRails::Application.routes.draw do
     get :review
     get :obtain_research_pricing
     get :confirmation
-    get :save_and_exit
     get :approve_changes
     get :system_satisfaction_survey
 
+    put :save_and_exit
+
     post :navigate
     post :add_service
+
     delete :remove_service
   end
 

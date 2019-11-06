@@ -77,18 +77,6 @@ $(document).ready ->
         url: '/dashboard/notifications/mark_as_read'
         data: data
 
-  $(document).on 'click', 'button#notifications_sent',  ->
-    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#notification_tabs').data('selected', 'sent')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'sent' } }
-
-  $(document).on 'click', 'button#notifications_inbox',  ->
-    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#notification_tabs').data('selected', 'inbox')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'inbox' } }
-
   window.notifications_row_style = (row, index) ->
     class_string = 'notifications_row'
     if not row.read

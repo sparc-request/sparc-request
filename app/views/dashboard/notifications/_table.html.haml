@@ -17,4 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= render 'dashboard/notifications/notifications', table: @table
+
+%div{ id: "notifications#{table}CustomToolbar" }
+  %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}
+    -# mark as unread
+    = t(:dashboard)[:notifications][:table][:mark_as_unread]
+  %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}
+    -# mark as read
+    = t(:dashboard)[:notifications][:table][:mark_as_read]
+%table.notifications_table.table-condensed{id: "notifications#{table}Table", data: {toggle: 'table', search: "true", show_refresh: 'true', show_columns: 'true', url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.try(:id), table: table.nil? ? "inbox" : table), toolbar: "#notifications#{table}CustomToolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
+  %thead.bg-light
+    %tr
+      %th{data: {class: 'state', field: "state", checkbox: "true"}}
+      %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
+        = t(:dashboard)[:notifications][:table][:user]
+      %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
+        = t(:dashboard)[:notifications][:table][:subject]
+      %th{data: {class: 'time', sortable: "true", field: "time", sorter: "dateSorter"}}
+        = t(:dashboard)[:notifications][:table][:time]

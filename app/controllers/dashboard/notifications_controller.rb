@@ -22,15 +22,18 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
+    @table = params[:table] || 'inbox'
+
     respond_to do |format|
       format.html{
         session[:breadcrumbs].
           add_crumbs(notifications: true).
           clear(crumb: :edit_protocol)
       }
-      format.json{
-        @table = params[:table]
+      format.js{
 
+      }
+      format.json{
         @notifications =
           if @table == 'inbox'
             Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])

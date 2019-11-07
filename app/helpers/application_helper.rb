@@ -23,12 +23,16 @@ module ApplicationHelper
     date.strftime('%D') rescue ""
   end
 
-  def format_datetime(datetime, opts={})
-    datetime.strftime(opts[:format] ? opts[:format] : '%D %l:%M %p') rescue ""
+  def format_datetime(datetime)
+    if datetime.present?
+      content_tag :span do
+        raw datetime.strftime('%D %l:%M %p') + content_tag(:span, datetime.strftime('%S'), class: 'invisible')
+      end
+    end
   end
 
   def format_phone(phone)
-    if phone
+    if phone.present?
       phone.gsub!(/[^0-9#]/, '')
 
       formatted = ""

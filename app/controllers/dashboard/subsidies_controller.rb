@@ -35,7 +35,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def create
     @subsidy = @sub_service_request.build_pending_subsidy(subsidy_params)
 
-    if @admin && @subsidy.percent_subsidy != 0
+    if @admin && @subsidy.percent_subsidy == 0
       @subsidy.save(validate: false)
     else
       @subsidy.save

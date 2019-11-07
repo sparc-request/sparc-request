@@ -136,8 +136,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    # Prevent STQ Errors from Controller
-    @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil?
+    # admin is not able to activate study_type_question_group
+    @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil?
 
     controller          = ::ProtocolsController.new
     controller.request  = request
@@ -161,10 +161,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.toggle!(:locked)
     else
       permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-      # admin is not able to activate study_type_question_group
 
-      @protocol.bypass_rmid_validation = @bypass_rmid_validation
-      @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
+      # admin is not able to activate study_type_question_group
+      @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
 
       if @protocol.update_attributes(protocol_params)
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)

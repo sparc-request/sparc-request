@@ -229,4 +229,4 @@ en:
         getting_cost: "Getting Cost..."
       save_as_draft:
         title: "Save as Draft?"
-        text: "This %{protocol_type} will be saved as a draft and no notifications or emails will be sent to service providers.<br><br>Are you sure you want to proceed?"
+        text: "This Protocol will be saved as a draft and no notifications or emails will be sent to service providers.<br><br>Are you sure you want to proceed?"

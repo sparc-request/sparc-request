@@ -64,8 +64,8 @@
 //= require utilities
 //= require global
 //= require batch-select
-//= require login
-//= require profile_form
+//= require identities
+//= require service_requests
 //= require protocols
 //= require protocol_form
 //= require associated_users
@@ -75,8 +75,6 @@
 //= require review
 //= require confirmation
 
-//= require cart
-//= require catalog
 //= require service_calendar
 
 //= require dashboard/protocols
@@ -89,19 +87,3 @@
 
 //= require surveyor/responses
 //= require surveyor/surveys
-
-// require batch-select
-// require bootstrap-table
-// require bootstrap-table-export
-// require tableExport
-// require bootstrap-table-custom
-// require jquery.remotipart
-// require twitter/typeahead.min
-// require handlebars-v4.0.5
-
-// require global
-// require associated_users_form
-// require study_schedule_tabs
-// require sweetalert.min
-// require feedback
-// require notes

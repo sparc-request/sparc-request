@@ -361,21 +361,28 @@ form, .form {
 /// Modal ///
 /////////////
 
-@media (min-width: 1920px) {
-  .modal-dialog {
-    max-width: 666px;
+.modal-dialog {
+  width: 40vw;
+  max-width: 40vw;
+
+  &.modal-sm {
+    width: 20vw;
+    max-width: 20vw;  
   }
 
-  .modal-dialog.modal-sm {
-    max-width: 400px;
+  &.modal-lg {
+    width: 60vw;
+    max-width: 60vw;
   }
 
-  .modal-dialog.modal-lg {
-    max-width: 1066px;
+  &.modal-xl {
+    width: 80vw;
+    max-width: 80vw;
   }
 
-  .modal-dialog.modal-xl {
-    max-width: 1520px;
+  &.modal-2x {
+    width: 90vw;
+    max-width: 90vw;
   }
 }
 

@@ -25,7 +25,7 @@ class FormsController < ApplicationController
 
   def index
     if in_dashboard?
-      @forms = [@protocol.service_requests.map(&:completed_forms).flatten]
+      @forms = @protocol.service_requests.map(&:completed_forms).flatten(1)
     else
       @forms = @service_request.associated_forms
     end

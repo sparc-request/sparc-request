@@ -22,7 +22,7 @@ $(document).ready ->
   $(document).on('click', '.notifications_row > td.user,td.subject,td.time', ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents('tr').data('index')
-    notification_id = $(this).parents('table.notifications_table').bootstrapTable('getData')[row_index].id
+    notification_id = $(this).parents('table.notifications-table').bootstrapTable('getData')[row_index].id
     data =
       'notification_id' : notification_id
     $.ajax

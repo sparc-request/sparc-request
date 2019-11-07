@@ -22,5 +22,5 @@
 $('.profile').replaceWith("<%= j render 'layouts/profile' %>")
 <% end %>
 $("#modalContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
-$('.notifications_table').bootstrapTable 'refresh'
+$('.notifications-table').bootstrapTable 'refresh'
 $("#modalContainer").modal 'show'

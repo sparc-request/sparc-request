@@ -25,7 +25,7 @@
   %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}
     -# mark as read
     = t(:dashboard)[:notifications][:table][:mark_as_read]
-%table.notifications_table.table-condensed{id: "notifications#{table}Table", data: {toggle: 'table', search: "true", show_refresh: 'true', show_columns: 'true', url: dashboard_notifications_path(format: :json, ssrid: sub_service_request.try(:id), table: table.nil? ? "inbox" : table), toolbar: "#notifications#{table}CustomToolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
+%table.notifications-table.table-condensed{id: "notifications#{table}Table", data: {toggle: 'table', search: "true", show_refresh: 'true', show_columns: 'true', url: dashboard_notifications_path(format: :json, ssrid: sub_service_request.try(:id), table: table.nil? ? "inbox" : table), toolbar: "#notifications#{table}CustomToolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
   %thead.bg-light
     %tr
       %th{data: {class: 'state', field: "state", checkbox: "true"}}

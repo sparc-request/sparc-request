@@ -29,11 +29,11 @@
           %hr
         %nav.nav.nav-pills.flex-column.list-group.list-group-flush{ role: 'tablist' }
           .list-group-item.p-0
-            = link_to dashboard_notifications_path(table: 'inbox'), remote: true, class: ['nav-link text-center', table == 'inbox' ? 'active' : ''], id: 'notificationsInbox', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsInboxTab', selected: (table == 'inbox').to_s } do
+            = link_to dashboard_notifications_path(table: 'inbox', ssrid: sub_service_request.try(:id)), remote: true, class: ['nav-link text-center', table == 'inbox' ? 'active' : ''], id: 'notificationsInbox', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsInboxTab', selected: (table == 'inbox').to_s } do
               = succeed t(:dashboard)[:notifications][:table][:inbox] do
                 = icon('fas', 'inbox mr-2')
           .list-group-item.p-0
-            = link_to dashboard_notifications_path(table: 'sent'), remote: true, class: ['nav-link text-center', table == 'sent' ? 'active' : ''], id: 'notificationsSent', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsSentTab', selected: (table == 'sent').to_s } do
+            = link_to dashboard_notifications_path(table: 'sent', ssrid: sub_service_request.try(:id)), remote: true, class: ['nav-link text-center', table == 'sent' ? 'active' : ''], id: 'notificationsSent', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsSentTab', selected: (table == 'sent').to_s } do
               = succeed t(:dashboard)[:notifications][:table][:sent] do
                 = icon('fas', 'paper-plane mr-2')
       .tab-content.col-10.pl-0

@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#notifications').replaceWith("<%= j render 'dashboard/notifications/notifications', table: @table %>")
+$('#notifications').replaceWith("<%= j render 'dashboard/notifications/notifications', table: @table, sub_service_request: @sub_service_request %>")
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

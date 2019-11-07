@@ -29,5 +29,6 @@ $("[name='message[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-v
 <% end %>
 <% else %>
 $("#modalContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
+$('.notifications_table').bootstrapTable 'refresh'
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

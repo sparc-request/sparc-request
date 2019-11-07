@@ -83,7 +83,3 @@ $(document).ready ->
       #makes unread messages appear green in notifications bs table
       class_string += ' alert-success'
     return { classes: class_string }
-
-  window.refresh_notifications_table = ->
-    table = $('#notification_tabs').data('selected')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: "#{table}" } }

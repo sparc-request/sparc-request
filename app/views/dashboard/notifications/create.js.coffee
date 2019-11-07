@@ -28,7 +28,7 @@ $("[name='notification[<%= attr.to_s %>]'], [name='notification[message][<%= att
 <% end %>
 
 <% else %>
-refresh_notifications_table()
+$('.notifications_table').bootstrapTable 'refresh'
 $("#modalContainer").modal 'hide'
 $("#flashContainer").replaceWith("<%= escape_javascript(render('layouts/flash')) %>")
 <% end %>

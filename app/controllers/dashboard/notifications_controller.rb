@@ -31,14 +31,14 @@ class Dashboard::NotificationsController < Dashboard::BaseController
           clear(crumb: :edit_protocol)
       }
       format.js{
-
+        @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
       }
       format.json{
         @notifications =
           if @table == 'inbox'
-            Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])
+            Notification.in_inbox_of(current_user.id, params[:ssrid])
           else
-            Notification.in_sent_of(current_user.id, params[:sub_service_request_id])
+            Notification.in_sent_of(current_user.id, params[:ssrid])
           end.distinct
       }
     end

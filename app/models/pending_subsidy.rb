@@ -41,8 +41,7 @@ class PendingSubsidy < Subsidy
 
     current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?
-      # log the past subsidy
-      PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
+      current_approved_subsidy.overridden = true
       current_approved_subsidy.destroy
     end
     # Create new approved subsidy from pending attributes

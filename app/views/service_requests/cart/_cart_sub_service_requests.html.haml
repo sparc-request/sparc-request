@@ -38,5 +38,4 @@
                   = inactive_tag
             - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
               .col-2.pl-0.text-right
-                %button.btn.btn-sm.btn-sq.btn-danger.remove-service{ type: 'button', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', line_item_id: li.id } }
-                  = icon('fas', 'trash-alt')
+                = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }

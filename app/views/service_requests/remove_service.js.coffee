@@ -60,4 +60,6 @@ $('.service-list').html("<%= j render 'service_requests/protocol/service_list', 
 <% end %>
 
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

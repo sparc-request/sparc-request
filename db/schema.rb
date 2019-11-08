@@ -267,8 +267,8 @@ ActiveRecord::Schema.define(version: 2019_11_01_150844) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean "catalog_overlord"
     t.string "credentials_other"

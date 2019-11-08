@@ -21,6 +21,7 @@
 require 'directory'
 
 class Identity < ApplicationRecord
+  octopus_establish_connection(:development)
 
   include RemotelyNotifiable
 
@@ -112,6 +113,10 @@ class Identity < ApplicationRecord
     else
       return ldap_uid
     end
+  end
+
+  def shard_identifier
+    self.ldap_uid.split('@')[1].gsub('.edu', '')
   end
 
   #replace old organization methods with new professional organization lookups

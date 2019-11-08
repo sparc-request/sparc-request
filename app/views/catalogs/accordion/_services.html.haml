@@ -29,8 +29,9 @@
           - else
             = service.display_service_name
       .col-2.text-right
-        %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id } }
-          = icon('fas', 'plus')
+        - if identity_signed_in?
+          %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id } }
+            = icon('fas', 'plus')
     = cpt_code_text(service)
     = eap_id_text(service)
     = raw service_pricing_text(service)

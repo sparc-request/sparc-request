@@ -71,22 +71,10 @@ $(document).ready ->
   ###############
 
   $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
-    id = $(this).data('id')
-
-    if $(this).hasClass('locked')
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/locked_organization"
-        data:
-          srid: getSRId()
-    else
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/update_description"
-        data:
-          srid: getSRId()
+    $.ajax
+      type: 'get'
+      dataType: 'script'
+      url: $(this).data('url')
 
   $(document).on('submit', '#serviceCatalogForm', (event) ->
     if $('#cart #activeServices .sub-service-request, #cart #completedServices .sub-service-request').length == 0

@@ -51,7 +51,7 @@
   },
   {
     "key":            "clinical_work_fulfillment_url",
-    "value":          "http://127.0.0.1:6000",
+    "value":          "http://localhost:6000",
     "friendly_name":  "Clinical Work Fulfillment URL",
     "description":    "This is the URL of your institution's SPARCFulfillment application.",
     "group":          "",
@@ -311,7 +311,7 @@
   },
   {
     "key":            "header_link_2_proper",
-    "value":          "http://127.0.0.1:3000",
+    "value":          "http://localhost:3000",
     "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
     "description":    "This is the URL for the \"SPARCRequest Logo\" in the SPARCRequest header.",
     "group":          "",
@@ -321,7 +321,7 @@
   },
   {
     "key":            "header_link_2_dashboard",
-    "value":          "http://127.0.0.1:3000/dashboard",
+    "value":          "http://localhost:3000/dashboard",
     "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
     "description":    "This is the URL for the \"SPARCDashboard Logo\" in the SPARCDashboard header.",
     "group":          "",
@@ -331,7 +331,7 @@
   },
   {
     "key":            "header_link_2_catalog",
-    "value":          "http://127.0.0.1:3000/catalog_manager",
+    "value":          "http://localhost:3000/catalog_manager",
     "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
     "description":    "This is the URL for the \"SPARCCatalog Logo\" in the SPARCCatalog header.",
     "group":          "",
@@ -371,7 +371,7 @@
   },
   {
     "key":            "host",
-    "value":          "127.0.0.1:5000",
+    "value":          "localhost:5000",
     "friendly_name":  "Host",
     "description":    "This is the host domain of your instance of SPARCRequest.",
     "group":          "",
@@ -521,7 +521,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://127.0.0.1:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://127.0.0.1:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://127.0.0.1:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://127.0.0.1:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://127.0.0.1:3000/surveyor/responses\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "This defines the links that appear in the header navbar. New links may be added by using the following syntax: \"key\": [\"Link Text\", \"Full URL\"].",
     "group":          "",
@@ -681,7 +681,7 @@
   },
   {
     "key":            "remote_service_notifier_host",
-    "value":          "127.0.0.1:5001",
+    "value":          "localhost:5001",
     "friendly_name":  "Remote Service Notifier",
     "description":    "This is the host domain of the SPARCRequest API.",
     "group":          "",
@@ -731,7 +731,7 @@
   },
   {
     "key":            "research_master_api",
-    "value":          "http://127.0.0.1:4000/api/",
+    "value":          "http://localhost:4000/api/",
     "friendly_name":  "Research Master API URL",
     "description":    "This is the URL of your institution's RMID API.",
     "group":          "",
@@ -751,7 +751,7 @@
   },
   {
     "key":            "research_master_link",
-    "value":          "http://127.0.0.1:4000",
+    "value":          "http://localhost:4000",
     "friendly_name":  "Research Master ID URL",
     "description":    "This is the URL of your institution's RMID application.",
     "group":          "",
@@ -771,7 +771,7 @@
   },
   {
     "key":            "root_url",
-    "value":          "http://127.0.0.1:3000",
+    "value":          "http://localhost:3000",
     "friendly_name":  "Root URL",
     "description":    "This is the root URL for the application for use in emails.",
     "group":          "",

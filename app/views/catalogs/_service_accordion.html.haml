@@ -25,4 +25,4 @@
         = icon('fas', 'book-medical mr-2')
         = t(:proper)[:catalog][:accordion][:header]
     .card-body
-      = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : []
+      = render 'catalogs/accordion/institutions', service_request: service_request, locked_org_ids: locked_org_ids

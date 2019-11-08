@@ -27,6 +27,8 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  around_action :select_shard
+
   before_action :preload_database_values
   before_action :set_highlighted_link
   before_action :get_news_feed,               if: Proc.new{ request.format.html? }
@@ -34,6 +36,14 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_params,  if: :devise_controller?
 
   protected
+
+  def select_shard(&block)
+    if identity_signed_in?
+      Octopus.using(current_user.shard_identifier, &block)
+    else
+      yield
+    end
+  end
 
   ##############################
   ### Devise-Related Methods ###
@@ -49,13 +59,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    initialize_service_request
-    stored_location_for(resource) || root_path(srid: @service_request.try(:id))
+    stored_location_for(resource) || root_path
   end
 
   def after_sign_out_path_for(resource)
-    initialize_service_request
-    root_path(srid: @service_request.try(:id))
+    root_path
   end
 
   def configure_permitted_params
@@ -170,15 +178,14 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_identity
-    # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?))
+    if @service_request.new_record? && action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?)
+      # The user is viewing the catalog without starting a request
       return true
-    elsif current_user && current_user.can_edit_service_request?(@service_request)
+    elsif identity_signed_in? && (@service_request.new_record? || current_user.can_edit_service_request?(@service_request))
       return true
-    elsif current_user.nil?
-      store_location_for(:identity, request.get? ? request.url : request.referrer)
+    elsif !identity_signed_in?
+      store_location_for(:identity, request.format.html? ? request.url : request.referrer)
       authenticate_identity!
-      return true
     end
 
     authorization_error("The service request you are trying to access is not editable.", "SR#{params[:id]}")

@@ -57,7 +57,6 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    @institutions = Institution.all
   end
 
   def protocol

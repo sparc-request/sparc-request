@@ -40,6 +40,7 @@ $ ->
       else
         $.get window.location.href + ".html", (data) ->
           $("#fulfillmentStatusContainer").replaceWith($(data).find('#fulfillmentStatusContainer'))
+          initializeTooltips()
       return
     ), 5000)
 
@@ -47,7 +48,7 @@ $ ->
   if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
 
-  $(document).on 'click', '#pushToFulfillment', ->
+  $(document).on 'click', '#pushToFulfillment:not(.disabled)', ->
     $(this).prop('disabled', true)
     $.ajax
       type: 'PATCH'
@@ -59,12 +60,14 @@ $ ->
       success: ->
         refreshFulfillmentButton()
 
-  $(document).on 'click', '#pushToEpic', ->
+  $(document).on 'click', '#pushToEpic:not(.disabled)', ->
     $(this).prop('disabled', true)
     $.ajax
       method: 'PUT'
       dataType: 'script'
       url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
+      success: ->
+        $(this).prop('disabled', false)
 
   ###############
   # Details Tab #

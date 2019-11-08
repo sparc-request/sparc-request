@@ -26,5 +26,3 @@ AlertSwal.fire(
 <% else %>
 $("#flashContainer").replaceWith("<%= j render'layouts/flash' %>")
 <% end %>
-
-$("#pushToEpic").prop('disabled', false)

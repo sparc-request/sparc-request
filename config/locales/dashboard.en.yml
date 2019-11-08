@@ -314,7 +314,7 @@ en:
         export: "Generates spreadsheet with request information"
         delete: "Deletes requested services and all associated information"
         not_submitted: "Request must be submitted first in order to manually change the status"
-        request_invalid: "This request has errors and can't be pushed at this time. Please ensure that the service calendar is correct and try again."
+        request_invalid: "Request has errors and can't be pushed at this time"
         push_to_epic: "Push entire protocol to Epic Research EMR"
       confirm:
         delete:

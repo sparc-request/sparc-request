@@ -20,36 +20,6 @@
 
 $(document).ready ->
 
-  ############
-  ### Cart ###
-  ############
-
-  $(document).on 'click', '.add-service', ->
-    $this = $(this)
-    $this.prop('disabled', true)
-    $.ajax
-      method: 'post'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid:       getSRId()
-        service_id: $(this).data('service-id')
-      success: ->
-        $this.prop('disabled', false)
-
-  $(document).on 'click', '.remove-service', ->
-    $this = $(this)
-    $(this).prop('disabled', true)
-    $.ajax
-      method: 'delete'
-      dataType: 'script'
-      url: '/service_request/remove_service'
-      data:
-        srid:         getSRId()
-        line_item_id: $(this).data('line-item-id')
-      success: ->
-        $(this).prop('disabled', false)
-
   #####################
   ### Save As Draft ###
   #####################
@@ -70,7 +40,7 @@ $(document).ready ->
   ### Catalog ###
   ###############
 
-  $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
+  $(document).on 'click', '#institutionAccordion .org-link:not(.locked)', ->
     $.ajax
       type: 'get'
       dataType: 'script'

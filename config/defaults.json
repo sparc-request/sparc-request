@@ -640,6 +640,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "noneditable_identity_fields",
+    "value":          "[\"last_name\", \"first_name\", \"email\"]",
+    "friendly_name":  "noneditable user profile fields",
+    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, and last_name are configurable.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "queue_epic",
     "value":          "false",
     "friendly_name":  "Queue Epic",

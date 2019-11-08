@@ -40,7 +40,7 @@ $(document).ready ->
   ### Catalog ###
   ###############
 
-  $(document).on 'click', '#institutionAccordion .org-link:not(.licked)', ->
+  $(document).on 'click', '#institutionAccordion .org-link:not(.locked)', ->
     id = $(this).data('id')
 
     if $(this).hasClass('locked')

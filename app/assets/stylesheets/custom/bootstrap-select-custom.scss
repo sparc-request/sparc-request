@@ -22,7 +22,7 @@
   display: block !important;
 
   &:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-    width: initial;
+    width: inherit;
   }
 
   .dropdown-toggle {

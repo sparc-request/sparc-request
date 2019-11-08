@@ -49,7 +49,7 @@
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-        %button.btn.btn-primary{ type: 'submit' }<
+        %button.btn.btn-primary{ type: 'submit', data: { disable: true } }<
           - if action_name == 'new'
             = icon('fas', 'file-upload mr-2')
             = t('actions.upload')

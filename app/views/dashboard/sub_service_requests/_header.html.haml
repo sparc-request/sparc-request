@@ -69,7 +69,7 @@
                   = t('dashboard.sub_service_requests.header.status.menu_header')
               .dropdown-divider
               - ssr_status_dropdown_statuses(sub_service_request).each do |label, status|
-                = link_to label, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item', status == sub_service_request.status ? 'active' : '', Status.complete?(status) ? 'alert-success' : '']
+                = link_to label, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item', status == sub_service_request.status ? 'active' : '', Status.complete?(status) ? 'alert-danger' : '']
         %td.text-center
           - if sub_service_request.status == 'draft'
             .alert.alert-sm.alert-warning.mb-0

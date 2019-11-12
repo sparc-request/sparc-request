@@ -26,7 +26,10 @@ if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasCl
   if $('#modalContainer:visible').length > 0
     $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)
   else
-    swal("Error", "<%= @object.errors.generate_message(:active, :taken) %>","error")
+    AlertSwal.fire(
+      type: 'error'
+      title: I18n.t('activerecord.errors.models.form.attributes.active.taken')
+    )
   <% end %>
 <% end %>
 <% else %>

@@ -53,11 +53,11 @@
         %td.unit-type.text-center{ colspan: 2, title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
       - else
-        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
+        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
         %td.unit-type.text-center{ title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
 
-      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
+      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
 
       %td.quantity-type.text-center{ title: line_item.quantity_type, data: { toggle: 'tooltip' } }
         = line_item.quantity_type

@@ -19,6 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::SubServiceRequestsHelper
+  def delete_ssr_button(sub_service_request)
+    content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.delete'), data: { toggle: 'tooltip' } do
+      link_to dashboard_sub_service_request_path(sub_service_request), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true', html: t('dashboard.sub_service_requests.confirm.delete.text') } do
+        icon('fas', 'trash-alt mr-2') + t('dashboard.sub_service_requests.header.delete_request')
+      end
+    end 
+  end
+
   def export_ssr_button(sub_service_request)
     link_to service_request_path(srid: sub_service_request.service_request_id, ssrid: sub_service_request.id, report_type: 'request_report', admin_offset: 1, format: :xlsx), class: 'btn btn-secondary', title: t('dashboard.sub_service_requests.tooltips.export'), data: { toggle: 'tooltip' } do
       icon('fas', 'download mr-2') + t('actions.export')
@@ -87,11 +95,32 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_status_dropdown_statuses(ssr)
-    if ssr.is_complete?
-      PermissibleValue.get_inverted_hash('status').sort.select{ |_, status| Setting.get_value('finished_statuses').include?(status) }
-    else
-      PermissibleValue.get_inverted_hash('status').sort
-    end
+    statuses = 
+      if ssr.is_complete?
+        PermissibleValue.get_inverted_hash('status').sort.select{ |_, status| Status.complete?(status) }
+      else
+        PermissibleValue.get_inverted_hash('status').sort
+      end
+
+    raw(statuses.map do |label, status|
+      if Status.complete?(status)
+        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.finished_status'), data: { toggle: 'tooltip' } do
+          link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item alert-success', status == ssr.status ? 'active' : ''], data: { confirm_swal: 'true', html: t('dashboard.sub_service_requests.confirm.finished_status.text', status: label) } do
+            icon('fas', 'check mr-2') + label
+          end
+        end
+      elsif ssr.organization.has_editable_status?(status)
+        link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item', status == ssr.status ? 'active' : ''] do
+          content_tag :span, label, class: 'ml-3 pl-2'
+        end
+      else
+        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.locked_status'), data: { toggle: 'tooltip' } do
+          link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item alert-danger', status == ssr.status ? 'active' : ''] do
+            icon('fas', 'lock mr-2') + label
+          end
+        end
+      end
+    end.join(''))
   end
 
   def user_display_protocol_total protocol, service_request

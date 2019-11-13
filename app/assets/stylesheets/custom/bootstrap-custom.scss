@@ -240,7 +240,8 @@
       }
 
       &:focus, &:active {
-        background: theme-color-level('light', 2);
+        color: initial;
+        background: darken(theme-color('light'), 7.5%);
       }
     }
 
@@ -254,6 +255,32 @@
 .dropdown.no-caret .dropdown-toggle::after,
 .dropdown-toggle.no-caret::after {
   display: none;
+}
+
+@each $color, $value in $theme-colors {
+  $alert-bg:          theme-color-level($color, $alert-bg-level);
+  $hover-background:  darken($alert-bg, 7.5%);
+  $active-background: darken($alert-bg, 15%);
+
+  .dropdown {
+    .dropdown-item.alert-#{$color}.active {
+      @extend .bg-#{$color};
+    }
+
+    .dropdown-item.alert-#{$color}:not(.active) {
+      transition: $btn-transition;
+
+      &:hover {
+        color: theme-color-level($color, $alert-color-level) !important;
+        background-color: $hover-background !important;
+      }
+
+      &:focus, &:active {
+        color: theme-color-level($color, $alert-color-level) !important;
+        background-color: $active-background !important;
+      }
+    }
+  }
 }
 
 @include media-breakpoint-down(sm) {

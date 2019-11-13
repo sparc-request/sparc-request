@@ -45,7 +45,7 @@ module ServiceCalendarHelper
   end
 
   def display_org_name(org_name, ssr, locked, complete)
-    header = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
+    header = content_tag(:strong, "(#{ssr.ssr_id})", class: 'mr-2') + org_name
 
     if complete
       header += icon('fas', 'check fa-lg ml-2')
@@ -53,7 +53,7 @@ module ServiceCalendarHelper
       header += icon('fas', 'lock fa-lg ml-2')
     end
 
-    header
+    content_tag :span, header
   end
 
   #############################################

@@ -20,13 +20,7 @@
 
 - sub_service_requests.each do |ssr|
   .list-group.list-group-flush
-    - if ssr.is_complete?
-      - klass = 'list-group-item-success'
-    - elsif ssr.is_locked?
-      - klass = 'list-group-item-danger'
-    - else
-      - klass = 'list-group-item-primary'
-    .list-group-item.sub-service-request{ class: [klass, @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
+    .list-group-item.sub-service-request{ class: [ssr.is_complete? ? 'list-group-item-success' : ssr.is_locked? ? 'list-group-item-danger' : 'list-group-item-primary', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
       %h6.d-flex.align-items-start.mb-0<
         = icon('fas', 'caret-down mr-2')
         = ssr_name_display(ssr)
@@ -35,7 +29,7 @@
         .list-group-item.line-item
           .row
             .col-10.d-flex.align-items-center.pr-0
-              %h6.mb-0<
+              %h6.mb-0{ class: ssr.is_complete? ? 'text-success' : ssr.is_locked? ? 'text-danger' : '' }<
                 = li.service.abbreviation
                 - if li.service.cpt_code.present?
                   %strong

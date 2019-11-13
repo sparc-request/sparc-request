@@ -29,7 +29,7 @@ module NotesHelper
       end
 
     link_to notes_path(note: { notable_id: notable.id, notable_type: notable_type }, protocol_id: opts[:protocol_id], srid: opts[:srid], ssrid: opts[:ssrid], disabled: opts[:disabled]), remote: true, id: "#{notable_type.downcase}#{notable.id}Notes", class: ['btn btn-light position-relative', opts[:class], opts[:model] ? '' : 'btn-sq'], title: opts[:tooltip], data: { toggle: opts[:tooltip] ? 'tooltip' : '' } do
-      raw(icon('far', 'sticky-note') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill badge-c notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, (opts[:model].is_a?(String) ? opts[:model] : opts[:model].model_name.human) + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
+      raw(icon('far', 'sticky-note fa-lg') + content_tag(:span, format_count(notable.notes.length, 1), class: ['badge badge-pill badge-c notification-badge', has_notes ? 'badge-warning ' : 'badge-secondary'])) + (opts[:model] ? content_tag(:span, (opts[:model].is_a?(String) ? opts[:model] : opts[:model].model_name.human) + " " + Note.model_name.plural.capitalize, class: 'ml-2') : '')
     end
   end
 

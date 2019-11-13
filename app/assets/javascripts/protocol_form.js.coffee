@@ -31,7 +31,7 @@ $(document).ready ->
     if $(this).val()
       rmidTimer = setTimeout( (->
         updateRmidFields()
-      ), 250)
+      ), 750)
     else
       resetRmidFields()
   ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
@@ -208,9 +208,14 @@ $(document).ready ->
 ### Function Definitions ###
 ############################
 
+rmidAjax = null
+
 updateRmidFields = () ->
   if rmid = $('#protocol_research_master_id:not([readonly=readonly])').val()
-    $.ajax
+    if rmidAjax
+      rmidAjax.abort()
+
+    rmidAjax = $.ajax(
       method: 'get'
       dataType: 'json'
       url: "#{gon.rmid_api_url}research_masters/#{rmid}"
@@ -232,6 +237,7 @@ updateRmidFields = () ->
           html: I18n.t('protocols.form.information.rmid.error.text', rmid: rmid)
         )
         resetRmidFields()
+    )
 
 resetRmidFields = () ->
   $('#protocol_short_title').val('').prop('readonly', false)

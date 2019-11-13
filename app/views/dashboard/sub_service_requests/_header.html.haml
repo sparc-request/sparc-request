@@ -60,8 +60,7 @@
       %tr
         %td.text-center{ title: sub_service_request.previously_submitted? ? '' : t('dashboard.sub_service_requests.tooltips.not_submitted'), data: { toggle: 'tooltip', container: 'body' } }
           .dropdown
-            %button.btn.btn-block.btn-light.dropdown-toggle#requestStatus{ class: sub_service_request.previously_submitted? ? '' : 'disabled', role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
-              = PermissibleValue.get_value('status', sub_service_request.status)
+            = ssr_status_dropdown_button(sub_service_request)
             .dropdown-menu{ aria: { labelledby: "requestStatus" } }
               .dropdown-header
                 %h5.mb-0

@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- query               = { research_billing_qty: 0 }
+- query               = { research_billing_qty: 0, line_items: { sub_service_request: service_request.sub_service_requests.select(&:can_be_edited?) } }
 - query[:line_items]  = { sub_service_request: sub_service_request } if sub_service_request
 - checked             = visit_group.visits.joins(line_items_visit: :line_item).where(query).none?
 - check_param         = checked ? 'uncheck'     : 'check'
@@ -28,5 +28,5 @@
 - url                 = toggle_calendar_column_service_calendars_path(srid: service_request.id, visit_group_id: visit_group.id, page: page, :"#{check_param}" => 'true')
 - url                += "&ssrid=#{sub_service_request.id}" if sub_service_request
 
-%th.check-column.text-center{ colspan: 3, class: locked ? '' : 'editable', id: "toggleColumn#{visit_group.id}", title: tooltip, data: { toggle: 'tooltip' } }
-  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sm btn-sq', klass, locked ? 'disabled' : ''], data: { confirm_swal: 'true', text: t('calendars.confirm_column_select') }
+%th.check-column.text-center{ colspan: 3, class: editable ? 'editable' : '', id: "toggleColumn#{visit_group.id}", title: tooltip, data: { toggle: 'tooltip' } }
+  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sm btn-sq', klass, editable ? '' : 'disabled'], data: { confirm_swal: 'true', text: t('calendars.confirm_column_select') }

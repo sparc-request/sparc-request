@@ -44,9 +44,15 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
-  def display_org_name(org_name, ssr, locked)
-    header  = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
-    header += icon('fas', 'lock fa-lg ml-2') if locked
+  def display_org_name(org_name, ssr, locked, complete)
+    header = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
+
+    if complete
+      header += icon('fas', 'check fa-lg ml-2')
+    elsif locked
+      header += icon('fas', 'lock fa-lg ml-2')
+    end
+
     header
   end
 

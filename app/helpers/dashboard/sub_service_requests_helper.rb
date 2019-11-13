@@ -94,6 +94,26 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
+  def ssr_status_dropdown_button(ssr)
+    if ssr.is_complete?
+      klass = 'border-success text-success'
+    elsif ssr.is_locked?
+      klass = 'border-danger text-danger'
+    else
+      klass = ''
+    end
+
+    content_tag :button, class: ['btn btn-block btn-light dropdown-toggle', klass, ssr.previously_submitted? ? '' : 'disabled'], id: 'requestStatus', role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } do
+      if ssr.is_complete?
+        icon('fas', 'check mr-2')
+      elsif ssr.is_locked?
+        icon('fas', 'lock mr-2')
+      else
+        ''
+      end + PermissibleValue.get_value('status', ssr.status)
+    end
+  end
+
   def ssr_status_dropdown_statuses(ssr)
     statuses = 
       if ssr.is_complete?

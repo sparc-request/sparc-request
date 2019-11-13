@@ -20,9 +20,15 @@
 
 - sub_service_requests.each do |ssr|
   .list-group.list-group-flush
-    .list-group-item.sub-service-request{ class: [ssr.can_be_edited? ? 'list-group-item-primary' : 'list-group-item-danger', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
+    - if ssr.is_complete?
+      - klass = 'list-group-item-success'
+    - elsif ssr.is_locked?
+      - klass = 'list-group-item-danger'
+    - else
+      - klass = 'list-group-item-primary'
+    .list-group-item.sub-service-request{ class: [klass, @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
       %h6.d-flex.align-items-start.mb-0<
-        = icon('fas', 'caret-down pr-1 mr-2')
+        = icon('fas', 'caret-down mr-2')
         = ssr_name_display(ssr)
     .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
       - ssr.line_items.each do |li|

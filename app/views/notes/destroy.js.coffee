@@ -24,5 +24,5 @@ $("#<%= @selector %>Notes").find('span.badge').html("<%= @count %>")
 $("#<%= @selector %>Notes").find('span.badge').removeClass('badge-warning').addClass('badge-secondary')
 <% end %>
 
-$("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable %>")
+$("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable, disabled: false %>")
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

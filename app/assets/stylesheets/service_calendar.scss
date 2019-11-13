@@ -99,6 +99,14 @@
       }
     }
 
+    &:not(.editable):hover {
+      cursor: not-allowed;
+
+      input {
+        cursor: not-allowed;
+      }
+    } 
+
     .visit-quantity {
       transform: scale(1.5);
       cursor: pointer;

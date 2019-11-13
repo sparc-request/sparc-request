@@ -31,8 +31,8 @@ module ServiceRequestsHelper
 
   def ssr_name_display(sub_service_request)
     content_tag :span do
-      content_tag(:strong, "(#{sub_service_request.ssr_id})") + " " +
-      (!sub_service_request.can_be_edited? ? icon('fas', 'lock') + " " : "") +
+      content_tag(:strong, "(#{sub_service_request.ssr_id})", class: 'mr-2') +
+      (sub_service_request.is_locked? ? icon('fas', 'lock mr-2') : "") +
       sub_service_request.organization.name
     end
   end

@@ -25,6 +25,6 @@
         .form-check-label
           = option.content
       - else
-        = check_box_tag :content_checkbox, '', question_response.content.nil? ? false :multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), disabled: true, multiple: true, class: 'form-check-input'
+        = check_box_tag :content_checkbox, '', question_response.content.nil? ? false : multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), disabled: true, multiple: true, class: 'form-check-input'
         .form-check-label
           = option.content

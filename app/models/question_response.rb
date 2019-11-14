@@ -30,7 +30,7 @@ class QuestionResponse < ActiveRecord::Base
   
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
   validates_presence_of :content, if: Proc.new{ |qr| qr.must_be_answered? }
-  validate :checkbox_presence, if: Proc.new{ |qr| qr.must_be_answered? && qr.question.question_type == 'checkbox' }
+  validate :checkbox_presence, if: Proc.new{ |qr| qr.must_be_answered? && (qr.question.question_type == 'checkbox' || qr.question.question_type == 'multiple_dropdown') }
   
   # Callbacks occur after validation. Any blank responses at this point must
   # have a depender that was not selected, therefore we don't want to save

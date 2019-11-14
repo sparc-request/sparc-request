@@ -28,7 +28,7 @@ $("[name='note[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-vali
 <% end %>
 <% end %>
 <% else %>
-$("#<%= @note.unique_selector %>Notes").find('span.badge').removeClass('badge-secondary').addClass('badge-warning').html("<%= @count %>")
+$("[id=<%= @selector %>Notes]:visible").find('span.badge').removeClass('badge-secondary').addClass('badge-warning').html("<%= @count %>")
 $("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable, disabled: false %>")
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

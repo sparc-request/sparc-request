@@ -21,7 +21,7 @@
   - question.options.each do |option|
     .form-check.option.mb-1{ data: { question_id: question.id, option_id: option.id } }
       - if ['new', 'edit', 'preview'].include?(action_name)
-        = qr.check_box :content, { multiple: true, checked: question_response.content.nil? ? false : multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), class: 'form-check-input mt-1' }, option.content, nil
+        = qr.check_box :content, { multiple: true, checked: question_response.content.nil? ? false : multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), class: 'form-check-input mt-1' }, option.content, ""
         .form-check-label
           = option.content
       - else

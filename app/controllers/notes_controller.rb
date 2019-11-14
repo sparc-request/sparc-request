@@ -26,8 +26,9 @@ class NotesController < ApplicationController
   before_action :find_notable
 
   def index
-    @notes  = @notable.notes
-    @note   = current_user.notes.new(note_params)
+    @notes    = @notable.notes
+    @note     = current_user.notes.new(note_params)
+    @disabled = params[:disabled] == 'true'
 
     respond_to :js
   end

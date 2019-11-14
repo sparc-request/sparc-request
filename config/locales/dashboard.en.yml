@@ -170,9 +170,9 @@ en:
           recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
           recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
     
-    ###############
+    ####################
     #  PROTOCOL MERGE  #
-    ###############
+    ####################
     protocol_merge:
       modal_header: "Merge Protocols"
       enter_master_protocol: "Enter the id of the Master Protocol:"
@@ -221,6 +221,7 @@ en:
       deleted: "Request deleted!"
       pushed_to_epic: "Request pushed to Epic!"
       header:
+        delete_request: "Delete Request"
         status:
           header: "Status"
           menu_header: "Change Request Status"
@@ -244,7 +245,7 @@ en:
         surveys:
           header: "Surveys"
           resend: "Resend Surveys"
-          last_sent: "Surveys last sent out on %{date}"
+          last_sent: "Surveys last sent on %{date}"
           completed: "All surveys completed"
         notes_label: "Admin"
         cost: "%{provider} Cost"
@@ -312,12 +313,17 @@ en:
       notifications:
         header: "Messages"
       tooltips:
+        finished_status: "This status will complete the request"
+        locked_status: "This status will lock the request"
         export: "Generates spreadsheet with request information"
         delete: "Deletes requested services and all associated information"
         not_submitted: "Request must be submitted first in order to manually change the status"
         request_invalid: "Request has errors and can't be pushed at this time"
         push_to_epic: "Push entire protocol to Epic Research EMR"
+        request_completed: "Services cannot be added once a request has been completed. Please start a new request to add additional Services."
       confirm:
+        finished_status:
+          text: "Changing this request to <em>%{status}</em> will be irreversible.<br><br>Are you sure you want to proceed?"
         delete:
           text: "This request and all requested services and associated information will be lost forever.<br><br>Are you sure you want to proceed?"
         push_to_epic:

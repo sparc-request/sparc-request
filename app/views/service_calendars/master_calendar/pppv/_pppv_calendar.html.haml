@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- visit_groups = arm.visit_groups.page(page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
+- visit_groups = arm.visit_groups.page(page).eager_load(arm: { protocol: :study_type_questions }, visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
 
 .card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
   .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: ".arm-#{arm.id}-collapse" } }

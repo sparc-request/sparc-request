@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  
+
   $('body').scrollspy({ target: '#protocolNavigation' })
 
   rmidTimer = null
@@ -142,7 +142,7 @@ $(document).ready ->
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
 
-    if $('#studyTypeQuestionsContainer').hasClass('d-none') 
+    if $('#studyTypeQuestionsContainer').hasClass('d-none')
       $('#studyTypeQuestionsContainer').removeClass('d-none')
 
     if $(this).val() == 'true'
@@ -219,7 +219,8 @@ updateRmidFields = () ->
       method: 'get'
       dataType: 'json'
       url: "#{gon.rmid_api_url}research_masters/#{rmid}"
-      headers: 
+      headers:
+        Accept: "application/json"
         Authorization: "Token token=\"#{gon.rmid_api_token}\""
       success: (data) ->
         $('#protocol_short_title').val(data.short_title).prop('readonly', true)

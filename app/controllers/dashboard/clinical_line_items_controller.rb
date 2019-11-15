@@ -32,12 +32,13 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
 
   def create
     if line_item_params[:service_id].present?
-      add_service = AddService.new(@service_request, line_item_params[:service_id], current_user)
-      @tab        = params[:tab]
+      @service  = Service.find(line_item_params[:service_id])
+      lis       = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false )
+      @tab      = params[:tab]
+
+      lis.each{ |li| li.update_attribute(:sub_service_request, @sub_service_request) }
 
       setup_calendar_pages
-
-      add_service.generate_new_service_request
 
       unless @service_request.arms.any?
         @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, new_with_draft: true)

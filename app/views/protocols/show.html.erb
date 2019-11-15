@@ -54,7 +54,7 @@
   <% Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, @service_request, nil, merged: true, statuses_hidden: nil, display_all_services: true).each do |ssr, livs| %>
     <tr>
       <th colspan="<%= 9 + arm.visit_groups.count %>" style="text-align:left">
-        <%= display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, true) %>
+        <%= display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, false, false) %>
       </th>
     </tr>
     <% livs.each do |liv| %>

@@ -140,6 +140,8 @@ en:
       cm_rights: "Catalog Manager Rights"
       color_blank: "Select a Color"
       ontology_blank: "Select Ontology Tag"
+      primary_ontology_tag: "Primary Ontology"
+      secondary_ontology_tag: "Secondary Ontology"
       core_facility: "Core/Facility Based Services"
       core: "Core"
       cpt_code: "CPT Code"

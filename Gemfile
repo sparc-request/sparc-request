@@ -84,7 +84,6 @@ gem 'slack-notifier'
 gem 'sprockets', '~> 4.0.0.beta9'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
-gem 'webpacker'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'

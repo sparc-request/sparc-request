@@ -58,10 +58,13 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     @institutions = Institution.all
+
+    if identity_signed_in?
+      @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
+    end
   end
 
   def protocol
-    @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
   end
 
   def service_details

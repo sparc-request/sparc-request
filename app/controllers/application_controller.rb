@@ -171,7 +171,7 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?))
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && (request.format.js? || request.format.json?)))
       return true
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
@@ -266,6 +266,6 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 end

@@ -130,8 +130,6 @@ Rails.application.routes.draw do
 
   resources :notes, only: [:index, :create, :edit, :update, :destroy]
 
-  resources :sub_service_requests, only: [:show]
-
   resources :catalogs, param: :organization_id, only: [] do
     member do
       get :update_description
@@ -271,7 +269,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :sub_service_requests, except: [:new, :create, :edit]do
+    resources :sub_service_requests, except: [:new, :create, :edit] do
       member do
         put :push_to_epic
         put :resend_surveys

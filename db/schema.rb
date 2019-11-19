@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_01_150844) do
+ActiveRecord::Schema.define(version: 2019_11_19_144844) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -145,8 +145,8 @@ ActiveRecord::Schema.define(version: 2019_11_01_150844) do
   create_table "delayed_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
-    t.text "handler", limit: 4294967295, null: false
-    t.text "last_error", limit: 4294967295
+    t.text "handler", size: :long, null: false
+    t.text "last_error", size: :long
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
@@ -267,8 +267,8 @@ ActiveRecord::Schema.define(version: 2019_11_01_150844) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "catalog_overlord"
     t.string "credentials_other"
@@ -414,7 +414,8 @@ ActiveRecord::Schema.define(version: 2019_11_01_150844) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
-    t.string "ontology_tag"
+    t.string "primary_ontology_tag"
+    t.string "secondary_ontology_tag"
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
   end

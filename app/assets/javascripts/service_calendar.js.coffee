@@ -46,9 +46,9 @@ $ ->
         dataType: 'script'
         url: $link.attr('href')
 
-  $(document).on 'click', 'th.check-column, td.check-row', (event) ->
-    if event.target.tagName != 'A' && handleConfirm(this.querySelector('a'))
-      console.log 'test'
+  $(document).on 'click', 'th.check-column.editable, td.check-row.editable', (event) ->
+    if event.target.tagName != 'A'
+      handleConfirm(this.querySelector('a'))
 
   $(document).on 'click', 'td.visit.template-visit', (event) ->
     if event.target.tagName != 'INPUT'

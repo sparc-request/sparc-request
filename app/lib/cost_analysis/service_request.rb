@@ -25,7 +25,7 @@ module CostAnalysis
     def line_items(arm)
       Enumerator.new do |yielder|
           pppv_line_item_visits(arm).each do |ssr, livs|
-            program_or_core = display_org_name_text(livs[0].line_item.service.organization_hierarchy, ssr, true)
+            program_or_core = display_org_name_text(livs[0].line_item.service.organization_hierarchy, ssr)
             #This is each line
             livs.each do |liv|
 
@@ -84,7 +84,7 @@ module CostAnalysis
       )
     end
 
-    def display_org_name_text(org_name, ssr, locked)
+    def display_org_name_text(org_name, ssr)
       header  = org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : "")
       header
     end

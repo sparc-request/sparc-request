@@ -34,7 +34,7 @@ $('#modalContainer').modal('hide')
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
 <% else %>
 # Replace Field Cell
-$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", line_item: @line_item, service_request: @service_request, sub_service_request: @sub_service_request, merged: false, locked: false %>')
+$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", line_item: @line_item, service_request: @service_request, sub_service_request: @sub_service_request, merged: false, editable: true %>')
 
 # Replace Per Study Total
 $(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: @line_item %>")

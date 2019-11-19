@@ -23,20 +23,24 @@
 
 - line_items.each do |ssr, livs|
   - line_items_visits << livs
-  - locked = !ssr.can_be_edited? && !in_admin?
+  - complete      = ssr.is_complete? && !in_admin?
+  - locked        = ssr.is_locked? && !in_admin?
+  - editable      = !(complete || locked)
+  - text_context  = complete ? 'success' : locked ? 'danger' : ''
+  - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'alert-danger' : 'alert-primary' }
+  %tr.organization-header{ class: "alert-#{bg_context}" }
     %th{ colspan: in_dashboard? ? 38 : 50 }
-      = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked)
+      = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
 
   -# Line Items Visits
   - livs.each do |liv|
-    %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", locked ? 'text-danger' : ''] }
+    %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", "text-#{text_context}"] }
       %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
-      %td.notes.text-center{ colspan: 2, class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
-        = notes_button(liv, disabled: locked, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))
+      %td.notes.editable.text-center{ colspan: 2, title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
+        = notes_button(liv, disabled: !editable, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))
       %td.status.text-center{ colspan: 3, title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center{ colspan: 3, title: display_service_rate(liv.line_item), data: { toggle: 'tooltip' } }
@@ -47,13 +51,13 @@
         %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
           = display_unit_type(liv)
 
-      = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, locked: locked
+      = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, editable: editable
 
-      = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, locked: locked, page: page
+      = render 'service_calendars/master_calendar/pppv/template/select_row', liv: liv, service_request: service_request, sub_service_request: sub_service_request, editable: editable, page: page
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
-        %td.visit.template-visit.text-center{ class: ["visit-#{v.id}", locked ? '' : 'editable'], colspan: 3 }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, visit: v, tab: tab, page: page, locked: locked
+        %td.visit.template-visit.text-center{ class: ["visit-#{v.id}", editable ? 'editable' : ''], colspan: 3 }
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, visit: v, tab: tab, page: page, editable: editable
       - (Visit.per_page - visits.size).times do
         %td{ colspan: 3 }
 

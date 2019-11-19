@@ -26,20 +26,24 @@
       = t('calendars.no_line_items')
 
 - line_items.each do |ssr, line_items|
-  - locked = !ssr.can_be_edited? && !in_admin?
+  - complete      = ssr.is_complete? && !in_admin?
+  - locked        = ssr.is_locked? && !in_admin?
+  - editable      = !(complete || locked)
+  - text_context  = complete ? 'success' : locked ? 'danger' : ''
+  - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
 
   -# SSR Header Row
-  %tr{ class: locked ? 'alert-danger' : 'alert-primary' }
+  %tr{ class: "alert-#{bg_context}" }
     %th{ colspan: 11 }
-      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked)
+      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked, complete)
 
   -# Line Items
   - line_items.each do |line_item|
-    %tr{ class: ["line-item-#{line_item.id}", locked ? 'text-danger' : ''] }
+    %tr{ class: ["line-item-#{line_item.id}", "text-#{text_context}"] }
       %td.service-name{ colspan: 2, title: calendar_service(line_item), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(line_item)
-      %td.notes.text-center{ class: locked ? '' : 'editable', title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
-        = notes_button(line_item, srid: service_request.id, disabled: locked)
+      %td.notes.editable.text-center{ title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
+        = notes_button(line_item, srid: service_request.id, disabled: !editable)
       %td.status.text-center{ title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
       %td.service-rate.text-center{ title: display_service_rate(line_item), data: { toggle: 'tooltip' } }
@@ -49,11 +53,11 @@
         %td.unit-type.text-center{ colspan: 2, title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
       - else
-        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
+        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
         %td.unit-type.text-center{ title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
 
-      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, locked: locked, merged: merged
+      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
 
       %td.quantity-type.text-center{ title: line_item.quantity_type, data: { toggle: 'tooltip' } }
         = line_item.quantity_type

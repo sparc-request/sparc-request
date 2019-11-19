@@ -24,6 +24,7 @@
       = f.hidden_field :arm_id
       = hidden_field_tag :arm_id, visit_group.arm_id
       = hidden_field_tag :srid, service_request.try(:id)
+      = hidden_field_tag :ssrid, sub_service_request.try(:id)
       = hidden_field_tag :tab, tab
       = hidden_field_tag :page, page
       - pages.each do |arm_id, page|

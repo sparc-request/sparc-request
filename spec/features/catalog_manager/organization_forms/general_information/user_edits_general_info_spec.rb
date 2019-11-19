@@ -124,15 +124,6 @@ RSpec.describe 'User edits organization general info', js: true do
       end
 
       it 'should select ontology tags' do
-        find('.split_notify_container div.toggle.btn').click
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        find("#institution-#{@institution.id}").click
-        wait_for_javascript_to_finish
-        click_link @provider.name
-        wait_for_javascript_to_finish
-
         bootstrap3_select('#organization_primary_ontology_tag', 'Administrative Core (CTSA)')
         bootstrap3_select('#organization_secondary_ontology_tag', 'Informatics (CTSA)')
 
@@ -140,7 +131,7 @@ RSpec.describe 'User edits organization general info', js: true do
         wait_for_javascript_to_finish
         @provider.reload
         expect(@provider.primary_ontology_tag).to eq('admin_core_ctsa')
-        expect(@provider.primary_ontology_tag).to eq('informatics_ctsa')
+        expect(@provider.secondary_ontology_tag).to eq('informatics_ctsa')
       end
 
     end

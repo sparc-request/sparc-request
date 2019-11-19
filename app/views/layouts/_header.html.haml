@@ -21,11 +21,11 @@
 %header.bg-white#siteHeader
   .container-fluid.d-flex.p-2.p-md-3
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
-      = link_to Setting.get_value("header_link_1"), target: :blank do
+      = link_to Setting.get_value("header_link_1"), target: :_blank do
         = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'
     .logo-container.col-12.col-lg-6.d-flex.justify-content-center
       = link_to Setting.get_value("header_link_2_#{location}") do
         = image_tag "logos/#{location}_logo.jpg", alt: t('layout.header.brand_logo_alt', location: location), id: 'sparcLogo', class: 'header-logo'
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
-      = link_to Setting.get_value("header_link_3"), target: :blank do
+      = link_to Setting.get_value("header_link_3"), target: :_blank do
         = image_tag ENV['institution_logo'] || 'logos/musc_header.jpg', alt: t('layout.header.institution_logo_alt'), id: 'institutionLogo', class: 'header-logo'

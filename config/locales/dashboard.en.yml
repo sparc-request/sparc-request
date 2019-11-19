@@ -269,7 +269,7 @@ en:
         edit: "Edit Non-Clinical Service"
         created: "Non-clinical Service Added!"
         updated: "Non-clinical Service Updated!"
-        destroyed: "Non-clinical Service Deleted!"
+        destroyed: "Non-clinical Service Removed!"
         fulfillments:
           header: "Fulfillments - %{service}"
           new: "Add Fulfillment"

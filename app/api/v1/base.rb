@@ -18,24 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module SPARCCWF
-
+module API
   module V1
-
-    require_relative 'entities.rb'
-
-    class APIv1 < Grape::API
+    class Base < Grape::API
       include Grape::Extensions::Hashie::Mash::ParamBuilder
 
-      require_relative 'validators_v1.rb'
-      require_relative 'shared_params_v1.rb'
-      require_relative 'helpers_v1.rb'
+      require_relative 'entities/base'
+      require_relative 'validators'
+      require_relative 'shared_params'
+      require_relative 'helpers'
 
       version 'v1', using: :path
       format :json
 
       http_basic do |username, password|
-
         begin
           username == Setting.get_value("remote_service_notifier_username") &&
             password == Setting.get_value("remote_service_notifier_password")
@@ -44,8 +40,8 @@ module SPARCCWF
         end
       end
 
-      helpers SharedParamsV1
-      helpers HelpersV1
+      helpers SharedParams
+      helpers Helpers
 
       published_resources = [
         :organizations,
@@ -81,6 +77,8 @@ module SPARCCWF
           end
 
           get do
+            Setting.preload_values
+
             find_objects(published_resource_to_s, params)
             if @objects
               present @objects, with: presenter(published_resource_to_s, params[:depth])

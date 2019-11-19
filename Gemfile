@@ -4,7 +4,7 @@ gem 'activerecord-import' # Use this more! In particular for arms/calendar creat
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
-gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+gem 'acts-as-taggable-on', '~> 6.0'
 gem 'audited', '~> 4.9'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
@@ -69,7 +69,7 @@ gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.1'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.3'
+gem 'rails', '6.0.1'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -84,6 +84,7 @@ gem 'slack-notifier'
 gem 'sprockets', '~> 4.0.0.beta9'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
+gem 'webpacker'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
@@ -114,6 +115,7 @@ end
 
 group :development do
   gem 'highline' # Check usage
+  gem 'listen'
   gem 'spring-commands-rspec' # Check usage
   gem 'spring'
   gem 'sqlite3' # Check usage

@@ -6,6 +6,10 @@
   "author": "SPARCRequest <sparcrequest@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@rails/actioncable": "^6.0.1",
+    "@rails/activestorage": "^6.0.1",
+    "@rails/ujs": "^6.0.1",
+    "@rails/webpacker": "^4.2.0",
     "bootstrap": "^4.3.1",
     "bootstrap-select": "^1.13.10",
     "bootstrap-table": "^1.14.2",
@@ -19,10 +23,13 @@
     "moment-timezone": "^0.5.25",
     "nprogress": "^0.2.0",
     "popper.js": "^1.15.0",
+    "rails-erb-loader": "^5.5.2",
     "stickybits": "^3.6.6",
     "sweetalert2": "^8.11.4",
     "tempusdominus-bootstrap-4": "^5.1.2",
     "tempusdominus-core": "^5.0.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "webpack-dev-server": "^3.9.0"
+  }
 }

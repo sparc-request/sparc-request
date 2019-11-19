@@ -18,20 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module SharedParamsV1
-
-  extend Grape::API::Helpers
-
-  params :with_depth do
-    optional :depth,  type: String,
-                      default: 'full',
-                      values: ['full', 'shallow', 'full_with_shallow_reflections']
-
-  end
-  
-  params :custom_query do
-    optional :limit, type: Integer
-#    optional :order, type: String   
-    optional :query, type: Hash
+module API
+  module V1
+    module Entities
+      module Shallow
+        class Service < API::V1::Entities::Shallow::Base
+          root 'services', 'service'
+        end
+      end
+    end
   end
 end

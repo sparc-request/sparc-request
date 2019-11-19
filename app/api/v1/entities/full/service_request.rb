@@ -18,9 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module V1
+module API
+  module V1
+    module Entities
+      module Full
+        class ServiceRequest < API::V1::Entities::Shallow::ServiceRequest
+          root 'service_requests', 'service_request'
 
-  require_relative 'entities/shallow'
-  require_relative 'entities/full'
-  require_relative 'entities/full_with_shallow_reflections'
+          expose  :protocol_id,
+                  :status,
+                  :approved
+
+          with_options(format_with: :iso_timestamp) do
+            expose :submitted_at
+          end
+        end
+      end
+    end
+  end
 end

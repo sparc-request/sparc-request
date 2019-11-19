@@ -18,16 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module ValidatorsV1
+module API
+  module V1
+    module Entities
+      module Full
+        class LineItem < API::V1::Entities::Shallow::LineItem
+          root 'line_items', 'line_item'
 
-  class RecordPresence < Grape::Validations::Base
+          expose  :service_request_id,
+                  :sub_service_request_id,
+                  :service_id,
+                  :optional,
+                  :quantity,
+                  :units_per_quantity,
+                  :per_unit_cost,
+                  :one_time_fee
 
-    def validate_param!(attr_name, params)
-
-      klass = @option.classify.constantize
-
-      unless klass.where(id: params[attr_name]).exists?
-        raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)], message: "is an invalid record"
+          with_options(format_with: :iso_timestamp) do
+            expose :complete_date
+            expose :in_process_date
+          end
+        end
       end
     end
   end

@@ -30,7 +30,7 @@ module Dashboard::NotificationsHelper
         content_tag(:span, ' - ' + truncate_string_length(body), class: "text-muted")
       end
     else
-      link_to protocol + truncate_string_length(subject), dashboard_protocol_path(notification.sub_service_request.protocol_id), target: :blank
+      link_to protocol + truncate_string_length(subject), dashboard_protocol_path(notification.sub_service_request.protocol_id), target: :_blank
     end
   end
 

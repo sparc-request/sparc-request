@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+  consultArrangedDate = null
+  requesterContactedDate = null
+
   # Load tab on page load
   if $('#subServiceRequestDetails').length
     $.ajax
@@ -27,6 +30,8 @@ $ ->
       url: $('#subServiceRequestDetails .nav-tabs .nav-link.active').attr('href')
       success: ->
         $('#requestLoading').removeClass('show active')
+        consultArrangedDate = $('#consultArrangedDatePicker input').val()
+        requesterContactedDate = $('#requesterContactedDatePicker input').val()
 
   ##############
   # SSR Header #
@@ -101,14 +106,29 @@ $ ->
         url: "/dashboard/sub_service_requests/#{getSSRId()}"
         data: data
 
-  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker, #requesterContactedDatePicker', ->
-    data = $(this).find('input').serialize()
+  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker', (event) ->
+    val = $(this).find('input').val()
 
-    $.ajax
-      method: 'put'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}"
-      data: data
+    if val != consultArrangedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  $(document).on 'change.datetimepicker', '#requesterContactedDatePicker', (event) ->
+    val = $(this).find('input').val()
+
+    if val != requesterContactedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
 
   ##############################
   # Study Level Activities Tab #

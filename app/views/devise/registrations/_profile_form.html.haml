@@ -50,7 +50,7 @@
       = f.label :orcid, class: 'col-form-label'
       = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
       %small.form-text
-        = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :blank
+        = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :_blank
     .form-group.col-12.col-xl-6
       = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-form-label'
       = f.text_field :era_commons_name, class: 'form-control'

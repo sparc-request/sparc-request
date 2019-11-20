@@ -30,7 +30,7 @@ module ArmsHelper
   end
 
   def new_arm_button(opts={})
-    link_to new_arm_path(srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-lg btn-success new-arm', opts[:tab] == 'calendar' ? 'disabled' : ''], title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
+    link_to new_arm_path(srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-success new-arm', opts[:tab] == 'calendar' ? 'disabled' : ''], title: t('arms.tooltips.new'), data: { toggle: 'tooltip' } do
       icon('fas', 'plus mr-2') + t('arms.new')
     end
   end

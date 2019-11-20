@@ -33,7 +33,7 @@ module DocumentsHelper
     if in_dashboard? && !opts[:permission]
       document.document_file_name
     else
-      link_to document.document_file_name, document.document.url, target: :blank
+      link_to document.document_file_name, document.document.url, target: :_blank
     end
   end
 

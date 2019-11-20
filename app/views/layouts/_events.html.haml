@@ -27,7 +27,7 @@
         = t('layout.navigation.events.header')
     .dropdown-divider
     - if @events.empty?
-      .dropdown-item
+      .dropdown-item.bg-white
         = t('layout.navigation.events.none')
     - else
       - @events.first(Setting.get_value('calendar_event_limit')).each do |event|

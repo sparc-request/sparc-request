@@ -28,7 +28,12 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% end %>
 <% end %>
 <% else %>
+# Remove the alert that there are no OTF services
+<% if @sub_service_request.reload.one_time_fee_line_items.count == 1 %>
+$('#studyLevelActivitiesTab').html('<%= j render "dashboard/sub_service_requests/study_level_activities", sub_service_request: @sub_service_request %>')
+<% else %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
+<% end %>
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

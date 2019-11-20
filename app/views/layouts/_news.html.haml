@@ -27,7 +27,7 @@
         = t('layout.navigation.news.header')
     .dropdown-divider
     - if @news.empty?
-      .dropdown-item
+      .dropdown-item.bg-white
         = t('layout.navigation.news.none')
     - else
       - @news.each do |article|

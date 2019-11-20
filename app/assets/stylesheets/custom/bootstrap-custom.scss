@@ -568,8 +568,14 @@ nav.navbar {
       align-items: stretch;
 
       &.dropdown {
-        &:hover .dropdown-menu {
-          display: block;
+        &:hover {
+          .dropdown-toggle {
+            @extend .active;
+          }
+
+          .dropdown-menu {
+            display: block;
+          }
         }
 
         .dropdown-menu {

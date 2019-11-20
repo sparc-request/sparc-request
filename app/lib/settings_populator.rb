@@ -46,6 +46,8 @@ class SettingsPopulator
           setting.save(validate: false)
         end
       end
+
+      Setting.where(key: deprecated_settings).destroy_all
     end
   end
 
@@ -66,5 +68,9 @@ class SettingsPopulator
     if File.exists? Rails.root.join('config', 'ldap.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env])
     end
+  end
+
+  def deprecated_settings
+    %w(header_link_2_proper header_link_2_dashboard header_link_2_catalog)
   end
 end

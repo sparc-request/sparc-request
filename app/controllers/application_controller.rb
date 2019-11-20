@@ -39,7 +39,9 @@ class ApplicationController < ActionController::Base
 
   def select_shard(&block)
     if identity_signed_in?
-      Octopus.using(current_user.shard_identifier, &block)
+      ActiveRecord::Base.connected_to(database: current_user.shard_identifier) do
+        yield
+      end
     else
       yield
     end

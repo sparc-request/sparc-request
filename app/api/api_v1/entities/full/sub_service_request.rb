@@ -18,15 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do
-  desc "Import any missing settings from config/settings into the Settings database table"
-  task import_settings: :environment do
-    if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        SettingsPopulator.new().populate
+module APIV1
+  module Entities
+    module Full
+      class SubServiceRequest < APIV1::Entities::Shallow::SubServiceRequest
+        root 'sub_service_requests', 'sub_service_request'
+
+        expose  :id, as: :sparc_id
+        expose  :service_request_id,
+                :organization_id,
+                :owner_id,
+                :ssr_id,
+                :nursing_nutrition_approved,
+                :lab_approved,
+                :imaging_approved,
+                :committee_approved,
+                :in_work_fulfillment,
+                :routing,
+                :org_tree_display,
+                :grand_total,
+                :service_requester_id,
+                :imported_to_fulfillment
+
+        expose  :formatted_status, as: :status
+
+        with_options(format_with: :iso_timestamp) do
+          expose :consult_arranged_date
+          expose :requester_contacted_date
+        end
       end
-    else
-      puts "Please provide a database using \"DB=databasename\""
     end
   end
 end

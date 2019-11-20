@@ -322,7 +322,7 @@ Rails.application.routes.draw do
     end
   end
 
-  mount API::V1::Base => '/'
+  mount APIV1::Base => '/'
 
   root to: 'service_requests#catalog'
 

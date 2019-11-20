@@ -21,13 +21,9 @@
 require 'directory'
 
 class Identity < ApplicationRecord
-  octopus_establish_connection(:development)
-
   include RemotelyNotifiable
 
   audited
-
-  after_create :send_admin_mail
 
   #Version.primary_key = 'id'
   #has_paper_trail
@@ -80,6 +76,8 @@ class Identity < ApplicationRecord
 
   # validates_presence_of :reason, if: :new_record?
 
+  after_create :send_admin_mail
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
@@ -116,7 +114,7 @@ class Identity < ApplicationRecord
   end
 
   def shard_identifier
-    self.ldap_uid.split('@')[1].gsub('.edu', '')
+    self.ldap_uid.split('@')[1].gsub('.edu', '').to_sym
   end
 
   #replace old organization methods with new professional organization lookups

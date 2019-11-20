@@ -18,15 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do
-  desc "Import any missing settings from config/settings into the Settings database table"
-  task import_settings: :environment do
-    if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        SettingsPopulator.new().populate
+module APIV1
+  module Entities
+    module Full
+      class Arm < APIV1::Entities::Shallow::Arm
+        root 'arms', 'arm'
+
+        expose  :name,
+                :visit_count,
+                :subject_count,
+                :protocol_id,
+                :new_with_draft,
+                :minimum_visit_count,
+                :minimum_subject_count
       end
-    else
-      puts "Please provide a database using \"DB=databasename\""
     end
   end
 end

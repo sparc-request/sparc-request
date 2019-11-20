@@ -18,15 +18,47 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do
-  desc "Import any missing settings from config/settings into the Settings database table"
-  task import_settings: :environment do
-    if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        SettingsPopulator.new().populate
+module APIV1
+  module Entities
+    module Full
+      class Protocol < APIV1::Entities::Shallow::Protocol
+        root 'protocols', 'protocol'
+
+        expose  :type,
+                :next_ssr_id,
+                :short_title,
+                :title,
+                :sponsor_name,
+                :brief_description,
+                :indirect_cost_rate,
+                :udak_project_number,
+                :funding_rfa,
+                :funding_status,
+                :potential_funding_source,
+                :funding_source,
+                :federal_grant_serial_number,
+                :federal_grant_title,
+                :federal_grant_code_id,
+                :federal_non_phs_sponsor,
+                :federal_phs_sponsor,
+                :potential_funding_source_other,
+                :funding_source_other,
+                :last_epic_push_time,
+                :last_epic_push_status,
+                :billing_business_manager_static_email,
+                :selected_for_epic,
+                :study_type_question_group_id,
+                :archived
+
+        with_options(format_with: :iso_timestamp) do
+          expose :start_date
+          expose :end_date
+          expose :potential_funding_start_date
+          expose :funding_start_date
+          expose :recruitment_start_date
+          expose :recruitment_end_date
+        end
       end
-    else
-      puts "Please provide a database using \"DB=databasename\""
     end
   end
 end

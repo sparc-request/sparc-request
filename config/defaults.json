@@ -310,36 +310,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "header_link_2_proper",
-    "value":          "http://localhost:3000",
-    "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
-    "description":    "This is the URL for the \"SPARCRequest Logo\" in the SPARCRequest header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "header_link_2_dashboard",
-    "value":          "http://localhost:3000/dashboard",
-    "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
-    "description":    "This is the URL for the \"SPARCDashboard Logo\" in the SPARCDashboard header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "header_link_2_catalog",
-    "value":          "http://localhost:3000/catalog_manager",
-    "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
-    "description":    "This is the URL for the \"SPARCCatalog Logo\" in the SPARCCatalog header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "header_link_3",
     "value":          "http://www.musc.edu",
     "friendly_name":  "Header Logo 3 URL",

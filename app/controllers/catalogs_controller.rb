@@ -42,7 +42,7 @@ class CatalogsController < ApplicationController
 
   def determine_catalog_shard(&block)
     if params[:shard]
-      Octopus.using(params[:shard], &block)
+      ActiveRecord::Base.connected_to(database: params[:shard].to_sym, &block)
     else
       yield
     end

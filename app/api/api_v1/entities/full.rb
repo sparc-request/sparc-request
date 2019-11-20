@@ -18,15 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do
-  desc "Import any missing settings from config/settings into the Settings database table"
-  task import_settings: :environment do
-    if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        SettingsPopulator.new().populate
-      end
-    else
-      puts "Please provide a database using \"DB=databasename\""
-    end
+module APIV1
+  module Entities
+    require_relative 'full/arm'
+    require_relative 'full/clinical_provider'
+    require_relative 'full/human_subjects_info'
+    require_relative 'full/identity'
+    require_relative 'full/line_item'
+    require_relative 'full/line_items_visit'
+    require_relative 'full/process_ssrs_organization'
+    require_relative 'full/project_role'
+
+    require_relative 'full/protocol'
+    require_relative 'full/project'
+    require_relative 'full/study'
+
+    require_relative 'full/service'
+    require_relative 'full/service_request'
+    require_relative 'full/sub_service_request'
+    require_relative 'full/visit'
+    require_relative 'full/visit_group'
   end
 end

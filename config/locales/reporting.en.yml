@@ -48,7 +48,8 @@ en:
       unavailable: "Inactive"
 
     cost_analysis:
-      disclaimer: ""
+      disclaimer:
+      - ""
       # - "*These charges are for CRU services only."
       # - "If the lab manual is not available during protocol review, lab processing fees will be included as an estimate based on the cost of similar studies."
       # - "Prices are valid as of the approval date and effective for up to 12 months after signing."

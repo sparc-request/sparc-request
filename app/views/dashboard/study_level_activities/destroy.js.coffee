@@ -18,4 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Add the alert that there are no OTF services
+<% if @sub_service_request.reload.one_time_fee_line_items.count == 0 %>
+$('#studyLevelActivitiesTab').html('<%= j render "dashboard/sub_service_requests/study_level_activities", sub_service_request: @sub_service_request %>')
+<% else %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
+<% end %>
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

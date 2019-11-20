@@ -119,3 +119,16 @@
     text-overflow: ellipsis;
   }
 }
+
+// Admin Styling
+.card #serviceCalendar {
+  nav .nav-link:first-of-type {
+    border-left: 0;
+  }
+
+  .card {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+}

@@ -27,4 +27,4 @@
 - url         += "&ssrid=#{sub_service_request.id}" if sub_service_request
 
 %td.check-row.text-center{ colspan: 2, class: editable ? 'editable' : '', id: "toggleRow#{liv.id}", title: tooltip, data: { toggle: 'tooltip' } }
-  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sm btn-sq', klass, editable ? '' : 'disabled'], data: { confirm_swal: 'true', text: t('calendars.confirm_row_select') }
+  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sq', klass, editable ? '' : 'disabled'], data: { confirm_swal: 'true', text: t('calendars.confirm_row_select') }

@@ -39,6 +39,8 @@ class SubServiceRequest < ApplicationRecord
 
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
+  has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -180,14 +182,6 @@ class SubServiceRequest < ApplicationRecord
       self.reload
       return false
     end
-  end
-
-  def one_time_fee_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: true })
-  end
-
-  def per_patient_per_visit_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def has_one_time_fee_services?

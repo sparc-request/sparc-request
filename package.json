@@ -22,6 +22,7 @@
     "moment-timezone": "^0.5.25",
     "nprogress": "^0.2.0",
     "popper.js": "^1.15.0",
+    "promise-polyfill": "^8.1.3",
     "stickybits": "^3.6.6",
     "sweetalert2": "^8.11.4",
     "tempusdominus-bootstrap-4": "^5.1.2",

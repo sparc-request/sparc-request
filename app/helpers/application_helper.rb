@@ -20,7 +20,7 @@
 
 module ApplicationHelper
   def format_date(date)
-    date.strftime('%D') rescue ""
+    date.strftime('%m/%d/%Y') rescue ""
   end
 
   def format_datetime(datetime)
@@ -197,7 +197,7 @@ module ApplicationHelper
 
     if accessible
       content_tag :li, class: 'nav-item' do
-        link_to name, path, target: :blank, class: ['nav-link', active ? 'active' : '']
+        link_to name, path, target: :_blank, class: ['nav-link', active ? 'active' : '']
       end
     end
   end

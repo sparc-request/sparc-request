@@ -24,21 +24,18 @@ class CatalogsController < ApplicationController
   before_action :initialize_service_request
   before_action :authorize_identity
   before_action :find_locked_org_ids, only: [:update_description]
-  before_action :find_organization
   
   def update_description
+    @organization = Organization.find(params[:organization_id])
   end
 
   def locked_organization
+    @organization = Organization.find(params[:organization_id]).process_ssrs_parent
     @identity = @organization.service_providers.where(is_primary_contact: true).first.try(&:identity)
     @ssr      = @service_request.sub_service_requests.find_by(organization: @organization).first
   end
 
   private
-
-  def find_organization
-    @organization = Organization.find(params[:organization_id])
-  end
 
   def determine_catalog_shard(&block)
     if params[:shard]

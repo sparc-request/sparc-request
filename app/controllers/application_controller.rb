@@ -275,6 +275,6 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+    @locked_org_ids = @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 end

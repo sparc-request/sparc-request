@@ -40,7 +40,7 @@ $(document).ready ->
   ### Catalog ###
   ###############
 
-  $(document).on 'click', '#institutionAccordion .org-link:not(.locked)', ->
+  $(document).on 'click', '#institutionAccordion .org-link', ->
     $.ajax
       type: 'get'
       dataType: 'script'

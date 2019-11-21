@@ -39,7 +39,7 @@ class QuestionResponse < ActiveRecord::Base
 
   # This is to sanitize phone numbers for validation
   def content=(val)
-    if question.question_type == 'phone'
+    if question.try(:question_type) == 'phone'
       val = val.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
     end
 

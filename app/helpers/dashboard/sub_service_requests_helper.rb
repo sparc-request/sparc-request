@@ -125,21 +125,21 @@ module Dashboard::SubServiceRequestsHelper
       end.select{ |_, status| available_statuses.include?(status) }
 
     raw(statuses.map do |label, status|
-      if Status.complete?(status)
+      if !ssr.organization.has_editable_status?(status)
+        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.locked_status'), data: { toggle: 'tooltip' } do
+          link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item alert-danger', status == ssr.status ? 'active' : ''] do
+            icon('fas', 'lock mr-2') + label
+          end
+        end
+      elsif Status.complete?(status)
         content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.finished_status'), data: { toggle: 'tooltip' } do
           link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item alert-success', status == ssr.status ? 'active' : ''], data: { confirm_swal: ssr.is_complete? ? 'false' : 'true', html: t('dashboard.sub_service_requests.confirm.finished_status.text', status: label) } do
             icon('fas', 'check mr-2') + label
           end
         end
-      elsif ssr.organization.has_editable_status?(status)
+      else
         link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item', status == ssr.status ? 'active' : ''] do
           content_tag :span, label, class: 'ml-3 pl-2'
-        end
-      else
-        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.locked_status'), data: { toggle: 'tooltip' } do
-          link_to dashboard_sub_service_request_path(ssr, sub_service_request: { status: status }), remote: true, method: :put, class: ['dropdown-item alert-danger', status == ssr.status ? 'active' : ''] do
-            icon('fas', 'lock mr-2') + label
-          end
         end
       end
     end.join(''))

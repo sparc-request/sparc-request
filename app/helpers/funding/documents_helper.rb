@@ -45,13 +45,13 @@ module Funding::DocumentsHelper
 
   def protocol_button(ssr)
     content_tag :div, class: 'p-1' do
-      link_to t(:funding)[:download][:table][:actions][:protocol], "/dashboard/protocols/#{ssr.protocol.id}", title: t('funding.download.table.tooltips.protocol'), class: "btn btn-success btn-md protocol-btn", data: { toggle: 'tooltip', boundary: 'window' }, target: :blank
+      link_to t(:funding)[:download][:table][:actions][:protocol], "/dashboard/protocols/#{ssr.protocol.id}", title: t('funding.download.table.tooltips.protocol'), class: "btn btn-success btn-md protocol-btn", data: { toggle: 'tooltip', boundary: 'window' }, target: :_blank
     end
   end
 
   def admin_edit_button(ssr)
     content_tag :div, class: 'p-1' do
-      link_to t(:funding)[:download][:table][:actions][:admin_edit], "/dashboard/sub_service_requests/#{ssr.id}", title: t('funding.download.table.tooltips.admin_edit'), class: "btn btn-warning btn-md admin-edit-btn", data: { toggle: 'tooltip', boundary: 'window' }, target: :blank
+      link_to t(:funding)[:download][:table][:actions][:admin_edit], "/dashboard/sub_service_requests/#{ssr.id}", title: t('funding.download.table.tooltips.admin_edit'), class: "btn btn-warning btn-md admin-edit-btn", data: { toggle: 'tooltip', boundary: 'window' }, target: :_blank
     end
   end
 

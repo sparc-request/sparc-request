@@ -82,7 +82,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
           if (@master_protocol.research_master_id == nil) && (@merged_protocol.research_master_id != nil)
             @master_protocol.research_master_id = @merged_protocol.research_master_id
-            @master_procotol.save(validate: false)
+            @master_protocol.save(validate: false)
           end
 
           @merged_protocol.impact_areas.each do |area|

@@ -18,11 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("[id=<%= @selector %>Notes]:visible").find('span.badge').html("<%= @count %>")
-
-<% if @count == 0 %>
-$("[id=<%= @selector %>Notes]:visible").find('span.badge').removeClass('badge-warning').addClass('badge-secondary')
-<% end %>
-
-$("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable, disabled: false %>")
+$('#notifications').replaceWith("<%= j render 'dashboard/notifications/notifications', table: @table, sub_service_request: @sub_service_request %>")
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

@@ -28,7 +28,13 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% end %>
 <% end %>
 <% else %>
+# Remove the alert that there are no PPPV services
+<% if @sub_service_request.reload.per_patient_per_visit_line_items.count == 1 %>
+$("#studyScheduleTab").html('<%= j render "dashboard/sub_service_requests/study_schedule", service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>')
+<% else %>
 $('#serviceCalendar').replaceWith("<%= j render 'service_calendars/tabs', service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages %>")
+<% end %>
+
 loadServiceCalendar()
 
 $("#modalContainer").modal('hide')

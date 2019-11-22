@@ -18,6 +18,16 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+//////////////////////
+/// IE11 Polyfills ///
+//////////////////////
+
+// Polyfill for position: sticky
+//= require stickybits/dist/stickybits.min
+
+// Polyfill for ES6 Promise
+//= require promise-polyfill/dist/polyfill.min
+
 ///////////////////////////////////////
 /// These need to be required first ///
 ///////////////////////////////////////
@@ -44,7 +54,6 @@
 //= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress
-//= require stickybits/dist/stickybits.min
 
 //////////////////////////////////
 /// Require Our Custom Scripts ///

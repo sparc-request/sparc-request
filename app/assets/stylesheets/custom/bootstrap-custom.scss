@@ -69,7 +69,7 @@
     color: white !important;
   }
 
-  &.btn-light:not(.toggle) {
+  &.btn-light:not(.toggle):not([class*="border-"]) {
     @extend .border;
   }
 
@@ -84,6 +84,35 @@
 
     &.active, &:active, &:focus {
       background: darken(#fff, 10%) !important;
+    }
+  }
+
+  &.btn-sq {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    &.btn-xs {
+      width: 20px;
+      height: 20px;
+    }
+
+    &.btn-sm {
+      width: 24px;
+      height: 24px;
+    }
+
+    &.btn-lg {
+      width: 38px;
+      height: 38px;
+    }
+
+    i {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
@@ -240,7 +269,8 @@
       }
 
       &:focus, &:active {
-        background: theme-color-level('light', 2);
+        color: initial;
+        background: darken(theme-color('light'), 7.5%);
       }
     }
 
@@ -254,6 +284,32 @@
 .dropdown.no-caret .dropdown-toggle::after,
 .dropdown-toggle.no-caret::after {
   display: none;
+}
+
+@each $color, $value in $theme-colors {
+  $alert-bg:          theme-color-level($color, $alert-bg-level);
+  $hover-background:  darken($alert-bg, 7.5%);
+  $active-background: darken($alert-bg, 15%);
+
+  .dropdown {
+    .dropdown-item.alert-#{$color}.active {
+      @extend .bg-#{$color};
+    }
+
+    .dropdown-item.alert-#{$color}:not(.active) {
+      transition: $btn-transition;
+
+      &:hover {
+        color: theme-color-level($color, $alert-color-level) !important;
+        background-color: $hover-background !important;
+      }
+
+      &:focus, &:active {
+        color: theme-color-level($color, $alert-color-level) !important;
+        background-color: $active-background !important;
+      }
+    }
+  }
 }
 
 @include media-breakpoint-down(sm) {
@@ -512,8 +568,14 @@ nav.navbar {
       align-items: stretch;
 
       &.dropdown {
-        &:hover .dropdown-menu {
-          display: block;
+        &:hover {
+          .dropdown-toggle {
+            @extend .active;
+          }
+
+          .dropdown-menu {
+            display: block;
+          }
         }
 
         .dropdown-menu {

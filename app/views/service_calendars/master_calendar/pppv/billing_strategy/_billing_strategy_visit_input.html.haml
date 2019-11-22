@@ -21,14 +21,7 @@
 %table.table-sm.table-borderless.w-100
   %tbody
     %tr
-      - if locked
-        %td.text-center.py-0
-          = visit.research_billing_qty
-        %td.text-center.py-0
-          = visit.insurance_billing_qty
-        %td.text-center.py-0
-          = visit.effort_billing_qty
-      - else
+      - if editable
         - url = edit_visit_path(visit, srid: service_request.try(:id), ssrid: sub_service_request.try(:id), page: page)
         %td.text-center.py-0
           = link_to visit.research_billing_qty, url, remote: true
@@ -36,3 +29,10 @@
           = link_to visit.insurance_billing_qty, url, remote: true
         %td.text-center.py-0
           = link_to visit.effort_billing_qty, url, remote: true
+      - else
+        %td.text-center.py-0
+          = visit.research_billing_qty
+        %td.text-center.py-0
+          = visit.insurance_billing_qty
+        %td.text-center.py-0
+          = visit.effort_billing_qty

@@ -652,8 +652,8 @@ en:
   line_items:
     new: "Add Service"
     delete: "Delete Service"
-    created: "Service added!"
-    deleted: "Service removed!"
+    created: "Service Added!"
+    deleted: "Service Removed!"
 
   ###########
   # MAILERS #

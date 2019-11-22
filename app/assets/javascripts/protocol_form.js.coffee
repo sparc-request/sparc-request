@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  
+
   $('body').scrollspy({ target: '#protocolNavigation' })
 
   rmidTimer = null
@@ -31,7 +31,7 @@ $(document).ready ->
     if $(this).val()
       rmidTimer = setTimeout( (->
         updateRmidFields()
-      ), 250)
+      ), 750)
     else
       resetRmidFields()
   ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
@@ -142,7 +142,7 @@ $(document).ready ->
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
 
-    if $('#studyTypeQuestionsContainer').hasClass('d-none') 
+    if $('#studyTypeQuestionsContainer').hasClass('d-none')
       $('#studyTypeQuestionsContainer').removeClass('d-none')
 
     if $(this).val() == 'true'
@@ -208,13 +208,19 @@ $(document).ready ->
 ### Function Definitions ###
 ############################
 
+rmidAjax = null
+
 updateRmidFields = () ->
   if rmid = $('#protocol_research_master_id:not([readonly=readonly])').val()
-    $.ajax
+    if rmidAjax
+      rmidAjax.abort()
+
+    rmidAjax = $.ajax(
       method: 'get'
       dataType: 'json'
       url: "#{gon.rmid_api_url}research_masters/#{rmid}"
-      headers: 
+      headers:
+        Accept: "application/json"
         Authorization: "Token token=\"#{gon.rmid_api_token}\""
       success: (data) ->
         $('#protocol_short_title').val(data.short_title).prop('readonly', true)
@@ -232,6 +238,7 @@ updateRmidFields = () ->
           html: I18n.t('protocols.form.information.rmid.error.text', rmid: rmid)
         )
         resetRmidFields()
+    )
 
 resetRmidFields = () ->
   $('#protocol_short_title').val('').prop('readonly', false)

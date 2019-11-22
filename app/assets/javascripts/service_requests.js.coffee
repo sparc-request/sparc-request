@@ -77,9 +77,6 @@ $(document).ready ->
 
   servicesBloodhound.initialize()
 
-  $(document).on 'mouseleave', '#serviceQuery + .tt-menu .tt-suggestion', (e) ->
-    console.log e
-
   $('#serviceQuery').typeahead(
     {
       minLength: 3,
@@ -110,11 +107,12 @@ $(document).ready ->
   ).on('typeahead:render', ->
     initializePopovers()
   ).on('typeahead:select', (event, suggestion) ->
-    $.ajax
-      method: 'post'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid:       getSRId()
-        service_id: suggestion.service_id
+    if $('.profile').length # Only add services when logged in
+      $.ajax
+        method: 'post'
+        dataType: 'script'
+        url: '/service_request/add_service'
+        data:
+          srid:       getSRId()
+          service_id: suggestion.service_id
   )

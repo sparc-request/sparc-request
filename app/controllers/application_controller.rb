@@ -31,17 +31,15 @@ class ApplicationController < ActionController::Base
 
   before_action :preload_database_values
   before_action :set_highlighted_link
-  before_action :get_news_feed,               if: Proc.new{ request.format.html? }
-  before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
+  # before_action :get_news_feed,               if: Proc.new{ request.format.html? }
+  # before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
   before_action :configure_permitted_params,  if: :devise_controller?
 
   protected
 
   def select_shard(&block)
     if identity_signed_in?
-      ActiveRecord::Base.connected_to(database: current_user.shard_identifier) do
-        yield
-      end
+      Octopus.using(current_user.shard_identifier, &block)
     else
       yield
     end
@@ -98,37 +96,13 @@ class ApplicationController < ActionController::Base
 
   def get_calendar_events
     if Setting.get_value("use_google_calendar")
-      curTime   = Time.now.utc
-      startMin  = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
       begin
-        path = Rails.root.join("tmp", "basic.ics")
-        if path.exist?
-          cal_file  = File.open(path)
-          cals      = Icalendar::Calendar.parse(cal_file)
-          cal       = cals.first
+        @events = GoogleCalendarImporter.new.events
 
-          # Use index like an ID to view more information
-          index = 0
-          cal.events.each do |event|
-            if event.occurrences_between(startMin, startMax).present?
-              event.occurrences_between(startMin, startMax).each do |occurrence|
-                @events << create_calendar_event(event, occurrence, index)
-                index += 1
-              end
-            end
-          end
-
-          if @events.present?
-            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
-            @events.reverse!
-          end
-
-          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-        end
+        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
       rescue Exception, ArgumentError => e
+        @events = []
+
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
           active_alert.save
@@ -136,23 +110,6 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-  end
-
-  def create_calendar_event(event, occurrence, index)
-    all_day     = !occurrence.start_time.to_s.include?("UTC")
-    start_time  = DateTime.parse(occurrence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time    = DateTime.parse(occurrence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    {
-      index:          index,
-      title:          event.summary,
-      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="blank">\0</a>'),
-      date:           start_time.strftime("%A, %B %d"),
-      time:           all_day ? t('layout.navigation.events.all_day') : [start_time.strftime("%l:%M %p"), end_time.strftime("%l:%M %p")].join(' - '),
-      where:          event.location,
-      month:          start_time.strftime("%b"),
-      day:            start_time.day,
-      sort_by_start:  start_time.strftime("%Y%m%d")
-    }
   end
 
   def set_rmid_api

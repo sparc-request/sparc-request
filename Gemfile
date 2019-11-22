@@ -5,6 +5,7 @@ gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on', '~> 6.0'
+gem 'ar-octopus', git: 'https://github.com/schovi/octopus.git'
 gem 'audited', '~> 4.9'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'

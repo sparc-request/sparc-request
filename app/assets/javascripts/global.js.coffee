@@ -46,6 +46,18 @@ $ ->
     initializeTables()
     setRequiredFields()
 
+  $('.async').each ->
+    $this = $(this)
+
+    $.ajax
+      method: 'GET'
+      dataType: 'html'
+      url: $(this).data('url')
+      beforeSend: ->
+        $('#nprogress').hide()
+      success: (data) ->
+        $this.replaceWith(data)
+
   # Back To Top button scroll
   $(window).scroll ->
     if $(this).scrollTop() > 50

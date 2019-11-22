@@ -27,7 +27,7 @@ octopus:
       username:   root
       adapter:    mysql2
       encoding:   utf8
-      database:   sparc-musc_development
+      database:   sparc-request-musc_development
       pool:       5
       timeout:    5000
       variables:
@@ -37,7 +37,7 @@ octopus:
       username:   root
       adapter:    mysql2
       encoding:   utf8
-      database:   sparc-musc_test
+      database:   sparc-request-musc_test
       pool:       5
       timeout:    5000
       variables:

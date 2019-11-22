@@ -114,7 +114,7 @@ class Identity < ApplicationRecord
   end
 
   def shard_identifier
-    self.ldap_uid.split('@')[1].gsub('.edu', '').to_sym
+    self.ldap_uid.split('@')[1].gsub('.edu', '')
   end
 
   #replace old organization methods with new professional organization lookups

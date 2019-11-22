@@ -28,5 +28,43 @@ class PagesController < ApplicationController
   end
 
   def faqs
+    respond_to :js
+  end
+
+  def get_news_feed
+    respond_to :html
+
+    if Setting.get_value("use_news_feed")
+      @news =
+        if Setting.get_value("use_news_feed_api")
+          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
+        else
+          @news = NewsFeed::PageParser.new.posts
+        end
+
+      render partial: 'layouts/news'
+    end
+  end
+
+  def get_calendar_events
+    respond_to :html
+
+    if Setting.get_value("use_google_calendar")
+      begin
+        @events = GoogleCalendarImporter.new.events
+
+        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
+      rescue Exception, ArgumentError => e
+        @events = []
+
+        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
+        if Rails.env == 'production' && active_alert.new_record?
+          active_alert.save
+          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
+        end
+      end
+
+      render partial: 'layouts/events'
+    end
   end
 end

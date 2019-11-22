@@ -19,9 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .accordion#institutionAccordion
-  - Rails.configuration.database_configuration[Rails.env].reject{ |key, _| key == 'primary' }.each do |shard, _|
-    - next if identity_signed_in? && current_user.shard_identifier != shard.to_sym
-    - ActiveRecord::Base.connected_to(database: shard.to_sym) do
+  - Octopus.config[Rails.env].each do |shard, _|
+    - next if identity_signed_in? && current_user.shard_identifier != shard
+    - Octopus.using(shard) do
       -# Only keep track of shard when not logged in
       - shard_name  = identity_signed_in? ? '' : shard.capitalize
       - shard_param = identity_signed_in? ? nil : shard

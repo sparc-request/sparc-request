@@ -71,6 +71,11 @@ class SettingsPopulator
   end
 
   def deprecated_settings
-    %w(header_link_2_proper header_link_2_dashboard header_link_2_catalog)
+    [
+      'header_link_2_proper',
+      'header_link_2_dashboard',
+      'header_link_2_catalog',
+      'dashboard_link'
+    ]
   end
 end

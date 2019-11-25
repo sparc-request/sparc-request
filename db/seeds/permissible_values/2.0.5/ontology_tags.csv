@@ -5,7 +5,7 @@ id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_avai
 ,team_science_ctsa,Multidisciplinary Team Science (CTSA),,,4,ontology_tag,,,1
 ,workforce_ctsa,Translational Workforce Development (CTSA),,,5,ontology_tag,,,1
 ,pilot_ctsa,Pilot Translational Clinical Studies (CTSA),,,6,ontology_tag,,,1
-,berd_ctsa,"CTSA-Biostatistics, Epidemiology & Research Design (CTSA)",,,7,ontology_tag,,,1
+,berd_ctsa,"Biostatistics, Epidemiology & Research Design (CTSA)",,,7,ontology_tag,,,1
 ,regulatory_ctsa,Regulatory Knowledge & Support (CTSA),,,8,ontology_tag,,,1
 ,special_population_ctsa,Integrating Special Populations (CTSA),,,9,ontology_tag,,,1
 ,clinical_interaction_ctsa,Participant & Clinical Interactions (CTSA),,,10,ontology_tag,,,1

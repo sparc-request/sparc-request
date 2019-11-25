@@ -208,8 +208,8 @@ $ ->
 
 (exports ? this).initializeDateTimePickers = () ->
   $('.datetimepicker.date:not(.time)').datetimepicker({ format: 'L' })
-  $('.datetimepicker.time:not(.date)').datetimepicker({ format: 'T' })
-  $('.datetimepicker.date.time').datetimepicker({ format: 'LT' })
+  $('.datetimepicker.time:not(.date)').datetimepicker({ format: 'LT' })
+  $('.datetimepicker.date.time').datetimepicker()
 
 (exports ? this).initializeTooltips = () ->
   $('.tooltip').tooltip('hide')

@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   include RSpecHtmlMatchers
 
-  let!(:org)      { create(:organization) }
+  let!(:org)      { create(:organization, :process_ssrs) }
   let!(:protocol) { create(:study_federally_funded) }
   let!(:sr)       { create(:service_request, protocol: protocol) }
 

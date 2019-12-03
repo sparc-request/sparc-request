@@ -126,6 +126,6 @@ module Surveyor::ResponsesHelper
   end
 
   def multiple_select_formatter(content)
-    content.tr("[]\"", "").split(',').map(&:strip)
+    content.present? ? JSON.parse(content) : content
   end
 end

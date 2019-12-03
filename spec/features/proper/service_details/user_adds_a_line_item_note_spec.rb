@@ -25,7 +25,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization)
+    org       = create(:organization, :process_ssrs)
     pricing   = create(:pricing_setup, organization: org)
     otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
     otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')

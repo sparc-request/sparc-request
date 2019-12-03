@@ -22,7 +22,7 @@ module DataTypeValidator
   require 'uri'
 
   PHONE_REGEXP  = /\A[0-9]{10}(#[0-9]+)?\Z/
-  EMAIL_REGEXP  = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+(,\s([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+)*\Z/
+  EMAIL_REGEXP  = /\A([^\s\@]+@[A-Za-z0-9.-]+)(,[ ]?[^\s\@]+@[A-Za-z0-9.-]+)*\Z/
   URL_REGEXP    = /\A((ftp|http|https):\/\/)?[\w\-]+(((\.[a-zA-Z0-9]+)+(:\d+)?)|(:\d+))(\/[\w\-]+)*((\.[a-zA-Z]+)|(\/))?(\?([\w\-]+=.+(&[\w\-]+=.+)*)+)?\Z/
   PATH_REGEXP   = /\A(\/|(\/\w+)+\/?)(\?(\w+=\w+(&\w+=\w+)*)+)?\Z/
 

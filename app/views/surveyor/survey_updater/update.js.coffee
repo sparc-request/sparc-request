@@ -19,23 +19,25 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors %>
 <% @errors.zip(@errors.full_messages).each do |error, message| %>
-if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('has-error')
-  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('has-error')
-  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").after("<span class='help-block'><%=message%></span>")
+if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('is-invalid')
+  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
   <% if @field == 'active' %>
   if $('#modalContainer:visible').length > 0
     $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)
   else
-    swal("Error", "<%= @object.errors.generate_message(:active, :taken) %>","error")
+    AlertSwal.fire(
+      type: 'error'
+      title: I18n.t('activerecord.errors.models.form.attributes.active.taken')
+    )
   <% end %>
 <% end %>
 <% else %>
-$("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('has-error')
+$("#<%=@klass%>-<%=@object.id%>-<%=@field%>").parents('.form-group').removeClass('is-invalid')
 $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").siblings('.help-block').remove()
 
 <% if @field == 'access_code' %>
 $('[id^=survey][id$=version]').val("<%= @object.version %>")
-$('[id^=survey][id$=version]').parents('.form-group').removeClass('has-error')
+$('[id^=survey][id$=version]').parents('.form-group').removeClass('is-invalid')
 $('[id^=survey][id$=version]').siblings('.help-block').remove()
 <% end %>
 

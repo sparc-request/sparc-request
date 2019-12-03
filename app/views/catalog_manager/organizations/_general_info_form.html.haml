@@ -47,7 +47,7 @@
       .col-sm-9
         = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
 
-  - if organization.process_ssrs? && current_user.catalog_overlord?
+  - if organization.process_ssrs?
     .form-group.primary_ontology_container
       = f.label :primary_ontology_tag, t(:catalog_manager)[:organization_form][:primary_ontology_tag], class: 'col-sm-3 control-label'
       .col-sm-9

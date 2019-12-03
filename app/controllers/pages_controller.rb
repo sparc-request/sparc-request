@@ -22,7 +22,7 @@ class PagesController < ApplicationController
   def event_details
     respond_to :js
 
-    get_calendar_events
+    @events = GoogleCalendarImporter.new.events
 
     @event = @events.detect{ |event| event[:index] == params[:index].to_i }
   end

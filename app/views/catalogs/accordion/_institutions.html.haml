@@ -18,25 +18,35 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- shards = Octopus.config[Rails.env]
+
 .accordion#institutionAccordion
-  - Octopus.config[Rails.env].each do |shard, _|
-    - next if identity_signed_in? && current_user.shard_identifier != shard
-    - Octopus.using(shard) do
-      -# Only keep track of shard when not logged in
-      - shard_name  = identity_signed_in? ? '' : shard.capitalize
-      - shard_param = identity_signed_in? ? nil : shard
+  - if identity_signed_in?
+    -# Get all shards BUT put the user's hub first and sort the rest by hub name
+    - shards_ordered = shards.slice(current_user.shard_identifier).to_a + shards.reject{ |shard| shard == current_user.shard_identifier }.sort_by{ |shard, data| data['name'] }
+  - else
+    -# Get all shards sorted by hub name
+    - shards_ordered = shards.sort_by{ |shard, data| data['name'] }
 
-      - Institution.all.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
-        - locked  = locked_org_ids.include?(i.id)
-        - url     = locked ? locked_organization_catalog_path(i, shard: shard_param, srid: service_request.id) : update_description_catalog_path(i, shard: shard_param, srid: service_request.id)
+  - shards_ordered.each do |shard, data|
+    .card-body
+      - Octopus.using(shard) do
+        -# Only keep track of shard when not logged in
+        - shard_name  = shard.capitalize
+        - shard_param = shard
+        %h5
+          = data['name']
+        - Institution.all.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
+          - locked  = locked_org_ids.include?(i.id)
+          - url     = locked ? locked_organization_catalog_path(i, shard: shard_param, srid: service_request.id) : update_description_catalog_path(i, shard: shard_param, srid: service_request.id)
 
-        .card.institution{ id: "institution#{shard_name}#{i.id}" }
-          .card-header.p-0{ id: "institution#{shard_name}#{i.id}Header" }
+          .card.institution{ id: "institution#{shard_name}#{i.id}" }
+            .card-header.p-0{ id: "institution#{shard_name}#{i.id}Header" }
+              -# Expand the first institution if the user is signed in
+              %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), identity_signed_in? && index == 0 && shard == current_user.shard_identifier ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{shard_name}#{i.id}Collapse", url: url }, aria: { expanded: 'true', controls: "institution#{shard_name}#{i.id}Collapse" } }
+                %h6.d-flex.align-items-start.mb-0
+                  = organization_name_display(i, locked, i.providers.any?)
             -# Expand the first institution if the user is signed in
-            %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), identity_signed_in? && index == 0 ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{shard_name}#{i.id}Collapse", url: url }, aria: { expanded: 'true', controls: "institution#{shard_name}#{i.id}Collapse" } }
-              %h6.d-flex.align-items-start.mb-0
-                = organization_name_display(i, locked, i.providers.any?)
-          -# Expand the first institution if the user is signed in
-          .collapse{ class: identity_signed_in? && index == 0 ? 'show' : '', id: "institution#{shard_name}#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{shard_name}#{i.id}Header" } }
-            .card-body
-              = render 'catalogs/accordion/providers', service_request: service_request, providers: i.providers, locked_org_ids: locked_org_ids, i: i, shard_name: shard_name, shard_param: shard_param
+            .collapse{ class: identity_signed_in? && index == 0 && shard == current_user.shard_identifier ? 'show' : '', id: "institution#{shard_name}#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{shard_name}#{i.id}Header" } }
+              .card-body
+                = render 'catalogs/accordion/providers', service_request: service_request, providers: i.providers, locked_org_ids: locked_org_ids, i: i, shard_name: shard_name, shard_param: shard_param

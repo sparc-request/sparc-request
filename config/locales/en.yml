@@ -658,6 +658,7 @@ en:
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
     back_to_top: "Go to Top"
+    sign_in_required: "You must sign in to use this feature"
 
   ##############
   # Line Items #

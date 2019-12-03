@@ -29,7 +29,7 @@
           - else
             = service.display_service_name
       .col-2.text-right
-        - if identity_signed_in?
+        - if identity_signed_in? && @shard == current_user.shard_identifier
           = link_to icon('fas', 'plus'), add_service_service_request_path(srid: service_request.id, service_id: service.id), method: :post, remote: true, class: 'btn btn-sm btn-sq btn-success add-service', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', disable: true }
     = cpt_code_text(service)
     = eap_id_text(service)

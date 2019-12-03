@@ -18,31 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogsController < ApplicationController
-  around_action :determine_catalog_shard
+module IdentitiesHelper
+  def identity_contact(identity)
+    contact   = identity.full_name + link_to("(#{identity.email})", "mailto:#{identity.email}", class: 'ml-1')
+    contact  += content_tag(:span, format_phone(identity.phone), class: 'ml-1') if identity.phone.present?
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_locked_org_ids, only: [:update_description]
-  
-  def update_description
-    @organization = Organization.find(params[:organization_id])
-  end
-
-  def locked_organization
-    @organization = Organization.find(params[:organization_id]).process_ssrs_parent
-    @identity = @organization.service_providers.where(is_primary_contact: true).first.try(&:identity)
-    @ssr      = @service_request.sub_service_requests.find_by(organization: @organization).first
-  end
-
-  private
-
-  def determine_catalog_shard(&block)
-    if params[:shard]
-      @shard = params[:shard]
-      Octopus.using(params[:shard], &block)
-    else
-      yield
-    end
+    raw(contact)
   end
 end

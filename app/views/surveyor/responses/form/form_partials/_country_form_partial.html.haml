@@ -17,8 +17,8 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.form-group
-  - if ['new', 'edit', 'preview'].include?(action_name)
-    = qr.country_select :content, { priority_countries: ['US'], include_blank: true }, { class: 'form-control selectpicker option' }
-  - else
-    = country_select :content, :country, { priority_countries: ['US'], include_blank: true, selected: question_response.content }, { class: 'form-control selectpicker option', disabled: true }
+
+- if ['new', 'edit', 'preview'].include?(action_name)
+  = qr.country_select :content, { priority_countries: ['US'], include_blank: true }, { class: 'form-control selectpicker option' }
+- else
+  = country_select :content, :country, { priority_countries: ['US'], include_blank: true, selected: question_response.content }, { class: 'form-control selectpicker option', disabled: true }

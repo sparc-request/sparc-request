@@ -20,13 +20,17 @@
 
 module ApplicationHelper
   def format_date(date)
-    date.strftime('%m/%d/%Y') rescue ""
+    if date.present?
+      content_tag :span do
+        raw date.strftime('%m/%d/%Y')
+      end
+    end
   end
 
   def format_datetime(datetime)
     if datetime.present?
       content_tag :span do
-        raw datetime.strftime('%D %l:%M %p') + content_tag(:span, datetime.strftime('%S'), class: 'invisible')
+        raw datetime.strftime('%m/%d/%Y %l:%M') + content_tag(:span, datetime.strftime(':%S'), class: 'd-none') + datetime.strftime(' %p')
       end
     end
   end

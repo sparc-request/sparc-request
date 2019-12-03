@@ -63,7 +63,7 @@ $(document).ready ->
               $this.selectpicker('val', '')
 
   $(document).on 'click', 'button.mark_as_read_unread',  ->
-    selections = $('#notifications-table').bootstrapTable 'getSelections'
+    selections = $('.notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
     sub_service_request_id = $(this).data('sub-service-request-id')
     if notification_ids.length > 0

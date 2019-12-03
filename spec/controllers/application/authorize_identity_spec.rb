@@ -57,6 +57,7 @@ RSpec.describe ApplicationController, type: :controller do
           controller.instance_variable_set(:@service_request, sr)
           allow(controller).to receive_message_chain(:request, :referrer).and_return('/service_request/protocol')
           allow(controller).to receive_message_chain(:request, :format, :js?).and_return(false)
+          allow(controller).to receive(:identity_signed_in?).and_return(true)
           expect(controller).to receive(:authorization_error)
           controller.send(:authorize_identity)
         end
@@ -94,7 +95,7 @@ RSpec.describe ApplicationController, type: :controller do
       context 'user not logged in' do
         before :each do
           allow(controller).to receive(:authenticate_identity!)
-          allow(controller).to receive(:current_user).and_return(nil)
+          allow(controller).to receive(:identity_signed_in?).and_return(false)
         end
 
         it 'should require a login' do

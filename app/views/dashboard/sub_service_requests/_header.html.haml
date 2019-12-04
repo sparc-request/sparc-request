@@ -49,7 +49,7 @@
             - unless request_valid
               = icon('fas', 'exclamation-circle text-warning mr-1')
             = t('dashboard.sub_service_requests.header.fulfillment.header')
-        - if sub_service_request.is_complete?
+        - if sub_service_request.is_complete? && !sub_service_request.available_surveys.empty?
           %th.text-center
             = t('dashboard.sub_service_requests.header.surveys.header')
         %th.text-center
@@ -88,7 +88,7 @@
         - if use_fulfillment
           %td.text-center#fulfillmentStatusContainer{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
             = ready_for_fulfillment_display(sub_service_request, request_valid)
-        - if sub_service_request.is_complete?
+        - if sub_service_request.is_complete? && !sub_service_request.available_surveys.empty?
           %td.text-center#surveys
             = resend_surveys_ssr_button(sub_service_request)
         %td.text-center#effectiveCost

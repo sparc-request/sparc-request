@@ -61,6 +61,8 @@ module Features
       e.click
       e.send_keys(:delete)
       e.set(text)
+      find('body').click # Click away
+      wait_for_javascript_to_finish
     end
 
     def bootstrap_toggle(id)

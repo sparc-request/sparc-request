@@ -27,6 +27,7 @@ def report
   # Require reports dynamically so that reports are not loaded as part
   # of the regular rails application
   require 'reports'
-  run_report_command(ARGV)
+
+  Reports.run_report_command(ARGV)
 end
 

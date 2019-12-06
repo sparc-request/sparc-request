@@ -30,11 +30,10 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      - link = Setting.get_value("dashboard_link") + '/sub_service_requests/' + ssr.id.to_s
       %tr.skinny-black-border
         - if @role == 'none'
           %td.center
-            %a.link{href: link}=ssr.display_id
+            %a.link{ href: dashboard_sub_service_request_path(ssr) }=ssr.display_id
         - else
           %td.skinny-black-border.center= ssr.display_id
         %td.skinny-black-border.center= ssr.org_tree_display

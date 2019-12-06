@@ -202,6 +202,55 @@ module ApplicationHelper
     end
   end
 
+  def faq_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : 'mb-1']
+
+    if identity_signed_in? && Setting.get_value('use_faq_link')
+      link_to Setting.get_value("faq_url"), target: :_blank, class: klass do
+        (opts[:dropdown] ? icon('fas', 'question mr-2') : '') + t('layout.footer.links.faqs.header')
+      end
+    else
+      link_to faqs_pages_path, remote: true, class: klass do
+        (opts[:dropdown] ? icon('fas', 'question mr-2') : '') + t('layout.footer.links.faqs.header')
+      end
+    end
+  end
+
+  def contact_us_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : '', identity_signed_in? ? 'mb-1' : 'disabled']
+
+    link = link_to new_contact_form_path, remote: true, class: klass do
+      (opts[:dropdown] ? icon('fas', 'comment mr-2') : '') + t('layout.footer.links.contact')
+    end
+
+    if identity_signed_in?
+      link
+    else
+      content_tag :span, link, class: 'tooltip-wrapper', title: t('layout.sign_in_required'), data: { toggle: 'tooltip', placement: 'left' }
+    end
+  end
+
+  def feedback_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : '', identity_signed_in? ? '' : 'disabled']
+
+    link = 
+      if identity_signed_in? && Setting.get_value("use_feedback_link")
+        link_to Setting.get_value("feedback_link"), target: :_blank, class: klass do
+          (opts[:dropdown] ? icon('fas', 'pencil-alt mr-2') : '') + t('layout.footer.links.feedback')
+        end
+      else
+        link_to new_feedback_path, remote: true, class: klass do
+          (opts[:dropdown] ? icon('fas', 'pencil-alt mr-2') : '') + t('layout.footer.links.feedback')
+        end
+      end
+
+    if identity_signed_in?
+      link
+    else
+      content_tag :span, link, class: 'tooltip-wrapper', title: t('layout.sign_in_required'), data: { toggle: 'tooltip', placement: 'left' }
+    end
+  end
+
   def in_dashboard?
     @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard') && request.format.html?) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
   end

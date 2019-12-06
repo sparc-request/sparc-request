@@ -42,6 +42,7 @@ public/system
 *~
 config/alfresco.yml
 config/database.yml
+config/shards.yml
 config/ldap.yml
 config/application.yml
 config/fulfillment_db.yml

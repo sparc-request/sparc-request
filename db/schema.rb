@@ -72,12 +72,12 @@ ActiveRecord::Schema.define(version: 2019_11_19_144844) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "auditable_id"
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "auditable_id"
     t.string "auditable_type"
-    t.bigint "associated_id"
+    t.integer "associated_id"
     t.string "associated_type"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"

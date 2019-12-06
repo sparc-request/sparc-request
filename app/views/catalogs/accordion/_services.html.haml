@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- organization.services.select{ |serv| @service ? serv == @service : true && serv.is_available != false && serv.current_pricing_map }.each do |service|
+- organization.services.eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).select{ |serv| @service ? serv == @service : true && serv.is_available != false && serv.current_pricing_map }.each do |service|
 
   .w-100.service
     .row
@@ -29,7 +29,8 @@
           - else
             = service.display_service_name
       .col-2.text-right
-        = link_to icon('fas', 'plus'), add_service_service_request_path(srid: service_request.id, service_id: service.id), method: :post, remote: true, class: 'btn btn-sm btn-sq btn-success add-service', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', disable: true }
+        - if identity_signed_in? && @shard == current_user.shard_identifier
+          = link_to icon('fas', 'plus'), add_service_service_request_path(srid: service_request.id, service_id: service.id), method: :post, remote: true, class: 'btn btn-sm btn-sq btn-success add-service', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', disable: true }
     = cpt_code_text(service)
     = eap_id_text(service)
     = raw service_pricing_text(service)

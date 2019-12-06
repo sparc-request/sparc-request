@@ -50,6 +50,8 @@ Rails.application.routes.draw do
   resource :pages, only: [] do
     get :event_details
     get :faqs
+    get :get_news_feed
+    get :get_calendar_events
   end
 
   resources :forms, only: [:index]
@@ -322,7 +324,7 @@ Rails.application.routes.draw do
     end
   end
 
-  mount API::V1::Base => '/'
+  mount APIV1::Base => '/'
 
   root to: 'service_requests#catalog'
 

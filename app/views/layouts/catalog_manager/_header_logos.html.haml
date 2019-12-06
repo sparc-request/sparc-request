@@ -23,7 +23,7 @@
     %a{ href: Setting.get_value("header_link_1"), class: 'org-logo' }
       = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: 'org_logo', height: 140
   .col-md-6
-    %a{ href: Setting.get_value("header_link_2_catalog") }
+    %a{ href: catalog_manager_root_path }
       = image_tag 'logos/catalog_logo.jpg', alt: 'catalog_manager_logo', class: 'sparc-request-header', height: 110
   .col-md-3
     %a{ href: Setting.get_value("header_link_3"), target: '_blank', class: 'institution-logo' }

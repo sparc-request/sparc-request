@@ -26,13 +26,16 @@ class Organization < ApplicationRecord
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
+
   has_one :subsidy_map, :dependent => :destroy
+
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
+  has_many :primary_contacts, -> { where(is_primary_contact: true) }, class_name: 'ServiceProvider'
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
   has_many :patient_registrars, :dependent => :destroy

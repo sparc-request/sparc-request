@@ -41,22 +41,10 @@ $(document).ready ->
   ###############
 
   $(document).on 'click', '#institutionAccordion .org-link', ->
-    id = $(this).data('id')
-
-    if $(this).hasClass('locked')
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/locked_organization"
-        data:
-          srid: getSRId()
-    else
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/update_description"
-        data:
-          srid: getSRId()
+    $.ajax
+      type: 'get'
+      dataType: 'script'
+      url: $(this).data('url')
 
   $(document).on('submit', '#serviceCatalogForm', (event) ->
     if $('#cart #activeServices .sub-service-request, #cart #completedServices .sub-service-request').length == 0
@@ -89,9 +77,6 @@ $(document).ready ->
 
   servicesBloodhound.initialize()
 
-  $(document).on 'mouseleave', '#serviceQuery + .tt-menu .tt-suggestion', (e) ->
-    console.log e
-
   $('#serviceQuery').typeahead(
     {
       minLength: 3,
@@ -122,11 +107,12 @@ $(document).ready ->
   ).on('typeahead:render', ->
     initializePopovers()
   ).on('typeahead:select', (event, suggestion) ->
-    $.ajax
-      method: 'post'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid:       getSRId()
-        service_id: suggestion.service_id
+    if $('.profile').length # Only add services when logged in
+      $.ajax
+        method: 'post'
+        dataType: 'script'
+        url: '/service_request/add_service'
+        data:
+          srid:       getSRId()
+          service_id: suggestion.service_id
   )

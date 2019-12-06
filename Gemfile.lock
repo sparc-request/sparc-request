@@ -37,6 +37,14 @@ GIT
       rubyzip (~> 1.2, >= 1.2.1)
 
 GIT
+  remote: https://github.com/schovi/octopus.git
+  revision: a39612969286891c705384c214d7f1d0c365609f
+  specs:
+    ar-octopus (0.10.2)
+      activerecord (>= 4.2.0)
+      activesupport (>= 4.2.0)
+
+GIT
   remote: https://github.com/swanandp/acts_as_list.git
   revision: 03f33bff8c7ccee271a52f2c459077afc40accb4
   specs:
@@ -634,6 +642,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 6.0)
   acts_as_list!
   addressable (~> 2.7.0)
+  ar-octopus!
   audited (~> 4.9)
   axlsx!
   axlsx_rails

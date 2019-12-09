@@ -20,15 +20,23 @@
 
 module ApplicationHelper
   def format_date(date)
-    date.strftime('%D') rescue ""
+    if date.present?
+      content_tag :span do
+        raw date.strftime('%m/%d/%Y')
+      end
+    end
   end
 
-  def format_datetime(datetime, opts={})
-    datetime.strftime(opts[:format] ? opts[:format] : '%D %l:%M %p') rescue ""
+  def format_datetime(datetime)
+    if datetime.present?
+      content_tag :span do
+        raw datetime.strftime('%m/%d/%Y %l:%M') + content_tag(:span, datetime.strftime(':%S'), class: 'd-none') + datetime.strftime(' %p')
+      end
+    end
   end
 
   def format_phone(phone)
-    if phone
+    if phone.present?
       phone.gsub!(/[^0-9#]/, '')
 
       formatted = ""
@@ -193,7 +201,7 @@ module ApplicationHelper
 
     if accessible
       content_tag :li, class: 'nav-item' do
-        link_to name, path, target: :blank, class: ['nav-link', active ? 'active' : '']
+        link_to name, path, target: :_blank, class: ['nav-link', active ? 'active' : '']
       end
     end
   end

@@ -37,4 +37,10 @@ class ContactForm
   def persisted?
     false
   end
+
+  def attributes
+    [:name, :email, :subject, :message].map do |a|
+      [a, self.send(a)]
+    end.to_h
+  end
 end

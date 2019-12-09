@@ -54,7 +54,7 @@ class LineItem < ApplicationRecord
   validates :service_id, :service_request_id, presence: true
 
   validates :quantity, presence: true, numericality: true, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
-  validate :quantity_must_be_smaller_than_max_and_greater_than_min, if: Proc.new { |li| li.quantity && li.service && li.service.one_time_fee? }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, if: Proc.new { |li| li.quantity && li.service && li.service.one_time_fee? && li.service.current_effective_pricing_map }
   validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
 
   after_create :build_line_items_visits_if_pppv

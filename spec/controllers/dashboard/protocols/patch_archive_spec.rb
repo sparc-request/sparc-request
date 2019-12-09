@@ -21,25 +21,19 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
+  stub_controller
+
+  let!(:logged_in_user) { create(:identity) }
   describe 'PATCH #archive' do
-    before(:each) do
-      user = build_stubbed(:identity)
-      log_in_dashboard_identity(obj: user)
-      @protocol_stub = findable_stub(Protocol) do
-        build_stubbed(:protocol, type: "Study")
-      end
-      authorize(user, @protocol_stub, can_edit: true)
-      allow(@protocol_stub).to receive(:valid?).and_return(true)
-      allow(@protocol_stub).to receive(:toggle!)
+    it 'should send an email' do
+      allow(controller).to receive(:current_user).and_return(logged_in_user)
 
-      patch :archive, params: { id: @protocol_stub.id }, xhr: true
+      protocol  = create(:study_without_validations, primary_pi: logged_in_user, archived: false)
+                  create(:service_request, protocol: protocol)
+
+      expect {
+        patch :archive, params: { id: protocol.id }, xhr: true
+      }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
-
-    it 'should toggle archived field of Protocol' do
-      expect(@protocol_stub).to have_received(:toggle!).with(:archived)
-    end
-
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to render_template "dashboard/protocols/archive" }
   end
 end

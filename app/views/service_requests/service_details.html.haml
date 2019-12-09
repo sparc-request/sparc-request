@@ -24,5 +24,7 @@
   - if @errors && (@service_request.previously_submitted? || Rails.application.routes.recognize_path(request.referrer)[:action] != 'protocol')
     - @service_request.arms.select{ |a| a.errors.any? }.each do |arm|
       = render 'layouts/modal_errors', errors: arm.errors, messages: arm.errors.messages[:visit_groups], header: arm.name
-  = render 'service_calendars/tabs', service_request: @service_request, page: @page, pages: @pages
+  .card
+    .card-body.px-0.pb-0
+      = render 'service_calendars/tabs', service_request: @service_request, page: @page, pages: @pages
   = render 'service_requests/navigation/footer'

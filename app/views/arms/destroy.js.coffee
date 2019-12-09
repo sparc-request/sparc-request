@@ -18,13 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# After destroying the second arm, the first arm should not be deletable
+<% if @service_request.arms.length == 1 %>
+<% first_arm = @service_request.arms.first %>
+$(".arm-<%= first_arm.id %>-container .calendar-links-container").html("<%= j render 'arms/actions', service_request: @service_request, sub_service_request: @sub_service_request, arm: first_arm, tab: @tab, page: @pages[first_arm.id], pages: @pages %>")
+<% end %>
+
 $(".arm-<%= @arm.id %>-container").remove()
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 
-# Assuming you must always have one arm, now you may only have one
-# so disable the button if so
-
-if $('.delete-arm-button:visible').length == 1
-  $('.delete-arm-button:visible').addClass('disabled')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

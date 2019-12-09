@@ -31,12 +31,12 @@ RSpec.describe SubServiceRequest, type: :model do
 
   describe '#forms_to_complete' do
     it 'should return both Organization and Service forms that need to be completed' do
-      expect(ssr.forms_to_complete.to_a).to eq([service_form, org_form])
+      expect(ssr.forms_to_complete.to_a).to eq([[service.name, [service_form]], [organization.name, [org_form]]])
     end
 
     it 'should not return forms that have been completed' do
       create(:response, survey: org_form, respondable: ssr)
-      expect(ssr.forms_to_complete.to_a).to eq([service_form])
+      expect(ssr.forms_to_complete.to_a).to eq([[service.name, [service_form]]])
     end
   end
 end

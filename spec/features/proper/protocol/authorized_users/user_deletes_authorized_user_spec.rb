@@ -25,25 +25,25 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
   fake_login_for_each_test
 
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
-  before :each do
-    @org      = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
-    @service  = create(:service, name: "Service", abbreviation: "Service", organization: @org, pricing_map_count: 1)
-  end
+  let!(:org)        { create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1) }
+  let!(:service)    { create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1) }
 
   context 'user deletes a user' do
     before :each do
       @protocol = create(:study_federally_funded, primary_pi: jug2)
                   create(:project_role, protocol: @protocol, identity: other_user, role: 'consultant')
       @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
-      ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+      ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
       visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
     it 'should delete the user' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       first('.delete-authorized-user:not(.disabled)').click
       confirm_swal
       wait_for_javascript_to_finish
@@ -58,14 +58,17 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
       @protocol = create(:study_federally_funded, primary_pi: other_user)
                   create(:project_role, :approve, protocol: @protocol, identity: jug2, role: 'consultant')
       @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
-      ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+      ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
 
       visit protocol_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
     it 'should redirect to the dashboard landing page' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       first('.delete-authorized-user:not(.disabled)').click
       confirm_swal
       wait_for_javascript_to_finish

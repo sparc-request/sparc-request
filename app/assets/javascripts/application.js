@@ -18,6 +18,16 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+//////////////////////
+/// IE11 Polyfills ///
+//////////////////////
+
+// Polyfill for position: sticky
+//= require stickybits/dist/stickybits.min
+
+// Polyfill for ES6 Promise
+//= require promise-polyfill/dist/polyfill.min
+
 ///////////////////////////////////////
 /// These need to be required first ///
 ///////////////////////////////////////
@@ -44,7 +54,6 @@
 //= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4
 //= require js-cookie/src/js.cookie
 //= require nprogress/nprogress
-//= require stickybits/dist/stickybits.min
 
 //////////////////////////////////
 /// Require Our Custom Scripts ///
@@ -64,8 +73,8 @@
 //= require utilities
 //= require global
 //= require batch-select
-//= require login
-//= require profile_form
+//= require identities
+//= require service_requests
 //= require protocols
 //= require protocol_form
 //= require associated_users
@@ -75,8 +84,6 @@
 //= require review
 //= require confirmation
 
-//= require cart
-//= require catalog
 //= require service_calendar
 
 //= require dashboard/protocols
@@ -89,19 +96,3 @@
 
 //= require surveyor/responses
 //= require surveyor/surveys
-
-// require batch-select
-// require bootstrap-table
-// require bootstrap-table-export
-// require tableExport
-// require bootstrap-table-custom
-// require jquery.remotipart
-// require twitter/typeahead.min
-// require handlebars-v4.0.5
-
-// require global
-// require associated_users_form
-// require study_schedule_tabs
-// require sweetalert.min
-// require feedback
-// require notes

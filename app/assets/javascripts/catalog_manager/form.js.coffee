@@ -389,7 +389,7 @@ $ ->
       type: "GET"
       url: "/catalog_manager/pricing_maps/#{pricing_map_id}/edit"
 
-  $(document).on 'click', '#new_pricing_map_link', ->
+  $(document).on 'click', '#new_pricing_map_link:not(.disabled)', ->
     service_id = $(this).data('service-id')
     $.ajax
       type: "GET"

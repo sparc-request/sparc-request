@@ -22,6 +22,7 @@ class SearchController < ApplicationController
 
   before_action :initialize_service_request,  only: [:services]
   before_action :authorize_identity,          only: [:services]
+  before_action :find_locked_org_ids,         only: [:services]
 
   def services_search
     term = params[:term].strip
@@ -49,13 +50,12 @@ class SearchController < ApplicationController
 
   def services
     term              = params[:term].strip
-    locked_org_ids    = @service_request.sub_service_requests.select{ |ssr| ssr.is_locked? }.map(&:organization_id)
-    locked_child_ids  = Organization.authorized_child_organization_ids(locked_org_ids)
+    locked_child_ids  = Organization.authorized_child_organization_ids(@locked_org_ids)
 
     results = Service.
                 eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
                 where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
-                where.not(organization_id: locked_org_ids + locked_child_ids).
+                where.not(organization_id: @locked_org_ids + locked_child_ids).
                 reject { |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
                 sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
 
@@ -64,7 +64,7 @@ class SearchController < ApplicationController
         service_id:     s.id,
         name:           s.display_service_name,
         description:    s.description,
-        breadcrumb:     breadcrumb_text(s),
+        breadcrumb:     helpers.breadcrumb_text(s),
         abbreviation:   s.abbreviation,
         cpt_code_text:  helpers.cpt_code_text(s),
         eap_id_text:    helpers.eap_id_text(s),
@@ -95,6 +95,7 @@ class SearchController < ApplicationController
         name:           item.name,
         abbreviation:   item.abbreviation,
         type:           item.model_name.human,
+        klass:          item.is_a?(Service) ? Service.name : Organization.name,
         text_color:     "text-#{item.class.name.downcase}",
         cpt_code_text:  item.is_a?(Service) ? helpers.cpt_code_text(item) : "",
         eap_id_text:    item.is_a?(Service) ? helpers.eap_id_text(item) : "",
@@ -122,18 +123,6 @@ class SearchController < ApplicationController
 
   def inactive_text(item)
     text = item.is_available ? "" : "(Inactive)"
-  end
-
-  def breadcrumb_text(item)
-    if item.parents.any?
-      breadcrumb = []
-      item.parents.reverse.each do |parent|
-        breadcrumb << "<span class='text-#{parent.type.downcase}'>#{parent.abbreviation} </span>"
-        breadcrumb << helpers.icon('fas', 'caret-right') + " "
-      end
-      breadcrumb.pop
-      breadcrumb.join.html_safe
-    end
   end
 
   def breadcrumb_text_bs3(item)

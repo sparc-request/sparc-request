@@ -25,7 +25,7 @@ RSpec.describe 'User edits an arm', js: true do
   fake_login_for_each_test
 
   before :each do
-    org       = create(:organization)
+    org       = create(:organization, :process_ssrs)
     pricing   = create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
 

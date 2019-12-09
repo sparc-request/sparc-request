@@ -48,7 +48,10 @@ ConfirmSwal.fire(
         srid: getSRId()
         line_item_id: "<%= params[:line_item_id] %>"
         confirmed: "true"
+<% elsif @service_request.line_items.empty? && @page != 'catalog' %>
+window.location = "<%= catalog_service_request_path(srid: @service_request.id) %>"
 <% else %>
+
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
 $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
@@ -57,4 +60,6 @@ $('.service-list').html("<%= j render 'service_requests/protocol/service_list', 
 <% end %>
 
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

@@ -49,4 +49,9 @@ class PastSubsidy < ApplicationRecord
       ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
     end
   end
+
+  def overridden?
+    audit = self.audits.find_by_action('create')
+    AuditRecovery.where("auditable_type = 'Subsidy' AND action = 'destroy' AND audited_changes LIKE '%status: Approved%' AND created_at >= ?", audit.created_at).first.try(:audited_changes).try(:[], 'overridden')
+  end
 end

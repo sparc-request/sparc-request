@@ -62,8 +62,8 @@ VALID_MONETARY_KEYS = [
   else if !a && b
     return -1
   else
-    sort_a = new Date(a)
-    sort_b = new Date(b)
+    sort_a = new Date($(a).text())
+    sort_b = new Date($(b).text())
     return 1 if sort_a > sort_b
     return -1 if sort_a < sort_b
     return 0

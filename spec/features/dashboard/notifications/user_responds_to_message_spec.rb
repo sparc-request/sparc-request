@@ -42,10 +42,10 @@ RSpec.describe "User responds to a message", js: true do
     find('#profileDropdown + .dropdown-menu .dropdown-item#userMessages').click
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector('#notifications-table tbody tr', count: 1)
+    expect(page).to have_selector('.notifications-table tbody tr', count: 1)
 
     # Capybara doesn't like to click td elements
-    first('#notifications-table tbody tr td.subject span').click
+    first('.notifications-table tbody tr td.subject span').click
     wait_for_javascript_to_finish
 
     expect(page).to have_no_selector('.profile .notification-badge')

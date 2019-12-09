@@ -50,6 +50,7 @@ class ArmsController < ApplicationController
     setup_calendar_pages
 
     if @arm.save
+      @service_request.reload
       flash[:success] = t('arms.created')
     else
       @errors = @arm.errors
@@ -82,6 +83,10 @@ class ArmsController < ApplicationController
 
   def destroy
     @arm.destroy
+    @service_request.reload
+
+    setup_calendar_pages
+
     flash[:alert] = t('arms.destroyed')
 
     respond_to :js

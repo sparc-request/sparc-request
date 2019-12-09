@@ -25,10 +25,12 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   fake_login_for_each_test
 
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
+  let!(:org)        { create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1) }
 
   context 'user deletes a user' do
     before :each do
       @protocol = create(:study_federally_funded, primary_pi: jug2)
+                  create(:service_request_without_validations, status: 'draft', protocol: @protocol)
                   create(:project_role, protocol: @protocol, identity: other_user, role: 'consultant')
 
       visit dashboard_protocol_path(@protocol)
@@ -36,6 +38,9 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     end
 
     it 'should delete the user' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       first('.delete-authorized-user:not(.disabled)').click
       confirm_swal
       wait_for_javascript_to_finish
@@ -48,18 +53,21 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   context 'admin user deletes themself' do
     before :each do
       @protocol       = create(:study_federally_funded, primary_pi: other_user)
+      sr              = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+      ssr             = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', protocol: @protocol)
                         create(:project_role, :approve, protocol: @protocol, identity: jug2, role: 'consultant')
-      organization    = create(:organization)
-      service_request = create(:service_request_without_validations, protocol: @protocol)
-                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: @protocol)
-      @document       = create(:document, protocol: @protocol)
-                        create(:super_user, organization: organization, identity: jug2)
+                        create(:super_user, organization: org, identity: jug2)
+
+      @document = create(:document, protocol: @protocol)
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
     end
 
     it 'should delete the user and refresh page contents to reflect their updated rights' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       all('.delete-authorized-user:not(.disabled)').last.click
       confirm_swal
       wait_for_javascript_to_finish
@@ -74,6 +82,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   context 'non-admin user deletes themself' do
     before :each do
       @protocol = create(:study_federally_funded, primary_pi: other_user)
+                  create(:service_request_without_validations, status: 'draft', protocol: @protocol)
                   create(:project_role, :approve, protocol: @protocol, identity: jug2, role: 'consultant')
 
       visit dashboard_protocol_path(@protocol)
@@ -81,6 +90,9 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     end
 
     it 'should redirect to the dashboard landing page' do
+      first('#authorizedUsers button[name="refresh"]').click
+      wait_for_javascript_to_finish
+
       all('.delete-authorized-user:not(.disabled)').last.click
       confirm_swal
       wait_for_javascript_to_finish

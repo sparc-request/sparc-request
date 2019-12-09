@@ -161,14 +161,6 @@ class ApplicationController < ActionController::Base
     redirect_to authorization_error_path(error: error, format: request.format.html? ? :html : :js)
   end
 
-  def clean_errors errors
-    errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
-  end
-
-  def clean_messages errors
-    errors.map {|k,v| v}.flatten
-  end
-
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])
@@ -179,12 +171,12 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && request.format.js?))
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && (request.format.js? || request.format.json?)))
       return true
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true
-    elsif current_user.nil?
-      store_location_for(:identity, request.get? ? request.url : request.referrer)
+    elsif !identity_signed_in?
+      store_location_for(:identity, request.get? && request.format.html? ? request.url : request.referrer)
       authenticate_identity!
       return true
     end
@@ -274,6 +266,6 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.select(&:is_locked?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+    @locked_org_ids = @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
 end

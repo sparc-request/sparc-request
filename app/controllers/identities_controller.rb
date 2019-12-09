@@ -20,11 +20,11 @@
 
 class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
+  before_action :find_identity
 
   def approve_account
     respond_to :html
 
-    @identity = Identity.find(params[:id])
     if !@identity.try(:approved)
       @identity.update_attribute(:approved, true)
       Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
@@ -39,8 +39,7 @@ class IdentitiesController < ApplicationController
   def disapprove_account
     respond_to :html
 
-    @identity = Identity.find(params[:id])
-    if @identity.try(:approved)
+    if @identity.try(:approved) != false
       @identity.update_attribute(:approved, false)
       Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
       flash[:success] = t('devise.approvals.disapproved')
@@ -49,5 +48,11 @@ class IdentitiesController < ApplicationController
     end
 
     redirect_to root_path
+  end
+
+  private
+
+  def find_identity
+    @identity = Identity.find(params[:id])
   end
 end

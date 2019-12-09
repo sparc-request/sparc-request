@@ -33,16 +33,7 @@ RSpec.describe LineItemsVisit, type: :model do
     expect(line_items_visit.visits).to eq [ ]
   end
 
-  it 'should only belong to a PPPV LineItem' do
-    arm = create(:arm, :without_validations)
-    line_item = create(:line_item, :one_time_fee, :without_validations)
-    line_items_visit = build(:line_items_visit, line_item_id: line_item.id, arm_id: arm.id)
-
-    expect(line_items_visit).not_to be_valid
-  end
-
   describe "methods" do
-
     before :each do
       service_request.protocol.update_attributes(indirect_cost_rate: 200)
       @line_items_visit = arm1.line_items_visits.first

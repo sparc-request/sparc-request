@@ -30,11 +30,15 @@ module ServiceRequestsHelper
   end
 
   def ssr_name_display(sub_service_request)
-    content_tag :span do
-      content_tag(:strong, "(#{sub_service_request.ssr_id})") + " " +
-      (!sub_service_request.can_be_edited? ? icon('fas', 'lock') + " " : "") +
-      sub_service_request.organization.name
+    header = content_tag(:strong, "(#{sub_service_request.ssr_id})", class: 'mr-2')
+
+    if sub_service_request.is_complete?
+      header += icon('fas', 'check fa-lg mr-2')
+    elsif sub_service_request.is_locked?
+      header += icon('fas', 'lock fa-lg mr-2')
     end
+
+    content_tag :span, (header + sub_service_request.organization.name)
   end
 
   def service_name_display(line_item)
@@ -50,14 +54,6 @@ module ServiceRequestsHelper
   end
 
   def save_as_draft_button(service_request)
-    link_to t('proper.navigation.bottom.save_as_draft'),
-      save_and_exit_service_request_path(srid: service_request.id), remote: true,
-      class: 'btn btn-lg btn-outline-warning',
-      data: {
-        confirm_swal: 'true',
-        title: t('proper.navigation.save_as_draft.title'),
-        html: t('proper.navigation.save_as_draft.text', protocol_type: service_request.protocol.model_name.human),
-        remote: 'false'
-      }
+    content_tag :button, t('proper.navigation.bottom.save_as_draft'), type: 'button', id: 'saveAsDraft', class: 'btn btn-lg btn-outline-warning'
   end
 end

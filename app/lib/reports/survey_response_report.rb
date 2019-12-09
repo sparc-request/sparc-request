@@ -18,130 +18,132 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class SurveyResponseReport < ReportingModule
-  $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
+module Reports
+  class SurveyResponseReport < ReportingModule
+    $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
-  ################## BEGIN REPORT SETUP #####################
+    ################## BEGIN REPORT SETUP #####################
 
-  def self.title
-    "Survey Responses"
-  end
+    def self.title
+      "Survey Responses"
+    end
 
-  # see app/reports/test_report.rb for all options
-  def default_options
-    {
-      "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
-      SystemSurvey => {:field_type => :select_tag, :custom_name_method => :report_title, :required => true},
-      "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
-    }
-  end
+    # see app/reports/test_report.rb for all options
+    def default_options
+      {
+        "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
+        SystemSurvey => {:field_type => :select_tag, :custom_name_method => :report_title, :required => true},
+        "Include Pending Responses" => { field_type: :check_box_tag, for: "show_pending" }
+      }
+    end
 
-  # see app/reports/test_report.rb for all options
-  def column_attrs
-    attrs = {}
+    # see app/reports/test_report.rb for all options
+    def column_attrs
+      attrs = {}
 
-    attrs["SRID"] = "respondable.is_a?(ServiceRequest) ? respondable.id : respondable.try(:display_id)"
-    attrs["User ID"] = :identity_id
-    attrs["User Name"] = "identity.try(:full_name)"
-    attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
+      attrs["SRID"] = "respondable.is_a?(ServiceRequest) ? respondable.id : respondable.try(:display_id)"
+      attrs["User ID"] = :identity_id
+      attrs["User Name"] = "identity.try(:full_name)"
+      attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
-    if params[:system_survey_id]
-      survey = Survey.find(params[:system_survey_id])
-      survey.sections.each do |section|
-        section.questions.each do |question|
-          question.question_responses.each do |qr|
-            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.any? ? question_responses.where(question_id: #{question.id}).first.try(:report_content) : 'No Response'"
+      if params[:system_survey_id]
+        survey = Survey.find(params[:system_survey_id])
+        survey.sections.each do |section|
+          section.questions.each do |question|
+            question.question_responses.each do |qr|
+              attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.any? ? question_responses.where(question_id: #{question.id}).first.try(:report_content) : 'No Response'"
+            end
           end
         end
       end
+
+      attrs
     end
 
-    attrs
-  end
+    ################## END REPORT SETUP  #####################
 
-  ################## END REPORT SETUP  #####################
+    ################## BEGIN QUERY SETUP #####################
+    # def table => primary table to query
+    # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
+    # def includes => other tables to include
+    # def where => conditions for query
+    # def uniq => return distinct records
+    # def group => group by this attribute (including table name is always a safe bet, ex. identities.id)
+    # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
+    # Primary table to query
+    def table
+      Response
+    end
 
-  ################## BEGIN QUERY SETUP #####################
-  # def table => primary table to query
-  # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
-  # def includes => other tables to include
-  # def where => conditions for query
-  # def uniq => return distinct records
-  # def group => group by this attribute (including table name is always a safe bet, ex. identities.id)
-  # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
-  # Primary table to query
-  def table
-    Response
-  end
+    # Other tables to include
+    def includes
+      return :survey
+    end
 
-  # Other tables to include
-  def includes
-    return :survey
-  end
+    # Other tables to include
+    def joins(args={})
+      # If showing pending, do not joins question responses
+      return args[:show_pending] ? nil : :question_responses
+    end
 
-  # Other tables to include
-  def joins(args={})
-    # If showing pending, do not joins question responses
-    return args[:show_pending] ? nil : :question_responses
-  end
+    # Conditions
+    def where args={}
+      created_at_from = (args[:created_at_from] ? DateTime.strptime(args[:created_at_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).to_s(:db)
+      created_at_to = (args[:created_at_to] ? DateTime.strptime(args[:created_at_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).strftime("%Y-%m-%d 23:59:59")
+      created_at = created_at_from..created_at_to
+      return :responses => {:created_at => created_at, :survey_id => args[:system_survey_id]}
+    end
 
-  # Conditions
-  def where args={}
-    created_at_from = (args[:created_at_from] ? DateTime.strptime(args[:created_at_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).to_s(:db)
-    created_at_to = (args[:created_at_to] ? DateTime.strptime(args[:created_at_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).strftime("%Y-%m-%d 23:59:59")
-    created_at = created_at_from..created_at_to
-    return :responses => {:created_at => created_at, :survey_id => args[:system_survey_id]}
-  end
+    # Return only uniq records for
+    def uniq
+      return :responses
+    end
 
-  # Return only uniq records for
-  def uniq
-    return :responses
-  end
+    def group
+    end
 
-  def group
-  end
+    def order
+      "responses.created_at ASC"
+    end
 
-  def order
-    "responses.created_at ASC"
-  end
+    ##################  END QUERY SETUP   #####################
 
-  ##################  END QUERY SETUP   #####################
+    private
 
-  private
+    def create_report(worksheet)
+      super
 
-  def create_report(worksheet)
-    super
+      start_date                = (params[:created_at_from] ? DateTime.strptime(params[:created_at_from], "%m/%d/%Y") : "2012-03-01".to_date).to_s(:db)
+      end_date                  = (params[:created_at_to] ? DateTime.strptime(params[:created_at_to], "%m/%d/%Y") : Date.today).strftime("%Y-%m-%d 23:59:59")
+      # assumes the first question where only one option can be picked is the satisfaction question
+      survey                    = Survey.find(params[:system_survey_id])
+      questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
+      responses                 = QuestionResponse.includes(:response).where(question: questions, responses: { created_at: start_date..end_date }).where.not(content: [nil, ""])
+      total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
+      average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
 
-    start_date                = (params[:created_at_from] ? DateTime.strptime(params[:created_at_from], "%m/%d/%Y") : "2012-03-01".to_date).to_s(:db)
-    end_date                  = (params[:created_at_to] ? DateTime.strptime(params[:created_at_to], "%m/%d/%Y") : Date.today).strftime("%Y-%m-%d 23:59:59")
-    # assumes the first question where only one option can be picked is the satisfaction question
-    survey                    = Survey.find(params[:system_survey_id])
-    questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
-    responses                 = QuestionResponse.includes(:response).where(question: questions, responses: { created_at: start_date..end_date }).where.not(content: [nil, ""])
-    total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
-    average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
+      worksheet.add_row([])
+      worksheet.add_row(["Overall Satisfaction Rate", "", "#{average_percent_satisifed}%"])
+    end
 
-    worksheet.add_row([])
-    worksheet.add_row(["Overall Satisfaction Rate", "", "#{average_percent_satisifed}%"])
-  end
-
-  # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
-  # or Yes or No answer from version 0 of those surveys.
-  def percent_satisfied(content)
-    if ['yes', 'extremely likely', 'very satisfied'].include?(content)
-      100
-    elsif ['somewhat likely', 'satisfied'].include?(content)
-      80
-    elsif ['neutral'].include?(content)
-      60
-    elsif ['not very likely', 'dissatisfied'].include?(content)
-      40
-    elsif ['not at all likely', 'very dissatisfied'].include?(content)
-      20
-    elsif ['no'].include?(content)
-      0
-    else
-      0
+    # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
+    # or Yes or No answer from version 0 of those surveys.
+    def percent_satisfied(content)
+      if ['yes', 'extremely likely', 'very satisfied'].include?(content)
+        100
+      elsif ['somewhat likely', 'satisfied'].include?(content)
+        80
+      elsif ['neutral'].include?(content)
+        60
+      elsif ['not very likely', 'dissatisfied'].include?(content)
+        40
+      elsif ['not at all likely', 'very dissatisfied'].include?(content)
+        20
+      elsif ['no'].include?(content)
+        0
+      else
+        0
+      end
     end
   end
 end

@@ -99,6 +99,14 @@
       }
     }
 
+    &:not(.editable):hover {
+      cursor: not-allowed;
+
+      input {
+        cursor: not-allowed;
+      }
+    } 
+
     .visit-quantity {
       transform: scale(1.5);
       cursor: pointer;
@@ -109,5 +117,18 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+// Admin Styling
+.card #serviceCalendar {
+  nav .nav-link:first-of-type {
+    border-left: 0;
+  }
+
+  .card {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
   }
 }

@@ -40,8 +40,8 @@ class Study < Protocol
   # validates :guarantor_state, length: { maximum: 2 }
   # validates :guarantor_zip, length: { maximum: 9 }
 
-  validates_format_of :guarantor_email, with: Devise::email_regexp, allow_blank: true
-  validates_format_of :guarantor_phone, with: /[0-9]{10}(#[0-9]+)?/, allow_blank: true
+  validates_format_of :guarantor_email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true
+  validates_format_of :guarantor_phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true
 
   validates :guarantor_contact, length: { maximum: 192 }
 
@@ -125,7 +125,7 @@ class Study < Protocol
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id && self.study_type_answers.any?
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
@@ -135,13 +135,13 @@ class Study < Protocol
       if answers['certificate_of_conf'].answer.nil?
         error = 'certificate_of_conf'
       elsif answers['certificate_of_conf'].answer == false
-        if (answers['higher_level_of_privacy'].answer.nil?)
+        if answers['higher_level_of_privacy'].answer.nil?
           error = 'higher_level_of_privacy'
-        elsif (answers['epic_inbasket'].answer.nil?)
+        elsif answers['epic_inbasket'].answer.nil?
           error = 'epic_inbasket'
-        elsif (answers['research_active'].answer.nil?)
+        elsif answers['research_active'].answer.nil?
           error = 'research_active'
-        elsif (answers['restrict_sending'].answer.nil?)
+        elsif answers['restrict_sending'].answer.nil?
           error = 'restrict_sending'
         end
       end

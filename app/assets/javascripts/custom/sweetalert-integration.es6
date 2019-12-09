@@ -30,7 +30,7 @@
   }
 
   const allowAction = element => {
-    if (element.getAttribute('data-confirm-swal') === null) {
+    if (element.getAttribute('data-confirm-swal') !== 'true') {
       return true
     }
 

@@ -29,15 +29,13 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     @service_request = create(:service_request_without_validations, protocol: @protocol)
     @arm1            = create(:arm, protocol: @protocol, name: 'Left Arm')
     @arm2            = create(:arm, protocol: @protocol, name: 'Right Arm')
-    @visit_group1    = create(:visit_group, arm: @arm1)
-    @visit_group2    = create(:visit_group, arm: @arm2)
   end
 
   it 'should display total cost per arm for each arm' do
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-    expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm1.name}")
-    expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm2.name}")
+    expect(response).to have_content(I18n.t('calendars.pppv.totals.total_costs', arm_name: @arm1.name))
+    expect(response).to have_content(I18n.t('calendars.pppv.totals.total_costs', arm_name: @arm2.name))
   end
 
   it 'should display total costs for non-clinical services' do
@@ -52,7 +50,7 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     it 'should display total direct cost' do
       render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-      expect(response).to have_content('Total Direct Cost')
+      expect(response).to have_content(I18n.t('calendars.merged_totals.direct_cost'))
     end
   end
 
@@ -60,13 +58,13 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
     it 'should not display total direct cost' do
       render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-      expect(response).to_not have_content('Total Direct Cost')
+      expect(response).to_not have_content(I18n.t('calendars.merged_totals.direct_cost'))
     end
   end
 
   it 'should display the grand total' do
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-    expect(response).to have_content('Grand Total')
+    expect(response).to have_content(I18n.t('calendars.merged_totals.grand_total'))
   end
 end

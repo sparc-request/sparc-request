@@ -80,9 +80,16 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
             @merged_protocol.ip_patents_info.update_attributes(protocol_id: @master_protocol.id)
           end
 
+          if (@master_protocol.research_master_id == nil) && (@merged_protocol.research_master_id != nil)
+            @master_protocol.research_master_id = @merged_protocol.research_master_id
+            @master_protocol.save(validate: false)
+          end
+
           @merged_protocol.impact_areas.each do |area|
-            area.protocol_id = @master_protocol.id
-            area.save(validate: false)
+            if !@master_protocol.impact_areas.map{|x| x.name}.include?(area.name)
+              area.protocol_id = @master_protocol.id
+              area.save(validate: false)
+            end
           end
 
           @merged_protocol.affiliations.each do |affiliation|

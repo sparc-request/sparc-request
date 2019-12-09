@@ -70,6 +70,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def update
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
+      @sub_service_request.generate_approvals(current_user)
       flash[:success] = t('dashboard.sub_service_requests.updated')
     else
       @errors = @sub_service_request.errors
@@ -98,11 +99,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def resend_surveys
     if @sub_service_request.surveys_completed?
-      @refresh = true # Refresh the details options
       flash[:alert] = 'All surveys have already been completed.'
     else
       @sub_service_request.distribute_surveys
-      @refresh = true
       flash[:success] = 'Surveys re-sent!'
     end
   end

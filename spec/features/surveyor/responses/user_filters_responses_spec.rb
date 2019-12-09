@@ -124,9 +124,7 @@ RSpec.describe 'User filters responses', js: true do
       end
 
       scenario 'and sees responses for those Surveys' do
-        find('#for-SystemSurvey select#filterrific_with_survey + .dropdown-toggle').click
-        first('.dropdown-menu.open span', text: "Version #{@survey.version} (#{@survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
-        find('body').click
+        bootstrap_select('#filterrific_with_survey', "Version #{@survey.version} (#{@survey.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})")
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 
@@ -145,10 +143,8 @@ RSpec.describe 'User filters responses', js: true do
       end
 
       scenario 'and sees responses for those Forms' do
-        bootstrap_select '#filterrific_of_type', 'Form'
-        find('#for-Form select#filterrific_with_survey + .dropdown-toggle').click
-        first('.dropdown-menu.open span', text: "Version #{@form.version} (#{@form.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})").click
-        find('body').click
+        bootstrap_select('#filterrific_of_type', 'Form')
+        bootstrap_select('#filterrific_with_survey', "Version #{@form.version} (#{@form.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})")
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 
@@ -169,21 +165,20 @@ RSpec.describe 'User filters responses', js: true do
 
     describe 'from filter' do
       scenario 'and sees responses completed after the date' do
-        find('#filterrific_start_date').click
-        find('body').click
+        bootstrap_datepicker('#filterrific_start_date', Time.now.strftime("%m/%d/%Y"))
+
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 
-
-        expect(page).to have_selector('td', text: @other_survey.title)
-        expect(page).to have_no_selector('td', text: @survey.title)
+        expect(page).to have_selector('td', text: @other_survey.full_title)
+        expect(page).to have_no_selector('td', text: @survey.full_title)
       end
     end
 
     describe 'to filter' do
       scenario 'and sees responses completed before the date' do
-        find('#filterrific_end_date').click
-        find('body').click
+        bootstrap_datepicker('#filterrific_end_date', Time.now.strftime("%m/%d/%Y"))
+
         click_button I18n.t(:actions)[:filter]
         wait_for_javascript_to_finish
 

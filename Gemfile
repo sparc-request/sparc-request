@@ -81,7 +81,7 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.2.0' # Check usage
 gem 'slack-notifier'
-gem 'sprockets', '~> 4.0.0.beta9'
+gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
@@ -123,12 +123,13 @@ end
 group :test do
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
-  gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
+  # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
+  gem 'webdrivers', '~> 4.0'
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'selenium-webdriver'
+  # gem 'selenium-webdriver'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage

@@ -73,7 +73,7 @@ RSpec.describe 'User edits organization subsidy map', js: true do
       end
 
       it 'should edit the excluded funding sources' do
-        bootstrap_select('#subsidy_map_excluded_funding_sources', 'Federal')
+        bootstrap3_select('#subsidy_map_excluded_funding_sources', 'Federal')
         find('form.form-horizontal').click
         click_button 'Save'
         wait_for_javascript_to_finish

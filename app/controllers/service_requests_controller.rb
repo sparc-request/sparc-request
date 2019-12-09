@@ -58,10 +58,13 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     @institutions = Institution.all
+
+    if identity_signed_in?
+      @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
+    end
   end
 
   def protocol
-    @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
   end
 
   def service_details
@@ -72,7 +75,7 @@ class ServiceRequestsController < ApplicationController
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if !@has_subsidy && !@eligible_for_subsidy
+    unless @has_subsidy || @eligible_for_subsidy
       redirect_to document_management_service_request_path(srid: @service_request.id)
     end
   end
@@ -115,9 +118,8 @@ class ServiceRequestsController < ApplicationController
   def confirmation
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @display_all_services = true
 
-    if @service_request.should_push_to_epic? && Setting.get_value("use_epic") && @protocol.selected_for_epic
+    if Setting.get_value("use_epic") && @service_request.should_push_to_epic? && @protocol.selected_for_epic?
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
@@ -135,11 +137,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
+    @service_request.protocol.update_attributes(milestones_params) if milestones_params
     @service_request.update_status('draft', current_user)
     @service_request.ensure_ssr_ids
-    redirect_to dashboard_root_path
 
-    respond_to :html
+    respond_to :js
   end
 
   def add_service
@@ -159,8 +161,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    page            = Rails.application.routes.recognize_path(request.referrer)[:action]
-    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, page, params[:confirmed] == 'true')
+    @page           = Rails.application.routes.recognize_path(request.referrer)[:action]
+    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
     if remove_service.confirm_previously_submitted?
       @confirm_previously_submitted = true
@@ -169,7 +171,6 @@ class ServiceRequestsController < ApplicationController
     else
       remove_service.remove_service
       flash[:alert] = t('line_items.deleted')
-      redirect_to root_path(method: :get, srid: @service_request.id) if @service_request.line_items.empty? && page != 'catalog'
     end
 
     respond_to :js

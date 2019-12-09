@@ -31,6 +31,6 @@
           = f.label :access_code, t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'control-label required'
           = f.text_field :access_code, class: 'form-control'
       .modal-footer
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
         = f.submit t(:actions)[:create], class: 'btn btn-primary'

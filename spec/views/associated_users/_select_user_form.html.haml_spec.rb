@@ -26,18 +26,14 @@ RSpec.describe '/associated_users/_select_user_form', type: :view do
 
   def render_user_search_form
     protocol = build(:unarchived_study_without_validations, id: 1, primary_pi: jug2)
-    render "/associated_users/select_user_form", header_text: "Add Authorized User",
-                                                          protocol: protocol
+    render "/associated_users/select_user_form", protocol: protocol, action_name: 'new'
   end
 
   context 'When the user tries to add another authorized user to the project' do
-
     it 'should show the search bar and the correct labels' do
       render_user_search_form
-      expect(response).to have_content('Add Authorized User')
-      expect(response).to have_content('Select User:')
-      expect(response).to have_selector('input')
-      expect(response).to have_selector('button', text: 'Close')
+      expect(response).to have_content(I18n.t("authorized_users.new"))
+      expect(response).to have_selector('input#user_search')
     end
   end
 end

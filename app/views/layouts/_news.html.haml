@@ -27,11 +27,11 @@
         = t('layout.navigation.news.header')
     .dropdown-divider
     - if @news.empty?
-      .dropdown-item
+      .dropdown-item.bg-white
         = t('layout.navigation.news.none')
     - else
       - @news.each do |article|
-        = link_to article[:link], target: :blank, class: 'dropdown-item text-primary' do
+        = link_to article[:link], target: :_blank, class: 'dropdown-item text-primary' do
           %h6.m-0<
             = article[:title].truncate(75)
             %br

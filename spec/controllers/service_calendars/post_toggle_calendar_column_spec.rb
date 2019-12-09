@@ -27,7 +27,7 @@ RSpec.describe ServiceCalendarsController do
   describe '#toggle_calendar_column' do
     context 'check' do
       it 'should update visits' do
-        org       = create(:organization)
+        org       = create(:organization, process_ssrs: true)
         service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
@@ -56,7 +56,7 @@ RSpec.describe ServiceCalendarsController do
 
     context 'uncheck' do
       it 'should update visits' do
-        org       = create(:organization)
+        org       = create(:organization, process_ssrs: true)
         service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
@@ -89,7 +89,7 @@ RSpec.describe ServiceCalendarsController do
       end
 
       it 'should update sub service requests to draft' do
-        org       = create(:organization)
+        org       = create(:organization, process_ssrs: true)
         service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
@@ -116,7 +116,7 @@ RSpec.describe ServiceCalendarsController do
       end
 
       it 'should not update sub service requests to draft' do
-        org       = create(:organization)
+        org       = create(:organization, process_ssrs: true)
         service   = create(:service, organization: org, pricing_map_count: 1)
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)

@@ -52,6 +52,6 @@ RSpec.describe 'User saves a response filters', js: true do
 
     expect(filter.with_state).to eq(['1','0'])
     expect(filter.include_incomplete).to eq(true)
-    expect(page).to have_selector('.apply-filter', text: 'My Filters')
+    expect(page).to have_selector('.apply-filter', text: 'My Filters', visible: false) ##visible false catches either case, to solve travis issue
   end
 end

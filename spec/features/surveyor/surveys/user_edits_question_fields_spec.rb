@@ -209,7 +209,7 @@ RSpec.describe 'User edits question fields', js: true do
         expect(@section.questions.count).to eq(0)
       end
 
-      context 'with options that appear in a depdent selectpicker' do
+      context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true)
@@ -419,7 +419,7 @@ RSpec.describe 'User edits question fields', js: true do
         expect(@section.questions.count).to eq(0)
       end
 
-      context 'with options that appear in a depdent selectpicker' do
+      context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true)

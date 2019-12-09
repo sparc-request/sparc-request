@@ -22,14 +22,9 @@ require 'rails_helper'
 
 RSpec.describe Surveyor::ResponsesController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#create' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
     context 'response is valid' do
       it 'should save @response' do
         survey = create(:survey)

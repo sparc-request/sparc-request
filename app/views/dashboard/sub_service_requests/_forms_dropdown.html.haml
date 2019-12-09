@@ -20,9 +20,9 @@
 
 - if (forms = sub_service_request.forms_to_complete).any?
   .dropdown.no-caret
-    %button.btn.btn-danger.dropdown-toggle.position-relative{ id: "subServiceRequest#{sub_service_request.id}Forms", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+    %button.btn.btn-danger.dropdown-toggle.position-relative.complete-forms{ id: "subServiceRequest#{sub_service_request.id}Forms", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
       = t('dashboard.service_requests.forms.selectpicker')
-      %span.badge.badge-pill.notification-badge.badge-secondary
+      %span.badge.badge-pill.badge-c.notification-badge.badge-secondary
         = format_count(forms.values.sum(&:count))
     .dropdown-menu{ aria: { labelledby: "subServiceRequest#{sub_service_request.id}Forms" } }
       - forms.each do |surveyable_name, grouped_forms|

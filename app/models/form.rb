@@ -67,7 +67,4 @@ class Form < Survey
     or(where(surveyable: identity))
   }
 
-  def self.yaml_klass
-    Form.name
-  end
 end

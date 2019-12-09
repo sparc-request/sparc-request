@@ -18,5 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modalContainer").html("<%= j render 'service_requests/modals/participate_in_survey_modal', survey: @survey, service_request: @service_request %>")
-$("#modalContainer").modal('show')
+ConfirmSwal.fire(
+  type:   'question'
+  title:  I18n.t('proper.survey.header')
+  text:   I18n.t('proper.survey.participate')
+  confirmButtonText: I18n.t('constants.yes_select')
+  cancelButtonText: I18n.t('constants.no_select')
+).then (result) ->
+  if result.value
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: '/surveyor/responses/new'
+      data:
+        respondable_id:   "<%= @service_request.id %>"
+        respondable_type: "<%= ServiceRequest.name %>"
+        survey_id:        "<%= @survey.id %>"
+        type:             "<%= SystemSurvey.name %>"
+      success: ->
+        $(document).one 'hide.bs.modal', ->
+          window.location = "<%= @forward %>"
+  else
+    window.location = "<%= @forward %>"

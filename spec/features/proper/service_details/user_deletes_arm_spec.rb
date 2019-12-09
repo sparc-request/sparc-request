@@ -22,32 +22,29 @@ require 'rails_helper'
 
 RSpec.describe 'User deletes an arm', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, name: "Armahgurdness")
-                  create(:arm, protocol: @protocol, name: "Armageddon")
+    org       = create(:organization, :process_ssrs)
+    pricing   = create(:pricing_setup, organization: org)
+    pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+
+    @protocol = create(:protocol_federally_funded, primary_pi: jug2)
+    sr        = create(:service_request_without_validations, protocol: @protocol)
+    ssr       = create(:sub_service_request, service_request: sr, organization: org)
+    @pppv_li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: pppv)
+                create(:arm, protocol: @protocol, subject_count: 10)
+    @arm      = create(:arm, protocol: @protocol, subject_count: 10, name: 'Give me an Arm')
+
+    visit service_details_service_request_path(srid: sr.id)
+    wait_for_javascript_to_finish
   end
 
-  context 'and and clicks the delete button' do
-    scenario 'and sees the arm was removed' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
-
-      first('.delete-arm-button').click
-      accept_alert
-      wait_for_javascript_to_finish
-
-      expect(@protocol.arms.count).to eq(1)
-    end
+  it 'should delete the new arm' do
+    all('.delete-arm').last.click
+    confirm_swal
+    wait_for_javascript_to_finish
+    expect(@protocol.reload.arms.count).to eq(1)
+    expect(page).to have_no_selector('.service-calendar-container .card-header h3', text: 'Give me an Arm')
   end
 end

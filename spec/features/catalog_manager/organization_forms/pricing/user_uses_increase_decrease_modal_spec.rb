@@ -53,11 +53,8 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
         fill_in 'percent_of_change', with: "-50"
 
-        find('#display_date').click
-        find('td.today').click
-
-        find('#effective_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#display_date')
+        bootstrap3_datepicker('#effective_date')
 
         click_button 'Adjust Rates'
         wait_for_javascript_to_finish

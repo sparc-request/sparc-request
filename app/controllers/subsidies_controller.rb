@@ -34,8 +34,12 @@ class SubsidiesController < ApplicationController
 
   def create
     @subsidy = @sub_service_request.build_pending_subsidy(subsidy_params)
-    @subsidy.save
-    flash[:success] = t(:subsidies)[:created]
+    
+    if @subsidy.save
+      flash[:success] = t(:subsidies)[:created]
+    else
+      @errors = @subsidy.errors
+    end
 
     respond_to :js
   end
@@ -78,9 +82,6 @@ class SubsidiesController < ApplicationController
     end
 
     params.require(:subsidy).permit(
-      :sub_service_request_id,
-      :overridden,
-      :status,
       :percent_subsidy
     )
   end

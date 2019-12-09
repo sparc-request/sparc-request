@@ -1,4 +1,3 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -74,15 +73,13 @@ class AssociatedUsersController < ApplicationController
   end
 
   def update
-    updater       = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
-    protocol_role = updater.protocol_role
+    updater         = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
+    @protocol_role  = updater.protocol_role
 
     if updater.successful?
       flash[:success] = t('authorized_users.updated')
-
-      redirect_to dashboard_root_path(method: :get) if protocol_role.identity == current_user && !current_user.catalog_overlord? && ['none', 'view'].include?(protocol_role.project_rights)
     else
-      @errors = updater.protocol_role.errors
+      @errors = @protocol_role.errors
     end
 
     respond_to :js
@@ -109,7 +106,10 @@ class AssociatedUsersController < ApplicationController
   private
 
   def project_role_params
-    params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    if params[:project_role][:identity_attributes]
+      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    end
+
     params[:project_role][:project_rights] ||= ""
 
     params.require(:project_role).permit(

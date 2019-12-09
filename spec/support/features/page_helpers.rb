@@ -22,7 +22,23 @@ module Features
   module PageHelpers
     def accept_confirm(&block)
       block.call if block_given?
-      page.driver.browser.switch_to.alert.accept
+      page.accept_alert
+    end
+
+    def confirm_swal
+      expect(page).to have_selector('.swal2-shown', visible: true)
+
+      # Confirm
+      if page.has_selector?('.swal2-container .swal2-confirm')
+        find('.swal2-container .swal2-confirm').click
+      else # Alert
+        find('.swal2-container .swal2-cancel').click
+      end
+    end
+
+    def cancel_swal
+      expect(page).to have_selector('.swal2-shown', visible: true)
+      find('.swal2-container .swal2-cancel').click
     end
   end
 end

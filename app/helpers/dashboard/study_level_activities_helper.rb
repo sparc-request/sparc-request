@@ -19,6 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::StudyLevelActivitiesHelper
+  def new_sla_button(opts={})
+    link_to new_dashboard_study_level_activity_path(ssrid: opts[:ssrid]), remote: true, class: 'btn btn-success', title: t('dashboard.sub_service_requests.study_level_activities.tooltips.new'), data: { toggle: 'tooltip' } do
+      icon('fas', 'plus mr-2') + t('dashboard.sub_service_requests.study_level_activities.new')
+    end
+  end
+
   def sla_fulfillments_button(line_item)
     link_to icon('fas', 'list'), dashboard_fulfillments_path(line_item_id: line_item.id, ssrid: line_item.sub_service_request_id), remote: true, class: 'btn btn-primary', title: t('dashboard.sub_service_requests.study_level_activities.tooltips.fulfillments'), data: { toggle: 'tooltip' }
   end

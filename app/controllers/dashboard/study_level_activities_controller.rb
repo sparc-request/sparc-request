@@ -33,13 +33,13 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def new
-    @line_item  = params[:line_item] ? @service_request.line_items.new(line_item_params.merge({ sub_service_request_id: @sub_service_request.id })) : @service_request.line_items.new(sub_service_request_id: @sub_service_request.id)
+    @line_item  = params[:line_item] ? @service_request.line_items.new(line_item_params) : @service_request.line_items.new
     
     respond_to :js
   end
 
   def create
-    @line_item = @service_request.line_items.new(line_item_params.merge({ sub_service_request_id: @sub_service_request.id }))
+    @line_item = @service_request.line_items.new(line_item_params)
 
     if @line_item.save
       flash[:success] = t('dashboard.sub_service_requests.study_level_activities.created')
@@ -51,6 +51,8 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def edit
+    @line_item.service_id = line_item_params[:service_id] if params[:line_item] && line_item_params[:service_id]
+
     respond_to :js
   end
 
@@ -64,7 +66,7 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
 
   def destroy
     @line_item.destroy
-    flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.updated')
+    flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.destroyed')
   end
 
   private

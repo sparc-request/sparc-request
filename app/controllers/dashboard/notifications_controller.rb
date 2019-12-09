@@ -22,43 +22,37 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
+    @table = params[:table] || 'inbox'
+
     respond_to do |format|
       format.html{
         session[:breadcrumbs].
           add_crumbs(notifications: true).
-          clear(:edit_protocol)
+          clear(crumb: :edit_protocol)
+      }
+      format.js{
+        @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
       }
       format.json{
-        @table = params[:table]
-
         @notifications =
           if @table == 'inbox'
-            Notification.in_inbox_of(current_user.id, params[:sub_service_request_id])
+            Notification.in_inbox_of(current_user.id, params[:ssrid])
           else
-            Notification.in_sent_of(current_user.id, params[:sub_service_request_id])
+            Notification.in_sent_of(current_user.id, params[:ssrid])
           end.distinct
       }
     end
   end
 
   def new
-    @sub_service_request_id = params[:sub_service_request_id]
-
-    if params[:identity_id]
-      if @sub_service_request_id.present?
-        @sub_service_request = SubServiceRequest.find(@sub_service_request_id)
-        @notification = @sub_service_request.notifications.new
-      else
-        @notification = Notification.new
-      end
-
-      if params[:identity_id].try(:to_i) == current_user.id
-        @notification.errors.add(:notifications, "can't be sent to yourself.")
-        @errors = @notification.errors
-      end
-
-      @message = @notification.messages.new(to: params[:identity_id])
+    if params[:sub_service_request_id]
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @notification = @sub_service_request.notifications.new
+    else
+      @notification = Notification.new
     end
+
+    @message = @notification.messages.new(to: params[:identity_id])
   end
 
   def create

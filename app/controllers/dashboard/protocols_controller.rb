@@ -45,7 +45,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
-          with_status: PermissibleValue.get_inverted_hash('status'),
+          with_status: PermissibleValue.get_inverted_hash('status').sort_by(&:first),
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
           with_owner: build_with_owner_params
         },
@@ -53,18 +53,21 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       ) || return
 
     #toggles the display of the breadcrumbs, navbar always displays
-    session[:breadcrumbs].clear
+    session[:breadcrumbs].clear(filters: params.slice(:filterrific).permit!)
 
     respond_to do |format|
       format.html {
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.js {
+        if params.slice(:filterrific).permit!.keys.any?
+          @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
+        end
         @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
       }
       format.json {
         @protocol_count = @filterrific.find.length
-        @protocols      = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
+        @protocols      = @filterrific.find.includes(:primary_pi, :principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
       }
       format.csv {
         @protocols = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order])
@@ -133,8 +136,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    # Prevent STQ Errors from Controller
-    @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil?
+    # admin is not able to activate study_type_question_group
+    @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil?
 
     controller          = ::ProtocolsController.new
     controller.request  = request
@@ -158,20 +161,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.toggle!(:locked)
     else
       permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-      # admin is not able to activate study_type_question_group
 
-      @protocol.bypass_rmid_validation = @bypass_rmid_validation
-      @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
+      # admin is not able to activate study_type_question_group
+      @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
 
       if @protocol.update_attributes(protocol_params)
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
       else
         @errors = @protocol.errors
-      end
-
-      if params[:sub_service_request]
-        @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
-        render "/dashboard/sub_service_requests/update"
       end
     end
 
@@ -203,9 +200,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
       ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
-    respond_to do |format|
-      format.js
-    end
+    
+    respond_to :js
   end
 
   def display_requests

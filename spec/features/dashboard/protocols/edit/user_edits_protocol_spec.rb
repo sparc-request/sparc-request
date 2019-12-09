@@ -20,105 +20,30 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User edits epic answers', js: true do
+RSpec.describe 'User wants to edit a Protocol', js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_study_type_question_groups
   build_study_type_questions
 
-  stub_config("research_master_enabled", true)
-  
-  context "RMID server is up and running" do
-    before :each do
-      @protocol       = create(:protocol_without_validations,
-                                type: "Study",
-                                primary_pi: jug2,
-                                funding_status: "funded",
-                                funding_source: "foundation")
-      organization    = create(:organization)
-      service_request = create(:service_request_without_validations,
-                                protocol: @protocol)
-                        create(:sub_service_request_without_validations,
-                                organization: organization,
-                                service_request: service_request,
-                                status: 'draft')
-                        create(:super_user, identity: jug2,
-                                organization: organization,
-                                access_empty_protocols: true)
+  before :each do
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
 
-      allow(Protocol).to receive(:rmid_status).and_return(true)
-    end
-
-    context 'and clicks Edit Information' do
-      scenario 'and sees the edit page' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-        expect(page).to have_content('Change Protocol Type')
-      end
-
-       scenario 'and does not see server down message' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-        expect(page).not_to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
-      end
-    end
-    
-    context 'and edits information and submits' do
-      scenario 'and sees updated protocol' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-
-        fill_in 'protocol_short_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
-
-        click_button 'Save'
-        wait_for_javascript_to_finish
-
-        expect(@protocol.reload.short_title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
-      end
-    end
+    visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.edit', protocol_type: @protocol.model_name.human)
+    wait_for_javascript_to_finish
   end
 
-  context "RMID server is down" do
-    before :each do
-      @protocol       = create(:protocol_without_validations,
-                                type: "Study",
-                                primary_pi: jug2,
-                                funding_status: "funded",
-                                funding_source: "foundation")
-      organization    = create(:organization)
-      service_request = create(:service_request_without_validations,
-                                protocol: @protocol)
-                        create(:sub_service_request_without_validations,
-                                organization: organization,
-                                service_request: service_request,
-                                status: 'draft')
-                        create(:super_user, identity: jug2,
-                                organization: organization)
+  it 'should update the Protocol' do
+    fill_in 'protocol_short_title', with: 'Fresh Prince of Bel-Air'
+    fill_in 'protocol_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
 
-      allow(Protocol).to receive(:rmid_status).and_return(false)
-    end
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
 
-    context 'and clicks Edit Information' do
-      scenario 'and sees that the rmid server is down through flash message' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-
-        expect(page).to have_content( I18n.t(:protocols)[:summary][:tooltips][:rmid_server_down] )
-      end
-
-      scenario 'and sees that the rmid server is down through disabled rmid field' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-
-        expect(page).to have_css '.research-master-field:disabled'
-      end
-
-      scenario 'and sees that the rmid server is down through red exclamation' do
-        visit edit_dashboard_protocol_path(@protocol)
-        wait_for_javascript_to_finish
-
-        expect(page).to have_css '.glyphicon.glyphicon-exclamation-sign.text-danger'
-      end
-    end
+    expect(page).to have_current_path(dashboard_protocol_path(@protocol))
+    expect(@protocol.reload.short_title).to eq('Fresh Prince of Bel-Air')
+    expect(@protocol.reload.title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
   end
 end

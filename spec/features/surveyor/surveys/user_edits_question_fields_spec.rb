@@ -37,7 +37,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-content", with: 'This is a Terrible Question')
@@ -51,7 +51,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-description", with: 'How can I describe such a terrible question?')
@@ -65,7 +65,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       bootstrap_select "#question-#{@question.id}-question_type", 'Text Area'
@@ -78,7 +78,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       find("#question-#{@question.id}-required").click
@@ -93,7 +93,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          bootstrap_select '.survey-actions', /Edit/
+          bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
@@ -108,7 +108,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -126,7 +126,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -145,7 +145,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -163,7 +163,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -181,7 +181,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-question').click
@@ -197,17 +197,19 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-question').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.question')
         expect(@section.questions.count).to eq(0)
       end
 
-      context 'with options that appear in a depdent selectpicker' do
+      context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true)
@@ -215,10 +217,12 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          bootstrap_select '.survey-actions', /Edit/
+          bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
           wait_for_javascript_to_finish
 
           first('.delete-question').click
+          wait_for_javascript_to_finish
+          confirm_swal
           wait_for_javascript_to_finish
 
           find('.select-depender').click
@@ -243,7 +247,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-content", with: 'This is a Terrible Question')
@@ -257,7 +261,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in("question-#{@question.id}-description", with: 'How can I describe such a terrible question?')
@@ -271,7 +275,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       bootstrap_select "#question-#{@question.id}-question_type", 'Text Area'
@@ -284,7 +288,7 @@ RSpec.describe 'User edits question fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       find("#question-#{@question.id}-required").click
@@ -299,7 +303,7 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          bootstrap_select '.survey-actions', /Edit/
+          bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
           wait_for_javascript_to_finish
 
           expect(page).to have_selector("#question-#{@question.id}-is_dependent:disabled")
@@ -314,7 +318,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -332,7 +336,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -351,7 +355,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -369,7 +373,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find("#question-#{@question2.id}-is_dependent").click
@@ -387,7 +391,7 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.add-question').click
@@ -403,17 +407,19 @@ RSpec.describe 'User edits question fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        bootstrap_select '.survey-actions', /Edit/
+        bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
         wait_for_javascript_to_finish
 
         find('.delete-question').click
+        wait_for_javascript_to_finish
+        confirm_swal
         wait_for_javascript_to_finish
 
         expect(page).to have_no_selector('.question')
         expect(@section.questions.count).to eq(0)
       end
 
-      context 'with options that appear in a depdent selectpicker' do
+      context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true)
@@ -421,10 +427,12 @@ RSpec.describe 'User edits question fields', js: true do
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
 
-          bootstrap_select '.survey-actions', /Edit/
+          bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
           wait_for_javascript_to_finish
 
           first('.delete-question').click
+          wait_for_javascript_to_finish
+          confirm_swal
           wait_for_javascript_to_finish
 
           find('.select-depender').click

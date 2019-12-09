@@ -39,7 +39,7 @@ RSpec.describe Arm, type: :model do
       arm.name = '[ ] * \\ / ? :'
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Arm Name is invalid")
+      expect(arm.errors.messages[:name].first).to eq(I18n.t('activerecord.errors.models.arm.attributes.name.invalid'))
     end
 
     it 'may contain numbers, letters, and other special characters' do

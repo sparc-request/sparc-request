@@ -216,6 +216,8 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+      sub_service_request:
+        srid: "SRID"
       short_interaction:
         subject: "Subject of Interaction"
         interaction_type: "Type of Interaction"
@@ -286,6 +288,8 @@ en:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
+            selected_for_epic:
+              inclusion: "can't be blank"
             start_date:
               invalid: "Start Date must come before End Date"
             study_type_answers:
@@ -313,6 +317,10 @@ en:
       messages:
         spoofed_media_type: "invalid file type"
     models:
+      service:
+        one: "Service"
+        other: "Services"
+      system_survey: "Survey"
       sub_service_request: "Request"
 
   ########
@@ -393,7 +401,7 @@ en:
       billing: "Quantity/Billing"
       pricing: "Consolidated Request"
     inactive: "(Inactive)"
-    no_line_items: "No line items to show."
+    no_line_items: "No Services to show"
     pppv:
       clinical_services: "Clinical Services"
       header: "Clinical Services (%{arm_name})"
@@ -437,6 +445,7 @@ en:
       units_per_quantity: "Edit Units per Quantity"
     merged_totals:
       header: "Study Cost Totals"
+      direct_cost: "Total Direct Cost"
       grand_total: "Grand Total"
     tooltips:
       total_per_study: 'Total proposed cost of Non-clinical Services per study'
@@ -513,6 +522,7 @@ en:
     required_fields:
       indicator: "*"
       message: "required fields"
+      required: "Required"
     search:
       loading: "Loading..."
       no_results: "No Results"
@@ -574,6 +584,7 @@ en:
   #########
   forms:
     none: "You don't have any forms to complete"
+    srid: "SRID"
 
   ##########
   # LAYOUT #
@@ -603,21 +614,18 @@ en:
     dashboard:
       navigation:
         short_interaction: "Short Interaction"
-        epic_queue: "Epic Protocols"
+        epic_queue: "Epic Queue"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
       links:
-        blog:
-          text: "Blog"
-          url: "https://sparcrequestblog.com/"
         about: "About"
         sctr:
           text: "SCTR"
           url: "http://sctr.musc.edu"
         contact: "Contact Us"
-        listserv: 
+        listserv:
           text: "Listserv"
           subject: "SPARCRequest Listserv"
         faqs:
@@ -644,8 +652,8 @@ en:
   line_items:
     new: "Add Service"
     delete: "Delete Service"
-    created: "Service added!"
-    deleted: "Service removed!"
+    created: "Service Added!"
+    deleted: "Service Removed!"
 
   ###########
   # MAILERS #
@@ -706,7 +714,6 @@ en:
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
       rmid_validated: "Updated to corresponding Research Master ID %{title}"
-      rmid_title: "Title"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
@@ -737,7 +744,7 @@ en:
       information:
         header: "General Information"
         rmid:
-          note: "If your Study has a <a href='%{rmid_url}' target='blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+          note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
           error:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
@@ -809,7 +816,7 @@ en:
     created: "Subsidy created successfully"
     updated: "Subsidy updated successfully"
     destroyed: "Subsidy deleted successfully"
-    approved: "Subsidy has been approved"
+    approve: "Subsidy has been approved"
     disapproval_message: "Subsidy has been disapproved"
     delete_confirm: "Are you sure that you would like to delete this subsidy?"
     approved:
@@ -846,7 +853,7 @@ en:
   ################
   visit_groups:
     new: "Add Visit"
-    edit: "Edit %{visit_name}"
+    edit: "Edit Visit"
     delete: "Delete Visit"
     created: "Visit created!"
     updated: "Visit updated!"

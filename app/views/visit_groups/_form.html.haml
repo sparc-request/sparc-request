@@ -24,16 +24,14 @@
       = f.hidden_field :arm_id
       = hidden_field_tag :arm_id, visit_group.arm_id
       = hidden_field_tag :srid, service_request.try(:id)
+      = hidden_field_tag :ssrid, sub_service_request.try(:id)
       = hidden_field_tag :tab, tab
       = hidden_field_tag :page, page
       - pages.each do |arm_id, page|
         = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
-          - if action_name == 'new'
-            = t('visit_groups.new')
-          - else
-            = t('visit_groups.edit', visit_name: visit_group.name)
+          = t("visit_groups.#{action_name}")
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body

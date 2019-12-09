@@ -40,11 +40,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         }
       ) || return
 
-    @type = @filterrific.of_type.constantize.yaml_klass
+    @type = @filterrific.of_type.constantize.model_name.human
 
     respond_to do |format|
       format.html
-      format.js
+      format.js {
+        @url = request.base_url + request.path + '?' + params.slice(:filterrific).permit!.to_query
+      }
       format.json {
         load_responses
       }
@@ -71,13 +73,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @response.question_responses.build
     @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
-    respond_to do |format|
-      format.html {
-        existing_response = Response.where(survey: @survey, identity: current_user, respondable: @respondable).first
-        redirect_to surveyor_response_complete_path(existing_response) if existing_response
-      }
-      format.js
-    end
+    respond_to :js
   end
 
   def edit
@@ -101,6 +97,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     if @response.save
       SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
       flash[:success] = t(:surveyor)[:responses][:completed]
+    else
+      @errors = @response.errors
     end
 
     respond_to do |format|
@@ -111,6 +109,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def update
     if @response.update_attributes(response_params)
       flash[:success] = t(:surveyor)[:responses][:completed]
+    else
+      @errors = @response.errors
     end
 
     respond_to do |format|
@@ -132,6 +132,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def complete
+    @survey = Response.find(params[:response_id]).survey
   end
 
   def resend_survey
@@ -201,7 +202,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     responses = []
     Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
       p.sub_service_requests.each do |ssr|
-        ssr.forms_to_complete.select do |f|
+        ssr.forms_to_complete.values.flatten.select do |f|
           # Apply the State, Survey/Form, and Start/End Date filters manually
           (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
           (@filterrific.with_survey.try(&:empty?) || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))

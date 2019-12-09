@@ -22,6 +22,7 @@ module NewsFeed
   class Base
     BASE_URL    = Setting.get_value('news_feed_url')
     POST_LIMIT  = Setting.get_value('news_feed_post_limit')
+    API_TOKEN   = Setting.get_value('news_feed_api_token')
 
     # Abstract Method
     #

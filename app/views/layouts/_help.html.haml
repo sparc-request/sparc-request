@@ -27,7 +27,7 @@
         = t('layout.navigation.help.header')
     .dropdown-divider
     - if Setting.get_value('use_faq_link')
-      = link_to Setting.get_value("faq_url"), target: :blank, class: 'dropdown-item text-secondary' do
+      = link_to Setting.get_value("faq_url"), target: :_blank, class: 'dropdown-item text-secondary' do
         = icon('far', 'question-circle mr-2')
         = t('layout.footer.links.faqs.header')
     - else
@@ -38,7 +38,7 @@
       = icon('fas', 'comment mr-2')
       = t('layout.footer.links.contact')
     - if Setting.get_value("use_feedback_link")
-      = link_to Setting.get_value("feedback_link"), target: :blank, class: 'dropdown-item text-secondary' do
+      = link_to Setting.get_value("feedback_link"), target: :_blank, class: 'dropdown-item text-secondary' do
         = icon('fas', 'pencil-alt mr-2')
         = t('layout.footer.links.feedback')
     - else

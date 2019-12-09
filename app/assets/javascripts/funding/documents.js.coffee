@@ -19,15 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $(document).ready ->
+  $('#docTabs .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-  $(document).on 'click', 'button#documents_application',  ->
-    $('.document_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#document_tabs').data('selected', 'application')
-    $('#document-table').bootstrapTable 'refresh', { query: { table: 'application' } }
+  $(document).on 'click', '#loi .export button', ->
+    url = new URL($('#loi-table').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url
 
-  $(document).on 'click', 'button#documents_loi',  ->
-    $('.document_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#document_tabs').data('selected', 'loi')
-    $('#document-table').bootstrapTable 'refresh', { query: { table: 'loi' } }
+  $(document).on 'click', '#application .export button', ->
+    url = new URL($('#app-table').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url
+
+  $(document).on 'show.bs.tab', '#docTabs [data-toggle=tab]', (event) ->
+    $("#{this.hash}").find('table[data-toggle=table]').bootstrapTable('refresh')

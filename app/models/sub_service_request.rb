@@ -27,7 +27,6 @@ class SubServiceRequest < ApplicationRecord
   before_create :set_protocol_id
   after_save :update_org_tree
   after_save :update_past_status
-  after_update :generate_approvals
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
@@ -40,6 +39,8 @@ class SubServiceRequest < ApplicationRecord
 
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
+  has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -104,6 +105,24 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  def generate_approvals(current_user)
+    if self.nursing_nutrition_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
+    end
+
+    if self.lab_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
+    end
+
+    if self.imaging_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
+    end
+
+    if self.committee_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
+    end
+  end
+
   def should_push_to_epic?
     return self.line_items.any? { |li| li.should_push_to_epic? }
   end
@@ -165,20 +184,12 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def one_time_fee_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: true })
-  end
-
-  def per_patient_per_visit_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: false })
-  end
-
   def has_one_time_fee_services?
-    one_time_fee_line_items.count > 0
+    @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end
 
   def has_per_patient_per_visit_services?
-    per_patient_per_visit_line_items.count > 0
+    @has_clinical_services ||= per_patient_per_visit_line_items.count > 0
   end
 
   # Returns the total direct costs of the sub-service-request
@@ -267,7 +278,7 @@ class SubServiceRequest < ApplicationRecord
   def ready_for_fulfillment?
     # return true if the request is already in fulfillmentt and fulfillment_contingent_on_catalog_manager is turned off
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    (self.in_work_fulfillment && !Setting.get_value("fulfillment_contingent_on_catalog_manager")) || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
+    self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
   end
 
   ########################
@@ -302,18 +313,16 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
-    self.status != 'first_draft' && !process_ssrs_org.has_editable_status?(status)
+    self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
-    self.status == 'first_draft' || (process_ssrs_org.has_editable_status?(self.status) && !self.is_complete?)
+    self.status == 'first_draft' || (process_ssrs_organization.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    Status.complete?(self.status)
+    Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
   end
 
   def set_to_draft
@@ -526,24 +535,6 @@ class SubServiceRequest < ApplicationRecord
 
   def set_protocol_id
     self.protocol_id = service_request.try(:protocol_id)
-  end
-
-  def generate_approvals
-    if self.nursing_nutrition_approved_changed? && self.nursing_nutrition_approved?
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:nursing_nutrition_approved))
-    end
-
-    if self.lab_approved_changed? && self.lab_approved?
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:lab_approved))
-    end
-
-    if self.imaging_approved_changed? && self.imaging_approved?
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:imaging_approved))
-    end
-
-    if self.committee_approved_changed? && self.committee_approved?
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: self.human_attribute_name(:committee_approved))
-    end
   end
 
   def notify_remote_around_update?

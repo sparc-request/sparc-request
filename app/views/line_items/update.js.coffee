@@ -30,11 +30,11 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% else %>
 $('#modalContainer').modal('hide')
 
-<% if @line_item.service.one_time_fee? %>
+<% if @in_dashboard && @line_item.service.one_time_fee? %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
 <% else %>
 # Replace Field Cell
-$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", line_item: @line_item, service_request: @service_request, sub_service_request: @sub_service_request, merged: false, locked: false %>')
+$(".line-item-<%= @line_item.id %>:visible .<%= @field.dasherize %>").replaceWith('<%= j render "service_calendars/#{@field}", line_item: @line_item, service_request: @service_request, sub_service_request: @sub_service_request, merged: false, editable: true %>')
 
 # Replace Per Study Total
 $(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/otf/total_per_study', line_item: @line_item %>")

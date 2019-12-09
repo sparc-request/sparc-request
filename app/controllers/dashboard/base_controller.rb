@@ -31,12 +31,22 @@ class Dashboard::BaseController < ApplicationController
     @highlighted_link ||= 'sparc_dashboard'
   end
 
-  def clean_errors(errors)
-    errors.to_a.map { |k, v| "#{k.humanize} #{v}".rstrip + '.' }
+  def establish_breadcrumber
+    if !session[:breadcrumbs] || session[:breadcrumbs].class.name != 'Dashboard::Breadcrumber'
+      session[:breadcrumbs] = Dashboard::Breadcrumber.new
+    end
+  end
+
+  def find_admin_for_protocol
+    if current_user.super_users.exists?(access_empty_protocols: true) && @protocol.sub_service_requests.empty?
+      @admin = true
+    else
+      @admin = Protocol.for_admin(current_user.id).include?(@protocol)
+    end
   end
 
   def protocol_authorizer_view
-    @authorization  = ProtocolAuthorizer.new(@protocol, current_user)
+    @authorization = ProtocolAuthorizer.new(@protocol, current_user)
 
     # Admins should be able to view too
     unless @authorization.can_view? || @admin
@@ -45,24 +55,10 @@ class Dashboard::BaseController < ApplicationController
   end
 
   def protocol_authorizer_edit
-    @authorization  = ProtocolAuthorizer.new(@protocol, current_user)
+    @authorization = ProtocolAuthorizer.new(@protocol, current_user)
 
     unless @authorization.can_edit? || @admin
       authorization_error('You are not allowed to edit this protocol.')
-    end
-  end
-
-  def establish_breadcrumber
-    if !session[:breadcrumbs] || session[:breadcrumbs].class.name != 'Dashboard::Breadcrumber'
-      session[:breadcrumbs] = Dashboard::Breadcrumber.new
-    end
-  end
-
-  def find_admin_for_protocol
-    if current_user.super_users.where(access_empty_protocols: true).exists? && @protocol.sub_service_requests.empty?
-      @admin = true
-    else
-      @admin = Protocol.for_admin(current_user.id).include?(@protocol)
     end
   end
 

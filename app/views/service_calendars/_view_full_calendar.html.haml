@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-xl{ role: 'document'}
+.modal-dialog.modal-2x#consolidatedRequestModal{ role: 'document'}
   .modal-content
     .modal-header
       %h4.modal-title
@@ -28,8 +28,8 @@
     .modal-body#serviceCalendar
       = hidden_field_tag :srid, service_request.id, disabled: true
       .d-flex.justify-content-between.mb-1
-        - if service_request.protocol.is_study?
-          = link_to dashboard_protocol_path(service_request.protocol, format: :pdf), target: :blank, class: 'btn btn-success' do
+        - if service_request.protocol.is_study? && service_request.protocol.has_clinical_services?
+          = link_to dashboard_protocol_path(service_request.protocol, format: :pdf), target: :_blank, class: 'btn btn-lg btn-success' do
             = succeed t('dashboard.protocols.service_requests.cost_analysis_report') do
               = icon('fas', 'file-pdf mr-2')
         = render 'service_calendars/master_calendar/pppv/services_toggle'
@@ -45,7 +45,8 @@
       - if has_pppv || has_otf
         = render 'service_calendars/master_calendar/merged_grand_totals', service_request: service_request
       - else
-        = render 'shared/alert', message: t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
+        %alert.alert-warning.mb-0
+          = t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
 
     .modal-footer
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }

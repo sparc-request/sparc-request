@@ -46,9 +46,9 @@ $ ->
         dataType: 'script'
         url: $link.attr('href')
 
-  $(document).on 'click', 'th.check-column, td.check-row', (event) ->
-    if event.target.tagName != 'A' && handleConfirm(this.querySelector('a'))
-      console.log 'test'
+  $(document).on 'click', 'th.check-column.editable, td.check-row.editable', (event) ->
+    if event.target.tagName != 'A'
+      handleConfirm(this.querySelector('a'))
 
   $(document).on 'click', 'td.visit.template-visit', (event) ->
     if event.target.tagName != 'INPUT'
@@ -74,7 +74,7 @@ $ ->
   # Change Visit Page #
   #####################
 
-  $(document).on 'change', '.visit-group-select .selectpicker', ->
+  $(document).on 'changed.bs.select', '.visit-group-select .selectpicker', ->
     $.ajax
       method: 'GET'
       dataType: 'script'
@@ -120,34 +120,6 @@ $ ->
     url: $('#serviceCalendar .nav-tabs .nav-link.active').attr('href')
     success: ->
       $('#calendarLoading').removeClass('show active')
-
-(exports ? this).setup_xeditable_fields = (scroll) ->
-  $('.edit-your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (data) ->
-      $('#sub_service_request_header').html(data['header'])
-      $('.selectpicker').selectpicker()
-
-  $('td.your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (response, newValue) ->
-      $('.study_level_activities').bootstrapTable('refresh', silent: true)
 
 (exports ? this).adjustCalendarHeaders = () ->
   zIndex = $('.service-calendar-container').length * 4

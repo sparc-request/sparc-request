@@ -18,20 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- use_epic = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
+- use_epic        = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
 - use_fulfillment = Setting.get_value('fulfillment_contingent_on_catalog_manager')
-- request_valid = sub_service_request.service_request.service_details_valid?
+- request_valid   = sub_service_request.service_request.protocol_valid? && sub_service_request.service_request.service_details_valid?
 
-.card#subServiceRequestSummary
+.card.mb-5#subServiceRequestSummary
   .card-header.justify-content-between.bg-primary.text-white
     %h3.mb-0<
       = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.display_id})"
     .ssr-links-container.d-flex<
-      = notes_button(sub_service_request, model: sub_service_request, class: 'mr-1', ssrid: sub_service_request.id)
+      = notes_button(sub_service_request, model: t('dashboard.sub_service_requests.header.notes_label'), class: 'mr-1', ssrid: sub_service_request.id)
       = export_ssr_button(sub_service_request)
-      - unless sub_service_request.in_work_fulfillment?
-        .tooltip-wrapper{ title: t('dashboard.sub_service_requests.tooltips.delete'), data: { toggle: 'tooltip' } }
-          = link_to icon('fas', 'trash-alt'), dashboard_sub_service_request_path(sub_service_request), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true', html: t('dashboard.sub_service_requests.confirm.delete.text') }
+      - unless sub_service_request.in_work_fulfillment? || sub_service_request.is_complete?
+        .mx-3
+        = delete_ssr_button(sub_service_request)
   %table.table.table-bordered.table-centered.table-fixed.mb-0
     %thead.bg-light
       %tr
@@ -60,15 +60,13 @@
       %tr
         %td.text-center{ title: sub_service_request.previously_submitted? ? '' : t('dashboard.sub_service_requests.tooltips.not_submitted'), data: { toggle: 'tooltip', container: 'body' } }
           .dropdown
-            %button.btn.btn-block.btn-light.dropdown-toggle#requestStatus{ class: sub_service_request.previously_submitted? ? '' : 'disabled', role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
-              = PermissibleValue.get_value('status', sub_service_request.status)
+            = ssr_status_dropdown_button(sub_service_request)
             .dropdown-menu{ aria: { labelledby: "requestStatus" } }
               .dropdown-header
                 %h5.mb-0
                   = t('dashboard.sub_service_requests.header.status.menu_header')
               .dropdown-divider
-              - ssr_status_dropdown_statuses(sub_service_request).each do |label, status|
-                = link_to label, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { status: status }), remote: true, method: :put, class: 'dropdown-item'
+              = ssr_status_dropdown_statuses(sub_service_request)
         %td.text-center
           - if sub_service_request.status == 'draft'
             .alert.alert-sm.alert-warning.mb-0

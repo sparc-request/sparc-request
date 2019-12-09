@@ -21,7 +21,7 @@
 module FormsHelper
   def form_completed_display(completed)
     icon = completed ? icon('fas', 'check') : icon('fas', 'times')
-    klass = completed ? 'text-success' : 'text-danger'
+    klass = completed ? 'text-success complete' : 'text-danger incomplete'
 
     content_tag(:h4, content_tag(:span, icon, class: klass))
   end
@@ -32,7 +32,7 @@ module FormsHelper
       response ? view_response_button(response) : link_to(icon('fas', 'eye'), 'javascript:void(0)', class: 'btn btn-info disabled')
     else
       if response = Response.where(survey: form, respondable: respondable).first
-        content_tag :div, class: 'd-flex' do
+        content_tag :div, class: 'd-flex justify-content-center' do
           raw([ view_response_button(response),
             edit_response_button(response),
             delete_response_button(response)

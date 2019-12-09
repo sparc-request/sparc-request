@@ -18,29 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-primary#responses-panel
-  .bootstrap-table-dropdown-overflow
-    #responses-custom-toolbar
-      %h2.panel-title
+.pl-3.w-80#responsesList
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
         = t('surveyor.responses.table.header', type: type)
-    %table#responses-table{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responses-custom-toolbar' } }
+    #responsesCustomToolbar
+    %table#responsesTable{ data: { toggle: 'table', url: surveyor_responses_path(format: :json), search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', page_size: '25', sort_name: 'completion_date', sort_order: 'desc', toolbar: '#responsesCustomToolbar' } }
       %thead
         %tr
-          %th{ data: { class: 'srid col-sm-2', align: 'left', sortable: 'true', field: 'srid' } }
+          %th{ data: { class: 'srid w-auto', align: 'left', sortable: 'true', field: 'srid' } }
             = t(:surveyor)[:responses][:table][:headers][:srid]
-          %th{ data: { class: 'short-title col-sm-2', align: 'left', sortable: 'true', field: 'short_title' } }
+          %th{ data: { class: 'short-title w-auto', align: 'left', sortable: 'true', field: 'short_title' } }
             = t(:surveyor)[:responses][:table][:headers][:short_title]
-          %th{ data: { class: 'primary-pi col-sm-1', align: 'left', sortable: 'true', field: 'primary_pi' } }
+          %th{ data: { class: 'primary-pi w-auto', align: 'left', sortable: 'true', field: 'primary_pi' } }
             = t(:surveyor)[:responses][:table][:headers][:primary_pi]
-          %th{ data: { class: 'title col-sm-2', align: 'left', sortable: 'true', field: 'title' } }
+          %th{ data: { class: 'title w-auto', align: 'left', sortable: 'true', field: 'title' } }
             = t('surveyor.responses.table.headers.title', type: type)
-          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'by' } }
+          %th{ data: { class: 'completed-by w-auto', align: 'center', sortable: 'true', field: 'by' } }
             = t(:surveyor)[:responses][:table][:headers][:by]
-          %th{ data: { class: 'complete col-sm-1', align: 'center', sortable: 'true', field: 'complete', visible: 'false' } }
+          %th{ data: { class: 'complete w-auto', align: 'center', sortable: 'true', field: 'complete', visible: 'false' } }
             = t(:surveyor)[:responses][:table][:headers][:complete]
-          %th{ data: { class: 'completion-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
+          %th{ data: { class: 'completion-date w-auto', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'completion_date' } }
             = t(:surveyor)[:responses][:table][:headers][:date]
-          %th{ data: {class: 'survey-sent-date col-sm-1', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'survey_sent_date', visible: 'false'} }
+          %th{ data: {class: 'survey-sent-date w-auto', align: 'left', sortable: 'true', sorter: 'dateSorter', field: 'survey_sent_date', visible: 'false'} }
             = t(:surveyor)[:responses][:table][:headers][:survey_sent_date]
-          %th{ data: { class: 'actions col-sm-2', align: 'center', sortable: 'false', field: 'actions' } }
+          %th{ data: { class: 'actions w-auto', align: 'center', sortable: 'false', field: 'actions' } }
             = t(:surveyor)[:responses][:table][:headers][:actions]

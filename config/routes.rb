@@ -28,14 +28,14 @@ SparcRails::Application.routes.draw do
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
-                   registrations: 'identities/registrations'
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/shibboleth', sign_up: 'auth/shibboleth' }
 
     elsif Setting.get_value("use_cas_only")
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
-                   registrations: 'identities/registrations'
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/cas', sign_up: 'auth/cas' }
     else
       devise_for :identities,
@@ -89,12 +89,14 @@ SparcRails::Application.routes.draw do
     get :review
     get :obtain_research_pricing
     get :confirmation
-    get :save_and_exit
     get :approve_changes
     get :system_satisfaction_survey
 
+    put :save_and_exit
+
     post :navigate
     post :add_service
+
     delete :remove_service
   end
 
@@ -145,8 +147,6 @@ SparcRails::Application.routes.draw do
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :notes, only: [:index, :create, :edit, :update, :destroy]
-
-  resources :sub_service_requests, only: [:show]
 
   resources :catalogs, param: :organization_id, only: [] do
     member do
@@ -199,10 +199,6 @@ SparcRails::Application.routes.draw do
       get :add_user_rights_row
       get :add_fulfillment_rights_row
     end
-    resources :institutions, only: [:edit, :update]
-    resources :providers, only: [:edit, :update]
-    resources :programs, only: [:edit, :update]
-    resources :cores, only: [:edit, :update]
     resource :super_user, only: [:create, :destroy, :update]
     resource :catalog_manager, only: [:create, :destroy, :update]
     resource :service_provider, only: [:create, :destroy, :update]
@@ -257,8 +253,6 @@ SparcRails::Application.routes.draw do
 
     resources :messages, only: [:index, :new, :create]
 
-    resources :projects, controller: :protocols, except: [:destroy]
-
     resources :protocols, except: [:destroy] do
       resource :study_type_answers, only: [:edit]
 
@@ -287,15 +281,13 @@ SparcRails::Application.routes.draw do
 
     resources :protocol_filters, only: [:new, :create, :destroy]
 
-    resources :studies, controller: :protocols, except: [:destroy]
-
     resources :subsidies, except: [:index, :show] do
       member do
         patch :approve
       end
     end
 
-    resources :sub_service_requests, except: [:new, :create, :edit]do
+    resources :sub_service_requests, except: [:new, :create, :edit] do
       member do
         put :push_to_epic
         put :resend_surveys

@@ -22,7 +22,7 @@
 
 .tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', boundary: 'window' } }
   .dropdown.no-caret
-    %button.btn.btn-success.dropdown-toggle{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
+    %button.btn.btn-success.dropdown-toggle.send-notification{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
       = icon('far', 'envelope', class: in_admin? ? 'mr-2' : '')
       - if in_admin?
         = t('dashboard.notifications.compose')
@@ -32,15 +32,15 @@
           = t('dashboard.notifications.authorized_users.header')
       .dropdown-divider
       - sub_service_request.protocol.project_roles.includes(:identity).order("identities.first_name", "identities.last_name").each do |pr|
-        = link_to new_dashboard_notification_path(identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: 'dropdown-item' do
+        = link_to new_dashboard_notification_path(identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: ['dropdown-item', pr.identity_id == current_user.id ? 'disabled' : ''] do
           = icon('far mr-2', 'envelope')
-          = raw display_authorized_user(pr, sub_service_request)
+          = display_authorized_user(pr, sub_service_request)
       .dropdown-divider
       .dropdown-header
         %h5.mb-0
           = t('dashboard.notifications.service_providers.header')
       .dropdown-divider
       - sub_service_request.organization.service_providers.includes(:identity).order("identities.first_name", "identities.last_name").each do |sp|
-        = link_to new_dashboard_notification_path(identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: 'dropdown-item' do
+        = link_to new_dashboard_notification_path(identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: ['dropdown-item', sp.identity_id == current_user.id ? 'disabled' : ''] do
           = icon('far mr-2', 'envelope')
-          = raw display_service_provider(sp, sub_service_request)
+          = display_service_provider(sp, sub_service_request)

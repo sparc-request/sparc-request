@@ -30,19 +30,19 @@ $("[name='visit[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-val
 <% else %>
 <% if @tab == 'template' %>
 # Replace checkboxes
-$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, locked: false %>")
-$("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, locked: @locked %>")
+$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, editable: true %>")
+$("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, editable: true %>")
 <% elsif @tab == 'billing_strategy' %>
 $('#modalContainer').modal('hide')
 <% end %>
 
 <% if @in_admin %>
 # Replace SSR Header
-$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 <% end %>
 
 # Replace Visit
-$(".visit-<%= @visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", service_request: @service_request, sub_service_request: @sub_service_request, visit: @visit, line_items_visit: @line_items_visit, page: @page, locked: @locked %>')
+$(".visit-<%= @visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", service_request: @service_request, sub_service_request: @sub_service_request, visit: @visit, line_items_visit: @line_items_visit, page: @page, editable: true %>')
 
 # Replace Per Patient / Study Totals
 $(".visit-<%= @visit.id %>:visible").siblings('.total-per-patient').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")

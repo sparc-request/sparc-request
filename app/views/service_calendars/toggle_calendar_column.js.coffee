@@ -19,21 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Replace checkbox
-$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, locked: false %>")
+$("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, editable: true %>")
 
 # Replace Row checkboxes
 <% @line_items_visits.each do |liv| %>
-$("#toggleRow<%= liv.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: liv, page: @page, locked: @locked %>")
+$("#toggleRow<%= liv.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: liv, page: @page, editable: true %>")
 <% end %>
 
 <% if @in_admin %>
 # Replace SSR Header
-$('#sub_service_request_header').html("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
 <% end %>
 
 <% @visits.each do |visit| %>
 # Replace visits
-$(".visit-<%= visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, locked: @locked %>')
+$(".visit-<%= visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/template/template_visit_input", visit: visit, tab: @tab, page: @page, editable: true %>')
 
 # Replace Per Patient / Study Totals
 $(".visit-<%= visit.id %>:visible").siblings('.total-per-patient').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: visit.line_items_visit %>")

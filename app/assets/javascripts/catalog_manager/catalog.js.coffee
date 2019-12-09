@@ -152,7 +152,7 @@ initialize_org_search = () ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    type = suggestion.type
+    type = suggestion.klass
     id = suggestion.id
     $.ajax
       type: 'GET'
@@ -186,9 +186,9 @@ window.initialize_user_rights_search = () ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                          <strong>{{name}}</strong> <span>{{email}}</span>
-                                        </button>")
+        suggestion: Handlebars.compile('<button class="text-left col-sm-12">
+                                          <strong>{{label}}</strong> <span>{{email}}</span>
+                                        </button>')
         notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>"
       }
     }
@@ -205,7 +205,7 @@ window.initialize_user_rights_search = () ->
         type: 'get'
         url: "/catalog_manager/organizations/#{org_id}/add_user_rights_row.js"
         data:
-          new_ur_identity_id: suggestion['identity_id']
+          new_ur_identity_id: suggestion['value']
   );
 
 
@@ -235,7 +235,7 @@ window.initialize_fulfillment_rights_search = () ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile("<button class=\"text-left col-sm-12\">
-                                          <strong>{{name}}</strong> <span>{{email}}</span>
+                                          <strong>{{label}}</strong> <span>{{email}}</span>
                                         </button>")
         notFound: '<div class="tt-suggestion">No Results</div>'
       }
@@ -253,7 +253,7 @@ window.initialize_fulfillment_rights_search = () ->
         type: 'get'
         url: "/catalog_manager/organizations/#{org_id}/add_fulfillment_rights_row.js"
         data:
-          new_fr_identity_id: suggestion['identity_id']
+          new_fr_identity_id: suggestion['value']
   );
 
 

@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+  consultArrangedDate = null
+  requesterContactedDate = null
+
   # Load tab on page load
   if $('#subServiceRequestDetails').length
     $.ajax
@@ -27,6 +30,8 @@ $ ->
       url: $('#subServiceRequestDetails .nav-tabs .nav-link.active').attr('href')
       success: ->
         $('#requestLoading').removeClass('show active')
+        consultArrangedDate = $('#consultArrangedDatePicker input').val()
+        requesterContactedDate = $('#requesterContactedDatePicker input').val()
 
   ##############
   # SSR Header #
@@ -40,6 +45,7 @@ $ ->
       else
         $.get window.location.href + ".html", (data) ->
           $("#fulfillmentStatusContainer").replaceWith($(data).find('#fulfillmentStatusContainer'))
+          initializeTooltips()
       return
     ), 5000)
 
@@ -47,7 +53,7 @@ $ ->
   if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
 
-  $(document).on 'click', '#pushToFulfillment', ->
+  $(document).on 'click', '#pushToFulfillment:not(.disabled)', ->
     $(this).prop('disabled', true)
     $.ajax
       type: 'PATCH'
@@ -59,12 +65,14 @@ $ ->
       success: ->
         refreshFulfillmentButton()
 
-  $(document).on 'click', '#pushToEpic', ->
+  $(document).on 'click', '#pushToEpic:not(.disabled)', ->
     $(this).prop('disabled', true)
     $.ajax
       method: 'PUT'
       dataType: 'script'
       url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
+      success: ->
+        $(this).prop('disabled', false)
 
   ###############
   # Details Tab #
@@ -72,13 +80,19 @@ $ ->
 
   # Approvals
   $(document).on 'change', '.approval-check', ->
-    data = $(this).serialize()
-    $(this).prop('disabled', true)
-    $.ajax
-      method: 'put'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}"
-      data: data
+    $check = $(this)
+    $check.prop('checked', false)
+    ConfirmSwal.fire({}).then (result) ->
+      if result.value
+        $check.prop('checked', true)
+        data = $check.serialize()
+        $check.prop('disabled', true)
+
+        $.ajax
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/sub_service_requests/#{getSSRId()}"
+          data: data
 
   # Milestones
   $(document).on 'keyup', '#consultArrangedDatePicker input, #requesterContactedDatePicker input', (event) ->
@@ -92,24 +106,46 @@ $ ->
         url: "/dashboard/sub_service_requests/#{getSSRId()}"
         data: data
 
-  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker, #requesterContactedDatePicker', ->
-    data = $(this).find('input').serialize()
+  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker', (event) ->
+    val = $(this).find('input').val()
 
-    $.ajax
-      method: 'put'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}"
-      data: data
+    if val != consultArrangedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  $(document).on 'change.datetimepicker', '#requesterContactedDatePicker', (event) ->
+    val = $(this).find('input').val()
+
+    if val != requesterContactedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
 
   ##############################
   # Study Level Activities Tab #
   ##############################
 
   $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
-    $.ajax
-      method: 'get'
-      dataType: 'script'
-      url: '/dashboard/study_level_activities/new'
-      data: $('#studyLevelActivitiesForm').serialize()
+    if $('#studyLevelActivitiesForm').hasClass('.new_line_item')
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: '/dashboard/study_level_activities/new'
+        data: $('#studyLevelActivitiesForm').serialize()
+    else
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: $('#studyLevelActivitiesForm').prop('action') + "/edit"
+        data: $('#studyLevelActivitiesForm').serialize()
 
   # SERVICE REQUEST INFO LISTENERS END

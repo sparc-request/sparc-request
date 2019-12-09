@@ -27,6 +27,8 @@ class ServiceRequest < ApplicationRecord
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
+  has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
@@ -135,14 +137,6 @@ class ServiceRequest < ApplicationRecord
     end
   end
 
-  def one_time_fee_line_items
-    line_items.joins(:service).where(services: { one_time_fee: true })
-  end
-
-  def per_patient_per_visit_line_items
-    line_items.joins(:service).where(services: { one_time_fee: false })
-  end
-
   def set_visit_page page_passed, arm
     page = case
            when page_passed <= 0
@@ -240,11 +234,11 @@ class ServiceRequest < ApplicationRecord
   end
 
   def has_one_time_fee_services?
-    one_time_fee_line_items.count > 0
+    @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end
 
   def has_per_patient_per_visit_services?
-    per_patient_per_visit_line_items.count > 0
+    @has_clinical_services ||= per_patient_per_visit_line_items.count > 0
   end
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil

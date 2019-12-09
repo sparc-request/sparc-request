@@ -29,8 +29,12 @@ module Funding::DocumentsHelper
   end
 
   def display_actions(ssr)
-    protocol_button(ssr) +
-    admin_edit_button(ssr)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        protocol_button(ssr),
+        admin_edit_button(ssr)
+      ].join(''))
+    end
   end
 
   def display_funding_document_title(document)
@@ -40,11 +44,15 @@ module Funding::DocumentsHelper
   private
 
   def protocol_button(ssr)
-    link_to t(:funding)[:download][:table][:actions][:protocol], "/dashboard/protocols/#{ssr.protocol.id}", class: "btn btn-success btn-sm protocol-btn", target: :blank  
+    content_tag :div, class: 'p-1' do
+      link_to icon('fas', 'eye'), "/dashboard/protocols/#{ssr.protocol.id}", title: t('funding.download.table.tooltips.protocol'), class: 'btn btn-info mx-1 view-protocol', data: { toggle: 'tooltip', boundary: 'window' }, target: :_blank
+    end
   end
 
   def admin_edit_button(ssr)
-    link_to t(:funding)[:download][:table][:actions][:admin_edit], "/dashboard/sub_service_requests/#{ssr.id}", class: "btn btn-warning btn-sm admin-edit-btn", target: :blank
+    content_tag :div, class: 'p-1' do
+      link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('funding.download.table.tooltips.admin_edit'), class: "btn btn-warning edit-request", data: { toggle: 'tooltip', boundary: 'window' }, target: :_blank
+    end
   end
 
 end

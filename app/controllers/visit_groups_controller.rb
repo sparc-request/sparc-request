@@ -26,8 +26,17 @@ class VisitGroupsController < ApplicationController
 
   def new
     @arm          = Arm.find(params[:arm_id])
-    @visit_group  = params[:visit_group] ? @arm.visit_groups.new(visit_group_params) : @arm.visit_groups.new
     @tab          = params[:tab]
+    @visit_group  =
+      if params[:visit_group]
+        # If you mass assign position then arm_id is nil
+        # making position= set position to nil as well
+        vg = @arm.visit_groups.new(visit_group_params.except(:position))
+        vg.assign_attributes(position: visit_group_params[:position])
+        vg
+      else
+        @arm.visit_groups.new
+      end
 
     setup_calendar_pages
 
@@ -35,7 +44,8 @@ class VisitGroupsController < ApplicationController
   end
 
   def create
-    @visit_group  = VisitGroup.new(visit_group_params)
+    @visit_group  = VisitGroup.new(visit_group_params.except(:position))
+    @visit_group.assign_attributes(position: visit_group_params[:position])
     @arm          = @visit_group.arm
     @tab          = params[:tab]
 
@@ -53,8 +63,8 @@ class VisitGroupsController < ApplicationController
   def edit
     @visit_group.assign_attributes(visit_group_params) if params[:visit_group]
 
-    @arm          = @visit_group.arm
-    @tab          = params[:tab]
+    @arm = @visit_group.arm
+    @tab = params[:tab]
 
     setup_calendar_pages
 
@@ -62,8 +72,8 @@ class VisitGroupsController < ApplicationController
   end
 
   def update
-    @arm          = @visit_group.arm
-    @tab          = params[:tab]
+    @arm = @visit_group.arm
+    @tab = params[:tab]
 
     setup_calendar_pages
 

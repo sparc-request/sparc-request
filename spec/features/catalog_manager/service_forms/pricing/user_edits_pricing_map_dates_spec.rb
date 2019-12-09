@@ -54,11 +54,8 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('.edit_pricing_map_link').click
         wait_for_javascript_to_finish
 
-        find('#pricing_map_display_date').click
-        find('td.today').click
-
-        find('#pricing_map_effective_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_map_display_date')
+        bootstrap3_datepicker('#pricing_map_effective_date')
 
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -72,8 +69,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         find('.edit_pricing_map_link').click
         wait_for_javascript_to_finish
 
-        find('#pricing_map_display_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_map_display_date')
 
         click_button 'Save'
         wait_for_javascript_to_finish

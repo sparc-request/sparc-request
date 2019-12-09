@@ -34,6 +34,13 @@ FactoryBot.define do
       to_create { |instance| instance.save(validate: false) }
     end
 
+    trait :with_question do
+      after(:create) do |form, evaluator|
+        section = create(:section, survey: form)
+                  create(:question, section: section)
+      end
+    end
+
     factory :system_survey_without_validations, traits: [:without_validations]
   end
 end

@@ -21,14 +21,15 @@
 module Surveyor::ResponsesHelper
 
   def complete_display(response)
-    klass = response.completed? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
-
-    content_tag(:h4, content_tag(:span, '', class: klass))
+    if response.completed?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
   end
 
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
-
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
         current_user.is_site_admin?
@@ -52,10 +53,11 @@ module Surveyor::ResponsesHelper
         current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       end
 
-    [ view_response_button(response, view_permissions),
+    content_tag(:div,
+    raw([ view_response_button(response, view_permissions),
       edit_response_button(response, edit_permissions),
       resend_survey_button(response, resend_permissions)
-    ].join('')
+    ].join('')), class: 'd-flex')
   end
 
   def view_response_button(response, permissions=true)
@@ -95,7 +97,7 @@ module Surveyor::ResponsesHelper
   def resend_survey_button(response, permissions=true)
     if @type == 'Survey'
       link_to(
-        content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        icon('fas', 'reply'),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend'),
@@ -109,7 +111,7 @@ module Surveyor::ResponsesHelper
       [
         "dependent-for-option-#{question.depender_id}",
         "dependent-for-question-#{question.depender.question_id}",
-        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "d-none")
       ].join(' ')
     end
   end
@@ -124,6 +126,6 @@ module Surveyor::ResponsesHelper
   end
 
   def multiple_select_formatter(content)
-    content.tr("[]\"", "").split(',').map(&:strip)
+    content.present? ? JSON.parse(content) : content
   end
 end

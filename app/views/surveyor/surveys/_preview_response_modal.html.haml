@@ -17,17 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg#preview-modal
+.modal-dialog.modal-lg#preview-modal{ role: 'document' }
   .modal-content
     = form_for response, url: surveyor_responses_path(response), method: 'post', remote: true do |f|
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
+        %h3.modal-title
           = survey.title
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         = render 'surveyor/surveys/form/preview_form', survey: survey, f: f
       .modal-footer
-        %button.btn.btn-default{ data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')

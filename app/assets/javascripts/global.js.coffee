@@ -57,7 +57,7 @@ $ ->
     $('html, body').animate({ scrollTop: 0 }, 'slow')
 
   # Smooth scroll anchors with hash
-  $(document).on 'click', "a[href^='#']", (event) ->
+  $(document).on 'click', "a[href^='#']:not(data-toggle)", (event) ->
     if !$(this).data('toggle')
       event.preventDefault()
       $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
@@ -208,8 +208,8 @@ $ ->
 
 (exports ? this).initializeDateTimePickers = () ->
   $('.datetimepicker.date:not(.time)').datetimepicker({ format: 'L' })
-  $('.datetimepicker.time:not(.date)').datetimepicker({ format: 'T' })
-  $('.datetimepicker.date.time').datetimepicker({ format: 'LT' })
+  $('.datetimepicker.time:not(.date)').datetimepicker({ format: 'LT' })
+  $('.datetimepicker.date.time').datetimepicker()
 
 (exports ? this).initializeTooltips = () ->
   $('.tooltip').tooltip('hide')

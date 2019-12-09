@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% @questions.each do |question| %>
-select = $(".question-<%=question.id%> select.select-depender")
-select.html("<%= j render 'surveyor/surveys/form/dependent_dropdown', survey: @survey, question: question %>")
-select.selectpicker('refresh')
+$("#question-<%=question.id%> select.select-depender").selectpicker('destroy')
+$("#question-<%=question.id%> #dependentsFields<%=question.id%>").replaceWith("<%= j render 'surveyor/surveys/form/dependent_dropdown', survey: @survey, question: question %>")
+$("#question-<%=question.id%> select.select-depender").selectpicker()
 <% end %>

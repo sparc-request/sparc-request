@@ -19,38 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  
+
   $('body').scrollspy({ target: '#protocolNavigation' })
 
   rmidTimer = null
 
+  updateRmidFields()
+
   $(document).on('keyup', '#protocol_research_master_id:not([readonly=readonly])', ->
     clearTimeout(rmidTimer)
-    if rmid = $(this).val()
+    if $(this).val()
       rmidTimer = setTimeout( (->
-        $.ajax
-          method: 'get'
-          dataType: 'json'
-          url: "#{gon.rmid_api_url}research_masters/#{rmid}"
-          headers: 
-            Authorization: "Token token=\"#{gon.rmid_api_token}\""
-          success: (data) ->
-            $('#protocol_short_title').val(data.short_title).prop('readonly', true)
-            $('#protocol_title').val(data.long_title).prop('readonly', true)
-
-            if data.eirb_validated
-              $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number).prop('readonly', true)
-              $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved).prop('readonly', true)
-              $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved).prop('readonly', true)
-              $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration).prop('readonly', true)
-          error: ->
-            AlertSwal.fire(
-              type: 'error',
-              title: I18n.t('protocols.form.information.rmid.error.title'),
-              html: I18n.t('protocols.form.information.rmid.error.text', rmid: rmid)
-            )
-            resetRmidFields()
-      ), 250)
+        updateRmidFields()
+      ), 750)
     else
       resetRmidFields()
   ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
@@ -161,7 +142,7 @@ $(document).ready ->
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
 
-    if $('#studyTypeQuestionsContainer').hasClass('d-none') 
+    if $('#studyTypeQuestionsContainer').hasClass('d-none')
       $('#studyTypeQuestionsContainer').removeClass('d-none')
 
     if $(this).val() == 'true'
@@ -227,13 +208,45 @@ $(document).ready ->
 ### Function Definitions ###
 ############################
 
+rmidAjax = null
+
+updateRmidFields = () ->
+  if rmid = $('#protocol_research_master_id:not([readonly=readonly])').val()
+    if rmidAjax
+      rmidAjax.abort()
+
+    rmidAjax = $.ajax(
+      method: 'get'
+      dataType: 'json'
+      url: "#{gon.rmid_api_url}research_masters/#{rmid}"
+      headers:
+        Accept: "application/json"
+        Authorization: "Token token=\"#{gon.rmid_api_token}\""
+      success: (data) ->
+        $('#protocol_short_title').val(data.short_title).prop('readonly', true)
+        $('#protocol_title').val(data.long_title).prop('readonly', true)
+
+        if data.eirb_validated
+          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number).prop('readonly', true)
+          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved).prop('readonly', true)
+          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved).prop('readonly', true)
+          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration).prop('readonly', true)
+      error: ->
+        AlertSwal.fire(
+          type: 'error',
+          title: I18n.t('protocols.form.information.rmid.error.title'),
+          html: I18n.t('protocols.form.information.rmid.error.text', rmid: rmid)
+        )
+        resetRmidFields()
+    )
+
 resetRmidFields = () ->
   $('#protocol_short_title').val('').prop('readonly', false)
   $('#protocol_title').val('').prop('readonly', false)
   $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').datepicker('update', '').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_irb_approval_date').datepicker('update', '').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_irb_expiration_date').datepicker('update', '').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').prop('readonly', false).datetimepicker('clear')
+  $('#protocol_human_subjects_info_attributes_irb_approval_date').prop('readonly', false).datetimepicker('clear')
+  $('#protocol_human_subjects_info_attributes_irb_expiration_date').prop('readonly', false).datetimepicker('clear')
 
 fundingSource             = ""
 potentialFundingSource    = ""

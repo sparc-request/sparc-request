@@ -122,8 +122,6 @@ GEM
     akami (1.2.2)
       gyoku (>= 0.4.0)
       nokogiri
-    archive-zip (0.12.0)
-      io-like (~> 0.3.0)
     arel (9.0.0)
     audited (4.9.0)
       activerecord (>= 4.2, < 6.1)
@@ -253,13 +251,11 @@ GEM
     factory_bot_rails (5.0.2)
       factory_bot (~> 5.0.2)
       railties (>= 4.2.0)
-    faker (2.1.2)
-      i18n (>= 0.8)
+    faker (2.8.1)
+      i18n (>= 1.6, < 1.8)
     ffi (1.11.1)
     font-awesome-sass (5.8.1)
       sassc (>= 1.11)
-    geckodriver-helper (0.24.0)
-      archive-zip (~> 0.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gon (6.2.1)
@@ -296,7 +292,7 @@ GEM
       multi_xml (>= 0.5.2)
     httpi (2.0.2)
       rack
-    i18n (1.6.0)
+    i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     i18n-js (3.2.2)
       i18n (>= 0.6.6)
@@ -309,7 +305,6 @@ GEM
     ice_cube (0.16.3)
     ice_nine (0.11.2)
     iconv (1.0.8)
-    io-like (0.3.0)
     jbuilder (2.9.1)
       activesupport (>= 4.2.0)
     jquery-rails (4.3.5)
@@ -358,7 +353,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.5.0.357)
     nio4r (2.4.0)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     nori (2.1.0)
     nprogress-rails (0.2.0.2)
@@ -503,7 +498,7 @@ GEM
     ruby-graphviz (1.2.4)
     ruby-prof (1.0.0)
     ruby-rc4 (0.1.5)
-    rubyzip (1.2.3)
+    rubyzip (1.3.0)
     safe_yaml (1.0.5)
     sassc (2.0.1)
       ffi (~> 1.9)
@@ -590,6 +585,10 @@ GEM
     wasabi (3.1.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.0)
+    webdrivers (4.1.2)
+      nokogiri (~> 1.6)
+      rubyzip (~> 1.0)
+      selenium-webdriver (>= 3.0, < 4.0)
     webmock (3.7.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -654,7 +653,6 @@ DEPENDENCIES
   faker
   filterrific!
   font-awesome-sass
-  geckodriver-helper
   gon (~> 6.2)
   grape (= 1.2.4)
   grape-entity (~> 0.7.1)
@@ -715,7 +713,6 @@ DEPENDENCIES
   sanitized_data!
   sassc-rails
   savon (~> 2.2.0)
-  selenium-webdriver
   shoulda-callback-matchers
   shoulda-matchers
   simplecov
@@ -729,6 +726,7 @@ DEPENDENCIES
   traceroute
   twitter-typeahead-rails
   uglifier (>= 1.3.0)
+  webdrivers (~> 4.0)
   webmock
   whenever
   will_paginate

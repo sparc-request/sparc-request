@@ -62,7 +62,7 @@
               = ff_i.label :orcid
               = ff_i.text_field :orcid, class: 'form-control', placeholder: t('authorized_users.form.placeholders.orcid'), maxlength: 19
               %small.form-text
-                = link_to t('authorized_users.form.links.orcid'), t('authorized_users.form.links.orcid')
+                = link_to t('authorized_users.form.links.orcid'), t('authorized_users.form.links.orcid'), target: :_blank
 
           .form-group#eraCommonsNameContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
             = ff_i.label :era_commons_name

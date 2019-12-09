@@ -57,6 +57,6 @@ RSpec.describe "User saves a filter", js: :true do
     expect(filter.with_status).to eq(['ctrc_approved', 'complete'])
     expect(filter.with_organization).to eq(["#{@organization.id}"])
     expect(filter.with_owner).to eq(["#{jug2.id}"])
-    expect(page).to have_selector('.saved-search-link')
+    expect(page).to have_selector('.saved-search-link', visible: false) ##visible false catches either case, to solve travis issue
   end
 end

@@ -82,5 +82,29 @@
                   = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
                 = f.text_field :indirect_cost_rate, class: 'form-control'
 
+        .form-row
+          %h4.pb-2.mb-2.border-bottom.w-100
+            = t('protocols.form.financial_information.guarantor_header')
+          .form-group.col-12
+            = f.label :guarantor_contact
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_contact, icon('fas', 'user'), class: 'input-group-text'
+              = f.text_field :guarantor_contact, class: 'form-control'
+          .form-group.col-6.persist-validation
+            = f.label :guarantor_phone
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_phone, icon('fas', 'phone'), class: 'input-group-text'
+              = f.phone_field :guarantor_phone, value: format_phone(f.object.guarantor_phone), class: 'form-control', placeholder: t('constants.phone.placeholder')
+            %span.form-text.text-muted
+              = t('constants.phone.note')
+          .form-group.col-6
+            = f.label :guarantor_email
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_email, icon('far', 'envelope'), class: 'input-group-text'
+              = f.text_field :guarantor_email, class: 'form-control'
+
       - if protocol.is_a?(Study)
         = render 'protocols/form/federal_grant_information', f: f, protocol: protocol

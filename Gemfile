@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.9'
+gem 'capistrano', '~> 3.11'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -34,14 +34,14 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'gon', '~> 6.2'
+gem 'gon', '~> 6.3'
 gem 'grape', '1.2.4'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.17.0'
+gem 'httparty', '~> 0.17.1'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -58,7 +58,7 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.16.0'
+gem 'net-ldap', '~> 0.16.2'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
@@ -68,7 +68,7 @@ gem 'pdfkit' # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 4.1'
+gem 'puma', '~> 4.3'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '6.0.1'
 gem 'rails-html-sanitizer' # Check usage
@@ -125,12 +125,13 @@ end
 group :test do
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
-  gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
+  # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
+  gem 'webdrivers', '~> 4.0'
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'selenium-webdriver'
+  # gem 'selenium-webdriver'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage

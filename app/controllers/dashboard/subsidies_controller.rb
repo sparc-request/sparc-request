@@ -84,7 +84,8 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   private
 
   def find_subsidy
-    @subsidy = action_name == 'destroy' ? ApprovedSubsidy.find(params[:id]) : PendingSubsidy.find(params[:id])
+    @subsidy = Subsidy.find(params[:id])
+    @subsidy = @subsidy.becomes("#{@subsidy.status}Subsidy".constantize)
   end
 
   def find_sub_service_request

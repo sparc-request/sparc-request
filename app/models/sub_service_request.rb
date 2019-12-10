@@ -426,8 +426,6 @@ class SubServiceRequest < ApplicationRecord
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
     primary_pi = protocol.primary_principal_investigator
-    # send all available surveys at once
-    available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
@@ -436,6 +434,11 @@ class SubServiceRequest < ApplicationRecord
         SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
+  end
+  
+  # send all available surveys at once
+  def available_surveys
+    self.line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
   end
 
   def surveys_completed?

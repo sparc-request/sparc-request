@@ -82,6 +82,10 @@ class Identity < ApplicationRecord
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
 
+  def self.shard_identifier(ldap_uid)
+    ldap_uid.split('@')[1].gsub('.edu', '')
+  end
+
   def suggestion_value
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
@@ -114,7 +118,7 @@ class Identity < ApplicationRecord
   end
 
   def shard_identifier
-    self.ldap_uid.split('@')[1].gsub('.edu', '')
+    Identity.shard_identifier(self.ldap_uid)
   end
 
   #replace old organization methods with new professional organization lookups
@@ -214,9 +218,9 @@ class Identity < ApplicationRecord
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
+      using(shard_identifier(login)).where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
     else
-      where(conditions).first
+      using(shard_identifier(conditions[:ldap_uid])).where(conditions).first
     end
   end
 

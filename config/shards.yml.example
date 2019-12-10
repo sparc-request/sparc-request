@@ -24,6 +24,7 @@ octopus:
     - test
   development:
     musc:
+      name:       Medical University of South Carolina
       username:   root
       adapter:    mysql2
       encoding:   utf8
@@ -34,6 +35,7 @@ octopus:
         sql_mode: TRADITIONAL
   test:
     musc:
+      name:       Medical University of South Carolina
       username:   root
       adapter:    mysql2
       encoding:   utf8

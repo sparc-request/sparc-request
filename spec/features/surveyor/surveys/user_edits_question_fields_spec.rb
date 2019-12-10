@@ -434,6 +434,10 @@ RSpec.describe 'User edits question fields', js: true do
           wait_for_javascript_to_finish
           confirm_swal
           wait_for_javascript_to_finish
+          
+          puts '#' * 50
+          puts page.has_selector?('.swal2-container .swal2-confirm')
+          puts '#' * 50
 
           find('.select-depender').click
           wait_for_javascript_to_finish

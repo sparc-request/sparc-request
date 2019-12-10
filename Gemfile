@@ -40,7 +40,7 @@ gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_valida
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.17.0'
+gem 'httparty', '~> 0.17.1'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -57,7 +57,7 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.16.0'
+gem 'net-ldap', '~> 0.16.2'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
@@ -69,7 +69,7 @@ gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.3'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.3'
+gem 'rails', '5.2.4'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage

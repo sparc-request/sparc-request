@@ -109,7 +109,7 @@ group :development, :test do
   gem 'parallel_tests' # Check usage
   gem 'pry'
   gem 'rails-erd' # Check usage
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails', '~> 3.9'
 end
 
 group :development do

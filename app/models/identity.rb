@@ -40,7 +40,8 @@ class Identity < ApplicationRecord
 
   #### END DEVISE SETUP ####
 
-  belongs_to :professional_organization
+  belongs_to :professional_organization, optional: true
+
   has_many :approvals, dependent: :destroy
   has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
   has_many :catalog_manager_rights, class_name: 'CatalogManager'

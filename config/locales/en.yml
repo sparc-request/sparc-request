@@ -767,6 +767,7 @@ en:
         study_type_note: "Note: %{note}"
       financial_information:
         header: "Financial Information"
+        guarantor_header: "Guarantor Information"
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"

@@ -112,7 +112,7 @@ class Identity < ApplicationRecord
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
     if Setting.get_value("use_ldap") then
-      return ldap_uid.sub(/@#{Directory.domain}/, '')
+      return ldap_uid.sub(/@#{Directory.ldap_domain}/, '')
     else
       return ldap_uid
     end

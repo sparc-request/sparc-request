@@ -34,7 +34,7 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'gon', '~> 6.3'
-gem 'grape', '1.2.4'
+gem 'grape', '1.2.5'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -109,7 +109,7 @@ group :development, :test do
   gem 'parallel_tests' # Check usage
   gem 'pry'
   gem 'rails-erd' # Check usage
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails', '~> 3.9'
 end
 
 group :development do

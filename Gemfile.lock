@@ -268,7 +268,7 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    grape (1.2.4)
+    grape (1.2.5)
       activesupport
       builder
       mustermann-grape (~> 1.0.0)
@@ -660,7 +660,7 @@ DEPENDENCIES
   filterrific!
   font-awesome-sass
   gon (~> 6.3)
-  grape (= 1.2.4)
+  grape (= 1.2.5)
   grape-entity (~> 0.7.1)
   grouped_validations!
   gyoku

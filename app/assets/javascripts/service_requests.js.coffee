@@ -36,6 +36,25 @@ $(document).ready ->
           url: '/service_request/save_and_exit'
           data: $('.milestone-field input').serialize() + "&srid=#{getSRId()}"
 
+  ###################
+  ### Add Service ###
+  ###################
+
+  $(document).on 'click', '.add-service', ->
+    $(this).prop('disabled', true)
+    $this = $(this)
+    service_id = $(this).data('service-id')
+
+    $.ajax
+      method: 'POST'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        srid: getSRId()
+        service_id: service_id
+      complete: ->
+        $this.prop('disabled', false)
+
   ###############
   ### Catalog ###
   ###############

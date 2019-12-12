@@ -83,8 +83,9 @@
                 = f.text_field :indirect_cost_rate, class: 'form-control'
 
         .form-row
-          %h4.pb-2.mb-2.border-bottom.w-100
-            = t('protocols.form.financial_information.guarantor_header')
+          .form-group.col-12.mb-2
+            %h4.pb-2.border-bottom.w-100
+              = t('protocols.form.financial_information.guarantor_header')
           .form-group.col-12
             = f.label :guarantor_contact
             .input-group

@@ -346,7 +346,7 @@ GEM
     mustermann (1.0.3)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
-    mysql2 (0.5.3)
+    mysql2 (0.5.2)
     nested_form (0.3.2)
     nested_form_fields (0.8.2)
       coffee-rails (>= 3.2.1)
@@ -677,7 +677,7 @@ DEPENDENCIES
   launchy
   letter_opener
   momentjs-rails (>= 2.8.1)
-  mysql2 (~> 0.5)
+  mysql2 (= 0.5.2)
   nested_form
   nested_form_fields
   net-ldap (~> 0.16.2)

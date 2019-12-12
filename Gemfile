@@ -51,7 +51,7 @@ gem 'jbuilder', '~> 2.9'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '~> 0.5'
+gem 'mysql2', '0.5.2'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
@@ -126,7 +126,7 @@ group :test do
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 4.1'
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'

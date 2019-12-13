@@ -18,31 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-octopus:
-  environments:
-    - development
-    - test
-  development:
-    shards:
-      musc:
-        name:       Medical University of South Carolina
-        username:   root
-        adapter:    mysql2
-        encoding:   utf8
-        database:   sparc-request-musc_development
-        pool:       5
-        timeout:    5000
-        variables:
-          sql_mode: TRADITIONAL
-  test:
-    shards:
-      musc:
-        name:       Medical University of South Carolina
-        username:   root
-        adapter:    mysql2
-        encoding:   utf8
-        database:   sparc-request-musc_test
-        pool:       5
-        timeout:    5000
-        variables:
-          sql_mode: TRADITIONAL
+# https://github.com/plataformatec/devise/wiki/How-To:-Use-custom-mailer
+
+class DeviseMailer < Devise::Mailer
+  helper :application # gives access to all helpers defined within `application_helper`.
+  include Devise::Controllers::UrlHelpers # Optional. eg. `confirmation_url`
+  default template_path: 'devise/mailer' # to make sure that your mailer uses the devise views
+end

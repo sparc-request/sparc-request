@@ -72,7 +72,11 @@ class Identity < ApplicationRecord
   validates_format_of :email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: :email_changed?
   validates_format_of :phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: :phone_changed?
 
-  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates :ldap_uid, presence: true
+
+  # Validate uniqueness and ensure the ldap_uid matches <somthing>@<shard_name>.edu
+  validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{Octopus.config[Rails.env]['shards'].keys.join('|')})\.edu)\Z/
+
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
   # validates_presence_of :reason, if: :new_record?
@@ -84,7 +88,7 @@ class Identity < ApplicationRecord
   ###############################################################################
 
   def self.shard_identifier(ldap_uid)
-    ldap_uid.split('@')[1].gsub('.edu', '')
+    ldap_uid.split('@')[1].try(:gsub, '.edu', '')
   end
 
   def suggestion_value
@@ -220,13 +224,15 @@ class Identity < ApplicationRecord
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
       using(shard_identifier(login)).where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
-    else
+    elsif conditions[:ldap_uid]
       using(shard_identifier(conditions[:ldap_uid])).where(conditions).first
+    else
+      where(conditions).first
     end
   end
 
   def self.send_reset_password_instructions(attributes={})
-    recoverable = find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
+    recoverable = using(shard_identifier(attributes['ldap_uid'])).find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
     if !recoverable.approved?
       recoverable.errors[:base] << I18n.t("devise.failure.not_approved")
     elsif recoverable.persisted?

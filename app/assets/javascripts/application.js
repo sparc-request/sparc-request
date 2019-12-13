@@ -28,6 +28,10 @@
 // Polyfill for ES6 Promise
 //= require promise-polyfill/dist/polyfill.min
 
+// Polyfill for URL
+//= require url-polyfill/url-polyfill.min
+
+
 ///////////////////////////////////////
 /// These need to be required first ///
 ///////////////////////////////////////

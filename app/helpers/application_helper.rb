@@ -207,25 +207,10 @@ module ApplicationHelper
   end
 
   def in_dashboard?
-    puts '#' * 50
-    puts "request.format"
-    puts '#' * 10
-    puts request.format
-    puts '#' * 50
+    ##Rescue because request.referrer can be crazy shiboleth url, and this throws an error in production. By definition, if it's not recognizable by rails, it also can't be a dashboard path.
+    dashboard_path = Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/') rescue false
 
-    puts '#' * 50
-    puts "request.path"
-    puts '#' * 10
-    puts request.path
-    puts '#' * 50
-
-    puts '#' * 50
-    puts "request.referrer"
-    puts '#' * 10
-    puts request.referrer
-    puts '#' * 50
-
-    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard')) || Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/')
+    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard')) || dashboard_path
   end
 
   def in_admin?

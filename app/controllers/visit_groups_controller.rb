@@ -46,7 +46,6 @@ class VisitGroupsController < ApplicationController
   def create
     @visit_group  = VisitGroup.new(visit_group_params.except(:position))
     @visit_group.assign_attributes(position: visit_group_params[:position])
-    @arm          = @visit_group.arm
     @tab          = params[:tab]
 
     setup_calendar_pages
@@ -56,6 +55,8 @@ class VisitGroupsController < ApplicationController
     else
       @errors = @visit_group.errors
     end
+
+    @arm = @visit_group.arm ##This is after visit_group creation, so visit_count will be loaded correctly
 
     respond_to :js
   end
@@ -95,7 +96,7 @@ class VisitGroupsController < ApplicationController
 
     flash[:success] = t('visit_groups.deleted')
 
-    respond_to :js 
+    respond_to :js
   end
 
   private

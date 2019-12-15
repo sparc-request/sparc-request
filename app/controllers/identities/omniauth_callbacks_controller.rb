@@ -20,7 +20,7 @@
 
 class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def shibboleth
-    @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
+    @identity = Identity.using(Identity.shard_identifier(request.env["omniauth.auth"].uid)).find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
 
     if @identity.persisted?
       sign_in_and_redirect(@identity, event: :authentication) #this will throw if @identity is not activated
@@ -32,7 +32,7 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
   end
 
   def cas
-    @identity = Identity.find_for_cas_oauth(request.env['omniauth.auth'], current_identity)
+    @identity = Identity.using(Identity.shard_identifier(request.env["omniauth.auth"].uid)).find_for_cas_oauth(request.env['omniauth.auth'], current_identity)
 
     if @identity.persisted?
       sign_in_and_redirect(@identity, event: :authentication) #this will throw if @identity is not activated

@@ -23,22 +23,26 @@ octopus:
     - development
     - test
   development:
-    musc:
-      username:   root
-      adapter:    mysql2
-      encoding:   utf8
-      database:   sparc-request-musc_development
-      pool:       5
-      timeout:    5000
-      variables:
-        sql_mode: TRADITIONAL
+    shards:
+      musc:
+        name:       Medical University of South Carolina
+        username:   root
+        adapter:    mysql2
+        encoding:   utf8
+        database:   sparc-request-musc_development
+        pool:       5
+        timeout:    5000
+        variables:
+          sql_mode: TRADITIONAL
   test:
-    musc:
-      username:   root
-      adapter:    mysql2
-      encoding:   utf8
-      database:   sparc-request-musc_test
-      pool:       5
-      timeout:    5000
-      variables:
-        sql_mode: TRADITIONAL
+    shards:
+      musc:
+        name:       Medical University of South Carolina
+        username:   root
+        adapter:    mysql2
+        encoding:   utf8
+        database:   sparc-request-musc_test
+        pool:       5
+        timeout:    5000
+        variables:
+          sql_mode: TRADITIONAL

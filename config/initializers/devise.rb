@@ -31,7 +31,7 @@ Devise.setup do |config|
   config.mailer_sender = ENV["sender_address"] || "no-reply@sample.org"
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = "Devise::Mailer"
+  config.mailer = "DeviseMailer"
 
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
@@ -269,6 +269,17 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
+
+  config.warden do |manager|
+    manager.serialize_into_session(:identity) do |identity|
+      [identity.id, identity.shard_identifier]
+    end
+
+    manager.serialize_from_session(:identity) do |keys|
+      id, shard = keys
+      Identity.using(shard).find(id)
+    end
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine

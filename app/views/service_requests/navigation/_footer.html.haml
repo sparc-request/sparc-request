@@ -17,22 +17,40 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.bottom-nav.col-sm-12.ui-corner-all{ class: css_class }
-  .col-sm-3.text-left
-    = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
-  - if controller.action_name == 'review'
-    .col-sm-3.text-center
-      = save_as_draft_button(service_request)
-    .col-sm-3.text-center
-      = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate],obtain_research_pricing_service_request_path(srid: service_request.id), class: 'btn btn-default get-a-cost-estimate', data: { disable_with: t(:proper)[:navigation][:bottom][:getting_cost] }
-  - else
-    .col-sm-6.text-center
-      - if service_request.submitted_at.blank? && service_request.protocol.present?
-        = save_as_draft_button(service_request)
-  -# This was extracted because the surveyor gem requires an href location to redirect to post-submit and it was being cranky
-  - if Setting.get_value("system_satisfaction_survey") && action_name == 'review'
-    .col-sm-3.text-right
-      = link_to t(:proper)[:navigation][:bottom][:submit], confirmation_service_request_path(srid: service_request.id), class: 'btn btn-default form-submit-button', data: { disable_with: t(:proper)[:navigation][:bottom][:submitting] }
-  - else
-    .col-sm-3.text-right
-      = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button', data: { disable_with: "#{action_name == 'review' ? t(:proper)[:navigation][:bottom][:submitting] : t(:proper)[:navigation][:bottom][:saving] }" }
+
+%footer.card.w-100.sticky-bottom.mt-3#serviceRequestFooter
+  .card-body.py-2
+    .row
+      - if ['obtain_research_pricing', 'confirmation'].include?(action_name)
+        .col-3.offset-3
+          = link_to service_request_path(srid: @service_request.id, format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-block btn-secondary' do
+            = succeed t(:proper)[:confirmation][:download_request] do
+              = icon('fas', 'download mr-2')
+        .col-3
+          = link_to dashboard_root_path, class: 'btn btn-lg btn-block btn-success' do
+            - succeed t(:proper)[:confirmation][:to_dashboard] do
+              = icon('fas', 'home mr-2')
+      - else
+        .col.text-left
+          = link_to @back, class: ['btn btn-lg btn-link d-none d-sm-inline-block px-0', @current_page == 'catalog' ? 'invisible' : ''] do
+            - succeed t(:proper)[:navigation][:bottom][:back][:full] do
+              = icon('fas', 'arrow-left mr-2')
+          = link_to t(:proper)[:navigation][:bottom][:back][:small], @back, class: ['btn btn-lg btn-link d-inline-block d-sm-none px-0', @current_page == 'catalog' ? 'invisible' : '']
+        - unless @current_page == 'catalog'
+          .col.text-center
+            = link_to t('proper.cart.back_to_catalog'), catalog_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-primary'
+        - if @service_request.submitted_at.blank? && @service_request.protocol.present?
+          .col.text-center
+            = save_as_draft_button(@service_request)
+        - if controller.action_name == 'review'
+          .col.text-center
+            = link_to t("proper.navigation.bottom.get_cost_estimate"),obtain_research_pricing_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-secondary', id: 'getCostEstimate'
+        .col.text-right
+          - if action_name == 'review'
+            = link_to confirmation_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
+              - succeed icon('fas', 'arrow-right ml-2') do
+                = t('proper.navigation.bottom.submit')
+          - else
+            %button.btn.btn-lg.btn-outline-success{ type: 'submit' }<
+              = t('proper.navigation.bottom.save_and_continue.full')
+              = icon('fas', 'arrow-right ml-2')

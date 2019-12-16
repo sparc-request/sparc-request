@@ -32,4 +32,4 @@
     %h5= t(:catalog_manager)[:organization_form][:status_options][:editable_statuses]
 
 - PermissibleValue.get_hash("status").sort_by{ |key, value| value}.each do |status_key, status_value|
-  = render partial: 'status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults, user: @user}
+  = render partial: 'status_row', locals: {status_key: status_key, status_value: status_value, organization: organization, available_statuses: available_statuses, editable_statuses: editable_statuses, using_defaults: @using_defaults}

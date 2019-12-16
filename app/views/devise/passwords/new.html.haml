@@ -17,17 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.devise-form
-  .col-md-6.col-md-offset-3.text-center
-    %h1.page-header
-      = t(:devise)[:passwords][:new][:header]
-    #forgot-password-form
-      = form_for resource, as: resource_name, url: password_path(resource_name), method: :post do |f|
-        - if resource.errors.any?
-          = render 'shared/modal_errors', errors: resource.errors
-        .form-group.field
-          = f.label :ldap_uid, t(:devise)[:passwords][:new][:login]
-          = f.text_field :ldap_uid, class: 'form-control'
-        .form-group
-          = f.submit t(:devise)[:passwords][:new][:send_reset], class: 'btn btn-primary'
-          = link_to t(:actions)[:cancel], new_identity_session_path, class: 'btn btn-primary'
+
+%h1.text-center.mb-4
+  = t('devise.passwords.new.header')
+= form_for resource, as: resource_name, url: password_path(resource_name), method: :post, remote: true do |f|
+  .form-group
+    = f.label :ldap_uid, class: 'required'
+    = f.text_field :ldap_uid, autofocus: true, class: 'form-control'
+  .form-group
+    = f.submit t('devise.passwords.new.send_reset'), class: 'btn btn-lg btn-block btn-outline-primary'
+= render 'devise/shared/links'
+.form-group.mb-0
+  = link_to t('devise.back_to_catalog'), root_path, class: 'btn btn-lg btn-block btn-secondary'

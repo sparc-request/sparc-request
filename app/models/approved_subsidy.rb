@@ -20,8 +20,11 @@
 
 class ApprovedSubsidy < Subsidy
   audited
-  before_save :default_values
+
   belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
+
+  before_save :default_values
+  before_destroy :create_past_subsidy
 
   default_scope { where(status: "Approved") }
 
@@ -55,5 +58,11 @@ class ApprovedSubsidy < Subsidy
       "<td>#{approved_cost}</td>"\
       "</tr></tbody></table>"
     notes.create(body: approval_string, identity_id: approver.id)
+  end
+
+  private
+
+  def create_past_subsidy
+    PastSubsidy.create(self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
   end
 end

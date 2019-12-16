@@ -17,12 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.page-header.text-center
-  %h3
-    = raw(t(:proper)[:catalog][:center][:welcome])
+
 .text-center
-  %p
-    = t(:proper)[:catalog][:center][:description]
-  %p
-    %strong
-      = t(:proper)[:catalog][:center][:notice]
+  %h1.display-4.font-weight-light.text-primary.mb-0<
+    = t('proper.catalog.center.header')
+  %h1.text-muted.font-weight-light.pb-3.mb-3.border-bottom
+    = t('proper.catalog.center.subheader')
+  %h5.font-weight-normal.mb-3
+    = raw t('proper.catalog.center.description').html_safe
+  .jumbotron.mb-0
+    %h3.mb-3
+      = raw t('proper.catalog.center.text')
+    .w-100.mb-3
+      = link_to t('proper.catalog.center.dashboard_link'), dashboard_root_path, class: 'btn btn-lg btn-outline-primary'
+    %p.mb-0
+      %strong
+        = t('proper.catalog.center.notice')
+
+- if Setting.get_value('use_tableau') && Setting.get_value('homepage_tableau_url')
+  = render 'catalogs/tableau'

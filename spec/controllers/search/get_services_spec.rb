@@ -22,18 +22,9 @@ require 'rails_helper'
 
 RSpec.describe SearchController do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#services' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
     it 'should return services with similar name' do
       sr    = create(:service_request_without_validations)
       inst  = create(:institution)
@@ -50,7 +41,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
 
     end
 
@@ -70,7 +61,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     it 'should return services with cpt code' do
@@ -89,7 +80,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     it 'should not return unavailable services' do
@@ -108,7 +99,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s1.id)
+      expect(results[0]['service_id']).to eq(s1.id)
     end
 
     # Can we verify this?
@@ -135,7 +126,7 @@ RSpec.describe SearchController do
       results = JSON.parse(response.body)
 
       expect(results.count).to eq(1)
-      expect(results[0]['value']).to eq(s2.id)
+      expect(results[0]['service_id']).to eq(s2.id)
     end
   end
 end

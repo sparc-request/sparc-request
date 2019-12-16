@@ -22,7 +22,6 @@ require 'rails_helper'
 
 RSpec.describe SearchController do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
   describe '#services' do

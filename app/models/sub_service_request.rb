@@ -39,6 +39,8 @@ class SubServiceRequest < ApplicationRecord
 
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
+  has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -86,6 +88,10 @@ class SubServiceRequest < ApplicationRecord
     super(status)
   end
 
+  def label
+    "(#{self.ssr_id}) #{self.organization.label}"
+  end
+
   def previously_submitted?
     self.submitted_at.present?
   end
@@ -96,6 +102,24 @@ class SubServiceRequest < ApplicationRecord
       "STATUS MAPPING NOT PRESENT"
     else
       formatted_status
+    end
+  end
+
+  def generate_approvals(current_user)
+    if self.nursing_nutrition_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
+    end
+
+    if self.lab_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
+    end
+
+    if self.imaging_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
+    end
+
+    if self.committee_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
+      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
     end
   end
 
@@ -160,20 +184,12 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def one_time_fee_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: true })
-  end
-
-  def per_patient_per_visit_line_items
-    self.line_items.joins(:service).where(services: { one_time_fee: false })
-  end
-
   def has_one_time_fee_services?
-    one_time_fee_line_items.count > 0
+    @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end
 
   def has_per_patient_per_visit_services?
-    per_patient_per_visit_line_items.count > 0
+    @has_clinical_services ||= per_patient_per_visit_line_items.count > 0
   end
 
   # Returns the total direct costs of the sub-service-request
@@ -221,13 +237,12 @@ class SubServiceRequest < ApplicationRecord
   def candidate_services
     services = []
     if self.organization.process_ssrs
-      services = self.organization.all_child_services.select {|x| x.is_available?}
-
+      services = self.organization.all_child_services.available
     else
       begin
-        services = self.organization.process_ssrs_parent.all_child_services.select {|x| x.is_available}
+        services = self.organization.process_ssrs_parent.all_child_services.available
       rescue
-        services = self.organization.all_child_services.select {|x| x.is_available?}
+        services = self.organization.all_child_services.available
       end
     end
 
@@ -261,14 +276,9 @@ class SubServiceRequest < ApplicationRecord
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
   def ready_for_fulfillment?
-    # return true if work fulfillment has already been turned "on" or global variable fulfillment_contingent_on_catalog_manager is set to false or nil
+    # return true if the request is already in fulfillmentt and fulfillment_contingent_on_catalog_manager is turned off
     # otherwise, return true only if fulfillment_contingent_on_catalog_manager is true and the parent organization has tag 'clinical work fulfillment'
-    if self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") ||
-        (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
-      return true
-    else
-      return false
-    end
+    self.in_work_fulfillment || !Setting.get_value("fulfillment_contingent_on_catalog_manager") || (Setting.get_value("fulfillment_contingent_on_catalog_manager") && self.organization.tag_list.include?('clinical work fulfillment'))
   end
 
   ########################
@@ -303,18 +313,16 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
-    self.status != 'first_draft' && !process_ssrs_org.has_editable_status?(status)
+    self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    process_ssrs_org = self.organization.process_ssrs_parent || self.organization
-    self.status == 'first_draft' || (process_ssrs_org.has_editable_status?(self.status) && !self.is_complete?)
+    self.status == 'first_draft' || (process_ssrs_organization.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    Status.complete?(self.status)
+    Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
   end
 
   def set_to_draft
@@ -347,10 +355,6 @@ class SubServiceRequest < ApplicationRecord
     end
 
     self.update_attributes(service_request_id: new_sr.id)
-  end
-
-  def arms_editable?
-    !self.in_work_fulfillment?
   end
 
   def update_past_status
@@ -395,31 +399,13 @@ class SubServiceRequest < ApplicationRecord
     candidates.uniq
   end
 
-  def generate_approvals current_user, params
-    if params[:nursing_nutrition_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Nursing/Nutrition Approved"})
-    end
-
-    if params[:lab_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Lab Approved"})
-    end
-
-    if params[:imaging_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Imaging Approved"})
-    end
-
-    if params[:committee_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Time.now, :approval_type => "Committee Approved"})
-    end
-  end
-
   #############
   ### FORMS ###
   #############
   def forms_to_complete
     completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }
+    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
   end
 
   def form_completed?(form)
@@ -440,8 +426,6 @@ class SubServiceRequest < ApplicationRecord
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
     primary_pi = protocol.primary_principal_investigator
-    # send all available surveys at once
-    available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
@@ -450,6 +434,11 @@ class SubServiceRequest < ApplicationRecord
         SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
+  end
+  
+  # send all available surveys at once
+  def available_surveys
+    self.line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
   end
 
   def surveys_completed?
@@ -460,8 +449,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def survey_latest_sent_date
-    survey_response = self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' })
-    survey_response.any? ? survey_response.first.updated_at.try(:strftime, '%D') : 'N/A'
+    self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.try(:updated_at)
   end
 
   ###############################

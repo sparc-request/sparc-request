@@ -35,35 +35,67 @@ class PermissibleValue < ApplicationRecord
     where(is_available: false)
   }
 
+  def self.preload_values
+    RequestStore.store[:permissible_values] ||= PermissibleValue.all.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h
+  end
+
   # Get the first PermissibleValue value using a category and key
   def self.get_value(category, key)
-    PermissibleValue.where(category: category, key: key).first.try(:value)
+    if value = RequestStore.store[:permissible_values].try(:[], category).try(:[], key).try(:[], :value)
+      value
+    else
+      PermissibleValue.where(category: category, key: key).first.try(:value)
+    end
   end
 
   # Get an array of PermissibleValue keys with the given category
   def self.get_key_list(category, default=nil)
-    unless default.nil?
-      PermissibleValue.available.where(category: category, default: default).pluck(:key)
+    if default.nil?
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.keys
+      else
+        PermissibleValue.available.where(category: category).pluck(:key)
+      end
     else
-      PermissibleValue.available.where(category: category).pluck(:key)
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.select{ |key, data| data[:default] == default }.keys
+      else
+        PermissibleValue.available.where(category: category, default: default).pluck(:key)
+      end
     end
   end
 
   # Get a hash of PermissibleValue keys as the keys and values as the values
   def self.get_hash(category, default=nil)
-    unless default.nil?
-      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:key, :value)]
+    if default.nil?
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.map{ |key, data| [key, data[:value]] }.to_h
+      else
+        Hash[PermissibleValue.available.where(category: category).pluck(:key, :value)]
+      end
     else
-      Hash[PermissibleValue.available.where(category: category).pluck(:key, :value)]
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.select{ |key, data| data[:default] == default }.map{ |key, data| [key, data[:value]] }.to_h
+      else
+        Hash[PermissibleValue.available.where(category: category, default: default).pluck(:key, :value)]
+      end
     end
   end
 
   # Get a hash of PermissibleValue values as the keys and keys as the values
   def self.get_inverted_hash(category, default=nil)
-    unless default.nil?
-      Hash[PermissibleValue.available.where(category: category, default: default).pluck(:value, :key)]
+    if default.nil?
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.map{ |key, data| [data[:value], key] }.to_h
+      else
+        Hash[PermissibleValue.available.where(category: category).pluck(:value, :key)]
+      end
     else
-      Hash[PermissibleValue.available.where(category: category).pluck(:value, :key)]
+      if values = RequestStore.store[:permissible_values].try(:[], category)
+        values.select{ |key, data| data[:default] == default }.map{ |key, data| [data[:value], key] }.to_h
+      else
+        Hash[PermissibleValue.available.where(category: category, default: default).pluck(:value, :key)]
+      end
     end
   end
 end

@@ -18,14 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.panel.panel-default
-  .panel-heading.justify-content-between
-    %h4.panel-title
-      = t(:funding)[:download][:header]
-    = link_to "/funding?back=true", title: "Back to funding opportunities" do
-      %span.glyphicon.glyphicon-arrow-left{aria: {hidden: "true"}}
-      = t(:actions)[:back]
-  .panel-body
-    = render 'funding/services/title', service: @service
-    = render 'funding/services/documents', service: @service, table: @table
-  
+
+%header.d-flex.mb-2.default
+  %h2.p-2.mr-auto
+    = t('funding.download.header')
+  %h3.p-2
+    = link_to "/funding" do
+      = icon('fas', 'arrow-left mr-2')
+      = t('funding.download.back')
+
+.p1#documentsList
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('funding.download.funding_opportunity', org_name: @service.organization.name, org_abbreviation: @service.abbreviation)
+    = render 'funding/services/documents', service: @service

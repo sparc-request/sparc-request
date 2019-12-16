@@ -1,0 +1,70 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%section.pt-3#protocolInformation
+  .card
+    .card-body.p-5
+      %h2.text-center.mb-5
+        = t('protocols.form.information.header')
+
+      = render 'layouts/required_fields'
+
+      .form-row
+        .form-group.col-6
+          = f.label :title, class: 'required', title: t('protocols.tooltips.title'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.text_field :title, class: [('form-control'), (protocol.is_a?(Study) && Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : '')], readonly: Setting.get_value("research_master_enabled") && protocol.research_master_id.present?
+        .form-group.col-6
+          = f.label :short_title, class: 'required', title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.text_field :short_title, class: [('form-control'), (Protocol.is_a?(Study) && Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : '')], readonly: Setting.get_value("research_master_enabled") && protocol.research_master_id.present?
+
+      - if protocol.is_a?(Project)
+        .form-group
+          = f.label :brief_description
+          = f.text_area :brief_description, class: 'form-control', rows: 6
+
+      = f.fields_for :primary_pi_role do |ff_ppi|
+        .form-group
+          = f.label :primary_pi, class: 'required'
+          .input-group
+            .input-group-prepend
+              = f.label :primary_pi, icon('fas', 'search'), class: 'input-group-text'
+            = text_field_tag :primary_pi, ff_ppi.object.identity.try(&:display_name), class: 'form-control typeahead', placeholder: t('constants.prompts.search_for_user'), readonly: !protocol.new_record?
+          = ff_ppi.hidden_field :identity_id
+          %span.form-text.text-muted
+            = t('protocols.form.information.primary_pi.note')
+
+      - if protocol.is_a?(Study) && Setting.get_value("use_epic")
+        .form-group
+          = f.label :selected_for_epic, class: [protocol.bypass_stq_validation ? '' : 'required'], title: t('protocols.tooltips.epic'), data: { toggle: 'tooltip', placement: 'right' }
+          .d-block
+            .custom-control.custom-radio.custom-control-inline
+              = f.radio_button :selected_for_epic, true, class: 'custom-control-input'
+              = f.label :selected_for_epic_true, t('constants.yes_select'), class: 'custom-control-label'
+            .custom-control.custom-radio.custom-control-inline
+              = f.radio_button :selected_for_epic, false, class: 'custom-control-input'
+              = f.label "selected_for_epic_false", t('constants.no_select'), class: 'custom-control-label'
+
+      - if protocol.is_a?(Study)
+        = render 'protocols/form/study_type_questions', f: f, protocol: protocol
+
+        - if Setting.get_value('use_epic')
+          #studyTypeNote
+            - if protocol.active? && note = protocol.determine_study_type_note
+              = render 'protocols/form/study_type_note', protocol: protocol, note: note

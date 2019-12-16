@@ -1,0 +1,57 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for in_dashboard? ? [:dashboard, document] : document, remote: true, multipart: true, authenticity_token: form_authenticity_token do |f|
+      = f.hidden_field :protocol_id
+      - unless in_dashboard?
+        = hidden_field_tag :srid, service_request.id
+      .modal-header
+        %h3.modal-title
+          = t("documents.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group
+          = f.label :doc_type, class: 'required'
+          = f.select :doc_type, options_for_select(PermissibleValue.get_inverted_hash('document_type'), document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'selectpicker'
+        .form-group#doc-type-other-field{ class: document.doc_type == 'other' ? '' : 'd-none' }
+          = f.label :doc_type_other, t('constants.prompts.please_specify'), class: 'required'
+          = f.text_field :doc_type_other, class: 'form-control'
+        .form-group
+          = f.label :document, class: 'required'
+          .custom-file
+            = f.file_field :document, class: 'custom-file-input'
+            = f.label :document, document.document_file_name, class: 'custom-file-label text-truncate'
+          %small.form-text.text-muted
+            = raw t('documents.supported_types', file_types: document_file_types_as_string)
+        .form-group
+          = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
+          = select_tag :org_ids, document_org_access_collection(document), class: 'selectpicker', multiple: true, data: { actions_box: 'true', live_search: 'true' }
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        %button.btn.btn-primary{ type: 'submit', data: { disable: true } }<
+          - if action_name == 'new'
+            = icon('fas', 'file-upload mr-2')
+            = t('actions.upload')
+          - else
+            = t('actions.submit')

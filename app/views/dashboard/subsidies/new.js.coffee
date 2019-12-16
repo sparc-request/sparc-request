@@ -17,5 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#modal_place").html("<%= escape_javascript(render( 'subsidies/form', subsidy: @subsidy, header_text: @header_text, admin: @admin, path: @path, action: @action )) %>");
-$("#modal_place").modal 'show'
+
+$("#modalContainer").html("<%= j render 'subsidies/form', subsidy: @subsidy, admin: @admin %>")
+$("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

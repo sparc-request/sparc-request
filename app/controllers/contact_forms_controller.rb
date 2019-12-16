@@ -23,7 +23,6 @@ class ContactFormsController < ApplicationController
 
   def new
     @contact_form = ContactForm.new
-    @identity = current_identity
   end
 
   def create
@@ -31,7 +30,7 @@ class ContactFormsController < ApplicationController
 
     if @contact_form.valid?
       ContactMailer.contact_us_email(@contact_form).deliver_now
-      flash.now[:success] = t(:proper)[:right_navigation][:contact][:submitted]
+      flash.now[:success] = t('contact_forms.sent')
     else
       @errors = @contact_form.errors
     end
@@ -40,6 +39,6 @@ class ContactFormsController < ApplicationController
   private
 
   def contact_form_params
-    params.require(:contact_form).permit!
+    params.require(:contact_form).permit(:name, :email, :subject, :message)
   end
 end

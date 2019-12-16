@@ -17,76 +17,105 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog#add-authorized-user-form
+
+- entity = in_dashboard? ? [:dashboard, protocol_role] : protocol_role
+
+-# TODO: Refactoring ProjectRole to AssociatedUser will remove the need for specifying the URL
+- if in_dashboard?
+  - url = protocol_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(protocol_role)
+  - change_user_url = new_dashboard_associated_user_path(protocol_id: protocol.id)
+- else
+  - url = protocol_role.new_record? ? associated_users_path : associated_user_path(protocol_role)
+  - change_user_url = new_associated_user_path(srid: service_request.id)
+
+.modal-dialog{ role: 'document' }
   .modal-content
-    .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center#modal-title
-        = header_text
-    .modal-body
-      #modal_errors
-      .row
-        .col-lg-12
-          .text-center
-            %label
-              = identity.display_name
-            %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true', toggle: "tooltip", animation: 'false', placement: 'right' }, title: "Remove" }
-      = render 'associated_users/form/primary_pi_warning', protocol: protocol, identity: identity
-      = form_for project_role, url: determine_url(dashboard, project_role), remote: true, html: { class: "protocol-role-form" } do |form|
-        - unless dashboard
-          = hidden_field_tag :srid, service_request.id
-        = form.hidden_field :identity_id
-        = form.hidden_field :protocol_id
-        .row
-          .col-lg-12
-            = form.fields_for :identity do |identity_form|
-              = user_form_group(name: :orcid, form: identity_form, link: t(:authorized_users)[:form_fields][:links][:orcid] ) do
-                = identity_form.text_field :orcid, class: 'form-control', placeholder: t(:authorized_users)[:form_fields][:placeholders][:orcid], maxlength: 19
+    = form_for entity, url: url, remote: true, html: { id: 'authorizedUserForm' } do |f|
+      = f.hidden_field :identity_id
+      = f.hidden_field :protocol_id
+      - unless in_dashboard?
+        = hidden_field_tag :srid, service_request.id
+      .modal-header
+        %h3.modal-title
+          = t("authorized_users.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group.text-center
+          %h5.mb-0
+            = identity.display_name
+            - if action_name == 'new'
+              = link_to icon('fas', 'times'),change_user_url, remote: true, class: 'text-danger', title: t('authorized_users.form.change'), data: { toggle: "tooltip", placement: 'right' }
 
-              = user_form_group(name: :era_commons_name, classes: ['role_dependent commons_name', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
-                = identity_form.text_field :era_commons_name, class: 'form-control'
+        = f.fields_for :identity do |ff_i|
+          .form-row
+            .form-group.col-6
+              = ff_i.label :phone
+              .input-group
+                .input-group-prepend
+                  %span.input-group-text
+                    = icon('fas', 'phone')
+                = ff_i.telephone_field :phone, class: 'form-control', placeholder: t('constants.phone.placeholder')
+              %small.form-text.text-muted
+                = t('constants.phone.note')
+            .form-group.col-6
+              = ff_i.label :orcid
+              = ff_i.text_field :orcid, class: 'form-control', placeholder: t('authorized_users.form.placeholders.orcid'), maxlength: 19
+              %small.form-text
+                = link_to t('authorized_users.form.links.orcid'), t('authorized_users.form.links.orcid'), target: :_blank
 
-              = user_form_group(name: :credentials, form: identity_form) do
-                = identity_form.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
+          .form-group#eraCommonsNameContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
+            = ff_i.label :era_commons_name
+            = ff_i.text_field :era_commons_name, class: 'form-control'
 
-              = user_form_group(name: :credentials_other, classes: ['credentials_dependent other', identity_form.object.credentials == 'other' ? '' : 'hidden'], form: identity_form, title: t(:authorized_users)[:form_fields][:credentials_specify], required: true) do
-                = identity_form.text_field :credentials_other, class: 'form-control'
+          .form-row
+            .form-group.col-4
+              = ff_i.label :credentials
+              = ff_i.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), ff_i.object.credentials), { include_blank: true }, class: 'selectpicker'
+            .form-group.col-4#credentialsOtherContainer{ class: ff_i.object.credentials == 'other' ? '' : 'd-none' }
+              = ff_i.label :credentials_other, t('constants.prompts.please_specify')
+              = ff_i.text_field :credentials_other, class: 'form-control'
+            .form-group.col-4#subspecialtyContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
+              = ff_i.label :subspecialty
+              = ff_i.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: true }, class: 'selectpicker'
+            
 
-              = render("dashboard/associated_users/professional_organizations", professional_organization: identity.professional_organization)
+          = render 'associated_users/professional_organizations', professional_organization: ff_i.object.professional_organization
 
-              = user_form_group(name: :phone, form: identity_form) do
-                = identity_form.text_field :phone, class: 'form-control'
+        %hr
 
-              = user_form_group(name: :subspecialty, classes: ['role_dependent subspecialty', ['pi', 'primary-pi'].include?(form.object.role) ? '' : 'hidden'], form: identity_form) do
-                = identity_form.select :subspecialty, options_for_select((PermissibleValue.get_inverted_hash('subspecialty')), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
+        .form-row
+          .form-group.col-6
+            = f.label :role, class: 'required'
+            = f.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), protocol_role.role), { include_blank: true }, class: 'selectpicker', disabled: protocol_role.role == 'primary-pi'
+          .form-group.col-6#roleOtherContainer{ class: protocol_role.role == 'other' ? '' : 'd-none' }
+            = f.label :role_other, t('constants.prompts.please_specify'), class: 'required'
+            = f.text_field :role_other, class: 'form-control'
 
-            = user_form_group(name: :role, form: form, required: true) do
-              = form.select :role, options_for_select(PermissibleValue.get_inverted_hash('user_role'), form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
+        .form-row
+          .form-group.col-6
+            = f.label :project_rights, class: 'required'
+            .d-block
+              - PermissibleValue.get_inverted_hash('proxy_right').each do |key, value|
+                .custom-control.custom-radio
+                  = f.radio_button :project_rights, value, class: 'custom-control-input', disabled: ['pi', 'primary-pi', 'business-grants-manager'].include?(protocol_role)
+                  = f.label "project_rights_#{value}", key, class: 'custom-control-label', title: t("authorized_users.tooltips.#{value}"), data: { toggle: 'tooltip', placement: 'right' }
+          - if Setting.get_value("use_epic") && protocol.selected_for_epic
+            .form-group.col-6
+              = f.label :epic_access, class: 'required', title: t('authorized_users.tooltips.epic_access'), data: { toggle: 'tooltip', placement: 'right' }
+              .d-block
+                .custom-control.custom-radio.custom-control-inline
+                  = f.radio_button :epic_access, true, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
+                  = f.label :epic_access_true, t('constants.yes_select'), class: 'custom-control-label'
+                .custom-control.custom-radio.custom-control-inline
+                  = f.radio_button :epic_access, false, class: 'custom-control-input', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
+                  = f.label :epic_access_false, t('constants.no_select'), class: 'custom-control-label'
 
-            = user_form_group(name: :role_specify, classes: ['role_dependent other', form.object.role == 'other' ? '' : 'hidden'], form: form, required: true) do
-              = form.text_field :role_other, class: 'form-control'
+              - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(epic_user)
+                %small.form-text.text-danger
+                  = t('authorized_users.form.no_epic_access')
 
-            - if Setting.get_value("use_epic") && protocol != nil && protocol.selected_for_epic
-              = user_form_group(name: :epic_access, form: form, required: true,
-                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
-                title: t(:authorized_users)[:tooltips][:epic_access]) do
-                = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, false, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
-                  = t(:constants)[:no_select]
-                = label_tag nil, nil, class: 'radio-inline' do
-                  = form.radio_button :epic_access, true, class: 'epic_access', disabled: Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
-                  = t(:constants)[:yes_select]
-                - if Setting.get_value("validate_epic_users") && !EpicUser.is_active?(@epic_user)
-                  %br
-                  %p.text-danger
-                    = t(:authorized_users)[:form_fields][:no_epic_access]
-
-            = render 'associated_users/form/project_rights', form: form, dashboard: dashboard, admin: admin
-
-    .modal-footer
-      .center-block
-        %button.btn.btn-default#protocol-role-close{ type: 'button' }
-          = t(:actions)[:close]
-        %button.btn.btn-primary#protocol-role-save
-          = t(:actions)[:save]
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

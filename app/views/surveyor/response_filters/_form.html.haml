@@ -18,34 +18,29 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog
+.modal-dialog#new-response-filter-modal{ role: 'document' }
   .modal-content
-    = form_for [:surveyor, response_filter], remote: true, html: { role: 'form' } do |form|
+    = form_for [:surveyor, response_filter], remote: true do |f|
+      = f.hidden_field :identity_id
+      = f.hidden_field :of_type
+      = f.hidden_field :start_date
+      = f.hidden_field :end_date
+      = f.hidden_field :include_incomplete
+      - response_filter.with_state.each do |state|
+        = f.hidden_field :with_state, multiple: true, value: state
+      - response_filter.with_survey.each do |survey_id|
+        = f.hidden_field :with_survey, multiple: true, value: survey_id
       .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden:'true' } } &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
+        %h3.modal-title
           = t(:surveyor)[:response_filters][:form][:header]
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         #modal_errors
-        .row
-          .col-md-12
-            = form.hidden_field :identity_id
-            = form.hidden_field :of_type
-            = form.hidden_field :start_date
-            = form.hidden_field :end_date
-            = form.hidden_field :include_incomplete
-            - response_filter.with_state.each do |state|
-              = form.hidden_field :with_state, multiple: true, value: state
-            - response_filter.with_survey.each do |survey_id|
-              = form.hidden_field :with_survey, multiple: true, value: survey_id
-            .form-group
-              = form.label :name, t(:surveyor)[:response_filters][:form][:name], class: 'col-sm-3 required text-right'
-              .col-sm-9
-                = form.text_field :name, class: 'form-control'
+        .form-group
+          = f.label :name, t(:surveyor)[:response_filters][:form][:name], class: 'required'
+          = f.text_field :name, class: 'form-control'
       .modal-footer
-        .center-block
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]
-          %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        = f.submit t(:actions)[:submit], class: 'btn btn-primary'

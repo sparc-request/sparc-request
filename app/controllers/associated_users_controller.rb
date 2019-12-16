@@ -1,4 +1,3 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,43 +20,46 @@
 class AssociatedUsersController < ApplicationController
   respond_to :html, :json, :js
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  before_action :initialize_service_request,  except: [:update_professional_organizations]
+  before_action :authorize_identity,          except: [:update_professional_organizations]
   before_action :find_protocol_role,          only: [:edit, :destroy]
   before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
-    @current_user   = current_user
     @protocol_roles = @protocol.project_roles
 
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def new
-    @header_text  = t(:authorized_users)[:add][:header]
-    @dashboard    = false
-
     if params[:identity_id] # if user selected
       @identity = Identity.find_or_create(params[:identity_id])
 
-      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol != nil && @protocol.selected_for_epic
+      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.selected_for_epic
         @epic_user = EpicUser.for_identity(@identity)
       end
 
-      @project_role = @protocol.project_roles.new(identity_id: @identity.id)
-      @current_pi   = @protocol.primary_principal_investigator
+      @protocol_role = @protocol.project_roles.new(identity_id: @identity.id)
 
-      unless @project_role.unique_to_protocol?
-        # Adds error if user already associated with protocol
-        @errors = @project_role.errors
+      unless @protocol_role.unique_to_protocol?
+        @errors = @protocol_role.errors
       end
     end
 
-    respond_to do |format|
-      format.js
+    respond_to :js
+  end
+
+  def create
+    creator         = AssociatedUserCreator.new(project_role_params, current_user)
+    @protocol_role  = creator.protocol_role
+
+    if creator.successful?
+      flash[:success] = t('authorized_users.created')
+    else
+      @errors = creator.protocol_role.errors
     end
+
+    respond_to :js
   end
 
   def edit
@@ -67,92 +69,74 @@ class AssociatedUsersController < ApplicationController
       @epic_user = EpicUser.for_identity(@identity)
     end
 
-    @header_text  = t(:authorized_users)[:edit][:header]
-    @dashboard    = false
-    @admin        = false
-
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  def create
-    creator = AssociatedUserCreator.new(project_role_params, current_user)
-
-    if creator.successful?
-      flash.now[:success] = t(:authorized_users)[:created]
-    else
-      @errors = creator.protocol_role.errors
-    end
-
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def update
-    updater               = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
-    protocol_role         = updater.protocol_role
-    @return_to_dashboard  = protocol_role.identity_id == current_user.id && ['none', 'view'].include?(protocol_role.project_rights)
+    updater         = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params, current_identity: current_user)
+    @protocol_role  = updater.protocol_role
 
     if updater.successful?
-      flash.now[:success] = t(:authorized_users)[:updated]
+      flash[:success] = t('authorized_users.updated')
     else
-      @errors = updater.protocol_role.errors
+      @errors = @protocol_role.errors
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def destroy
-    @epic_access = @protocol_roles.any?(&:epic_access)
+    @redirect = @protocol_roles.where(identity: current_user).any? && !current_user.catalog_overlord?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
-
     @protocol_roles.destroy_all
-    flash.now[:alert] = t(:authorized_users)[:destroyed]
 
-    respond_to do |format|
-      format.js
-    end
+    flash[:alert] = t(:authorized_users)[:destroyed]
+
+    respond_to :js
   end
 
-  def search_identities
-    # Like SearchController#identities, but without ssr/sr authorization
-    term    = params[:term].strip
-    results = Identity.search(term).map { |i| { label: i.display_name, value: i.suggestion_value, email: i.email } }
-    results = [{ label: 'No Results' }] if results.empty?
+  def update_professional_organizations
+    @professional_organization = ProfessionalOrganization.find_by_id(params[:last_selected_id])
 
-    render json: results.to_json
+    respond_to :js
   end
 
   private
 
   def project_role_params
-    params.require(:project_role).permit(:protocol_id,
+    if params[:project_role][:identity_attributes]
+      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    end
+
+    params[:project_role][:project_rights] ||= ""
+
+    params.require(:project_role).permit(
+      :epic_access,
       :identity_id,
       :project_rights,
+      :protocol_id,
       :role,
       :role_other,
-      :epic_access,
+      epic_rights_attributes: [
+        :new,
+        :position,
+        :right,
+        :_destroy
+      ],
       identity_attributes: [
-        :orcid,
         :credentials,
         :credentials_other,
         :email,
         :era_commons_name,
-        :professional_organization_id,
+        :id,
+        :orcid,
         :phone,
-        :subspecialty,
-        :id
-      ],
-      epic_rights_attributes: [:right,
-        :new,
-        :position,
-        :_destroy])
+        :professional_organization_id,
+        :subspecialty
+      ]
+    )
   end
 
   def find_protocol_role
@@ -170,12 +154,14 @@ class AssociatedUsersController < ApplicationController
         @protocol_role.protocol
       elsif @protocol_roles.present?
         @protocol_roles.first.protocol
+      elsif @service_request
+        @protocol = @service_request.protocol
       else
         Protocol.find(params[:protocol_id] || project_role_params[:protocol_id])
       end
   end
 
   def is_epic?
-    Setting.get_value("use_epic") && @protocol.selected_for_epic && @epic_access && !Setting.get_value("queue_epic")
+    Setting.get_value("use_epic") && !Setting.get_value("queue_epic") && @protocol.selected_for_epic? && @protocol_roles.where(epic_access: true).any?
   end
 end

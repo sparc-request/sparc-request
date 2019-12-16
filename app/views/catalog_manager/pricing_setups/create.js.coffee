@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modalContainer #modal_errors").html("<%= escape_javascript(render( 'layouts/modal_errors', errors: @errors )) %>")
 $("#pricing_setup_submit").removeAttr('disabled')
 <% else %>
-$("#modal_place").modal('hide')
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization, user: @user %>")
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
+$("#pricing_setups_container").html("<%= j render '/catalog_manager/organizations/pricing_form', organization: @organization %>")
 <% end %>

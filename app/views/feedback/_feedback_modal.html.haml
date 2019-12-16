@@ -1,0 +1,87 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for feedback, url: feedback_index_path, remote: true do |f|
+      = f.hidden_field :date, value: Date.today
+      .modal-header
+        %h3.modal-title
+          = t('feedback.header')
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-row
+          .form-group{ class: Setting.get_value('use_redcap_api') ? 'col-4' : 'col-6' }
+            = f.label :name, class: 'required'
+            = f.text_field :name, value: current_user.try(&:full_name), class: 'form-control'
+          .form-group{ class: Setting.get_value('use_redcap_api') ? 'col-4' : 'col-6' }
+            = f.label :email, class: 'required'
+            = f.text_field :email, value: current_user.try(:email), class: 'form-control'
+          - if Setting.get_value('use_redcap_api')
+            .form-group.col-4
+              = f.label :sparc_request_id, class: 'required'
+              = f.text_field :sparc_request_id, class: 'form-control'
+        - if Setting.get_value('use_redcap_api')
+          .form-row
+            .form-group.col-6
+              = f.label :browser
+              = f.select :browser, options_for_select(BROWSER_VERSIONS.to_a), { prompt: 'Please Choose a Browser' }, class: 'selectpicker'
+            .form-group.col-6
+              = f.label :version
+              = f.text_field :version, class: 'form-control'
+          .form-row
+            .form-group.col-6
+              = f.label :typeofrequest, class: 'required'
+              .form-check.form-check
+                = f.radio_button :typeofrequest, '1', id: 'typeOfRequestBug', class: 'form-check-input'
+                = label_tag :typeOfRequestBug, 'Bug', class: 'form-check-label'
+              .form-check.form-check
+                = f.radio_button :typeofrequest, '2', id: 'typeOfRequestFeature', class: 'form-check-input'
+                = label_tag :typeOfRequestFeature, 'Feature Request', class: 'form-check-label'
+              .form-check.form-check
+                = f.radio_button :typeofrequest, '3', id: 'typeOfRequestTraining', class: 'form-check-input'
+                = label_tag :typeOfRequestTraining, 'Training', class: 'form-check-label'
+              .form-check.form-check
+                = f.radio_button :typeofrequest, '4', id: 'typeOfRequestOther', class: 'form-check-input'
+                = label_tag :typeOfRequestOther, 'Other', class: 'form-check-label'
+            .form-group.col-6
+              = f.label :priority, class: 'required'
+              .form-check-container
+                .form-check.form-check
+                  = f.radio_button :priority, '1', id: 'priorityImmediate', class: 'form-check-input'
+                  = label_tag :priorityImmediate, 'Immediate/Work Stoppage', class: 'form-check-label'
+                .form-check.form-check
+                  = f.radio_button :priority, '2', id: 'priorityHigh', class: 'form-check-input'
+                  = label_tag :priorityHigh, 'High', class: 'form-check-label'
+                .form-check.form-check
+                  = f.radio_button :priority, '3', id: 'priorityMedium', class: 'form-check-input'
+                  = label_tag :priorityMedium, 'Medium', class: 'form-check-label'
+                .form-check.form-check
+                  = f.radio_button :priority, '4', id: 'priorityLow', class: 'form-check-input'
+                  = label_tag :priorityLow, 'Low', class: 'form-check-label'
+        - else
+          .form-group
+            = f.label :message, class: 'required'
+            = f.text_area :message, rows: 10, class: 'form-control'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

@@ -17,36 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg
+.modal-dialog.modal-lg#show-modal{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center.modal-title
+      %h3.modal-title
         = @survey.title
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
     .modal-body
-      .form#survey-response
-        - unless survey.description.blank?
-          .form-group
-            %p.survey-description.no-margin
-              = raw(survey.description)
-        .form-group.alert.alert-warning
-          = t(:errors)[:user_note]
-        .survey-sections
-          - survey.sections.each do |section|
-            .panel.panel-default.section
-              .panel-heading
-                %h4.panel-title
-                  = section.title
-              .panel-body
-                - unless section.description.blank?
-                  .form-group
-                    .col-lg-12.no-padding
-                      %p.section-description
-                        = raw(section.description)
-                - response.question_responses.eager_load(question: :options).where(questions: { section: section }).each_with_index do |question_response, index|
-                  = render 'surveyor/responses/form/response_question', section: section, question: question_response.question, question_response: question_response, index: index
+      = render 'surveyor/responses/form/show_form', survey: @survey, response: @response
     .modal-footer
-      .center-block
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t(:actions)[:close]

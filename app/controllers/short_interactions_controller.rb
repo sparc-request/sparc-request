@@ -22,14 +22,14 @@ class ShortInteractionsController < ApplicationController
   protect_from_forgery except: :new
 
   def new
-    @short_interaction = ShortInteraction.new
-    @identity = current_identity
+    @short_interaction = current_user.short_interactions.new
   end
 
   def create
-    @short_interaction = ShortInteraction.new(short_interaction_params)
+    @short_interaction = current_user.short_interactions.new(short_interaction_params)
+
     if @short_interaction.save
-      flash.now[:success] = t(:proper)[:right_navigation][:short_interaction][:submitted]
+      flash.now[:success] = t('short_interactions.sent')
     else
       @errors = @short_interaction.errors
     end

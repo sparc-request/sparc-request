@@ -18,18 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel-group{ id: "institution-#{i.id}" }
-  - providers.select{ |prov| prov.is_available != false }.each do |p|
-    - locked = locked_ids.include?(p.id)
+- providers.select{ |prov| prov.is_available != false }.each do |p|
+  - locked = locked_ids.include?(p.id)
 
-    .panel.panel-default
-      .panel-heading.provider-header{ class: [css_class(p), locked ? 'bg-danger text-danger' : ''], data: { id: p.id, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
-        .col-lg-11.no-padding
-          %h4.panel-title.text-left
-            = organization_name_display(p, locked)
-        .col-lg-1.no-padding.text-right
-          - if p.programs.any?
-            %span.caret
-      .panel-collapse.collapse{ class: ["provider-#{p.id}", @provider == p ? 'in' : ''] }
-        .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids
+  .card.provider{ id: "provider#{p.id}" }
+    .card-header.p-0{ id: "provider#{p.id}Header" }
+      %button.provider-link.org-link.btn.btn-block.collapsed{ class: [css_class(p), locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{p.id}Collapse", id: p.id }, aria: { expanded: 'true', controls: "provider#{p.id}Collapse" } }
+        %h6.d-flex.align-items-start.mb-0
+          = organization_name_display(p, locked, p.programs.any?)
+    .collapse{ id: "provider#{p.id}Collapse", data: { parent: "#institution#{i.id}Collapse" }, aria: { labelledby: "provider#{p.id}Header" } }
+      .card-body.p-0
+        = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids

@@ -20,23 +20,27 @@
 
 module FormsHelper
   def form_completed_display(completed)
-    klass = completed ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
+    icon = completed ? icon('fas', 'check') : icon('fas', 'times')
+    klass = completed ? 'text-success complete' : 'text-danger incomplete'
 
-    content_tag(:h4, content_tag(:span, '', class: klass))
+    content_tag(:h4, content_tag(:span, icon, class: klass))
   end
 
-  def form_options(form, completed, respondable, review)
-    if review
+  def form_options(form, completed, respondable)
+    if in_review?
       response = Response.where(survey: form, respondable: respondable).first
-      response ? view_response_button(response) : link_to(t(:actions)[:view], 'javascript:void(0)', class: 'btn btn-info disabled')
-    elsif completed
-      response = Response.where(survey: form, respondable: respondable).first
-      [ view_response_button(response),
-        edit_response_button(response),
-        delete_response_button(response)
-      ].join('')
+      response ? view_response_button(response) : link_to(icon('fas', 'eye'), 'javascript:void(0)', class: 'btn btn-info disabled')
     else
-      complete_form_button(form, respondable)
+      if response = Response.where(survey: form, respondable: respondable).first
+        content_tag :div, class: 'd-flex justify-content-center' do
+          raw([ view_response_button(response),
+            edit_response_button(response),
+            delete_response_button(response)
+          ].join(''))
+        end
+      else
+        complete_form_button(form, respondable)
+      end
     end
   end
 
@@ -47,7 +51,7 @@ module FormsHelper
       remote: true,
       class: 'btn btn-success new-form-response',
       title: t(:surveyor)[:responses][:tooltips][:complete],
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      data: { toggle: 'tooltip', placement: 'top', container: 'body', boundary: 'window' }
     )
   end
 end

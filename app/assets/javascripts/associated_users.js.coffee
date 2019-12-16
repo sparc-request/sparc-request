@@ -19,37 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '#new-associated-user-button', ->
-    $.ajax
-      type: 'get'
-      url: '/associated_users/new.js'
-      data:
-        protocol_id: $(this).data('protocol-id')
-        srid: getSRId()
-    return false
+  url = if window.location.pathname.startsWith('/dashboard') then '/dashboard/associated_users/' else '/associated_users/'
 
-  $(document).on 'click', '.edit-associated-user-button', (event) ->
-    project_role_id = $(this).data('project-role-id')
-    $.ajax
-      type: 'get'
-      url: "/associated_users/#{project_role_id}/edit.js"
-      data:
-        srid: getSRId()
-      success: ->
-        if $('#project_role_role').val() == 'other'
-          $('.role_dependent.other').show()
-        if $('#project_role_identity_attributes_credentials').val() == 'other'
-          $('.credentials_dependent.other').show()
-    return false
-
-  $(document).on 'load-success.bs.table', '#associated-users-table', ->
-    $('.delete-associated-user-button').batchSelect({
-      batchSelectedText: I18n['actions']['delete_selected']
-      swalTitle: I18n['swal']['swal_confirm']['title']
-      swalText: I18n['swal']['swal_confirm']['text']
+  $(document).on 'load-success.bs.table', '#authorizedUsersTable', ->
+    $('.delete-authorized-user').batchSelect({
+      batchSelectedText: I18n.t('actions.delete_selected')
       type: 'warning'
-      ajaxUrl: '/associated_users/'
+      ajaxUrl: url
       ajaxType: 'delete'
-      ajaxData:
+      ajaxData: {
         srid: getSRId()
+      }
     })

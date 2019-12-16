@@ -20,4 +20,4 @@
 
 $("#fulfillment-rights-row-<%= j @identity.id.to_s %>").replaceWith("<%= j render '/catalog_manager/organizations/fulfillment_rights_row', organization: @organization, fulfillment_rights: @fulfillment_rights, fr: @identity %>")
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

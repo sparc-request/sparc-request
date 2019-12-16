@@ -18,22 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= javascript_include_tag 'login'
-.devise-form
-  .col-md-6.col-md-offset-3.text-center
-    %h1.page-header
-      = t(:devise)[:sessions][:header]
-    .form-group.login-buttons
-      - if Setting.get_value("use_cas")
-        = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_cas_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
-      - if Setting.get_value("use_shibboleth")
-        = link_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-primary omniauth-login-button'
-      %a.btn.btn-primary.standard-login-button
-        = t(:devise)[:sessions][:other_users]
-    - if devise_mapping.registerable?
-      .form-group.sign-up-button
-        = link_to t(:devise)[:sessions][:sign_up], new_identity_registration_path(srid: @service_request.try(:id))
-    .form-group.return-button
-      %a.btn.btn-primary{ href: root_path }
-        = t(:devise)[:sessions][:return]
-    = render 'login_form', service_request: @service_request
+%h1.mb-4.text-center
+  = t('devise.sessions.header')
+= render 'layouts/flash'
+.form-row
+  - if Setting.get_value("use_cas")
+    .form-group.col
+      = button_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_cas_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
+  - if Setting.get_value("use_shibboleth")
+    .form-group.col
+      = button_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-outline-primary'
+  - if Setting.get_value('use_cas') || Setting.get_value('use_shibboleth')
+    .form-group.col
+      %button.btn.btn-lg.btn-block.btn-outline-primary#outsideUserLogin
+        = t('devise.sessions.other_users')
+= render 'form', service_request: @service_request
+= render 'devise/shared/links'
+.form-group.mb-0
+  = link_to t('devise.back_to_catalog'), root_path(srid: @service_request.try(:id)), class: 'btn btn-lg btn-block btn-secondary'

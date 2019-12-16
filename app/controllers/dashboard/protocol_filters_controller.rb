@@ -22,23 +22,25 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   respond_to :html, :json
 
   def new
-    @protocol_filter = @user.protocol_filters.new(new_params)
+    @protocol_filter = current_user.protocol_filters.new(filterrific_params)
   end
 
   def create
-    if ProtocolFilter.create(create_params)
+    protocol_filter = current_user.protocol_filters.create(create_params)
+
+    if protocol_filter.save
       flash[:success] = 'Search Saved!'
     else
-      flash[:alert] = 'Search Failed to Save.'
+      @errors = protocol_filter.errors
     end
 
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
   end
 
   def destroy
     filter = ProtocolFilter.find(params[:id])
     filter.destroy
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, ProtocolFilter::MAX_FILTERS)
+    @protocol_filters = ProtocolFilter.latest_for_user(current_user.id, ProtocolFilter::MAX_FILTERS)
     
     flash[:alert] = 'Search Deleted!'
     
@@ -49,23 +51,25 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
 
   private
 
-  def create_params
-    params.require(:protocol_filter).permit(:identity_id,
+  def filterrific_params
+    params.require(:filterrific).permit(:identity_id,
       :search_name,
       :show_archived,
       :admin_filter,
       :search_query,
+      :reset_filterrific,
+      search_query: [:search_drop, :search_text],
       with_organization: [],
       with_status: [],
       with_owner: [])
   end
 
-  def new_params
-    params.require(:filterrific).permit(:identity_id,
+  def create_params
+    params.require(:protocol_filter).permit(
       :search_name,
       :show_archived,
       :admin_filter,
-      search_query: [:search_drop, :search_text],
+      :search_query,
       with_organization: [],
       with_status: [],
       with_owner: [])

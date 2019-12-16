@@ -57,7 +57,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   def refresh_rates
     if params[:id]
       @pricing_map = PricingMap.find(params[:id])
-      @pricing_map_disabled = @pricing_map.disabled?(@user)
+      @pricing_map_disabled = @pricing_map.disabled?(current_user)
     else
       @pricing_map = PricingMap.new(service_id: pricing_map_params[:service_id])
       @pricing_map_disabled = false

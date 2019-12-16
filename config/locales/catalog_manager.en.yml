@@ -56,9 +56,10 @@ en:
       user_rights:
         name_email: "Name, Email"
         super_user: "Super User"
-        access_empty_protocols: "Access Empty Protocols:"
+        access_empty_protocols: "Empty Protocols"
+        billing_manager: "Billing Manager"
         catalog_manager: "Catalog Manager"
-        edit_historic_data: "Edit Historical Data:"
+        edit_historic_data: "Edit Historical Data"
         service_provider: "Service Provider"
         primary_contact: "Primary Contact:"
         hold_emails: "Hold Emails:"

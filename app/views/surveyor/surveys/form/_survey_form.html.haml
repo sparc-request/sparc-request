@@ -17,18 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg{ id: "#{survey.class.yaml_klass.downcase}-modal" }
+.modal-dialog.modal-lg{ id: "#{survey.model_name.human.downcase}-modal" }
   .modal-content
     .modal-header
-      %button.close{type: 'button', data: {dismiss: 'modal'}}
-        %span{aria: {hidden:'true'}} &times;
-        %span.sr-only &times;
-      %h4.modal-title.text-center
-        = I18n.t("surveyor.surveys.form.header", klass: survey.class.yaml_klass)
-    .modal-body
-      .survey.survey-form.form{ data: { survey_id: survey.id } }
-        = render 'surveyor/surveys/form/survey_fields', survey: survey
-        = render 'surveyor/surveys/form/survey_content', survey: survey
+      %h3.modal-title.text-center
+        = I18n.t("surveyor.surveys.form.header", klass: survey.model_name.human)
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body.py-0
+      .row
+        .list-group.list-group-flush.survey.survey-form.form.w-100{ data: { survey_id: survey.id } }
+          = render 'surveyor/surveys/form/survey_fields', survey: survey
+          - survey.sections.each do |section|
+            = render 'surveyor/surveys/form/survey_section', survey: survey, section: section
+          .list-group-item
+            = link_to surveyor_sections_path(survey_id: survey.id), method: :post, remote: true, class: 'btn btn-success add-section' do
+              = icon('fas', 'plus mr-2')
+              = t(:surveyor)[:surveys][:form][:content][:section][:add]
     .modal-footer
-      %button.btn.btn-default{ data: { dismiss: 'modal' } }
-        = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

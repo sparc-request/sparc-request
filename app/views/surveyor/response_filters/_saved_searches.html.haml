@@ -18,14 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if current_user.response_filters.any?
-  .panel.panel-default
-    .panel-heading
-      %h2.panel-title
-        = t(:surveyor)[:response_filters][:saved][:header]
-    .panel-body
-      %ul
-        - ResponseFilter.latest_for_user(current_user.id).each do |rf|
-          %li
-            = link_to rf.name, rf.href, remote: true, class: 'apply-filter'
-            = link_to "", surveyor_response_filter_path(rf), class: 'glyphicon glyphicon-remove text-danger pull-right delete-filter', method: :delete, remote: true
+.card.mt-3#savedSearches{ class: current_user.response_filters.any? ? '' : 'd-none'}
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t(:surveyor)[:response_filters][:saved][:header]
+  .card-body.p-0
+    %ul.list-group.list-group-flush.border-0
+      - ResponseFilter.latest_for_user(current_user.id).each do |rf|
+        %li.list-group-item.d-flex.align-items-center<
+          = link_to rf.name, rf.href, remote: true, class: 'apply-filter mr-auto text-break'
+          = link_to surveyor_response_filter_path(rf), class: 'text-danger delete-filter', method: :delete, remote: true do
+            = icon('fas', 'trash-alt')

@@ -18,8 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require protocol
-#= require service_calendar
-#= require document_management
+$ ->
+  if $('#use_system_satisfaction').val() == 'true'
+    $(document).one 'click', '#getCostEstimate, #submitRequest', (event) ->
+      event.preventDefault()
+      $this = $(this)
+      $this.addClass('disabled')
 
-$(document).ready ->
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: '/service_request/system_satisfaction_survey'
+        data:
+          srid: getSRId()
+          forward: $this.prop('href')

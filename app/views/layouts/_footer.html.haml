@@ -17,16 +17,27 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.container.footer-container
-  .footer.text-center
-    %ul.footer-links
-      %li
-        = mail_to Setting.get_value("listserv_mail_to"), t(:proper)[:footer][:listserv], subject: t(:proper)[:footer][:listserv_subject]
-      %li
-        = link_to t(:proper)[:footer][:sparc_blog], t(:proper)[:footer][:sparc_blog_url], target: :blank
-      %li
-        = link_to t(:proper)[:footer][:sctr], t(:proper)[:footer][:sctr_url], target: :blank
-      %li
-        = link_to t(:proper)[:footer][:about], Setting.get_value("about_sparc_url"), target: :blank
-      %li
-        = ENV['SPARC_VERSION']
+
+%footer.d-flex.w-100#siteFooter
+  .container-fluid.d-flex.flex-column.align-items-center.justify-content-center.p-3
+    .d-flex.mb-3
+      %nav.flex-column.nav.px-5
+        = link_to t('layout.footer.links.about'), Setting.get_value("about_sparc_url"), target: :_blank, class: 'mb-1'
+        = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :_blank, class: 'mb-0'
+      %nav.flex-column.nav.px-5
+        = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'mb-1'
+        = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'mb-0'
+      %nav.flex-column.nav.px-5
+        - if Setting.get_value('use_faq_link')
+          = link_to t('layout.footer.links.faqs.text'), Setting.get_value("faq_url"), target: :_blank, class: 'mb-1'
+        - else
+          = link_to t('layout.footer.links.faqs.text'), faqs_pages_path, remote: true, class: 'mb-1'
+        - if Setting.get_value("use_feedback_link")
+          = link_to t('layout.footer.links.feedback'), Setting.get_value("feedback_link"), target: :_blank
+        - else
+          = link_to t('layout.footer.links.feedback'), new_feedback_path, remote: true
+    %span.d-flex.align-items-center.text-muted.mb-3
+      = t('layout.footer.version', version: ENV['sparc_version'])
+      = link_to icon('fab', 'github fa-lg'), 'https://github.com/sparc-request/sparc-request', remote: true, class: 'text-muted ml-1'
+    %span.text-muted.text-center
+      = raw t('layout.footer.copyright')

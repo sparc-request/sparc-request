@@ -17,24 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-.row
-  - if locked
-    .col-xs-4.text-center.no-padding
-      .research-billing-qty
-        = visit.research_billing_qty
-    .col-xs-4.text-center.no-padding
-      .insurance-billing-qty
-        = visit.insurance_billing_qty
-    .col-xs-4.text-center.no-padding
-      .effort-billing-qty
-        = visit.effort_billing_qty
-  - else
-    .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
-        = visit.research_billing_qty
-    .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
-        = visit.insurance_billing_qty
-    .col-xs-4.text-center.no-padding
-      %a.edit-billing-qty{ href: 'javascript:void(0)', data: { visit_id: visit.id, page: page, admin: admin.to_s } }
-        = visit.effort_billing_qty
+
+%table.table-sm.table-borderless.w-100
+  %tbody
+    %tr
+      - if editable
+        - url = edit_visit_path(visit, srid: service_request.try(:id), ssrid: sub_service_request.try(:id), page: page)
+        %td.text-center.py-0
+          = link_to visit.research_billing_qty, url, remote: true
+        %td.text-center.py-0
+          = link_to visit.insurance_billing_qty, url, remote: true
+        %td.text-center.py-0
+          = link_to visit.effort_billing_qty, url, remote: true
+      - else
+        %td.text-center.py-0
+          = visit.research_billing_qty
+        %td.text-center.py-0
+          = visit.insurance_billing_qty
+        %td.text-center.py-0
+          = visit.effort_billing_qty

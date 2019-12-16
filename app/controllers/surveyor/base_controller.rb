@@ -25,14 +25,12 @@ class Surveyor::BaseController < ApplicationController
   before_action :authenticate_identity!
   before_action :set_highlighted_link
 
+  protected
+
   def set_highlighted_link
     @highlighted_link ||= 'sparc_catalog'
   end
 
-  def current_user
-    current_identity
-  end
-  
   def authorize_survey_builder_access
     # If SystemSurvey-specific actions, verify the user is a Site Admin
     if params[:type] && params[:type] == 'SystemSurvey' && !user_has_survey_access?
@@ -42,8 +40,6 @@ class Surveyor::BaseController < ApplicationController
       raise ActionController::RoutingError.new('Not Found')
     end
   end
-
-  private
 
   def user_has_survey_access?
     current_user.is_site_admin?

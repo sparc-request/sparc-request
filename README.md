@@ -1,5 +1,3 @@
-The current stable branch can be found here: https://github.com/sparc-request/sparc-request/releases/latest
-
 SPARC (Services, Pricing, and Applications for Research Center) is a web based research management system that integrates research and clinical care workflows with a focus on service request catalog, billing compliance, proposal and budget development, work fulfillment data collection, invoicing and billing, and impact data through grants and publication associations.
 
 The system is open source with the capability to encompass multiple institutions, institutional entities, and service providers and programs.

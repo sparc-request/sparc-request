@@ -64,7 +64,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
 
   def destroy
     @survey = Survey.find(params[:id])
-    @type   = @survey.class.yaml_klass.downcase
+    @type   = @survey.class.name.snakecase.dasherize.downcase
     
     @survey.destroy
 
@@ -116,8 +116,9 @@ class Surveyor::SurveysController < Surveyor::BaseController
     
     results.map!{ |r|
       {
-        parents:        r.is_a?(Service) ? r.organization_hierarchy(false, false, true) : r.organization_hierarchy(true, false, true),
+        breadcrumb:     helpers.breadcrumb_text(r),
         klass:          r.is_a?(Service) ? 'Service' : 'Organization',
+        org_color:     "text-#{r.class.name.downcase}",
         label:          r.name,
         value:          r.id,
         cpt_code:       r.try(:cpt_code),
@@ -137,7 +138,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
       @survey = existing.clone
     else
       @survey = klass.new(
-        title: "New #{klass.yaml_klass}",
+        title: t('surveyor.surveys.new_form.header', klass: "#{klass.model_name.human}"),
         access_code: survey_params[:access_code],
         version: 1,
         active: false,

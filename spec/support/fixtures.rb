@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def let_there_be_lane
+def let_there_be_lane(opts={})
   let!(:jug2) { create(:identity,
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
       email:                 'glennj@musc.edu',
       credentials:           'ba',
-      catalog_overlord:      true,
+      catalog_overlord:      opts[:catalog_overlord].nil? ? true : opts[:catalog_overlord],
       password:              'p4ssword',
       password_confirmation: 'p4ssword',
       approved:              true
@@ -67,7 +67,6 @@ def build_study_type_question_groups
 end
 
 def build_study_type_questions
-
   let!(:stq_higher_level_of_privacy_version_1) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => study_type_question_group_version_1.id) }
   let!(:stq_certificate_of_conf_version_1)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => study_type_question_group_version_1.id) }
   let!(:stq_access_study_info_version_1)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => study_type_question_group_version_1.id) }
@@ -92,7 +91,6 @@ end
 
 
 def build_study_type_answers
-
   let!(:answer1_version_1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy_version_1.id, answer: 1)}
   let!(:answer2_version_1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf_version_1.id, answer: 0)}
   let!(:answer3_version_1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info_version_1.id, answer: 0)}
@@ -256,7 +254,8 @@ def build_study
     protocol = build(:study)
     identity = Identity.find_by_ldap_uid('jug2')
     identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, project_roles_attributes: [{identity_id:     identity.id, project_rights:  "approve", role: "primary-pi"}, {identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"}])
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, primary_pi_role_attributes: {identity_id: identity.id, project_rights: "approve", role: "primary-pi"})
+    protocol.project_roles.create({identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"})
     protocol.save validate: false
     service_request.update_attribute(:protocol_id, protocol.id)
     sub_service_request.update_attribute(:protocol_id, protocol.id)

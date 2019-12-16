@@ -17,26 +17,17 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- qr ||= nil
-- question_response ||= nil
-.question{ class: [dependency_classes(question, qr.try(:object) || question_response), "question-#{question.id}"], data: survey_data(question) }
-  - unless section.description.blank? && index == 0
-    %br
-    %hr
-  - if qr
-    = qr.hidden_field :required, value: question.required?
-    = qr.hidden_field :question_id, value: question.id
-  .form-group.question-label
-    - if qr
-      = qr.label :content, raw(question.content), class: ['control-label text-left', question.required? ? "required" : ""]
-    - else
-      %label.control-label.text-left{ class: question.required? ? "required" : "" }
-        = raw(question.content)
+
+.form-group.question{ class: [dependency_classes(question, question_response), "question-#{question.id}"], data: survey_data(question) }
+  = qr.hidden_field :required, value: question.required?
+  = qr.hidden_field :question_id, value: question.id
+
+  .question-label
+    = qr.label :content, raw(question.content), class: "mb-0 font-weight-bold #{question.required? ? 'required' : ''}"
   - unless question.description.blank?
-    .form-group
-      %p.question-description
-        = raw(question.description)
-  .question-options
+    %p.question-description.mb-0.mt-1
+      = raw(question.description)
+  .question-options.mt-2
     = render "surveyor/responses/form/form_partials/#{question.question_type}_form_partial", qr: qr, question: question, question_response: question_response
   - if question.errors.any?
     .alert.alert-danger

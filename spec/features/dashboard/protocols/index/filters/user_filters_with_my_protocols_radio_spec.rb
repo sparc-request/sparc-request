@@ -37,7 +37,7 @@ RSpec.describe "User filters using \"My Protocols\"", js: :true do
     end
 
     scenario "and sees their protocols" do
-      expect(page).to have_selector(".protocols_index_row", count: 1)
+      expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
       expect(page).to have_content(@protocol.short_title)
     end
   end
@@ -56,12 +56,12 @@ RSpec.describe "User filters using \"My Protocols\"", js: :true do
       wait_for_javascript_to_finish
 
       find("#filterrific_admin_filter_for_identity_#{jug2.id}").click
-      find("#apply-filter-button").click
+      click_button I18n.t('actions.filter')
       wait_for_javascript_to_finish
     end
 
     scenario "and sees their protocols" do
-      expect(page).to have_selector(".protocols_index_row", count: 1)
+      expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
       expect(page).to have_content(@protocol.short_title)
     end
   end

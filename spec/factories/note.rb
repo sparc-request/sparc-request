@@ -21,7 +21,7 @@
 FactoryBot.define do
 
   factory :note do
-    body         { Faker::Lorem.sentence(1) }
+    body         { Faker::Lorem.sentence(word_count: 1) }
     notable_type { "Protocol" }
 
     trait :without_validations do

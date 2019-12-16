@@ -17,5 +17,5 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%button.btn.btn-sm.btn-danger.pull-right.delete-option{ title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', animation: 'false' } }
-  %span.glyphicon.glyphicon-trash
+
+= link_to icon('fas', 'trash-alt'), surveyor_option_path(option), method: :delete, remote: true, class: 'delete-option btn btn-danger', title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', confirm_swal: true }

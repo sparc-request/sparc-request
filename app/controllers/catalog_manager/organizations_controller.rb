@@ -27,7 +27,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     else
       ##Check if user has catalog manager rights to the parent of this new org.
       parent_org = Organization.find(params[:parent_id])
-      if @user.can_edit_organization?(parent_org)
+      if current_user.can_edit_organization?(parent_org)
         @organization = Organization.new(type: params[:type], parent_id: params[:parent_id])
       else
         flash[:alert] = "You must have catalog manager rights above this level, to create a new organization here."
@@ -39,14 +39,14 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.new(new_organization_params[:organization])
     if @organization.save
       @organization.create_subsidy_map() unless @organization.type == 'Institution'
-      unless @user.catalog_manager_organizations.include?(@organization)
-        @user.catalog_manager_rights.create(organization_id: @organization.id)
+      unless current_user.catalog_manager_organizations.include?(@organization)
+        current_user.catalog_manager_rights.create(organization_id: @organization.id)
       end
 
       @institutions = Institution.order('`order`')
       @path = catalog_manager_organization_path(@organization)
       @user_rights  = user_rights(@organization.id)
-      @editable_organizations = @user.catalog_manager_organizations
+      @editable_organizations = current_user.catalog_manager_organizations
       @fulfillment_rights = fulfillment_rights(@organization.id)
 
       flash[:success] = "New Organization created successfully."
@@ -81,7 +81,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
 
     @institutions = Institution.order(Arel.sql('`order`,`name`'))
-    @editable_organizations = @user.catalog_manager_organizations
+    @editable_organizations = current_user.catalog_manager_organizations
     @show_available_only = @organization.is_available
 
     respond_to do |format|
@@ -163,7 +163,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   ####Actions for the pricing sub-form####
   def increase_decrease_modal
     @organization = Organization.find(params[:organization_id])
-    @can_edit_historical = @user.can_edit_historical_data_for?(@organization)
+    @can_edit_historical = current_user.can_edit_historical_data_for?(@organization)
 
   end
 

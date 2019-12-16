@@ -18,18 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel-group#institution-accordion
-  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each do |i|
+.accordion#institutionAccordion
+  - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
     - locked = locked_ids.include?(i.id)
 
-    .panel.panel-default
-      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
-        .col-lg-11.no-padding
-          %h4.panel-title.text-left
-            = organization_name_display(i, locked)
-        .col-lg-1.no-padding.text-right
-          - if i.providers.any?
-            %span.caret
-      .panel-collapse.collapse.in{ class: "institution-#{i.id}" }
-        .panel-body
+    .card.institution{ id: "institution#{i.id} " }
+      .card-header.p-0{ id: "institution#{i.id}Header" }
+        %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), index == 0 ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
+          %h6.d-flex.align-items-start.mb-0
+            = organization_name_display(i, locked, i.providers.any?)
+      .collapse{ class: index == 0 ? 'show' : '', id: "institution#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }
+        .card-body
           = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, i: i

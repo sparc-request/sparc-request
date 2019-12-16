@@ -17,16 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if controller_name != 'sessions'
-  = link_to t(:devise)[:links][:sign_in], new_session_path(resource_name), class: 'devise-link'
-- if devise_mapping.registerable? && controller_name != 'registrations'
-  = link_to t(:devise)[:links][:sign_up], new_registration_path(resource_name), class: 'devise-link'
-- if devise_mapping.recoverable? && controller_name != 'passwords'
-  = link_to t(:devise)[:links][:forgot_password], new_password_path(resource_name), class: 'devise-link'
-- if devise_mapping.confirmable? && controller_name != 'confirmations'
-  = link_to t(:devise)[:links][:confirmation_instructions], new_confirmation_path(resource_name), class: 'devise-link'
-- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks'
-  = link_to t(:devise)[:links][:unlock_instructions], new_unlock_path(resource_name), class: 'devise-link'
-- if devise_mapping.omniauthable?
-  - resource_class.omniauth_providers.each do |provider|
-    = link_to I18n.t('devise.links.provider_sign_in', provider_name: provider.to_s.titleize), omniauth_authorize_path(resource_name, provider), class: 'devise-link'
+
+.form-row.justify-content-around
+  - if devise_mapping.registerable? && controller_name != 'registrations'
+    .form-group
+      = link_to t('devise.links.sign_up'), new_identity_registration_path(srid: @service_request.try(:id))
+  - if controller_name != 'sessions'
+    .form-group
+      = link_to t('devise.links.sign_in'), new_session_path(resource_name)
+
+.form-row.justify-content-around
+  - if devise_mapping.recoverable? && controller_name != 'passwords'
+    .form-group
+      = link_to t('devise.links.forgot_password'), new_password_path(resource_name)
+  - if devise_mapping.confirmable? && controller_name != 'confirmations'
+    .form-group
+      = link_to t('devise.links.confirmation_instructions'), new_confirmation_path(resource_name)
+  - if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks'
+    .form-group
+      = link_to t('devise.links.unlock_instructions'), new_unlock_path(resource_name)

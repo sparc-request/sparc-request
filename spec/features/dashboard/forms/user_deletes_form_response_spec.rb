@@ -22,66 +22,30 @@ require 'rails_helper'
 
 RSpec.describe 'User deletes a form response', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: program)
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    form        = create(:form, :with_question, surveyable: service, active: true)
-    response    = create(:response, survey: form, respondable: ssr)
-                  create(:question_response, response: response, question: form.questions.first, content: 'Respondability')
-  end
+    org       = create(:organization, name: "Program", process_ssrs: true)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org)
+    @protocol = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: org)
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    @form     = create(:form, :with_question, surveyable: service, active: true)
+    response  = create(:response, survey: @form, respondable: ssr)
+                create(:question_response, response: response, question: @form.questions.first, content: 'Respondability')
 
-  context 'and there are no other completed forms' do
-    scenario 'and sees the forms panel disappear' do
-      visit dashboard_protocol_path(@protocol)
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#forms-panel', visible: true)
-
-      first('.delete-response').click
-      wait_for_javascript_to_finish
-
-      find('.sweet-alert.visible button.confirm').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#forms-panel', visible: false)
-    end
-  end
-
-  context 'with no other forms to complete' do
-    scenario 'and sees the forms column on the service requests table appear' do
-      visit dashboard_protocol_path(@protocol)
-      wait_for_javascript_to_finish
-
-      first('.delete-response').click
-      wait_for_javascript_to_finish
-
-      find('.sweet-alert.visible button.confirm').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Complete Form')
-    end
-  end
-
-  scenario 'and sees the response was deleted' do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+  end
 
-    first('.delete-response').click
+  it 'should delete the response' do
+    find('.delete-response').click
+    confirm_swal
     wait_for_javascript_to_finish
 
-    find('.sweet-alert.visible button.confirm').click
-    wait_for_javascript_to_finish
-
-    expect(Response.count).to eq(0)
+    expect(@form.reload.responses.count).to eq(0)
+    expect(page).to have_no_selector('#forms', visible: true)
+    expect(page).to have_selector('.complete-forms')
   end
 end

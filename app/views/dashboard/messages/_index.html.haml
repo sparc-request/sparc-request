@@ -18,40 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-lg
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{type: 'button', data: {dismiss: 'modal'}}
-        %span{aria: {hidden:'true'}} &times;
-        %span.sr-only &times;
-      %h4.modal-title.text-center
-        = notification_subject_line(notification, false)
+      %h3.modal-title
+        = notification_subject_line(notification)
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
     .modal-body
-      - if messages.any?
-        .details-table
-          .details-header.text-center
-            .col-xs-2 
-              = t(:dashboard)[:messages][:index][:user]
-            .col-xs-2
-              = t(:dashboard)[:messages][:index][:date]
-            .col-xs-8
-              = t(:dashboard)[:messages][:index][:message]
-          - messages.each do |message|
-            .detail
-              .col-xs-2.name
-                = message.sender.full_name
-              .col-xs-2.created-at
-                = format_datetime(message.created_at)
-              .col-xs-8.message
-                = message.body
-      -else
-        .text-center
-          = t(:dashboard)[:messages][:index][:no_messages]
+      - messages.each do |msg|
+        .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-right callout-success float-right' : 'callout-info' }
+          .card-body
+            %h5.card-title.mb-2
+              = msg.sender.full_name
+            = simple_format(msg.body)
+            %small.card-text.text-muted
+              = format_datetime(msg.created_at)
+      - if messages.none?
+        .alert.alert-danger.mb-0
+          = t('messages.none')
     .modal-footer
-      .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-          = t(:actions)[:close]
-        %button.btn.btn-primary.message.new{type: "button", aria: {label: "Reply"}, data: {notification_id: notification.id }}
-          %span.glyphicon.glyphicon-share-alt{aria: {hidden: "true"}}
-          %span
-            = t(:actions)[:reply]
+      = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|
+        = f.hidden_field :notification_id
+        = f.hidden_field :to
+        = f.hidden_field :from
+        .form-row
+          .form-group.col-9.offset-3
+            = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('messages.placeholder')
+        .text-right
+          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+            = t('actions.close')
+          = f.submit t('actions.reply'), class: 'btn btn-primary'

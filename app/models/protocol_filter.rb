@@ -19,8 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolFilter < ApplicationRecord
+  MAX_FILTERS = 15
 
   belongs_to :identity
+
+  validates_presence_of :search_name
 
   serialize :with_organization, Array
   serialize :with_status, Array
@@ -31,8 +34,6 @@ class ProtocolFilter < ApplicationRecord
     order(created_at: :desc).
     limit(limit)
   }
-
-  MAX_FILTERS = 15
 
   def href
     Rails.application.routes.url_helpers.

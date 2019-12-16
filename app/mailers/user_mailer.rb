@@ -38,9 +38,11 @@ class UserMailer < ActionMailer::Base
       @ssr_id = ssr.id
       @protocol_id = ssr.protocol_id
       @is_service_provider = user.is_service_provider?(ssr)
-    end
 
-    send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: 'Notification', type: 'Protocol', id: ssr.protocol.id)}")
+      send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Protocol.model_name.human, id: ssr.protocol.id)}")
+    else
+      send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Message.human_attribute_name(:from), id: @sender_name)}")
+    end
   end
 
   private

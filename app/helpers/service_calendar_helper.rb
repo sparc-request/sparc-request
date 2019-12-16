@@ -19,34 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ServiceCalendarHelper
-
   def currency_converter cents
     number_to_currency(Service.cents_to_dollars(cents))
+  end
+
+  def calendar_service(liv_or_li)
+    line_item = liv_or_li.is_a?(LineItem) ? liv_or_li : liv_or_li.line_item
+    text      = line_item.service.display_service_name
+    text     += inactive_tag unless line_item.service.is_available
+    raw(text)
   end
 
   def display_service_rate line_item
     full_rate = line_item.service.displayed_pricing_map.full_rate
 
     currency_converter(full_rate)
-  end
-
-  def display_freeze_header_button_pppv?(arm, service_request, sub_service_request, portal, merged, statuses_hidden, display_all_services)
-    livs_and_ssrs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden, display_all_services: display_all_services)
-    
-    if portal && !merged
-      livs_and_ssrs.values.flatten.count > 9
-    else
-      liv_count = livs_and_ssrs.values.flatten.count
-      ssr_count = livs_and_ssrs.keys.count
-      
-      portal ? (liv_count + ssr_count) > 10 : (liv_count + ssr_count) > 8
-    end
-  end
-
-  def display_freeze_header_button_otf?(service_request, sub_service_request, merged, statuses_hidden)
-    lis_and_ssrs = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden)
-    
-    (lis_and_ssrs.values.flatten.count + lis_and_ssrs.keys.count) > 10
   end
 
   def display_unit_type(liv)
@@ -57,10 +44,16 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
-  def display_org_name(org_name, ssr, locked)
-    header  = content_tag(:span, org_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : ""))
-    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
-    header
+  def display_org_name(org_name, ssr, locked, complete)
+    header = content_tag(:strong, "(#{ssr.ssr_id})", class: 'mr-2') + org_name
+
+    if complete
+      header += icon('fas', 'check fa-lg ml-2')
+    elsif locked
+      header += icon('fas', 'lock fa-lg ml-2')
+    end
+
+    content_tag :span, header
   end
 
   #############################################

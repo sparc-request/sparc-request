@@ -19,9 +19,33 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validates :sponsor_name,                presence: true
-  validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
-  validate  :validate_study_type_answers
+  validates_presence_of :sponsor_name
+  validates_inclusion_of :selected_for_epic, in: [true, false], unless: :bypass_stq_validation
+
+  ##Removed for now, perhaps to be added later
+  # validation_group :guarantor_fields, if: :selected_for_epic do
+  #   validates :guarantor_contact,
+  #             :guarantor_phone,
+  #             :guarantor_address,
+  #             :guarantor_city,
+  #             :guarantor_state,
+  #             :guarantor_zip,
+  #             :guarantor_county,
+  #             :guarantor_country, presence: true
+  # end
+  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
+  # validates :guarantor_fax, length: { maximum: 10 }
+  # validates :guarantor_address, length: { maximum: 500 }
+  # validates :guarantor_city, length: { maximum: 40 }
+  # validates :guarantor_state, length: { maximum: 2 }
+  # validates :guarantor_zip, length: { maximum: 9 }
+
+  validates_format_of :guarantor_email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true
+  validates_format_of :guarantor_phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true
+
+  validates :guarantor_contact, length: { maximum: 192 }
+
+  validate :validate_study_type_answers, unless: :bypass_stq_validation
 
   def classes
     return [ 'project' ] # for backward-compatibility
@@ -50,7 +74,6 @@ class Study < Protocol
     self.setup_impact_areas
     self.setup_affiliations
     self.setup_study_type_answers
-    self.setup_project_roles
   end
 
   def setup_study_types
@@ -99,41 +122,32 @@ class Study < Protocol
     affiliations.sort_by(&:position)
   end
 
-  def setup_project_roles
-    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
-  end
-
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
-    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id
+    if Setting.get_value("use_epic") && self.selected_for_epic && StudyTypeQuestionGroup.active.ids.first == self.study_type_question_group_id && self.study_type_answers.any?
       answers = {}
       FRIENDLY_IDS.each do |fid|
         q = StudyTypeQuestion.active.find_by_friendly_id(fid)
         answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
       end
 
-      has_errors = false
-      begin
-        if answers["certificate_of_conf"].answer.nil?
-          has_errors = true
-        elsif answers["certificate_of_conf"].answer == false
-          if (answers["higher_level_of_privacy"].answer.nil?)
-            has_errors = true
-          elsif (answers["epic_inbasket"].answer.nil?)
-            has_errors = true
-          elsif (answers["research_active"].answer.nil?)
-            has_errors = true
-          elsif (answers["restrict_sending"].answer.nil?)
-            has_errors = true
-          end
+      if answers['certificate_of_conf'].answer.nil?
+        error = 'certificate_of_conf'
+      elsif answers['certificate_of_conf'].answer == false
+        if answers['higher_level_of_privacy'].answer.nil?
+          error = 'higher_level_of_privacy'
+        elsif answers['epic_inbasket'].answer.nil?
+          error = 'epic_inbasket'
+        elsif answers['research_active'].answer.nil?
+          error = 'research_active'
+        elsif answers['restrict_sending'].answer.nil?
+          error = 'restrict_sending'
         end
-      rescue => e
-        has_errors = true
       end
 
-      if has_errors
-        errors.add(:study_type_answers, "must be selected")
+      if error
+        errors.add(:study_type_answers, { error => I18n.t('activerecord.errors.models.protocol.attributes.study_type_answers.blank') })
       end
     end
   end

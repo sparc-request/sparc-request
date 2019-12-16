@@ -32,86 +32,31 @@ RSpec.describe "User saves a filter", js: :true do
     @organization = create(:core, parent: @program, name: "Corey's House")
     @protocol     = create(:study_without_validations, primary_pi: jug2)
     @sr           = create(:service_request_without_validations, protocol: @protocol)
-    @ssr          = create(:sub_service_request, service_request: @sr, organization: @organization, protocol: @protocol)
+                    create(:sub_service_request, service_request: @sr, organization: @organization, protocol: @protocol)
+                    create(:service_provider, identity: jug2, organization: @organization)
+
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+    bootstrap_toggle("#filterrific_show_archived")
+    bootstrap_multiselect("#filterrific_with_status", ["Complete", "Active"])
+    bootstrap_multiselect("#filterrific_with_organization", [@organization.name])
+    bootstrap_multiselect("#filterrific_with_owner", [jug2.last_name_first])
   end
 
-  context "as a general user" do
-    before :each do
-      visit dashboard_protocols_path
-      wait_for_javascript_to_finish
-    end
+  it 'should save the filter' do
+    find("#saveProtocolFilters").click
+    wait_for_javascript_to_finish
 
-    context "and clicks save" do
-      before :each do
-        find("#filterrific_show_archived").click
-        bootstrap_multiselect("#filterrific_with_status", ["Complete", "Active"])
-        bootstrap_multiselect("#filterrific_with_organization", [@organization.name])
-        find("#save_filters_link").click
-        wait_for_javascript_to_finish
-      end
+    fill_in 'protocol_filter_search_name', with: 'My Filter'
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
 
-      scenario "and sees the save filter modal" do
-        expect(page).to have_selector("#new_protocol_filter")
-      end
-
-      context "and saves the filter" do
-        before :each do
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        scenario "and sees the saved filter" do
-          expect(ProtocolFilter.count).to eq(1)
-
-          filter = ProtocolFilter.first
-
-          expect(filter.show_archived).to eq(true)
-          expect(filter.with_status).to eq(['ctrc_approved', 'complete'])
-          expect(filter.with_organization).to eq(["#{@organization.id}"])
-        end
-      end
-    end
-  end
-
-  context "as an admin" do
-    before :each do
-      create(:service_provider, identity: jug2, organization: @organization)
-
-      visit dashboard_protocols_path
-      wait_for_javascript_to_finish
-    end
-
-    context "and clicks save" do
-      before :each do
-        find("#filterrific_show_archived").click
-        bootstrap_multiselect("#filterrific_with_status", ["Complete", "Active"])
-        bootstrap_multiselect("#filterrific_with_organization", [@organization.name])
-        bootstrap_multiselect("#filterrific_with_owner", [jug2.last_name_first])
-        find("#save_filters_link").click
-        wait_for_javascript_to_finish
-      end
-
-      scenario "and sees the save filter modal" do
-        expect(page).to have_selector("#new_protocol_filter")
-      end
-
-      context "and saves the filter" do
-        before :each do
-          click_button 'Save'
-          wait_for_javascript_to_finish
-        end
-
-        scenario "and sees the saved filter" do
-          expect(ProtocolFilter.count).to eq(1)
-
-          filter = ProtocolFilter.first
-
-          expect(filter.show_archived).to eq(true)
-          expect(filter.with_status).to eq(['ctrc_approved', 'complete'])
-          expect(filter.with_organization).to eq(["#{@organization.id}"])
-          expect(filter.with_owner).to eq(["#{jug2.id}"])
-        end
-      end
-    end
+    expect(ProtocolFilter.count).to eq(1)
+    filter = ProtocolFilter.first
+    expect(filter.show_archived).to eq(true)
+    expect(filter.with_status).to eq(['ctrc_approved', 'complete'])
+    expect(filter.with_organization).to eq(["#{@organization.id}"])
+    expect(filter.with_owner).to eq(["#{jug2.id}"])
+    expect(page).to have_selector('.saved-search-link', visible: false) ##visible false catches either case, to solve travis issue
   end
 end

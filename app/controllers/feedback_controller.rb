@@ -19,23 +19,30 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class FeedbackController < ApplicationController
-
   def new
+    respond_to :js
+
     @feedback = Feedback.new
-    respond_to do |format|
-      format.js
-    end
   end
 
   def create
+    respond_to :js
+
     @feedback = Feedback.new(feedback_params)
-    respond_to do |format|
+
+    if Setting.get_value('use_redcap_api')
       if @feedback.valid?
-        emitter = RedcapSurveyEmitter.new(@feedback)
-        emitter.send_form
-        format.js
+        RedcapSurveyEmitter.new(@feedback).send_form
+        flash.now[:success] = t('feedback.sent')
       else
-        format.json { render json: @feedback.errors, status: :unprocessable_entity }
+        @errors = @feedback.errors
+      end
+    else
+      if @feedback.save
+        Notifier.provide_feedback(@feedback).deliver_now
+        flash.now[:success] = t('feedback.sent')
+      else
+        @errors = @feedback.errors
       end
     end
   end
@@ -43,9 +50,14 @@ class FeedbackController < ApplicationController
   private
 
   def feedback_params
-    params.require(:feedback).permit(:name, :email, :date,
-                                     :typeofrequest, :priority,
-                                     :browser, :version, :sparc_request_id
-                                    )
+    if Setting.get_value('use_redcap_api')
+      params.require(:feedback).permit(
+        :name, :email, :date, :typeofrequest, :priority,
+        :browser,:version, :sparc_request_id)
+    else
+      params.require(:feedback).permit(
+        :name, :email, :message
+      )
+    end
   end
 end

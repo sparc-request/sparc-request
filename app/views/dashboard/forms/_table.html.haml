@@ -17,11 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default#forms-panel{ display_if(protocol.has_completed_forms?) }
-  = javascript_include_tag 'forms'
-  .panel-heading
-    %h4.panel-title
-      = t(:dashboard)[:forms][:header]
-  .panel-body
-    - protocol.service_requests.each do |service_request|
-      = render "forms/table", service_request: service_request, complete: true
+
+#dashboardForms{ display_if(protocol.has_completed_forms?) }
+  - protocol.service_requests.each do |service_request|
+    = render "forms/table", service_request: service_request, complete: true

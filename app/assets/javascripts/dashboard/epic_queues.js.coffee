@@ -20,29 +20,10 @@
 
 $(document).ready ->
 
-  $('.epic-queue-table').bootstrapTable()
-  $('.epic-queue-records-table').bootstrapTable()
+  $('#epicQueues .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-  $(document).on 'click', '.delete-epic-queue-button', ->
-    if confirm(I18n['epic_queues']['confirm'])
-      eq_id = $(this).data('epic-queue-id')
-      $.ajax
-        type: 'DELETE'
-        url: "/dashboard/epic_queues/#{eq_id}.js"
-
-  $(document).on 'click-cell.bs.table', '.epic-queue-table, .epic-queue-records-table', (field, value, row, $element) ->
-    if value == 'protocol'
-      protocolId = $element.protocol_id
-      window.open("/dashboard/protocols/#{protocolId}")
-
-  $(document).on 'click', '.push-to-epic', (e) ->
-    e.preventDefault()
-    protocol_id = $(this).data('protocol-id')
-    eq_id = $(this).data('eq-id')
-    $.ajax
-      type: 'GET'
-      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true&&eq_id=#{eq_id}"
-
-  $(document).on 'click', '#epic-queue-panel .export button', ->
-    $(this).parent().removeClass('open')
+  $(document).on 'click', '#epicQueues .export button', ->
     window.location = '/dashboard/epic_queue_records.xlsx'
+
+  $(document).on 'show.bs.tab', '#epicQueues [data-toggle=tab]', (event) ->
+    $("#{this.hash}").find('table[data-toggle=table]').bootstrapTable('refresh')

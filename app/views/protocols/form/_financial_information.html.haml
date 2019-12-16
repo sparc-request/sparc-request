@@ -1,0 +1,111 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%section.pt-3#financialInformation
+  .card
+    .card-body.p-5
+      %h2.text-center.mb-5
+        = t('protocols.form.financial_information.header')
+
+      = render 'layouts/required_fields'
+
+      .form-row
+        .form-group.col-3
+          = f.label :funding_status, class: 'required', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.select :funding_status,options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status), { include_blank: true }, class: 'selectpicker'
+        .form-group.col-3#fundingSourceContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
+          = f.label :funding_source, class: 'required', title: t('protocols.tooltips.funding_source'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.select :funding_source,options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record?
+        .form-group.col-3#potentialFundingSourceContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
+          = f.label :potential_funding_source, class: 'required', title: t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record?
+        .form-group.col-3#fundingSourceOtherContainer{ class: protocol.internally_funded? ? '' : 'd-none' }
+          = f.label :funding_source_other, t('constants.prompts.please_specify'), class: 'required'
+          = f.text_field :funding_source_other, class: 'form-control'
+        - if protocol.is_a?(Project) && Setting.get_value('use_indirect_cost')
+          .form-group.col-3#indirectCostRateContainer
+            = f.label :indirect_cost_rate
+            .input-group
+              .input-group-append
+                = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
+              = f.text_field :indirect_cost_rate, class: 'form-control'
+        - if protocol.is_a?(Study)
+          .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
+            = f.label :funding_start_date
+            .input-group.datetimepicker.date#fundingStartDatePicker{ data: { target_input: 'nearest' } }
+              = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), data: { target: '#fundingStartDatePicker' }, readonly: protocol.new_record?
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#fundingStartDatePicker' } }
+                %span.input-group-text
+                  = icon('fas', 'calendar-alt')
+          .form-group.col-3#potentialFundingStartDateContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
+            = f.label :potential_funding_start_date
+            .input-group.datetimepicker.date#potentialFundingStartDatePicker{ data: { target_input: 'nearest' } }
+              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), data: { target: '#potentialFundingStartDatePicker' }, readonly: protocol.new_record?
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#potentialFundingStartDatePicker' } }
+                %span.input-group-text
+                  = icon('fas', 'calendar-alt')
+
+      - if protocol.is_a?(Study)
+        .form-group
+          = f.label :sponsor_name, class: 'required', title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' }
+          = f.text_field :sponsor_name, class: 'form-control'
+
+        .form-row
+          .form-group.col-6
+            = f.label :udak_project_number
+            = f.text_field :udak_project_number, class: 'form-control'
+          .form-group.col-6#fundingRfaContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
+            = f.label :funding_rfa
+            = f.text_field :funding_rfa, class: 'form-control'
+          - if Setting.get_value('use_indirect_cost')
+            .form-group.col-3#indirectCostRateContainer
+              = f.label :indirect_cost_rate
+              .input-group
+                .input-group-append
+                  = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
+                = f.text_field :indirect_cost_rate, class: 'form-control'
+
+        .form-row
+          .form-group.col-12.mb-2
+            %h4.pb-2.border-bottom.w-100
+              = t('protocols.form.financial_information.guarantor_header')
+          .form-group.col-12
+            = f.label :guarantor_contact
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_contact, icon('fas', 'user'), class: 'input-group-text'
+              = f.text_field :guarantor_contact, class: 'form-control'
+          .form-group.col-6.persist-validation
+            = f.label :guarantor_phone
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_phone, icon('fas', 'phone'), class: 'input-group-text'
+              = f.phone_field :guarantor_phone, value: format_phone(f.object.guarantor_phone), class: 'form-control', placeholder: t('constants.phone.placeholder')
+            %span.form-text.text-muted
+              = t('constants.phone.note')
+          .form-group.col-6
+            = f.label :guarantor_email
+            .input-group
+              .input-group-prepend
+                = f.label :guarantor_email, icon('far', 'envelope'), class: 'input-group-text'
+              = f.text_field :guarantor_email, class: 'form-control'
+
+      - if protocol.is_a?(Study)
+        = render 'protocols/form/federal_grant_information', f: f, protocol: protocol

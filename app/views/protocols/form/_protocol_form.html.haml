@@ -17,28 +17,25 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#protocol-form-display
-  = form_for protocol, as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
-    = hidden_field_tag :srid, service_request.id
-    = form.hidden_field :requester_id
-    = form.hidden_field :type
-    - if protocol.type.capitalize == "Study"
-      = hidden_field_tag :epic_config, Setting.get_value("use_epic")
-      .edit-study-view.container-fluid
-        .row.user-edit-protocol-view
-          = render 'protocols/form/study_fields', form: form, protocol: protocol, rmid_server_down: rmid_server_down
 
-    - elsif protocol.type.capitalize == "Project"
-      .edit-project-view.container-fluid
-        .row.user-edit-protocol-view
-          = render 'protocols/form/project_fields', form: form, protocol: protocol
+- if in_dashboard?
+  - url = protocol.new_record? ? dashboard_protocols_path : dashboard_protocol_path
+- else
+  - url = protocol.new_record? ? protocols_path : protocol_path
+.w-100.position-relative
+  = render 'protocols/form/navigation', protocol: protocol
+  %main.col-8.mx-auto
+    = form_for (in_dashboard? ? [:dashboard, protocol] : protocol), url: url, as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
+      = hidden_field_tag :srid, @service_request.try(:id)
+      = f.hidden_field :type
+      = f.hidden_field :requester_id, value: current_user.id
 
-    - unless protocol.id.present? # New Protocol, authorized users fields required
-      = render 'protocols/form/project_roles_fields', form: form, protocol: protocol
+      = render 'protocols/form/header', f: f, protocol: protocol
+      = render 'protocols/form/protocol_information', f: f, protocol: protocol
+      = render 'protocols/form/financial_information', f: f, protocol: protocol
 
-    .row#actions
-      .col-lg-4
-      .col-lg-4.text-center
-        %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save], data: { disable_with: t(:proper)[:navigation][:bottom][:saving] }  }
-        = link_to t(:actions)[:cancel], protocol_service_request_path(srid: service_request.id), class: 'btn btn-lg btn-danger'
-      .col-lg-4
+      - if protocol.is_a?(Study)
+        = render 'protocols/form/research_involving', f: f, protocol: protocol
+        = render 'protocols/form/other_details', f: f, protocol: protocol
+
+      = render 'protocols/form/footer', f: f

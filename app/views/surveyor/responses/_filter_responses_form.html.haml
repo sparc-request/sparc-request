@@ -18,56 +18,61 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading.justify-content-between
-    %h1.panel-title
-      = t(:surveyor)[:response_filters][:header]
-    .filter-links-container
-      = link_to t(:actions)[:save], 'javascript:void(0)', id: 'save-filters'
-      = " | "
-      = link_to t(:actions)[:reset], reset_filterrific_url, id: 'reset-filters'
-  = form_for_filterrific filterrific, remote: true do |form|
-    .panel-body
-      .form-group.row
-        = form.label :of_type, t(:surveyor)[:response_filters][:fields][:type], class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
-      .form-group.row
-        = form.label :with_state, t(:surveyor)[:response_filters][:fields][:state], class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
-      .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "hidden" }
-        = form.label :with_survey, Form.name, class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          = render 'surveyor/responses/surveys_dropdown', surveys: Form.for(current_user), filterrific: filterrific, form: form
-      .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "hidden" }
-        = form.label :with_survey, Survey.name, class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          = render 'surveyor/responses/surveys_dropdown', surveys: SystemSurvey.unscoped, filterrific: filterrific, form: form
-      .form-group.row
-        .col-sm-12
-          %label
-            = t(:surveyor)[:response_filters][:fields][:completion_date]
-        = form.label :start_date, t(:surveyor)[:response_filters][:fields][:from], class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          .input-group.datetimepicker
-            = form.text_field :start_date, class: 'form-control', value: filterrific.start_date ? filterrific.start_date.to_date.strftime('%m/%d/%Y') : ''
-            %span.input-group-addon
-              %span.glyphicon.glyphicon-calendar
-      .form-group.row
-        = form.label :end_date, t(:surveyor)[:response_filters][:fields][:to], class: 'col-lg-3 control-label text-left'
-        .col-lg-9
-          .input-group.datetimepicker
-            = form.text_field :end_date, class: 'form-control', value: filterrific.end_date ? filterrific.end_date.to_date.strftime('%m/%d/%Y') : ''
-            %span.input-group-addon
-              %span.glyphicon.glyphicon-calendar
-      .form-group.row
-        = form.label :include_incomplete, t(:surveyor)[:response_filters][:fields][:include_incomplete], class: 'col-lg-10 control-label text-left'
-        .col-lg-2
-          = form.check_box :include_incomplete, {}, 'true', 'false'
-    .panel-footer.justify-content-end
-      %button.btn.btn-default{ type: 'submit' }
-        = t(:actions)[:filter]
+%aside.w-20#filterResponses
+  .card
+    = form_for_filterrific filterrific, remote: true do |form|
+      .card-header.bg-primary.text-white
+        %h3.mb-0
+          = t(:surveyor)[:response_filters][:header]
+      .card-body
+        .form-group.row
+          = form.label :of_type, t(:surveyor)[:response_filters][:fields][:type], class: 'col-4 control-label'
+          .col-8
+            = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+        .form-group.row
+          = form.label :with_state, t(:surveyor)[:response_filters][:fields][:state], class: 'col-4 control-label'
+          .col-8
+            = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
+        .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "d-none" }
+          = form.label :with_survey, Form.name, class: 'col-4 control-label'
+          .col-8
+            = render 'surveyor/responses/surveys_dropdown', surveys: Form.for(current_user), filterrific: filterrific, form: form
+        .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "d-none" }
+          = form.label :with_survey, Survey.name, class: 'col-4 control-label'
+          .col-8
+            = render 'surveyor/responses/surveys_dropdown', surveys: SystemSurvey.unscoped, filterrific: filterrific, form: form
+        .form-group.row
+          .col-sm-12
+            %label
+              = t(:surveyor)[:response_filters][:fields][:completion_date]
+          = form.label :start_date, t(:surveyor)[:response_filters][:fields][:from], class: 'col-4 control-label'
+          .col-8
+            .input-group.datetimepicker.date#responseStartDatePicker{ data: { target_input: 'nearest' } }
+              = form.text_field :start_date, class: 'form-control datetimepicker-input', value: filterrific.start_date ? filterrific.start_date.to_date.strftime('%m/%d/%Y') : '', data: { target: '#responseStartDatePicker' }
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#responseStartDatePicker' } }
+                %span.input-group-text
+                  = icon('fas', 'calendar-alt')
+        .form-group.row
+          = form.label :end_date, t(:surveyor)[:response_filters][:fields][:to], class: 'col-4 control-label'
+          .col-8
+            .input-group.datetimepicker.date#responseEndDatePicker{ data: { target_input: 'nearest' } }
+              = form.text_field :end_date, class: 'form-control datetimepicker-input', value: filterrific.end_date ? filterrific.end_date.to_date.strftime('%m/%d/%Y') : '', data: { target: '#responseEndDatePicker' }
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#responseEndDatePicker' } }
+                %span.input-group-text
+                  = icon('fas', 'calendar-alt')
+        .form-group.row
+          = form.label :include_incomplete, t(:surveyor)[:response_filters][:fields][:include_incomplete], class: 'col-lg-10 control-label'
+          .col-lg-2
+            = form.check_box :include_incomplete, {}, 'true', 'false'
+      .card-footer.flex-wrap
+        = form.submit t('actions.filter'), class: 'btn btn-block btn-primary mb-2'
+        .col-lg-6.col-12.pl-0.pr-1
+          %button.btn.btn-block.btn-outline-primary#saveResponseFilters{ type: 'button', title: t('dashboard.protocol_filters.tooltips.save'), data: { toggle: 'tooltip', placement: 'top' } }<
+            = icon('fas', 'save mr-2')
+            = t('actions.save')
+        .col-lg-6.col-12.pr-0.pl-1
+          = link_to reset_filterrific_url, remote: true, title: t('dashboard.protocol_filters.tooltips.reset'), class: 'btn btn-block btn-outline-primary', data: { toggle: 'tooltip', placement: 'top' } do
+            = succeed t('actions.reset') do
+              = icon('fas', 'sync mr-2')
 
-#saved-searches
   = render 'surveyor/response_filters/saved_searches'

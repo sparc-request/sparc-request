@@ -18,50 +18,85 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
-//= require jquery2
-//= require jquery-migrate
-//= require batch-select
-//= require bootstrap-sprockets
-//= require bootstrap-select
-//= require bootstrap-select-custom
-//= require bootstrap-table
-//= require bootstrap-table-export
-//= require tableExport
-//= require bootstrap-table-custom
-//= require moment
-//= require bootstrap-datetimepicker
-//= require jquery_ujs
-//= require jquery.remotipart
-//= require jquery.cookie
-//= require jquery.form
-//= require editable/bootstrap-editable
-//= require editable/rails
-//= require nprogress
-//= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require form_manager
-//= require form_fx_manager
-//= require twitter/typeahead.min
-//= require handlebars-v4.0.5
-//= require assert
-//= require ajax_handler
+//////////////////////
+/// IE11 Polyfills ///
+//////////////////////
 
+// Polyfill for position: sticky
+//= require stickybits/dist/stickybits.min
+
+// Polyfill for ES6 Promise
+//= require promise-polyfill/dist/polyfill.min
+
+// Polyfill for URL
+//= require url-polyfill/url-polyfill.min
+
+
+///////////////////////////////////////
+/// These need to be required first ///
+///////////////////////////////////////
+
+//= require i18n/translations
+//= require sweetalert2/dist/sweetalert2.min
+//= require custom/sweetalert-custom
+//= require custom/sweetalert-integration
+//= require jquery/dist/jquery.min
+//= require rails-ujs
+
+//////////////////////////////////
+/// Require Remaining Packages ///
+//////////////////////////////////
+
+//= require popper.js/dist/umd/popper.min
+//= require bootstrap/dist/js/bootstrap.min
+//= require bootstrap-select/dist/js/bootstrap-select.min
+//= require bootstrap-table/dist/bootstrap-table.min
+//= require bootstrap-table/dist/extensions/export/bootstrap-table-export.min
+//= require bootstrap4-toggle/js/bootstrap4-toggle
+//= require corejs-typeahead/dist/typeahead.bundle.min
+//= require moment/min/moment-with-locales.min
+//= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4
+//= require js-cookie/src/js.cookie
+//= require nprogress/nprogress
+
+//////////////////////////////////
+/// Require Our Custom Scripts ///
+//////////////////////////////////
+
+//= require custom/bootstrap-custom
+//= require custom/bootstrap-select-custom
+//= require custom/tempusdominus-custom
+//= require custom/nprogress-custom
+
+///////////////////////////
+/// Require Our Scripts ///
+///////////////////////////
+
+/// Replace with //= require_tree . when finished! ///
+
+//= require utilities
 //= require global
+//= require batch-select
+//= require identities
+//= require service_requests
+//= require protocols
+//= require protocol_form
+//= require associated_users
 //= require associated_users_form
-//= require study_schedule_tabs
-//= require subsidy_form
+//= require subsidies
+//= require documents
+//= require review
+//= require confirmation
+
+//= require service_calendar
+
+//= require dashboard/protocols
+//= require dashboard/notifications
+//= require dashboard/epic_queues
+//= require dashboard/sub_service_requests
+//= require funding/documents
+
+//= require reporting
+
 //= require surveyor/responses
 //= require surveyor/surveys
-//= require sweetalert.min
-//= require feedback
-//= require notes

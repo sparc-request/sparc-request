@@ -17,37 +17,29 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-xs-12.tabs{role: 'tabpanel'}
-  .col-xs-2#notification_tabs{data: {selected: "inbox"}}
-    = render "dashboard/notifications/dropdown", sub_service_request: sub_service_request, user: user
-    %hr
-    %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox
-      %span.pull-left
-        %span.glyphicon.glyphicon-inbox
-        %span
-          = t(:dashboard)[:notifications][:table][:inbox]
-      %span.glyphicon.glyphicon-refresh.pull-right
-    %button.btn.btn-default.btn-block.notification_nav#notifications_sent
-      %span.pull-left
-        %span.glyphicon.glyphicon-send
-        %span
-          = t(:dashboard)[:notifications][:table][:sent]
-      %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
-  .col-xs-10
-    #notifications-custom-toolbar
-      %button.btn.btn-default.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.id, read: "false"}}
-        -# mark as unread
-        = t(:dashboard)[:notifications][:table][:mark_as_unread]
-      %button.btn.btn-default.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.id, read: "true"}}
-        -# mark as read
-        = t(:dashboard)[:notifications][:table][:mark_as_read]
-    %table.notifications_table.table-condensed.table-no-bordered.bootstrap_table{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.id, table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
-      %thead.primary-header
-        %tr
-          %th{data: {class: 'state', field: "state", checkbox: "true"}}
-          %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
-            = t(:dashboard)[:notifications][:table][:user]
-          %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
-            = t(:dashboard)[:notifications][:table][:subject]
-          %th{data: {class: 'time', align: "right", sortable: "true", field: "time", sorter: "dateSorter"}}
-            = t(:dashboard)[:notifications][:table][:time]
+
+- sub_service_request ||= nil
+
+.card.w-100#notifications
+  .card-body
+    .row
+      .col-2#notification_tabs{data: {selected: "inbox"}}
+        - if sub_service_request
+          = render "dashboard/notifications/dropdown", sub_service_request: sub_service_request
+          %hr
+        %nav.nav.nav-pills.flex-column.list-group.list-group-flush{ role: 'tablist' }
+          .list-group-item.p-0
+            = link_to dashboard_notifications_path(table: 'inbox', ssrid: sub_service_request.try(:id)), remote: true, class: ['nav-link text-center', table == 'inbox' ? 'active' : ''], id: 'notificationsInbox', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsInboxTab', selected: (table == 'inbox').to_s } do
+              = succeed t(:dashboard)[:notifications][:table][:inbox] do
+                = icon('fas', 'inbox mr-2')
+          .list-group-item.p-0
+            = link_to dashboard_notifications_path(table: 'sent', ssrid: sub_service_request.try(:id)), remote: true, class: ['nav-link text-center', table == 'sent' ? 'active' : ''], id: 'notificationsSent', role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'notificationsSentTab', selected: (table == 'sent').to_s } do
+              = succeed t(:dashboard)[:notifications][:table][:sent] do
+                = icon('fas', 'paper-plane mr-2')
+      .tab-content.col-10.pl-0
+        .tab-pane.fade#notificationsInboxTab{ role: 'tabpanel', class: table == 'inbox' ? 'show active' : '', aria: { labelledby: 'notificationsInbox' } }
+          - if table == 'inbox'
+            = render 'dashboard/notifications/table', sub_service_request: sub_service_request, table: table
+        .tab-pane.fade#notificationsSentTab{ role: 'tabpanel', class: table == 'sent' ? 'show active' : '', aria: { labelledby: 'notificationsSent' } }
+          - if table == 'sent'
+            = render 'dashboard/notifications/table', sub_service_request: sub_service_request, table: table

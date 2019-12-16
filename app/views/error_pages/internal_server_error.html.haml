@@ -17,21 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.row
-  .col-sm-12.text-center
-    %h4= t(:error_pages)[:server_error][:heading]
-.row
-  .col-sm-12.text-center
-    %h1.text-danger= t(:error_pages)[:server_error][:error]
-.row
-  .col-sm-12.text-center
-    %h4= t(:error_pages)[:server_error][:help_text]
-.row
-  .col-sm-6.text-center
-    %h4
-      = t(:error_pages)[:link_display]
-      %a{href: "#{t(:error_pages)[:link_href]}#{Setting.get_value('contact_us_cc')}"}= Setting.get_value("contact_us_cc")
-  .col-sm-6.text-center
-    %h4
-      = t(:error_pages)[:phone_display]
-      %a{href: "#{t(:error_pages)[:phone_href]}#{Setting.get_value('contact_us_phone')}"}= Setting.get_value("contact_us_phone")
+
+.col-12.col-xl-8.py-5.my-5.mx-auto
+  .card
+    .card-body.p-5.text-center
+      %h1.mb-5
+        = t('error_pages.server_error.header')
+        %span.text-danger
+          = t('error_pages.server_error.error')
+      %h4.text-muted
+        = raw t('error_pages.help_text', email: link_to(Setting.get_value('contact_us_cc'), "mailto#{Setting.get_value('contact_us_cc')}"), phone: link_to(Setting.get_value('contact_us_phone'), "mailto#{Setting.get_value('contact_us_phone')}"))
+      - if current_user
+        = link_to t('error_pages.dashboard_link'), dashboard_root_path, class: 'btn btn-lg btn-success mt-5'

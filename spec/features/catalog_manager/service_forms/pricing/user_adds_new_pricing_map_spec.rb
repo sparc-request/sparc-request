@@ -54,33 +54,34 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         find("#new_pricing_map_link").click
         wait_for_javascript_to_finish
 
-        find('#pricing_map_display_date').click
-        find('td.today').click
-
-        find('#pricing_map_effective_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_map_display_date')
+        bootstrap3_datepicker('#pricing_map_effective_date')
 
         fill_in 'pricing_map_full_rate', with: "150.00"
         find('#pricing_map_federal_rate').click
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_federal_rate', with: "250.00"
+        find('.modal-body').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_unit_type', with: "each"
-        accept_confirm
         fill_in 'pricing_map_unit_factor', with: "1.00"
         fill_in 'pricing_map_unit_minimum', with: "1"
 
@@ -104,33 +105,34 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         find("#new_pricing_map_link").click
         wait_for_javascript_to_finish
 
-        find('#pricing_map_display_date').click
-        find('td.today').click
-
-        find('#pricing_map_effective_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_map_display_date')
+        bootstrap3_datepicker('#pricing_map_effective_date')
 
         fill_in 'pricing_map_full_rate', with: "150.00"
         find('#pricing_map_federal_rate').click
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_federal_rate', with: "250.00"
+        find('.modal-body').click
+        accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
+        find('.modal-body').click
         accept_confirm
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_otf_unit_type', with: "days"
-        accept_confirm
         fill_in 'pricing_map_quantity_type', with: "hours"
         fill_in 'pricing_map_quantity_minimum', with: "1"
         fill_in 'pricing_map_unit_factor', with: "1.00"
@@ -149,7 +151,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
         click_link 'Pricing'
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('#new_pricing_map_link[disabled=disabled]')
+        expect(page).to have_selector('#new_pricing_map_link.disabled')
         expect(page).to have_content('There must be a pricing setup defined in order to add a pricing map.')
       end
     end

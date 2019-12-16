@@ -18,185 +18,80 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(document).ready ->
-  Sparc.protocol =
-    ready: ->
-      $(document).on 'click', '.calendar-lock', ->
-        protocol_id = $(this).data('protocol-id')
-        locked = $(this).data('locked')
-        data =
-        'protocol_id'       : protocol_id,
-        'locked'            : locked
+  ###################
+  # Protocols Table #
+  ###################
+
+  $('#protocolsList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
+
+  $(document).on 'click', '#protocolsList .export button', ->
+    url = new URL($('#protocolsTable').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url
+
+  ####################
+  # Protocol Filters #
+  ####################
+
+  $(document).on 'click', '#saveProtocolFilters', ->
+    data = {}
+
+    $.each $('form#protocolFiltersForm').serializeArray(), (i, field) ->
+      data[field.name] = field.value
+
+    if data["filterrific[with_status][]"].length
+      data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
+
+    if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
+      data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
+
+    if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
+      data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
+
+    $.ajax
+      type: 'GET'
+      url:  "/dashboard/protocol_filters/new"
+      data: data
+
+  #################
+  # Protocol Show #
+  #################
+
+  if window.location.pathname.startsWith('/dashboard')
+    $(document).on 'keyup', '.milestone-field.datetimepicker input', (event) ->
+      key = event.keyCode || event.charCode
+      if !$(this).val() && [8, 46].includes(key) # Backspace or Delete keys
+        data = $(this).serialize()
+
         $.ajax
-          type: 'PUT'
-          url: "/dashboard/protocols/#{protocol_id}"
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/protocols/#{getProtocolId()}"
           data: data
 
-      #  Protocol Index Begin
-      $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
-        #if you click on the row, it opens the protocol show
-        protocol_id = $(this).parent().data('protocol-id')
-        window.location = "/dashboard/protocols/#{protocol_id}"
+    $(document).on 'change.datetimepicker', '.milestone-field.datetimepicker', ->
+      data = $(this).find('input').serialize()
 
-      $(document).on 'click', '.requests_display_link', ->
-        # Opens the requests modal
-        protocol_id = $(this).parents("tr").data('protocol-id')
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/protocols/#{getProtocolId()}"
+        data: data
+
+    milestoneTimer = null
+    $(document).on('keydown', '.milestone-field:not(.datetimepicker) input', ->
+      clearTimeout(milestoneTimer)
+    ).on('keyup', '.milestone-field:not(.datetimepicker) input', ->
+      clearTimeout(milestoneTimer)
+
+      data = $(this).serialize()
+
+      milestoneTimer = setTimeout( (->
         $.ajax
-          type: 'get'
-          url: "/dashboard/protocols/#{protocol_id}/display_requests"
-          success: (data) ->
-            $('#modal_place').html(data.modal)
-            $('#modal_place').modal 'show'
-            $('.service-requests-table').bootstrapTable()
-            reset_service_requests_handlers()
-
-      $(document).on 'click', '.protocol-archive-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: 'PATCH'
-          url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-
-      $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
-        $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
-
-      $(document).on 'click', '#save_filters_link', ->
-        data = {} #Grab form values
-
-        # REVIEW this is not fetching values from multiselects
-        $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
-          data[field.name] = field.value
-
-        # manually enter those in
-        if data["filterrific[with_status][]"].length
-          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
-
-        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
-          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
-
-        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
-          data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
-
-        $.ajax
-          type: 'GET'
-          url:  "/dashboard/protocol_filters/new"
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/protocols/#{getProtocolId()}"
           data: data
-        return false
-
-      $(document).on 'click', '#reset_filters_link, .saved_search_link', ->
-        # This makes the reset filter and saved search links go through AJAX
-        $.getScript @href
-        false
-
-      $(document).on 'click', '.pagination a', ->
-        # This makes the pagination links go through AJAX, rather than link hrefs
-        $('.pagination').html 'Page is loading...'
-        $.getScript @href
-        false
-      # Protocol Index End
-
-      # Protocol Show Begin
-      $(document).on 'click', '.view-protocol-details-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          method: 'get'
-          url: "/protocols/#{protocol_id}.js?portal=true"
-
-      $(document).on 'click', '.edit-protocol-information-button', ->
-        if $(this).data('permission')
-          protocol_id = $(this).data('protocol-id')
-          window.location = "/dashboard/protocols/#{protocol_id}/edit"
-
-      $(document).on 'click', '.view-full-calendar-button', ->
-        protocol_id = $(this).data('protocolId')
-        statuses_hidden = $(this).data('statusesHidden')
-        $.ajax
-          method: 'get'
-          url: "/service_calendars/view_full_calendar.js"
-          data:
-            portal: 'true'
-            protocol_id: protocol_id
-            statuses_hidden: statuses_hidden
-
-      $(document).on 'click', '.view-service-request', ->
-        id = $(this).data('sub-service-request-id')
-        show_view_ssr_back = $(this).data('show-view-ssr-back')
-        $.ajax
-          method: 'GET'
-          url: "/dashboard/sub_service_requests/#{id}.js"
-          data: show_view_ssr_back: show_view_ssr_back
-
-      $(document).on 'click', '#add-services-button', ->
-        if $(this).data('permission')
-          protocol_id         = $(this).data('protocol-id')
-          window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
-
-      $(document).on 'click', '.view-ssr-back-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: 'GET'
-          url: "/dashboard/protocols/#{protocol_id}/display_requests"
-          success: (data) ->
-            $('#modal_place').html(data.modal)
-            $('#modal_place').modal 'show'
-            $('.service-requests-table').bootstrapTable()
-            reset_service_requests_handlers()
-
-      $(document).on 'change', '.complete-forms', ->
-        if $(this).val()
-          $option = $('option:selected', this)
-          $this   = $(this)
-
-          $.ajax
-            method: 'GET'
-            url: "/surveyor/responses/new.js"
-            data:
-              type:             $option.data('type')
-              survey_id:        $option.data('survey-id')
-              respondable_id:   $option.data('respondable-id')
-              respondable_type: $option.data('respondable-type')
-            success: ->
-              $this.selectpicker('val', '')
-
-      reset_service_requests_handlers()
-      # Protocol Show End
-
-      # Protocol Table Sorting
-      $(document).on 'click', '.protocol-sort', ->
-        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
-        page              = $('#page').val() || 1
-
-        data = {} #Grab form values
-
-        # REVIEW this is not fetching values from multiselects
-        $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
-          data[field.name] = field.value
-
-        data["page"] = page
-        data["filterrific[sorted_by]"] = sorted_by
-
-        # manually enter those in
-        if data["filterrific[with_status][]"].length
-          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
-
-        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
-          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
-
-        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
-          data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
-
-        $.ajax
-          type: 'get'
-          url: "/dashboard/protocols.js"
-          data: data
-
-(exports ? this).reset_service_requests_handlers = ->
-  $('.view-consolidated').tooltip()
-  $('.export-consolidated').tooltip()
-  $('.coverage-analysis-report').tooltip()
-  
-  $('.service-requests-table').on 'all.bs.table', ->
-    #Enable selectpickers
-    $(this).find('.selectpicker').selectpicker()
+      ), 500)
+    )

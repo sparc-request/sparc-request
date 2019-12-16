@@ -41,7 +41,7 @@ RSpec.describe 'User previews a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Preview/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Preview/)
       wait_for_javascript_to_finish
     end
 
@@ -69,7 +69,7 @@ RSpec.describe 'User previews a survey', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Preview/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Preview/)
       wait_for_javascript_to_finish
     end
 

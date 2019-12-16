@@ -550,6 +550,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "news_feed_api_token",
+    "value":          "aGV3d2VAbXVzYy5lZHU6UWZ1ZUpldG9ydEZlMDBwcFVCandCMUEz",
+    "friendly_name":  "News Feed API Token",
+    "description":    "This is the optional token used by the News Feed API to retrieve posts.<br>For Atlassian API Tokens, see https://developer.atlassian.com/cloud/jira/platform/jira-rest-api-basic-authentication/.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_news_feed_api",
+    "parent_value":   "true"
+  },
+  {
     "key":            "news_feed_atlassian_space",
     "value":          "RD",
     "friendly_name":  "Atlassian Space ID",
@@ -624,6 +634,16 @@
     "value":          "no-reply@musc.edu",
     "friendly_name":  "No Reply From",
     "description":    "This is the email that will appear as the sender of all emails sent from the application.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "noneditable_identity_fields",
+    "value":          "[\"last_name\", \"first_name\", \"email\"]",
+    "friendly_name":  "noneditable user profile fields",
+    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, and last_name are configurable.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

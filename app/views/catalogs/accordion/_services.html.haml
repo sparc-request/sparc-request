@@ -18,26 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- show_add_button = action_name == 'update_description' || @service
+- organization.services.select{ |serv| @service ? serv == @service : true && serv.is_available != false && serv.current_pricing_map }.each do |service|
 
-- services.eager_load(:pricing_maps).select{ |serv| serv.is_available != false && serv.current_pricing_map }.each do |service|
-  - if !@service || @service == service
-    .service.col-sm-12.no-padding-x{ id: "service#{service.id}" }
-      .service-details.no-padding-x{ class: show_add_button ? 'col-sm-10' : 'col-sm-12' }
-        .service-name.no-padding
-          %strong.col-sm-12.no-padding.no-margin
+  .w-100.service
+    .row
+      .col-10.d-flex.align-items-center
+        %h6.mb-0.font-weight-bold
+          - if service.description.present?
+            = link_to service.display_service_name, 'javascript:void(0)', data: { toggle: 'popover', title: service.display_service_name, content: raw(service.description), placement: 'left', trigger: 'hover', html: 'true' }
+          - else
             = service.display_service_name
-        - if service.description.present?
-          - unless @service
-            .col-sm-12.no-padding
-              = link_to t(:constants)[:show], "#service#{service.id}Description", class: 'collapsed', alt: t(:constants)[:hide], data: { toggle: 'collapse' }, aria: { expanded: 'false', controls: "service#{service.id}Description" }
-          .collapse.service-description.col-sm-12.no-padding{ id: "service#{service.id}Description", class: [@service == service ? 'in' : ''] }
-            %p.no-margin
-              = raw(service.description)
-        = cpt_code_text(service)
-        = eap_id_text(service)
-      - if show_add_button
-        .col-sm-2.no-padding
-          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id } }
-            = t(:actions)[:add]
-      = raw service_pricing_text(service)
+      .col-2.text-right
+        %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id } }
+          = icon('fas', 'plus')
+    = cpt_code_text(service)
+    = eap_id_text(service)
+    = raw service_pricing_text(service)

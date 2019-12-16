@@ -24,16 +24,16 @@ module ServicesHelper
 
   def cpt_code_text(service)
     unless service.cpt_code.blank?
-      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: ") + content_tag(:span, service.cpt_code)
+      content_tag(:div, class: 'w-100') do
+        content_tag(:span, "#{t(:catalog_manager)[:organization_form][:cpt_code]}: ") + content_tag(:span, service.cpt_code)
       end
     end
   end
 
   def eap_id_text(service)
     unless service.eap_id.blank?
-      content_tag(:span, class: 'col-sm-3 no-padding text-black') do
-        content_tag(:strong, "#{t(:catalog_manager)[:organization_form][:eap_id]}: ") + content_tag(:span, service.eap_id)
+      content_tag(:div, class: 'w-100') do
+        content_tag(:span, "#{t(:catalog_manager)[:organization_form][:eap_id]}: ") + content_tag(:span, service.eap_id)
       end
     end
   end
@@ -42,23 +42,35 @@ module ServicesHelper
     if current_user.present?
       rates = service.displayed_pricing_map.true_rate_hash
 
-      content_tag(:div, class: 'col-sm-12 no-padding service-pricing') do
-        content_tag(:span, class: 'col-sm-12 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"
+      content_tag(:div, class: 'w-100 d-flex flex-wrap') do
+        content_tag(:div, class: 'w-100') do
+          content_tag(:span, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"
         end +
-        content_tag(:span, class: 'col-sm-3 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
+        content_tag(:div, class: 'w-25') do
+          content_tag(:span, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
         end +
-        content_tag(:span, class: 'col-sm-3 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
+        content_tag(:div, class: 'w-25') do
+          content_tag(:span, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
         end +
-        content_tag(:span, class: 'col-sm-3 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
+        content_tag(:div, class: 'w-25') do
+          content_tag(:span, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
         end +
-        content_tag(:span, class: 'col-sm-3 no-padding') do
-          content_tag(:strong, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
+        content_tag(:div, class: 'w-25') do
+          content_tag(:span, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
         end
       end
+    end
+  end
+
+  def breadcrumb_text(item)
+    if item.parents.any?
+      breadcrumb = []
+      item.parents.reverse.each do |parent|
+        breadcrumb << content_tag(:span, "#{parent.abbreviation}", class: "text-#{parent.type.downcase}")
+        breadcrumb << " " + icon('fas', 'caret-right') + " "
+      end
+      breadcrumb.pop
+      breadcrumb.join
     end
   end
 end

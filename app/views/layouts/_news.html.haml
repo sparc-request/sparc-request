@@ -26,14 +26,15 @@
       %h5.m-0<
         = t('layout.navigation.news.header')
     .dropdown-divider
-    - if @news.empty?
-      .dropdown-item.bg-white
-        = t('layout.navigation.news.none')
-    - else
-      - @news.each do |article|
-        = link_to article[:link], target: :_blank, class: 'dropdown-item text-primary' do
-          %h6.m-0<
-            = article[:title].truncate(75)
-            %br
-            %small.text-muted
-              = article[:date]
+    - if @news
+      - if @news.empty?
+        .dropdown-item.bg-white
+          = t('layout.navigation.news.none')
+      - else
+        - @news.each do |article|
+          = link_to article[:link], target: :_blank, class: 'dropdown-item text-primary' do
+            %h6.m-0<
+              = article[:title].truncate(75)
+              %br
+              %small.text-muted
+                = article[:date]

@@ -171,7 +171,11 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && (request.format.js? || request.format.json?)))
+
+    ##Rescue False for weird shibboleth issues with referrer in IE
+    catalog_path = Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' rescue false
+
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (catalog_path && (request.format.js? || request.format.json?)))
       return true
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true

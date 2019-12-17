@@ -59,7 +59,8 @@
       - if sub_service_request.eligible_for_subsidy?
         = render 'subsidies/subsidy', sub_service_request: sub_service_request, admin: false
     .modal-footer
-      - if Rails.application.routes.recognize_path(request.referrer)[:action] == 'index'
+      - action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+      - if action == 'index'
         = link_to t(:actions)[:back],display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-light'
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
         = t('actions.close')

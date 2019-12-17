@@ -29,7 +29,8 @@
         %h3.mb-0
           = t('protocols.form.header.new', protocol_type: Protocol.model_name.human)
       .card-body
-        - if @errors && (service_request.previously_submitted? || Rails.application.routes.recognize_path(request.referrer)[:action] == 'protocol')
+        - action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+        - if @errors && (service_request.previously_submitted? || action == 'protocol')
           = render 'layouts/modal_errors', errors: @errors, messages: @errors.messages[:protocol]
         %h4.mb-4
           = t('proper.protocol.new.text')

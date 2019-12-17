@@ -218,6 +218,7 @@ module ApplicationHelper
   end
 
   def in_review?
-    @in_review ||= action_name == 'review' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'review' && !request.format.html?)
+    action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+    @in_review ||= action_name == 'review' || (action == 'review' && !request.format.html?)
   end
 end

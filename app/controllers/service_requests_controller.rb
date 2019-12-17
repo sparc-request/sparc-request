@@ -221,7 +221,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def current_page
-    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+    action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? action : action_name
   end
 
   def validate_step

@@ -95,7 +95,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @permission_to_edit = @protocol_role.nil? ? false : @protocol_role.can_edit? if @protocol
 
     if @response.save
-      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && Rails.application.routes.recognize_path(request.referrer)[:action] == 'review'
+      action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+      SurveyNotification.system_satisfaction_survey(@response).deliver_now if @response.survey.access_code == 'system-satisfaction-survey' && action == 'review'
       flash[:success] = t(:surveyor)[:responses][:completed]
     else
       @errors = @response.errors

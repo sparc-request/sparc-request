@@ -27,7 +27,8 @@
         = t('protocols.milestones.sub_header')
   .collapse#protocolMilestones{ class: controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date ? '' : 'show' }
     .card-body
-      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || Rails.application.routes.recognize_path(request.referrer)[:action] == 'protocol')
+      - action = Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || action == 'protocol')
       = fields_for protocol.becomes(Protocol) do |f|
         .form-row
           .form-group.col-6{ class: show_errors ? @errors.messages[:start_date].any? ? 'is-invalid' : 'is-valid' : '' }

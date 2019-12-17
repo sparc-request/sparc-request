@@ -27,7 +27,7 @@ $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 <% end %>
 
-toggleServicesToggle(true)
+toggleServicesToggle(false)
 
 adjustCalendarHeaders()
 

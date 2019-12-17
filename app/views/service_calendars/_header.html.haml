@@ -21,13 +21,12 @@
 - hide_calendar = !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
 
 .col-12.mb-3#serviceCalendarHeader
-  - unless service_request.protocol.locked?
-    - if in_dashboard?
-      = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
-      - unless hide_calendar
-        = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
+  - if in_dashboard?
+    = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
     - unless hide_calendar
-      = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
+      = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab, page: page, pages: pages)
+  - unless hide_calendar || service_request.protocol.locked?
+    = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)
   - unless in_dashboard?
     .w-100.mt-3#billingLabels{ class: tab == 'billing_strategy' ? '' : 'd-none' }
       %ul.list-unstyled.mb-0

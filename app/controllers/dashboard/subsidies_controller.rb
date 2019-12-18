@@ -97,8 +97,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def in_admin?
-    path = Rails.application.routes.recognize_path(request.referrer)
-    @admin = path[:controller] == 'dashboard/sub_service_requests' && path[:action] == 'show'
+    @admin = path[:controller] == 'dashboard/sub_service_requests' && helpers.request_referrer_action == 'show'
   end
 
   def subsidy_params

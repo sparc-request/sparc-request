@@ -28,5 +28,5 @@ $("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_
 loadServiceCalendar()
 <% end %>
 
-if !initialLoad
+if !initialLoad || "<%= @tab %>" != 'details'
   $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

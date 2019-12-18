@@ -161,7 +161,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    @page           = Rails.application.routes.recognize_path(request.referrer)[:action]
+    @page           = helpers.request_referrer_action
     remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
     if remove_service.confirm_previously_submitted?
@@ -221,7 +221,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def current_page
-    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? helpers.request_referrer_action : action_name
   end
 
   def validate_step

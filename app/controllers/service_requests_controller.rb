@@ -162,14 +162,14 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     @page           = Rails.application.routes.recognize_path(request.referrer)[:action]
-    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
+    @remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
-    if remove_service.confirm_previously_submitted?
+    if @remove_service.confirm_previously_submitted?
       @confirm_previously_submitted = true
-    elsif remove_service.confirm_last_service?
+    elsif @remove_service.confirm_last_service?
       @confirm_last_service = true
     else
-      remove_service.remove_service
+      @remove_service.remove_service
       flash[:alert] = t('line_items.deleted')
     end
 

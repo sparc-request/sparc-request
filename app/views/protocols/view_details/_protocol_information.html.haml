@@ -56,15 +56,6 @@
         - if protocol.is_a?(Study)
           %tr.d-flex
             %td.d-inline-block.col-3
-              = label :protocol, :guarantor_contact, class: 'mb-0'
-            %td.d-inline-block.col-9
-              = protocol.guarantor_contact
-              %br
-              = protocol.guarantor_email
-              %br
-              = format_phone(protocol.guarantor_phone)
-          %tr.d-flex
-            %td.d-inline-block.col-3
               = label :protocol, :selected_for_epic, class: 'mb-0'
             %td.d-inline-block.col-9
               = protocol.selected_for_epic ? t('constants.yes_select') : t('constants.no_select')

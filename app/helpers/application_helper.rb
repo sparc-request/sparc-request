@@ -224,4 +224,8 @@ module ApplicationHelper
   def request_referrer_action
     Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
   end
+
+  def request_referrer_controller
+    Rails.application.routes.recognize_path(request.referrer)[:controller] rescue nil
+  end
 end

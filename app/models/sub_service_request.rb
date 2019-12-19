@@ -325,6 +325,10 @@ class SubServiceRequest < ApplicationRecord
     Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
   end
 
+  def is_in_draft?
+    self.status == 'draft'
+  end
+
   def set_to_draft
     self.update_attributes(status: 'draft') unless status == 'draft'
   end

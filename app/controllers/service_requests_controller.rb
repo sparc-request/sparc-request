@@ -33,7 +33,7 @@ class ServiceRequestsController < ApplicationController
   before_action :current_page
 
   def show
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
+    @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
     @show_signature_section = params[:show_signature_section]

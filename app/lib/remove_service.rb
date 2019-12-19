@@ -29,11 +29,19 @@ class RemoveService
   end
 
   def confirm_previously_submitted?
-    !@confirmed && @service_request.previously_submitted?
+    !@confirmed && @ssr.previously_submitted?
   end
 
   def confirm_last_service?
     !@confirmed && @page != 'catalog' && @service_request.line_items.count == 1
+  end
+
+  def line_item
+    @line_item
+  end
+
+  def sub_service_request
+    @ssr
   end
 
   def remove_service

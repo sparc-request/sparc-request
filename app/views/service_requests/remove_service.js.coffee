@@ -17,21 +17,34 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+unless window.confirmedSSRs?
+  window.confirmedSSRs = []
 
 <% if @confirm_previously_submitted %>
-ConfirmSwal.fire(
-  title: I18n.t('proper.cart.request_submitted.header')
-  text: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
-).then (result) ->
-  if result.value
-    $.ajax
-      type: 'delete'
-      dataType: 'script'
-      url: '/service_request/remove_service'
-      data:
-        srid: getSRId()
-        line_item_id: "<%= params[:line_item_id] %>"
-        confirmed: "true"
+if !window.confirmedSSRs.includes(<%= @remove_service.sub_service_request.id %>)
+  ConfirmSwal.fire(
+    title: I18n.t('proper.cart.request_submitted.header')
+    text: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
+  ).then (result) ->
+    if result.value
+      window.confirmedSSRs.push(<%= @remove_service.sub_service_request.id %>)
+      $.ajax
+        type: 'delete'
+        dataType: 'script'
+        url: '/service_request/remove_service'
+        data:
+          srid: getSRId()
+          line_item_id: "<%= params[:line_item_id] %>"
+          confirmed: "true"
+else
+  $.ajax
+    type: 'delete'
+    dataType: 'script'
+    url: '/service_request/remove_service'
+    data:
+      srid: getSRId()
+      line_item_id: "<%= params[:line_item_id] %>"
+      confirmed: "true"
 <% elsif @confirm_last_service %>
 ConfirmSwal.fire(
   title: I18n.t('proper.cart.last_service.header')

@@ -546,6 +546,7 @@ en:
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
     supported_types: "Supported File Types:<br>%{file_types}"
+    providers: "%{provider_count} Service Providers"
     tooltips:
       new: "Visible to Authorized Users and selected Service Providers"
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"

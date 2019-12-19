@@ -277,6 +277,8 @@ en:
               invalid: "Can only have two decimal places"
         line_item:
           attributes:
+            service_id:
+              taken: "Already added to this request"
             quantity:
               min: "must be greater than or equal to #{min}"
               max: "must be less than or equal to #{max}"

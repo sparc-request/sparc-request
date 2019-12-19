@@ -80,6 +80,7 @@
                   %h5.mb-0
                     = t('dashboard.sub_service_requests.header.owner.menu_header')
                 .dropdown-divider
+                = link_to raw("&nbsp;"), dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: nil }), remote: true, method: :put, class: 'dropdown-item'
                 - sub_service_request.candidate_owners.each do |owner|
                   = link_to owner.full_name, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: owner.id }), remote: true, method: :put, class: 'dropdown-item'
         - if use_epic

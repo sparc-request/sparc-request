@@ -24,7 +24,7 @@ unless window.confirmedSSRs?
 if !window.confirmedSSRs.includes(<%= @remove_service.sub_service_request.id %>)
   ConfirmSwal.fire(
     title: I18n.t('proper.cart.request_submitted.header')
-    text: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
+    html: I18n.t('proper.cart.request_submitted.warning', protocol_type: "<%= 'Study' %>")
   ).then (result) ->
     if result.value
       window.confirmedSSRs.push(<%= @remove_service.sub_service_request.id %>)

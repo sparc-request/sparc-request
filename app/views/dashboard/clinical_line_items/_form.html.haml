@@ -23,9 +23,6 @@
     = form_for [:dashboard, line_item], url: dashboard_clinical_line_items_path, method: action_name == 'new' ? :post : :delete, remote: true do |f|
       = hidden_field_tag :ssrid, sub_service_request.id
       = hidden_field_tag :tab, tab
-      = hidden_field_tag :page, page
-      - pages.each do |arm_id, page|
-        = hidden_field_tag "pages[#{arm_id}]", page
       .modal-header
         %h3.modal-title
           = t("dashboard.sub_service_requests.study_schedule.#{action_name == 'new' ? 'add_services' : 'delete_services'}")

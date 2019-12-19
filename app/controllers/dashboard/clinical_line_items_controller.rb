@@ -38,8 +38,6 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
 
       lis.each{ |li| li.update_attribute(:sub_service_request, @sub_service_request) }
 
-      setup_calendar_pages
-
       unless @service_request.arms.any?
         @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, new_with_draft: true)
       end
@@ -50,6 +48,8 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
       line_item.valid?
       @errors = line_item.errors
     end
+
+    setup_calendar_pages
 
     respond_to :js
   end

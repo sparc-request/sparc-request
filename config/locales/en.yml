@@ -189,7 +189,7 @@ en:
         recruitment_start_date: "Estimated Recruitment Start Date"
         requests: "Requests"
         research_master_id: "Research Master ID"
-        selected_for_epic: "Publish Study in Epic?"
+        selected_for_epic: "Do you want to have your Study Published in Epic?"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
@@ -771,7 +771,7 @@ en:
       end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"
       epic: "Defines whether record will interface to Epic EMR."
       funding_source: "Funding source which drives research pricing for your Study/Project"
-      funding_status: "Indicates whether or not funding has been applied for or obtained."
+      funding_status: "Indicates whether or not funding has been applied for or obtained. Choose 'Pending Funding' if you are applying for grant service."
       ind_number: "Investigational New Drug Number"
       nct_number: "Clinicaltrials.gov Registry Number."
       new_study: >

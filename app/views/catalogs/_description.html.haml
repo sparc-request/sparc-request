@@ -30,7 +30,7 @@
       - if identity_signed_in? && @shard != current_user.shard_identifier && organization.primary_contacts.any?
         .d-flex.flex-column.mb-3
           %span.text-primary.w-100
-            = "If you would like to learn more about these Services, please contact one of the Service Providers listed below:"
+            = t('proper.catalog.service_provider_text')
           - organization.primary_contacts.each do |pc|
             %span.w-100
               = identity_contact(pc.identity)

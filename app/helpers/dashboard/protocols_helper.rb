@@ -35,7 +35,10 @@ module Dashboard::ProtocolsHelper
   end
 
   def protocol_short_title_link(protocol)
-    link_to protocol.short_title, dashboard_protocol_path(protocol)
+    [
+      link_to(protocol.short_title, dashboard_protocol_path(protocol)),
+      display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
+    ].join('')
   end
 
   def pis_display(protocol)

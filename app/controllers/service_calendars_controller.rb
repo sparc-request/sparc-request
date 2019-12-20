@@ -38,12 +38,17 @@ class ServiceCalendarsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
+
+  before_action :preload_service_request
+
   after_action :set_service_calendar_cookie, only: [:table, :merged_calendar]
+
 
   def table
     @merged               = false
     @consolidated         = false
     @tab                  = params[:tab]
+
     setup_calendar_pages
 
     respond_to :js
@@ -136,6 +141,10 @@ class ServiceCalendarsController < ApplicationController
   end
 
   private
+
+  def preload_service_request
+    ActiveRecord::Associations::Preloader.new.preload(@service_request, { sub_service_requests: { organization: [:editable_statuses, parent: [:editable_statuses, parent: [:editable_statuses, :parent]]] } })
+  end
 
   def set_service_calendar_cookie
     if in_dashboard?

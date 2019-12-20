@@ -417,7 +417,15 @@ class Organization < ApplicationRecord
 
   def get_editable_statuses
     if process_ssrs
-      self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+      if self.use_default_statuses
+        AvailableStatus.defaults
+      else
+        if self.editable_statuses.loaded?
+          self.editable_statuses.select{ |es| es.selected? }.map(&:status)
+        else
+          self.editable_statuses.selected.pluck(:status)
+        end
+      end
     elsif process_ssrs_parent
       process_ssrs_parent.get_editable_statuses
     else

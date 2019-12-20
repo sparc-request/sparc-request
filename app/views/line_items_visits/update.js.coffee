@@ -32,7 +32,8 @@ $('#modalContainer').modal('hide')
 
 <% if @in_admin %>
 # Replace SSR Header
-$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#effectiveCost').replaceWith("<%= j render 'dashboard/sub_service_requests/effective_cost', sub_service_request: @sub_service_request %>")
+$('#displayCost').replaceWith("<%= j render 'dashboard/sub_service_requests/displayed_cost', sub_service_request: @sub_service_request %>")
 <% end %>
 
 # Replace Field Cell

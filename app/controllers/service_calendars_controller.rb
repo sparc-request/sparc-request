@@ -122,7 +122,7 @@ class ServiceCalendarsController < ApplicationController
           v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
         end
       elsif params[:uncheck]
-        @visits.each{ |v| v.update_attributees(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
+        @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
       end
     end
 

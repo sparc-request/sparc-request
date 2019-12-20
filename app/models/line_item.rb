@@ -67,6 +67,10 @@ class LineItem < ApplicationRecord
     joins(:sub_service_request).where.not(sub_service_requests: { status: Status.complete })
   }
 
+  scope :unassigned, -> {
+    where(sub_service_request_id: nil)
+  }
+
   def friendly_notable_type
     Service.model_name.human
   end

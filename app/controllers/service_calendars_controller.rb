@@ -80,12 +80,13 @@ class ServiceCalendarsController < ApplicationController
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
     @visits             = @line_items_visit.ordered_visits.eager_load(service: :pricing_maps)
 
-    if params[:check]
-      unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
-
-      @visits.update_all(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
-    elsif params[:uncheck]
-      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
+    Visit.transaction do
+      if params[:check]
+        unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
+        @visits.each{ |v| v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0) }
+      elsif params[:uncheck]
+        @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
+      end
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
@@ -114,14 +115,15 @@ class ServiceCalendarsController < ApplicationController
 
     @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs }).eager_load(service: :pricing_maps, line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] })
 
-    if params[:check]
-      @visits.each do |v|
-        unit_minimum = v.service.displayed_pricing_map.unit_minimum
-        
-        v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+    Visit.transaction do
+      if params[:check]
+        @visits.each do |v|
+          unit_minimum = v.service.displayed_pricing_map.unit_minimum
+          v.update_attributes(quantity: unit_minimum, research_billing_qty: unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+        end
+      elsif params[:uncheck]
+        @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
       end
-    elsif params[:uncheck]
-      @visits.update_all(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
     end
 
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status

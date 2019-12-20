@@ -95,7 +95,7 @@ class ServiceRequest < ApplicationRecord
     recursive_call        = args[:recursive_call]
 
     # If this service has already been added, then do nothing
-    return if !allow_duplicates && self.line_items.incomplete.where(service_id: service.id).any?
+    return if !allow_duplicates && (self.line_items.incomplete.where(service_id: service.id).any? or self.line_items.unassigned.where(service_id: service.id).any?)
 
     line_items = []
 

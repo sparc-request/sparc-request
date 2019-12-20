@@ -188,13 +188,18 @@ class LineItemsVisit < ApplicationRecord
   def sum_visits_research_billing_qty
     @research_billing_total ||= 
       if self.visits.loaded?
-        self.visits.sum(&:research_billing_qty) || 0
+        self.visits.to_a.sum(&:research_billing_qty)
       else
         self.visits.sum(:research_billing_qty) || 0
       end
   end
 
   def sum_visits_research_billing_qty_gte_1
-    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
+    @research_billing_gte1_total ||=
+      if self.visits.loaded?
+        self.visits.select{ |v| v.research_billing_qty >= 1 }.sum(&:research_billing_qty)
+      else
+        self.visits.where(Visit.arel_table[:research_billing_qty].gteq(1)).sum(:research_billing_qty) || 0
+      end
   end
 end

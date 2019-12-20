@@ -58,7 +58,7 @@ class Visit < ApplicationRecord
     elsif self.research_billing_qty >= 1
       return self.research_billing_qty * per_unit_cost
     else
-      return nil
+      return 0.00
     end
   end
 

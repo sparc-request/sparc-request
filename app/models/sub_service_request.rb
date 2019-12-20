@@ -196,7 +196,7 @@ class SubServiceRequest < ApplicationRecord
   def direct_cost_total
     total = 0.0
 
-    self.line_items.each do |li|
+    self.line_items.eager_load(:service_request, :admin_rates, line_items_visits: [:visits, :arm], service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).each do |li|
       if li.service.one_time_fee
         total += li.direct_costs_for_one_time_fee
       else

@@ -27,6 +27,9 @@
       = cost
   - (VisitGroup.per_page - visit_groups.length).times do
     %td{ colspan: 3 }
-  %th.text-center{ colspan: 4, title: display_max_total_cost_per_patient(arm, line_items_visits), data: { toggle: 'tooltip' } }
-    = display_max_total_cost_per_patient(arm, line_items_visits)
+
+  - max_total_cost_pppv = display_max_total_cost_per_patient(arm, line_items_visits)
+
+  %th.text-center{ colspan: 4, title: max_total_cost_pppv, data: { toggle: 'tooltip' } }
+    = max_total_cost_pppv
   %td.text-center{ colspan: 4 }

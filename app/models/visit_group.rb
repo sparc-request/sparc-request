@@ -114,7 +114,7 @@ class VisitGroup < ApplicationRecord
   end
 
   def per_patient_subtotals
-    self.visits.sum{ |v| v.cost || 0.00 }
+    self.visits.sum(&:cost)
   end
     
   private

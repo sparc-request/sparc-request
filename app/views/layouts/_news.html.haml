@@ -29,7 +29,7 @@
     - if @news.nil?
       .dropdown-item.bg-white
         = t('layout.navigation.news.loading')
-    - elsif @news.empty?
+    - elsif @news.blank?
       .dropdown-item.bg-white
         = t('layout.navigation.news.none')
     - else

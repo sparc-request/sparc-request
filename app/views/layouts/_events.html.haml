@@ -29,7 +29,7 @@
     - if @events.nil?
       .dropdown-item.bg-white
         = t('layout.navigation.events.loading')
-    - elsif @events.empty?
+    - elsif @events.blank?
       .dropdown-item.bg-white
         = t('layout.navigation.events.none')
     - else

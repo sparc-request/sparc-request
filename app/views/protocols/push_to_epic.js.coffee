@@ -18,11 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).one 'load-success.bs.table', ->
-  # Bug: https://www.pivotaltracker.com/story/show/170491682
-  # BootstrapTable doesn't smart change the offset param
-  # when remeoving the last record on a page but triggering
-  # a second refresh resets the offset
-  $('.epic-queue-table').bootstrapTable('refresh')  
-
-$('.epic-queue-table').bootstrapTable('refresh')
+$('.epic-queue-table:visible').bootstrapTable('refresh')

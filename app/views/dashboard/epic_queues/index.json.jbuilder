@@ -1,3 +1,10 @@
+# If we've pushed or deleted the last record on a page and refreshed
+# then we need to show the previous page by subtracting the limit
+# from the offset
+if @epic_queues.count > 0 && @epic_queues.count <= params[:offset].to_i
+  params[:offset] = (params[:offset].to_i - params[:limit].to_i).to_s
+end
+
 json.total @epic_queues.count
 json.rows do
   json.(@epic_queues.limit(params[:limit]).offset(params[:offset])) do |eq|

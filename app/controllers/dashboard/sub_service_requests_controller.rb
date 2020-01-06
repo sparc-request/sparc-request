@@ -58,11 +58,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @tab                    = 'calendar'
         @merged                 = true
         @consolidated           = false
-        @pages                  = {}
-        @service_request.arms.each do |arm|
-          new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-          @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
-        end
+
+        setup_calendar_pages
       }
     end
   end

@@ -30,8 +30,8 @@ RSpec.describe 'User removes service from cart', js: true do
     @program    = create(:program, name: "Program", parent: provider, process_ssrs: true)
     @service    = create(:service, name: "A new Service", abbreviation: "New Service", organization: @program)
     @sr         = create(:service_request_without_validations, status: 'first_draft')
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service, optional: true)
+    @ssr        = create(:sub_service_request_without_validations, service_request: @sr, organization: @program, status: 'first_draft')
+                  create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service, optional: true)
   end
 
   it 'should remove the service' do
@@ -50,6 +50,7 @@ RSpec.describe 'User removes service from cart', js: true do
   context 'service request was previously submitted' do
     it 'should remove the service after confirming' do
       @sr.update_attribute(:submitted_at, Date.today)
+      @ssr.update_attribute(:submitted_at, Date.today)
 
       visit root_path(srid: @sr.id)
       wait_for_javascript_to_finish

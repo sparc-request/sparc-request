@@ -42,7 +42,7 @@
   -# Line Items Visits
   - livs.each do |liv|
     %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", "text-#{text_context}"] }
-      %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
+      %td.service-name{ colspan: 9, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
       %td.notes.editable.text-center{ colspan: 2, title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
         = notes_button(liv, disabled: !editable, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))

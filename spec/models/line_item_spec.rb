@@ -241,8 +241,9 @@ RSpec.describe LineItem, type: :model do
   end
 
   context "validations for one time fees" do
-    let!(:pricing_map)         { create(:pricing_map, service_id: service.id, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1, units_per_qty_max: 10, quantity_minimum: 1) }
-    let!(:otf_line_item)       { create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
+    let!(:otf_service)         { create(:one_time_fee_service) }
+    let!(:pricing_map)         { create(:pricing_map, service: otf_service, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1, units_per_qty_max: 10, quantity_minimum: 1) }
+    let!(:otf_line_item)       { create(:line_item, service_request_id: service_request.id, service: otf_service, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
 
     it 'should validate the numericality' do
       otf_line_item.quantity = 'kjhkjh'

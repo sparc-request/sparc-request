@@ -33,7 +33,7 @@ class ServiceRequestsController < ApplicationController
   before_action :current_page
 
   def show
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
+    @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
     @show_signature_section = params[:show_signature_section]
@@ -161,15 +161,15 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    @page           = Rails.application.routes.recognize_path(request.referrer)[:action]
-    remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
+    @page           = helpers.request_referrer_action
+    @remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
-    if remove_service.confirm_previously_submitted?
+    if @remove_service.confirm_previously_submitted?
       @confirm_previously_submitted = true
-    elsif remove_service.confirm_last_service?
+    elsif @remove_service.confirm_last_service?
       @confirm_last_service = true
     else
-      remove_service.remove_service
+      @remove_service.remove_service
       flash[:alert] = t('line_items.deleted')
     end
 
@@ -221,7 +221,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def current_page
-    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? Rails.application.routes.recognize_path(request.referrer)[:action] : action_name
+    @current_page ||= ['add_service', 'remove_service', 'navigate'].include?(action_name) ? helpers.request_referrer_action : action_name
   end
 
   def validate_step

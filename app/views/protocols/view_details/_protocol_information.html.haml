@@ -41,7 +41,7 @@
             = label :protocol, :short_title, class: 'mb-0', title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right' }
           %td.d-inline-block.col-9
             = protocol.short_title
-            = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
+            = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
         - if protocol.is_a?(Project)
           %tr.d-flex
             %td.d-inline-block.col-3
@@ -54,15 +54,6 @@
           %td.d-inline-block.col-9
             = protocol.primary_pi.display_name
         - if protocol.is_a?(Study)
-          %tr.d-flex
-            %td.d-inline-block.col-3
-              = label :protocol, :guarantor_contact, class: 'mb-0'
-            %td.d-inline-block.col-9
-              = protocol.guarantor_contact
-              %br
-              = protocol.guarantor_email
-              %br
-              = format_phone(protocol.guarantor_phone)
           %tr.d-flex
             %td.d-inline-block.col-3
               = label :protocol, :selected_for_epic, class: 'mb-0'

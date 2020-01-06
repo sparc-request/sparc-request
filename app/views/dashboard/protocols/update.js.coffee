@@ -47,7 +47,7 @@ $('#calendarStructureCard').replaceWith("<%= j render '/dashboard/calendar_struc
 $('#calendarStructureTable').bootstrapTable()
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
-<% elsif Rails.application.routes.recognize_path(request.referrer)[:action] == 'show' %>
+<% elsif request_referrer_action == 'show' %>
 # Do nothing - updating Milestones
 <% else %>
 window.location = "<%= dashboard_protocol_path(@protocol) %>"

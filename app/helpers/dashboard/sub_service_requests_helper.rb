@@ -79,7 +79,7 @@ module Dashboard::SubServiceRequestsHelper
     if sub_service_request.surveys_completed?
       content_tag :div, t('dashboard.sub_service_requests.header.surveys.completed'), class: 'alert alert-sm alert-success mb-0'
     else
-      link_to resend_surveys_dashboard_sub_service_request_path(sub_service_request), remote: true, method: :put, class: 'btn btn-warning', id: "resendSurveys", onclick: "$(this).addClass('disabled')", title: t('dashboard.sub_service_requests.header.surveys.last_sent', date: format_date(sub_service_request.survey_latest_sent_date)), data: { toggle: 'tooltip', html: 'true' } do
+      link_to resend_surveys_dashboard_sub_service_request_path(sub_service_request), remote: true, method: :put, class: 'btn btn-warning', id: "resendSurveys", onclick: "$(this).addClass('disabled')", title: t('dashboard.sub_service_requests.header.surveys.last_sent', date: format_date(sub_service_request.survey_latest_sent_date, html: true)), data: { toggle: 'tooltip', html: 'true' } do
         icon('fas', 'clipboard-list mr-2') + t('dashboard.sub_service_requests.header.surveys.resend')
       end
     end

@@ -101,6 +101,10 @@ SparcRails::Application.routes.draw do
   resource :research_master, only: [:update]
 
   resources :protocols, except: [:index, :destroy] do
+    collection do
+      get :validate_rmid
+    end
+
     member do
       get :approve_epic_rights
       get :push_to_epic

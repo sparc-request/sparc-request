@@ -85,6 +85,8 @@ class Protocol < ApplicationRecord
   attr_accessor :bypass_rmid_validation
   attr_accessor :bypass_stq_validation
 
+  mattr_accessor :rmid_server_down
+
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
   accepts_nested_attributes_for :vertebrate_animals_info
@@ -99,6 +101,9 @@ class Protocol < ApplicationRecord
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
+
+  validate :existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  validate :unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
@@ -118,18 +123,22 @@ class Protocol < ApplicationRecord
     self.research_types_info.try(:human_subjects) || false
   end
 
-  validate :existing_rm_id,
-    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
-
-  validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
-
   def self.rmid_status
     begin
       HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
     rescue
+      @@rmid_server_down = true
       return false
+    end
+  end
+
+  def self.get_rmid(rmid)
+    begin
+      HTTParty.get("#{Setting.get_value('research_master_api')}research_masters/#{rmid}.json", headers: { "Content-Type" => "application/json", "Authorization" => "Token token=\"#{Setting.get_value('rmid_api_token')}\"" })
+    rescue
+      @@rmid_server_down = true
+      nil
     end
   end
 
@@ -140,29 +149,6 @@ class Protocol < ApplicationRecord
       ##Insert data for each protocol
       protocols.each do |p|
         csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', ')]
-      end
-    end
-  end
-
-  def existing_rm_id
-    begin
-      rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
-      ids = rm_ids.map{ |rm_id| rm_id['id'] }
-
-      if research_master_id.present? && !ids.include?(research_master_id)
-        errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
-      end
-    rescue
-      return false
-    end
-  end
-
-  def unique_rm_id_to_protocol
-    Protocol.all.each do |protocol|
-      if self.id != protocol.id
-        if self.research_master_id == protocol.research_master_id
-          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
-        end
       end
     end
   end
@@ -645,5 +631,24 @@ class Protocol < ApplicationRecord
 
   def remotely_notifiable_attributes_to_watch_for_change
     ["short_title"]
+  end
+
+  def existing_rmid
+    begin
+      rmid = Protocol.get_rmid(self.research_master_id)
+
+      if self.research_master_id.present? && (self.research_master_id < 1 || rmids.none?{ |rmid| rmid['id'] == self.research_master_id })
+        self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
+      end
+    rescue
+
+      return false
+    end
+  end
+
+  def unique_rmid
+    if existing_protocol = Protocol.where(research_master_id: self.research_master_id).first
+      self.errors.add(:base, I18n.t('protocols.rmid.errors.taken', rmid: self.research_master_id, protocol_id: existing_protocol.id))
+    end
   end
 end

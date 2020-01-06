@@ -145,11 +145,6 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def set_rmid_api
-    gon.rmid_api_url    = Setting.get_value("research_master_api")
-    gon.rmid_api_token  = Setting.get_value("rmid_api_token")
-  end
-
   #####################
   ### Other Methods ###
   #####################

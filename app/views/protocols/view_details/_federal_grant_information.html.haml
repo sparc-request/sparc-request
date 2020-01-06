@@ -23,35 +23,35 @@
     %h6.mb-0
       = t('protocols.form.grant_information.header')
 %tr
-  %td.col-3
+  %td.w-25
     = label :protocol, :federal_grant_code_id, class: 'mb-0'
-  %td.col-9
+  %td.w-75
     = protocol.federal_grant_code_id.present? ? PermissibleValue.get_value('federal_grant_code', protocol.federal_grant_code_id) : t('constants.na')
 %tr
-  %td.col-3
+  %td.w-25
     = label :protocol, :federal_grant_serial_number, class: 'mb-0'
-  %td.col-9
+  %td.w-75
     = protocol.federal_grant_serial_number.present? ? protocol.federal_grant_serial_number : t('constants.na')
 %tr
-  %td.col-3
+  %td.w-25
     = label :protocol, :federal_grant_title, class: 'mb-0'
-  %td.col-9
+  %td.w-75
     = protocol.federal_grant_title.present? ? protocol.federal_grant_title : t('constants.na')
 - if protocol.federal_phs_sponsor.present?
   %tr
-    %td.col-3
+    %td.w-25
       = label :protocol, :federal_phs_sponsor, class: 'mb-0'
-    %td.col-9
+    %td.w-75
       = PermissibleValue.get_value('federal_grant_phs_sponsor', protocol.federal_phs_sponsor)
 - elsif protocol.federal_non_phs_sponsor.present?
   %tr
-    %td.col-3
+    %td.w-25
       = label :protocol, :federal_non_phs_sponsor, class: 'mb-0'
-    %td.col-9
+    %td.w-75
       = PermissibleValue.get_value('federal_grant_non_phs_sponsor', protocol.federal_non_phs_sponsor)
 - else
   %tr
-    %td.col-3
+    %td.w-25
       = label :protocol, :federal_sponsor, class: 'mb-0'
-    %td.col-9
+    %td.w-75
       = t('constants.na')

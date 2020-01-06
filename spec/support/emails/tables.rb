@@ -181,7 +181,7 @@ module EmailHelpers
 
       @protocol.notes.each do |note|
         expect(mail).to have_xpath "//td[text()=\"#{note.identity.full_name}\"]"
-        expect(mail).to have_xpath "//td/span[text()='#{ActionController::Base.helpers.strip_tags(format_date(note.created_at))}']"
+        expect(mail).to have_xpath "//td[text()='#{format_date(note.created_at)}']"
         expect(mail).to have_xpath "//td[text()='#{note.body}']"
       end
     else

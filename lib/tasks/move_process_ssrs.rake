@@ -57,7 +57,7 @@ task move_process_ssrs: :environment do
           end
         else
           # Taking care of ssr for inactive service 2908
-          ssr.update_attributes(organization_id: 290)
+          ssr.update_attributes(organization_id: 314)
         end
       end
     end 

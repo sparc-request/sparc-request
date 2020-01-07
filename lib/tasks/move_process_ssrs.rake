@@ -15,8 +15,6 @@ task move_process_ssrs: :environment do
     org.update_attributes(process_ssrs: true)
   end
   sub_service_requests = SubServiceRequest.where(organization_id: 77)
-  # sub_service_requests = []
-  # sub_service_requests << SubServiceRequest.find(15596)
 
   CSV.open("tmp/ssr_altered_data_report.csv", "w+") do |csv|
     csv << ['SSR ID', 'Line Item ID', 'Is One Time Fee?', 'Assigned or Created', 'New SSR ID', 'Sparc ID',
@@ -33,7 +31,6 @@ task move_process_ssrs: :environment do
           if ssr.organization_id == 77 # take care of first line item
             puts "Updating first line item"
             org_ids_used << org_id
-            # ssr.update_attributes(organization_id: org_id)
             ssr.organization_id = org_id
             ssr.save(validate: false)
           elsif org_ids_used.include?(org_id) && (org_id != ssr.organization.id)
@@ -59,7 +56,7 @@ task move_process_ssrs: :environment do
             new_ssr.update_org_tree
           end
         else
-          # puts "Taking care of ssr for inactive service 2908"
+          # Taking care of ssr for inactive service 2908
           ssr.update_attributes(organization_id: 290)
         end
       end

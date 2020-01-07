@@ -220,6 +220,7 @@ updateRmidFields = () ->
       dataType: 'script'
       url: '/protocols/validate_rmid'
       data:
+        protocol_id: $('#protocol_id').val()
         protocol:
           research_master_id: rmid
     )

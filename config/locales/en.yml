@@ -290,6 +290,8 @@ en:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
+            research_master_id:
+              not_a_number: "The Research Master ID entered is invalid."
             selected_for_epic:
               inclusion: "can't be blank"
             start_date:

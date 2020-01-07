@@ -102,8 +102,8 @@ class Protocol < ApplicationRecord
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validate :existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
-  validate :unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  validate :validate_existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  validate :validate_unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
@@ -635,21 +635,16 @@ class Protocol < ApplicationRecord
     ["short_title"]
   end
 
-  def existing_rmid
-    begin
-      rmid = Protocol.get_rmid(self.research_master_id)
+  def validate_existing_rmid
+    rmid = Protocol.get_rmid(self.research_master_id)
 
-      if self.research_master_id.present? && (self.research_master_id < 1 || rmids.none?{ |rmid| rmid['id'] == self.research_master_id })
-        self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
-      end
-    rescue
-
-      return false
+    if self.research_master_id.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty?
+      self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
     end
   end
 
-  def unique_rmid
-    if existing_protocol = Protocol.where(research_master_id: self.research_master_id).first
+  def validate_unique_rmid
+    if existing_protocol = Protocol.where(research_master_id: self.research_master_id).where.not(id: self.id).first
       self.errors.add(:base, I18n.t('protocols.rmid.errors.taken', rmid: self.research_master_id, protocol_id: existing_protocol.id))
     end
   end

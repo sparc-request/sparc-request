@@ -104,7 +104,9 @@ class ProtocolsController < ApplicationController
       @protocol = Protocol.new(protocol_params)
       @protocol.valid?
 
-      unless (@errors = @protocol.errors.messages[:base]).any?
+      @errors = @protocol.errors.messages[:base] + @protocol.errors.messages[:research_master_id]
+
+      unless @errors.any?
         @rmid_record = Protocol.get_rmid(protocol_params[:research_master_id])
       end
     end

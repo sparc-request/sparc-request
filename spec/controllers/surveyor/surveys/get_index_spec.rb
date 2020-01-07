@@ -22,7 +22,6 @@ require 'rails_helper'
 
 RSpec.describe Surveyor::SurveysController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
   stub_config("site_admins", ["weh6@musc.edu"])
   
@@ -31,14 +30,6 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
   end
 
   describe '#index' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_survey_builder_access' do
-      expect(before_filters.include?(:authorize_survey_builder_access)).to eq(true)
-    end
-
     context 'format html' do
       it 'should render template' do
         get :index, params: {

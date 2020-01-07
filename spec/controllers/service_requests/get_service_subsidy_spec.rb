@@ -22,114 +22,27 @@ require 'rails_helper'
 
 RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
+  let!(:org)      { create(:organization) }
+  let!(:service)  { create(:service, organization: org, one_time_fee: true) }
+  let!(:protocol) { create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study') }
+  let!(:sr)       { create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-02-10') }
+  let!(:ssr)      { create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id) }
+  let!(:li)       { create(:line_item, service_request: sr, sub_service_request: ssr, service: service) }
+
   describe '#service_calendar' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
-    it 'should call before_filter #validate_step' do
-      expect(before_filters.include?(:validate_step)).to eq(true)
-    end
-
-    it 'should call before_filter #setup_navigation' do
-      expect(before_filters.include?(:setup_navigation)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
-    it 'should assign @has_subsidy' do
-      org      = create(:organization)
-                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
-                 create(:subsidy, sub_service_request: ssr)
-
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
-
-      expect(assigns(:has_subsidy)).to eq(true)
-    end
-
-    it 'should assign @eligible_for_study' do
-      org      = create(:organization)
-                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
-
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
-
-      expect(assigns(:eligible_for_subsidy)).to eq(true)
-    end
-
-    context 'arms blank' do
-      it 'should assign @back to service_details' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        get :service_subsidy, params: { srid: sr.id }, xhr: true
+    context 'not eligible for subsidies' do
+      before :each do
+        allow_any_instance_of(SubServiceRequest).to receive(:has_subsidy?).and_return(false)
+        allow_any_instance_of(SubServiceRequest).to receive(:eligible_for_subsidy?).and_return(false)
       end
-    end
 
-    it 'should redirect if !@has_subsidy && !@eligible_for_subsidy' do
-      org      = create(:organization)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
+      it 'should redirect to document management' do
+        get :service_subsidy, params: { srid: sr.id }, xhr: true
 
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
-
-      expect(controller).to redirect_to(document_management_service_request_path(srid: sr.id))
-    end
-
-    it 'should render template' do
-      org      = create(:organization)
-                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
-
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
-
-      expect(controller).to render_template(:service_subsidy)
-    end
-
-    it 'should respond ok' do
-      org      = create(:organization)
-                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
-      service  = create(:service, organization: org)
-      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      arm      = create(:arm, protocol: protocol)
-
-      get :service_subsidy, params: { srid: sr.id }, xhr: true
+        expect(controller).to redirect_to(document_management_service_request_path(srid: sr.id))
+      end
     end
   end
 end

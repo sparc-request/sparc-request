@@ -68,6 +68,18 @@ class Service < ApplicationRecord
     order(:order, :name)
   }
 
+  scope :available, -> {
+    where(is_available: true)
+  }
+
+  scope :one_time_fee, -> {
+    where(one_time_fee: true)
+  }
+
+  scope :per_patient_per_visit, -> {
+    where(one_time_fee: false)
+  }
+
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 
@@ -240,15 +252,7 @@ class Service < ApplicationRecord
   # Find a pricing map with an effective date corresponding to the given
   # date.
   def effective_pricing_map_for_date(date=Date.today)
-    raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
-
-    current_maps = self.pricing_maps.select{ |x| x.effective_date <= date.to_date }
-    raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
-
-    sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
-    pricing_map = sorted_maps.last
-
-    return pricing_map
+    self.pricing_maps.where(PricingMap.arel_table[:effective_date].lteq(date.to_date)).order(:effective_date).last
   end
 
   # Find the rate maps for the given display_date and service_rate

@@ -1,0 +1,51 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%section.pt-3#protocolHeader
+  .card
+    .card-body{ class: protocol.is_a?(Study) && Setting.get_value('research_master_enabled') ? 'p-5' : 'p-3' }
+      %h1.text-primary.text-center{ class: protocol.is_a?(Study) ? 'mb-3' : '' }
+        = t("protocols.form.header.#{action_name}", protocol_type: protocol.model_name.human)
+
+      %p.text-center.text-muted{ class: protocol.is_a?(Study) && Setting.get_value('research_master_enabled') ? 'mb-3' : '' }
+        - current_type_text = protocol.model_name.human
+        - new_type_text     = protocol.is_a?(Study) ? Project.model_name.human : Study.model_name.human
+        - new_type          = protocol.is_a?(Study) ? Project.name : Study.name
+
+        - if protocol.persisted?
+          - change_type_method = :patch
+          - change_type_remote = 'true'
+          - if in_dashboard?
+            - change_type_url = update_protocol_type_dashboard_protocol_path(protocol, type: new_type)
+          - else
+            - change_type_url = update_protocol_type_protocol_path(protocol, type: new_type, srid: @service_request.try(:id))
+        - else
+          - change_type_method = :get
+          - change_type_remote = 'false'
+          - if in_dashboard?
+            - change_type_url = new_dashboard_protocol_path(type: new_type, srid: @service_request.try(:id))
+          - else
+            - change_type_url = new_protocol_path(type: new_type, srid: @service_request.try(:id))
+
+        = t('protocols.change_type.text')
+        = link_to t('protocols.change_type.link_text', current_type: current_type_text, new_type: new_type_text), change_type_url, id: 'changeProtocolType', data: { confirm_swal: 'true', method: change_type_method, remote: change_type_remote, title: t('protocols.change_type.confirm_header', current_type: current_type_text, new_type: new_type_text), html: t('protocols.change_type.confirm_text') }
+
+      - if protocol.is_a?(Study) && Setting.get_value('research_master_enabled')
+        = render 'protocols/form/research_master_id', f: f, protocol: protocol

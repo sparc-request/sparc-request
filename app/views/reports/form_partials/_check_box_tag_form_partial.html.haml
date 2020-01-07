@@ -20,33 +20,31 @@
 - multiple        = options[:multiple]
 - grouping        = options[:grouping]
 - selected        = options[:selected] || []
-- default_classes = options[:required] ? "required" : ""
+- required_class = options[:required] ? "required" : ""
 - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
 - name           += "[]" if multiple
 - show_epic       = options[:field_label] == "Include Epic Interface Columns"
 
-= label_tag nil, field_label, class: ['col-sm-3 control-label', default_classes]
+= label_tag nil, field_label, class: ['mr-2', required_class]
 - if grouping && multiple # we have a defined grouping
-  .col-sm-9
-    - grouping.each do |k,v|
-      .row
-        %fieldset
-          %legend
-            = k
-          - v.each do |sv|
-            = label_tag sv, '', class: ['checkbox-inline', default_classes] do
-              = check_box_tag name, sv, selected.include?(sv), class: default_classes, type: "checkbox"
-              = multiple[sv]
+  - grouping.each do |k,v|
+    .row
+      %fieldset
+        %legend
+          = k
+        - v.each do |sv|
+          = label_tag sv, '', class: ['checkbox-inline', required_class] do
+            = check_box_tag name, sv, selected.include?(sv), type: "checkbox", id: sv
+            = multiple[sv]
 
 - elsif multiple
   - if multiple.is_a?(Hash)
-    .col-sm-9
+    %div
       - multiple.each do |k,v|
-        = label_tag k, '', class: ['checkbox-inline', default_classes] do
-          = check_box_tag name, k, selected.include?(v), class: default_classes, type: "checkbox"
+        = label_tag k, '', class: ['mr-3', required_class] do
+          = check_box_tag name, k, selected.include?(v), type: "checkbox", id: k
           = v
 - else # for individual checkboxes that have true/false
-  .col-sm-9
-    = check_box_tag name, true, selected.any?, class: default_classes, type: "checkbox" unless (show_epic && !(Setting.get_value("use_epic"))) # Only show Epic checkbox if use_epic is set to true
+  = check_box_tag name, true, selected.any?, type: "checkbox" unless (show_epic && !(Setting.get_value("use_epic"))) # Only show Epic checkbox if use_epic is set to true
 
 -# TODO define behavior if multiple is a method or string representation of method chain

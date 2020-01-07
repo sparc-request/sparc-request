@@ -19,28 +19,25 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Document < ApplicationRecord
+  include Paperclip::Glue
+
   audited
 
-  include Paperclip::Glue
-  has_and_belongs_to_many :sub_service_requests
-  belongs_to :protocol
-  has_attached_file :document #, :preserve_files => true
-  validates_attachment_file_name :document, matches: [
-    /\.pdf$/i,
-    /\.docx?$/i,
-    /\.xlsx?$/i,
-    /\.rtf$/i,
-    /\.txt$/i,
-    /\.csv$/i,
-    /\.ppt?$/i,
-    /\.msg$/i,
-    /\.eml$/i,
-    /\.jpg$/i,
-    /\.gif$/i,
-    /\.png$/i,
-    /\.tiff$/i,
-    /\.jpeg$/i
+  SUPPORTED_FILE_TYPES = [
+    /\.pdf$/i,  /\.docx?$/i,  /\.xlsx?$/i,  /\.rtf$/i,
+    /\.txt$/i,  /\.csv$/i,    /\.ppt?$/i,   /\.msg$/i,
+    /\.eml$/i,  /\.jpg$/i,    /\.gif$/i,    /\.png$/i,
+    /\.tiff$/i, /\.jpeg$/i
   ]
+
+  belongs_to :protocol
+
+  has_and_belongs_to_many :sub_service_requests
+  has_many :organizations, through: :sub_service_requests
+  
+  has_attached_file :document #, :preserve_files => true
+
+  validates_attachment_file_name :document, matches: Document::SUPPORTED_FILE_TYPES
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }

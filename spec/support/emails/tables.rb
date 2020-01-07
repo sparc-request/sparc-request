@@ -20,6 +20,8 @@
 
 module EmailHelpers
   include ApplicationHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Context
 
   def assert_email_project_information(mail_response)
     #assert correct protocol information is included in notification email
@@ -178,7 +180,9 @@ module EmailHelpers
       expect(mail).to have_xpath "//th[text()='#{I18n.t(:notifier)[:note_user]}']/following-sibling::th[text()='#{I18n.t(:notifier)[:note_date]}']/following-sibling::th[text()='#{I18n.t(:notifier)[:note]}']"
 
       @protocol.notes.each do |note|
-        expect(mail).to have_xpath "//td[text()=\"#{note.identity.full_name}\"]/following-sibling::td[text()='#{format_date(note.created_at)}']/following-sibling::td[text()='#{note.body}']"
+        expect(mail).to have_xpath "//td[text()=\"#{note.identity.full_name}\"]"
+        expect(mail).to have_xpath "//td[text()='#{format_date(note.created_at)}']"
+        expect(mail).to have_xpath "//td[text()='#{note.body}']"
       end
     else
       expect(mail).to_not have_xpath "//table//th[text()='#{I18n.t('notifier.protocol_notes', type: @protocol.type)}']"

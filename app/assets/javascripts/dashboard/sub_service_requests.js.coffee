@@ -18,145 +18,134 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
+$ ->
+  consultArrangedDate = null
+  requesterContactedDate = null
+
+  # Load tab on page load
+  if $('#subServiceRequestDetails').length
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: $('#subServiceRequestDetails .nav-tabs .nav-link.active').attr('href')
+      success: ->
+        $('#requestLoading').removeClass('show active')
+        consultArrangedDate = $('#consultArrangedDatePicker input').val()
+        requesterContactedDate = $('#requesterContactedDatePicker input').val()
+
+  ##############
+  # SSR Header #
+  ##############
+
   refreshFulfillmentButton = ->
-   refresh = window.setInterval((->
-      imported_to_fulfillment = $('.fulfillment_status').data('imported-to-fulfillment')
-      if imported_to_fulfillment == false
-        $("#nprogress").hide()
-        $("#ssr_fulfillment_status").load(location.href + " .fulfillment_status")
-        $("#nprogress").hide()
-      else
+    refresh = window.setInterval((->
+      imported_to_fulfillment = $('#fulfillmentStatus').data('imported')
+      if imported_to_fulfillment
         window.clearInterval refresh
+      else
+        $.get window.location.href + ".html", (data) ->
+          $("#fulfillmentStatusContainer").replaceWith($(data).find('#fulfillmentStatusContainer'))
+          initializeTooltips()
       return
     ), 5000)
-   
+
   # SERVICE REQUEST INFO LISTENERS BEGIN
-  if $('#pending_fulfillment_status').is(':visible')
+  if $('#fulfillmentStatus').length
     refreshFulfillmentButton()
 
-  $(document).on 'change', '#sub_service_request_owner', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    owner_id = $(this).val()
-    data = 'sub_service_request' : 'owner_id' : owner_id
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'change', '#sub_service_request_status', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    status = $(this).val()
-    data = 'sub_service_request' : 'status' : status
-    $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'click', '#delete_ssr_button', ->
-    if confirm "Are you sure you want to delete this request forever?"
-      sub_service_request_id = $(this).data('sub-service-request-id')
-      $.ajax
-        type: 'DELETE'
-        url: "/dashboard/sub_service_requests/#{sub_service_request_id}"
-
-  $(document).on 'click', '#send_to_fulfillment_button', ->
+  $(document).on 'click', '#pushToFulfillment:not(.disabled)', ->
     $(this).prop('disabled', true)
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    data = 'sub_service_request' : 'in_work_fulfillment' : 1
     $.ajax
       type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{sub_service_request_id}?check_sr_calendar=true"
-      data: data
-      error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to SPARCFulfillment because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}"
+      data:
+        sub_service_request:
+          in_work_fulfillment: 1
       success: ->
         refreshFulfillmentButton()
 
-  $(document).on 'click', '#send_to_epic_button', ->
-    $(this).prop( "disabled", true )
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{sub_service_request_id}/push_to_epic"
-      error: (xhr, ajaxOptions, thrownError) ->
-        swal('Error', 'This protocol has failed to be sent to Epic because of failed validation. Please make sure the service calendar is intact before trying again.', 'error')
-
-  $(document).on 'click', '#resend-surveys-button', ->
+  $(document).on 'click', '#pushToEpic:not(.disabled)', ->
     $(this).prop('disabled', true)
-    ssr_id = $(this).data('sub-service-request-id')
     $.ajax
-      type: 'PUT'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/resend_surveys"
+      method: 'PUT'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
       success: ->
+        $(this).prop('disabled', false)
+
+  ###############
+  # Details Tab #
+  ###############
+
+  # Approvals
+  $(document).on 'change', '.approval-check', ->
+    $check = $(this)
+    $check.prop('checked', false)
+    ConfirmSwal.fire({}).then (result) ->
+      if result.value
+        $check.prop('checked', true)
+        data = $check.serialize()
+        $check.prop('disabled', true)
+
+        $.ajax
+          method: 'put'
+          dataType: 'script'
+          url: "/dashboard/sub_service_requests/#{getSSRId()}"
+          data: data
+
+  # Milestones
+  $(document).on 'keyup', '#consultArrangedDatePicker input, #requesterContactedDatePicker input', (event) ->
+    key = event.keyCode || event.charCode
+    if !$(this).val() && [8, 46].includes(key) # Backspace or Delete keys
+      data = $(this).serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  $(document).on 'change.datetimepicker', '#consultArrangedDatePicker', (event) ->
+    val = $(this).find('input').val()
+
+    if val != consultArrangedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  $(document).on 'change.datetimepicker', '#requesterContactedDatePicker', (event) ->
+    val = $(this).find('input').val()
+
+    if val != requesterContactedDate
+      data = $(this).find('input').serialize()
+
+      $.ajax
+        method: 'put'
+        dataType: 'script'
+        url: "/dashboard/sub_service_requests/#{getSSRId()}"
+        data: data
+
+  ##############################
+  # Study Level Activities Tab #
+  ##############################
+
+  $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
+    if $('#studyLevelActivitiesForm').hasClass('.new_line_item')
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: '/dashboard/study_level_activities/new'
+        data: $('#studyLevelActivitiesForm').serialize()
+    else
+      $.ajax
+        method: 'get'
+        dataType: 'script'
+        url: $('#studyLevelActivitiesForm').prop('action') + "/edit"
+        data: $('#studyLevelActivitiesForm').serialize()
 
   # SERVICE REQUEST INFO LISTENERS END
-  # ADMIN TAB LISTENER BEGIN
-
-  $(document).on 'click', '.ssr_tab a', ->
-    $.cookie('admin-tab', $(this).attr('id'), {path: '/'})
-    ##Refresh Tabs Ajax
-    protocol_id = $(this).parents('ul').data('protocol-id')
-    ssr_id = $(this).parents('ul').data('ssr-id')
-    partial_name = $(this).data('partial-name')
-
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/refresh_tab"
-      data: {"protocol_id": protocol_id, "ssr_id": ssr_id, "partial_name": partial_name}
-
-  # ADMIN TAB LISTENER END
-  # STUDY SCHEDULE TAB BEGIN
-
-  $(document).on 'click', '.ss_tab a', ->
-    $.cookie('admin-ss-tab', $(this).attr('id'), {path: '/'})
-
-  $(document).on 'click', '.service_calendar_row', ->
-    if confirm(I18n['calendars']['confirm_row_select'])
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  $(document).on 'click', '.service_calendar_column', ->
-    if confirm(I18n['calendars']['confirm_column_select'])
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  # STUDY SCHEDULE TAB END
-  # TIMELINE LISTENERS BEGIN
-
-  $(document).on 'dp.hide', '#sub_service_request_consult_arranged_date_picker', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    consult_arranged_date = $(this).val()
-    data = 'sub_service_request' : 'consult_arranged_date' : consult_arranged_date
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  $(document).on 'dp.hide', '#sub_service_request_requester_contacted_date_picker', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    requester_contacted_date = $(this).val()
-    data = 'sub_service_request' : 'requester_contacted_date' : requester_contacted_date
-    $.ajax
-      type: 'PATCH'
-      url: "/dashboard/sub_service_requests/#{ssr_id}"
-      data: data
-
-  # TIMELINE LISTENERS END
-  # HISTORY LISTENERS BEGIN
-
-  $(document).on 'click', '.history_button', ->
-    $('#history-spinner').removeClass('hidden')
-    ssr_id = $(this).data("sub-service-request-id")
-    data = 'partial': $(this).data('table')
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/sub_service_requests/#{ssr_id}/change_history_tab"
-      data: data
-      success: ->
-        $('#history-spinner').addClass('hidden')
-
-
-  # HISTORY LISTENERS END

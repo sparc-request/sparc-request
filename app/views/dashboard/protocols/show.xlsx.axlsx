@@ -46,8 +46,9 @@ arm_totals_ref = {}
 @negotiated_reimbursement_label  = "Sponsor Unit Cost (Negotiated Reimbursement)"
 @research_cost_label             = "Research Cost (Your Cost)"
 
-statuses = PermissibleValue.get_hash('status')
-@industry_funded = @protocol.industry_funded?
+statuses          = PermissibleValue.get_hash('status')
+statuses_hidden   = @show_draft ? %w(first_draft) : %w(first_draft draft)
+@industry_funded  = @protocol.industry_funded?
 
 #########################
 ### Arm Sheet Methods ###
@@ -213,7 +214,7 @@ end
 
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.sub_service_requests.distinct.includes(:organization).each do |sub_service_request|
-      next if @statuses_hidden.include?(sub_service_request.status)
+      next if statuses_hidden.include?(sub_service_request.status)
 
       sheet.add_row ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})"] + [""] * ((@industry_funded ? 6 : 5) + (arm.visit_groups.count * 2) + (@industry_funded ? 2 : 1)), style: org_header_style
 
@@ -413,7 +414,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   @protocol.service_requests.each do |sr|
     sr.line_items.includes(:admin_rates, :sub_service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups] ] ] ]).where(services: {one_time_fee: true}).each do |li|
-      next if @statuses_hidden.include?(li.sub_service_request.status)
+      next if statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
 
       line_item_style_array  = [default, default, money]
@@ -458,7 +459,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   if @industry_funded
     total_study_cost    = @protocol.arms.any? ? "=#{total_cost_ref}+#{total_study_cost_cells.join('+')}" : "=#{total_cost_ref}"
     total_margin        = @protocol.arms.any? ? "=#{margin_to_cover_ref}+#{total_margin_cost_cells.join('+')}" : "=#{margin_to_cover_ref}"
-    breakeven_analysis  = @protocol.arms.any? ? "=ROUND(IF(#{breakeven_analysis_cells.join('+')},(#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{breakeven_analysis_cells.join('+')}),0),0)" : "=ROUND(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
+    breakeven_analysis  = @protocol.arms.any? ? "=ROUNDUP(IF(#{breakeven_analysis_cells.join('+')},(#{total_users_cost_cell}-#{margin_to_cover_ref})/(#{breakeven_analysis_cells.join('+')}),0),0)" : "=ROUNDUP(#{total_users_cost_cell}-#{margin_to_cover_ref}, 0)"
 
     sheet.add_row ["Total Study Cost (Sponsor Cost)", total_study_cost], style: [bold_default, bold_money]
     sheet.add_row ["Total Margin", total_margin], style: [bold_default, bold_money]

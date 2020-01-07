@@ -18,22 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.modal-dialog
+.modal-dialog#newSurvey{ rolw: 'document' }
   .modal-content
-    = form_for survey, url: surveyor_surveys_path(survey, type: survey.type), method: :post, remote: true, html: { class: 'form-horizontal' } do |f|
+    = form_for survey, url: surveyor_surveys_path(survey, type: survey.type), method: :post, remote: true do |f|
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
-          = I18n.t('surveyor.surveys.new_form.header', klass: survey.class.yaml_klass)
+        %h3.modal-title
+          = I18n.t('surveyor.surveys.new_form.header', klass: survey.model_name.human)
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
         .form-group
-          = f.label :access_code, t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'control-label required col-sm-3'
-          .col-sm-9
-            = f.text_field :access_code, class: 'form-control'
+          = f.label :access_code, t(:surveyor)[:surveys][:form][:survey_information][:access_code], class: 'control-label required'
+          = f.text_field :access_code, class: 'form-control'
       .modal-footer
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
         = f.submit t(:actions)[:create], class: 'btn btn-primary'

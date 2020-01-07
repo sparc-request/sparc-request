@@ -35,7 +35,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-title", with: 'Survey Me'
@@ -49,7 +49,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-description", with: 'A survey is a form for receiving information from users'
@@ -63,7 +63,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
@@ -79,10 +79,7 @@ RSpec.describe 'User edits survey fields', js: true do
         visit surveyor_surveys_path
         wait_for_javascript_to_finish
 
-        first('.bootstrap-select .survey-actions + .dropdown-toggle').click
-        within '.dropdown-menu.open' do
-          find('a', text: /Edit/).click
-        end
+        bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
         wait_for_javascript_to_finish
 
         fill_in "survey-#{@survey.id}-access_code", with: 'access-denied'
@@ -97,7 +94,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@survey.id}-version", with: '9000'
@@ -119,7 +116,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-title", with: 'Form an Opinion'
@@ -133,7 +130,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-description", with: 'Forms allow providers to get information about their services'
@@ -147,7 +144,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-access_code", with: 'access-denied'
@@ -161,7 +158,7 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-version", with: '9000'
@@ -177,15 +174,13 @@ RSpec.describe 'User edits survey fields', js: true do
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 
-      bootstrap_select '.survey-actions', /Edit/
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
       fill_in "survey-#{@form.id}-surveyable", with: "Helpful"
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.tt-suggestion', text: service.name)
-
-      first('.tt-suggestion').click
+      bootstrap_typeahead("#survey-#{@form.id}-surveyable", service.name)
       wait_for_javascript_to_finish
 
       expect(@form.reload.surveyable).to eq(service)

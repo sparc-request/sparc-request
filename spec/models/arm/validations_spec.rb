@@ -39,7 +39,7 @@ RSpec.describe Arm, type: :model do
       arm.name = '[ ] * \\ / ? :'
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Arm Name can not contain any of the following characters: [ ] * / \\ ? :")
+      expect(arm.errors.messages[:name].first).to eq(I18n.t('activerecord.errors.models.arm.attributes.name.invalid'))
     end
 
     it 'may contain numbers, letters, and other special characters' do
@@ -67,14 +67,14 @@ RSpec.describe Arm, type: :model do
       arm = build(:arm, protocol: @protocol, visit_count: 0)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Visit count must be greater than 0")
+      expect(arm.errors.full_messages[0]).to eq("Visit Count must be greater than 0")
     end
 
     it 'must not have a visit count of less than 0' do
       arm = build(:arm, protocol: @protocol, visit_count: -1)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Visit count must be greater than 0")
+      expect(arm.errors.full_messages[0]).to eq("Visit Count must be greater than 0")
     end
   end
 
@@ -89,14 +89,14 @@ RSpec.describe Arm, type: :model do
       arm = build(:arm, protocol: @protocol, subject_count: 0)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Subject count must be greater than 0")
+      expect(arm.errors.full_messages[0]).to eq("Subject Count must be greater than 0")
     end
 
     it 'must not have a subject count of less than 0' do
       arm = build(:arm, protocol: @protocol, subject_count: -1)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Subject count must be greater than 0")
+      expect(arm.errors.full_messages[0]).to eq("Subject Count must be greater than 0")
     end
   end
 end

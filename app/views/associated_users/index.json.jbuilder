@@ -1,12 +1,9 @@
 json.(@protocol_roles) do |pr|
-  json.identity_id       pr.identity_id
-  json.name              "#{pr.identity.full_name} #{(pr.identity_id == @protocol.requester_id) ? '(Requester)' : ''}"
-  json.role              PermissibleValue.get_value('user_role', pr.role)
-  json.proxy_rights      PermissibleValue.get_value('proxy_right', pr.project_rights)
-  json.epic_emr_access   pr.epic_access? ? 'Yes' : 'No'
-  json.email             pr.identity.email
-  json.phone             pr.identity.phone
-  json.protocol_id       pr.protocol_id
-  json.edit              authorized_users_edit_button(pr)
-  json.delete            authorized_users_delete_button(pr, @current_user)
+  json.name           "#{pr.identity.full_name} #{(pr.identity_id == @protocol.requester_id) ? '(Requester)' : ''}"
+  json.role           PermissibleValue.get_value('user_role', pr.role)
+  json.email          pr.identity.email
+  json.phone          format_phone(pr.identity.phone)
+  json.project_rights PermissibleValue.get_value('proxy_right', pr.project_rights)
+  json.epic_access    pr.epic_access? ? t('constants.yes_select') : t('constants.no_select')
+  json.actions        authorized_user_actions(pr, srid: @service_request.id)
 end

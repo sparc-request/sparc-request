@@ -17,25 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.section{ class: "section-#{section.id}", data: { section_id: section.id } }
-  %br
-  %br
-  .panel.panel-default
-    .panel-heading
-      .col-sm-11.no-padding
-        = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:section][:title], maxlength: 255
-      .col-sm-1.no-padding
-        %button.btn.btn-sm.btn-danger.pull-right.delete-section{ title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } }
-          %span.glyphicon.glyphicon-trash
-    .panel-body
-      .form-group
-        .col-lg-12.no-padding
-          = text_area_tag "section-#{section.id}-description", section.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:section][:description]
+%section.section.list-group-item{ id: "section-#{section.id}", data: { section_id: section.id } }
 
-      .section-questions{ class: "section-#{section.id}-questions" }
-        - section.questions.each do |question|
-          = render 'surveyor/surveys/form/survey_question', survey: survey, section: section, question: question
+  .d-flex.justify-content-between
+    %h4
+      = t(:surveyor)[:surveys][:form][:content][:section][:header]
+    = link_to icon('fas', 'trash-alt'), surveyor_section_path(section), method: :delete, remote: true, class: ' btn btn-danger delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', confirm_swal: true }
+  .form-group
+    = label_tag "section-#{section.id}-title", t(:surveyor)[:surveys][:form][:content][:section][:title], class: 'required'
+    = text_field_tag "section-#{section.id}-title", section.title, class: 'form-control'
+  .form-group
+    = label_tag "section-#{section.id}-description", t(:surveyor)[:surveys][:form][:content][:section][:description]
+    = text_area_tag "section-#{section.id}-description", section.description, class: 'form-control'
 
-      .form-group
-        %button.btn.btn-sm.btn-primary.add-question
-          = add_question_content
+  .section-questions{ class: "section-#{section.id}-questions" }
+    - section.questions.each do |question|
+      = render 'surveyor/surveys/form/survey_question', survey: survey, section: section, question: question
+
+  = link_to surveyor_questions_path(section_id: section.id), method: :post, remote: true, class: 'btn btn-success add-question' do
+    = icon('fas', 'plus mr-2')
+    = t(:surveyor)[:surveys][:form][:content][:question][:add]

@@ -1,0 +1,4 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,ide,Investigation Device Exemption Number,,,1,product_exemption_type,,,1
+,hde,Humanitarian Device Exemption Number,,,2,product_exemption_type,,,1
+,hud,Humanitarian Use Device Number,,,3,product_exemption_type,,,1

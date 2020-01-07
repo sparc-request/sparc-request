@@ -17,12 +17,12 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
-$('#modal_place').modal('show')
+$('#modalContainer').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
+$('#modalContainer').modal('show')
 $('.selectpicker').selectpicker()
 
 <% if @survey.is_a?(SystemSurvey) %>
-$('.survey-table').bootstrapTable('refresh')
+$('.system-survey-table').bootstrapTable('refresh')
 <% end %>
 
 surveyable_bloodhound = new Bloodhound(
@@ -34,7 +34,7 @@ surveyable_bloodhound = new Bloodhound(
     wildcard: '%QUERY'
 )
 surveyable_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
-$("#modal_place [id$='-surveyable']").typeahead(
+$("#modalContainer [id$='-surveyable']").typeahead(
   {
     minLength: 3
     hint: false
@@ -45,15 +45,18 @@ $("#modal_place [id$='-surveyable']").typeahead(
     source: surveyable_bloodhound,
     limit: 100,
     templates: {
-      suggestion: Handlebars.compile('<button class="text-left">
-                                        {{#if parents}}
-                                          <strong>{{{parents}}}</strong><br>
-                                        {{/if}}
-                                        <span><strong>{{label}}</strong></span>
-                                        {{#if cpt_code}}
-                                          <br><span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                        {{/if}}
-                                      </button>')
+      suggestion: (s) -> [
+          "<div class='tt-suggestion'>"
+            "<div class='w-100'>",
+              "<h5 class=''>",
+                "<span class=#{s.org_color}>#{s.klass}: </span>",
+                "<span>#{s.label}</span>",
+              "</h5>",
+            "</div>",
+            if s.breadcrumb then "<div>#{s.breadcrumb}</div>",
+            if s.cpt_code then "<div class='w-100'><span>CPT Code: #{s.cpt_code}</span></div>",
+          "</div>"
+        ].join('')
       notFound: '<div class="tt-suggestion">No Results</div>'
     }
   }
@@ -73,3 +76,5 @@ $("#modal_place [id$='-surveyable']").typeahead(
       $("#survey-<%= @survey.id %>-active").prop('disabled', false)
       $("#survey-<%= @survey.id %>-active").tooltip('disable')
 )
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

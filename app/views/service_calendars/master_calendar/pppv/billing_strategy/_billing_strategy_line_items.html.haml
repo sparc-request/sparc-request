@@ -17,69 +17,68 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - line_items_visits = []
-- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, livs|
+- line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, consolidated: consolidated)
+
+- line_items.each do |ssr, livs|
   - line_items_visits << livs
-  - locked = !ssr.can_be_edited? && !admin
+  - complete      = ssr.is_complete? && !in_admin?
+  - locked        = ssr.is_locked? && !in_admin?
+  - editable      = !(complete || locked)
+  - text_context  = complete ? 'success' : locked ? 'danger' : ''
+  - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th{ colspan: portal ? 7 : 8, class: portal ? "billing-organization-header-start-width-portal" : "billing-organization-header-start-width" }
-      = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked)
+  %tr.organization-header{ class: "alert-#{bg_context}" }
+    %th{ colspan: in_dashboard? ? 21 : 25 }
+      = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
     - visit_groups.each do
-      %th.billing-type-list.text-center.visit-width
-        .row
-          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
-            = t(:calendars)[:pppv][:header_fields][:research]
-          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:t] } }
-            = t(:calendars)[:pppv][:header_fields][:third_party]
-          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
-            = t(:calendars)[:pppv][:header_fields][:percent]
+      %th.text-center{ colspan: 3 }
+        %table.table-sm.table-borderless.w-100
+          %thead
+            %tr
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:r] } }
+                = t(:calendars)[:pppv][:header_fields][:research]
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:t] } }
+                = t(:calendars)[:pppv][:header_fields][:third_party]
+              %th.py-0{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_details][:tooltips][:effort] } }
+                = t(:calendars)[:pppv][:header_fields][:percent]
     - (VisitGroup.per_page - visit_groups.size).times do
-      %th.visit-width &nbsp;
+      %th{ colspan: 3 }
 
-    - unless portal
-      %th.billing-organization-header-end-width{ colspan: 2 }
+    - unless in_dashboard?
+      %th{ colspan: 8 }
 
   -# Line Item Visits
   - livs.each do |liv|
-    %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
-      %td.service-name{ colspan: 2 }
-        = liv.line_item.service.display_service_name
-        - unless liv.line_item.service.is_available
-          = inactive_tag
-      %td.notes.text-center.notes-width
-        = notes_button(liv)
-      %td.status.text-center.status-width
+    %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", "text-#{text_context}"] }
+      %td.service-name{ colspan: 8, title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
+        = calendar_service(liv)
+      %td.notes.editable.text-center{ colspan: 2, title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
+        = notes_button(liv, disabled: !editable, srid: service_request.try(:id), ssrid: sub_service_request.try(:id))
+      %td.status.text-center{ colspan: 3, title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
-      %td.service-rate.text-center.sm-col-width
+      %td.service-rate.text-center{ colspan: 3, title: display_service_rate(liv.line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(liv.line_item)
-      %td.text-center.sm-col-width
-        - if portal
-          %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: liv.line_item.admin_rates.present? ? t(:dashboard)[:study_level_activities][:tooltips][:modified_rate] : t(:dashboard)[:study_level_activities][:tooltips][:change_rate], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) }, class: (liv.line_item.admin_rates.present? ? 'text-danger' : '') }
-        - else
-          - if liv.line_item.admin_rates.present?
-            %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
-              = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
-          - else
-            = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+      = render 'service_calendars/displayed_cost', service_request: service_request, sub_service_request: sub_service_request, line_item: liv.line_item, merged: merged, page: page, tab: tab
 
-      - unless portal
-        %td.unit-type.text-center.unit-type-width
+      - unless in_dashboard?
+        %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
           = display_unit_type(liv)
 
-      = render 'service_calendars/master_calendar/pppv/subject_count', liv: liv, arm: arm, page: page, tab: tab, locked: locked, portal: portal
+      = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, editable: editable
 
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
-        %td.text-center.visit.billing-visit.visit-width{ class: "visit-#{v.id}" }
-          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v, page: page, admin: admin, locked: locked
+        %td.visit.billing-strategy-visit.text-center{ class: ["visit-#{v.id}", editable ? 'editable' : ''], colspan: 3 }
+          = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", service_request: service_request, sub_service_request: sub_service_request, visit: v, page: page, editable: editable
       - (Visit.per_page - visits.size).times do
-        %td.visit-width &nbsp;
+        %td{ colspan: 3 }
 
-      - unless portal
+      - unless in_dashboard?
         = render 'service_calendars/master_calendar/pppv/total_per_patient', liv: liv
         = render 'service_calendars/master_calendar/pppv/total_per_study', liv: liv
 
-- unless portal
+- unless in_dashboard?
   = render 'service_calendars/master_calendar/pppv/totals/pppv_totals', service_request: service_request, arm: arm, visit_groups: visit_groups, tab: tab, line_items_visits: line_items_visits.flatten, page: page

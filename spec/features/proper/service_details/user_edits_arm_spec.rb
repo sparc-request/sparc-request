@@ -22,36 +22,33 @@ require 'rails_helper'
 
 RSpec.describe 'User edits an arm', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
-    @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, name: "Armahgurdness")
+    org       = create(:organization, :process_ssrs)
+    pricing   = create(:pricing_setup, organization: org)
+    pppv      = create(:service, organization: org, one_time_fee: false, pricing_map_count: 1)
+
+    @protocol = create(:protocol_federally_funded, primary_pi: jug2)
+    sr        = create(:service_request_without_validations, protocol: @protocol)
+    ssr       = create(:sub_service_request, service_request: sr, organization: org)
+    @pppv_li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: pppv)
+    @arm      = create(:arm, protocol: @protocol, subject_count: 10)
+
+    visit service_details_service_request_path(srid: sr.id)
+    wait_for_javascript_to_finish
   end
 
-  context 'and clicks the edit button, fills out the form, and submits' do
-    scenario 'and sees the updated arm' do
-      visit service_details_service_request_path(srid: @sr.id)
-      wait_for_javascript_to_finish
+  it 'should update the new arm' do
+    click_link I18n.t('arms.edit')
+    wait_for_javascript_to_finish
 
-      first('.edit-arm-button').click
-      wait_for_javascript_to_finish
+    fill_in 'arm_name', with: 'Give me an Arm'
 
-      fill_in 'arm_name', with: 'Armania'
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
 
-      click_button 'Save'
-      wait_for_javascript_to_finish
-
-      # Screening date + new arm
-      expect(@protocol.arms.last.name).to eq('Armania')
-    end
+    expect(@arm.reload.name).to eq('Give me an Arm')
+    expect(page).to have_selector('.service-calendar-container .card-header h3', text: 'Give me an Arm')
   end
 end

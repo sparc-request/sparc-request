@@ -19,10 +19,30 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-$("#add-arm-form-button").removeAttr('disabled')
+$("[name^='arm']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='arm[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
 <% else %>
-$('#arms-table').bootstrapTable 'refresh', { silent: true }
-$("#modal_place").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+if $('#serviceCalendar .one-time-fees-container:visible').length
+  # Render the new arm before OTF services on Step 3
+  $('#serviceCalendar .one-time-fees-container:visible').before("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+else
+  # Render the new arm at the end of the list in the Admin Dashboard
+  $('#serviceCalendar .tab-pane.active').append("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+
+# After creating a second arm, the first arm should be deletable
+<% if @service_request.arms.length == 2 %>
+<% first_arm = @service_request.arms.first %>
+$(".arm-<%= first_arm.id %>-container .calendar-links-container").html("<%= j render 'arms/actions', service_request: @service_request, sub_service_request: @sub_service_request, arm: first_arm, tab: @tab, page: @pages[first_arm.id], pages: @pages %>")
+<% end %>
+
+adjustCalendarHeaders()
+
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

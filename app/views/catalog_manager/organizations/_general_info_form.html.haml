@@ -47,7 +47,7 @@
       .col-sm-9
         = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
 
-  - if ['Institution','Provider'].include?(organization.type) && user.catalog_overlord?
+  - if ['Institution','Provider'].include?(organization.type) && current_user.catalog_overlord?
     .form-group
       = f.label :css_class, t(:catalog_manager)[:organization_form][:css_class], class: 'col-sm-3 control-label'
       .col-sm-9

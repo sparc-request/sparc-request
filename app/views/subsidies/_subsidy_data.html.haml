@@ -17,9 +17,9 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %p
   = raw(t(:proper)[:service_subsidy][:eligible_notice])
 - service_request.sub_service_requests.each do |ssr|
   - if ssr.eligible_for_subsidy?
-    %div{ id: "subsidy-#{ssr.id}" }
-      = render 'subsidies/subsidy', sub_service_request: ssr
+    = render 'subsidies/subsidy', sub_service_request: ssr, service_request: service_request, admin: false

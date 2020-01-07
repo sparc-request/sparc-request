@@ -19,35 +19,44 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::MessagesController < Dashboard::BaseController
-  respond_to :html, :json
-
   def index
     @notification = Notification.find(params[:notification_id])
-    @read_by_user = @notification.read_by?(@user)
-    @notification.set_read_by @user unless @read_by_user
-    @messages = @notification.messages
+    recipient     = @notification.get_user_other_than(current_user)
+    @read_by_user = @notification.read_by?(current_user)
+    @notification.set_read_by current_user unless @read_by_user
+    @messages     = @notification.messages
+    @message      = Message.new(notification: @notification, sender: current_user, recipient: recipient)
+
+    respond_to :js
   end
 
   def new
     @notification = Notification.find(params[:notification_id])
-    recipient = @notification.get_user_other_than(@user)
+    recipient = @notification.get_user_other_than(current_user)
     @message = Message.new(notification_id: @notification.id, to: recipient.id,
-      from: @user.id, email: recipient.email)
+      from: current_user.id)
+
+    respond_to :js
   end
 
   def create
     @notification = Notification.find(params[:message][:notification_id])
-    if message_params[:body].present? # don't create empty messages
-      @message = Message.create(message_params)
-      @recipient = @message.recipient
-      @notification.set_read_by(@recipient, false)
+    @message      = Message.new(message_params)
+    if @message.save
+      recipient = @message.recipient
+      @notification.set_read_by(recipient, false)
+      UserMailer.notification_received(recipient, @notification.sub_service_request, current_user).deliver unless recipient.email.blank?
 
-      UserMailer.notification_received(@recipient, @notification.sub_service_request, @user).deliver unless @recipient.email.blank?
+      @messages = @notification.messages
+      @message  = Message.new(notification: @notification, sender: current_user, recipient: recipient)
+    else
+      @errors = @message.errors
     end
-    @messages = @notification.messages
+
+    respond_to :js
   end
 
-private
+  private
 
   def message_params
     params.require(:message).permit(:notification_id, :to, :from, :email, :body)

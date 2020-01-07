@@ -18,74 +18,61 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading.justify-content-between
-    %h1.panel-title
-      = t(:dashboard)[:protocol_filters][:header]
-    .filter-links-container
-      %a#save_filters_link{ href: "#", data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t(:dashboard)[:protocol_filters][:tooltips][:save] }
-        = t(:actions)[:save]
-      = " | "
-      = link_to t(:actions)[:reset],
-        reset_filterrific_url,
-        id: "reset_filters_link",
-        data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
-        title: t(:dashboard)[:protocol_filters][:tooltips][:reset]
-
-  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit', autocomplete: 'off' } do |form|
-    = form.hidden_field :sorted_by
-    .panel-body
-      #protocol_filter_form_display
-        .form-group.row.search_padding
-          .col-lg-12
-            .input-group
-              = form.fields_for :search_query do |search|
-                .input-group-btn
-                  .dd_select
-                    = search.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }
-                = search.text_field :search_text, value: filterrific.search_query.try(:search_text), class: 'form-control'
-
+%aside.w-20#protocolFilters
+  .card
+    = form_for_filterrific filterrific, url: dashboard_protocols_path, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |f|
+      .card-header.bg-primary.text-white
+        %h3.mb-0.mr-auto
+          = t('dashboard.protocol_filters.header')
+      .card-body
+        .form-group
+          .input-group
+            = f.fields_for :search_query do |ff_s|
+              .input-group-prepend.col-3.p-0#protocolSearchSelect
+                = ff_s.select :search_drop, options_for_select(ProtocolFilter.search_filters, filterrific.search_query.try(:search_drop)), { prompt:  t('dashboard.protocol_filters.search_by') }, class: "selectpicker w-100", data: { style: 'btn btn-primary' }
+              = ff_s.text_field :search_text, value: filterrific.search_query.try(:search_text), placeholder: t('dashboard.protocol_filters.search_placeholder'), class: 'form-control'
         .form-group.row
-          = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-lg-10 control-label'
-          .col-lg-2
-            = form.check_box :show_archived
-
+          = f.label :with_status, t('dashboard.protocol_filters.status'), class: 'col-5 col-form-label pr-0'
+          .col-7
+            = f.select :with_status, filterrific.select_options[:with_status], {}, class: "selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
         .form-group.row
-          = form.label :with_status, t(:dashboard)[:protocol_filters][:status], class: 'col-lg-3 control-label'
-          .col-lg-9
-            = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker status-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true }
-
-        .form-group.row
-          = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
-          .col-lg-9.drop-underneath
-            = form.select :with_organization, nil, {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true } do
+          = f.label :with_organization, t('dashboard.protocol_filters.organization'), class: 'col-5 col-form-label pr-0'
+          .col-7.drop-underneath
+            = f.select :with_organization, nil, {}, class: "selectpicker", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true } do
               = filterrific.select_options[:with_organization].each do |org_type, orgs|
                 %optgroup{ label: org_type }
                   - orgs.each do |name, id|
                     %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id), data: {content: name} }
         - if admin
-          %hr
           .form-group.row
-            = form.label :with_owner, t(:dashboard)[:protocol_filters][:owner], class: 'col-lg-3 control-label'
-            .col-lg-9
-              = form.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any], live_search: true }
-          .form-group.row.identity-protocols
-            = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.radio_button :admin_filter, "for_identity #{current_user.id}"
-
-          .form-group.row.admin-protocols
-            = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.radio_button :admin_filter, "for_admin #{current_user.id}"
+            = f.label :with_owner, t('dashboard.protocol_filters.owner'), class: 'col-5 col-form-label pr-0'
+            .col-7
+              = f.select :with_owner, filterrific.select_options[:with_owner], {}, class: "selectpicker owner-select", multiple: true, data: { none_selected_text: t('constants.prompts.any'), live_search: true }
+        .form-group.row
+          = f.label :show_archived, t('dashboard.protocol_filters.archived'), class: 'col-5 col-form-label pr-0'
+          .col-7
+            = f.check_box :show_archived, data: { toggle: 'toggle', on: t('dashboard.protocol_filters.archived'), off: t('dashboard.protocol_filters.unarchived'), style: 'btn-block' }
+        - if admin
+          %hr
+          .form-group.row.mb-0
+            = f.label "admin_filter_for_identity_#{current_user.id}", t('dashboard.protocol_filters.my_protocols'), class: 'col-6 col-form-label pr-0'
+            .col-5.d-flex.align-items-center.justify-content-center
+              = f.radio_button :admin_filter, "for_identity #{current_user.id}"
+          .form-group.row.mb-0
+            = f.label "admin_filter_for_admin_#{current_user.id}", t('dashboard.protocol_filters.my_admin_protocols'), class: 'col-6 col-form-label pr-0'
+            .col-5.d-flex.align-items-center.justify-content-center
+              = f.radio_button :admin_filter, "for_admin #{current_user.id}"
         - else
-          = form.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
+          = f.hidden_field :admin_filter, value: "for_identity #{current_user.id}"
+      .card-footer.flex-wrap
+        = f.submit t('actions.filter'), class: 'btn btn-block btn-primary mb-2'
+        .col-lg-6.col-12.pl-0.pr-1
+          %button.btn.btn-block.btn-outline-primary#saveProtocolFilters{ type: 'button', title: t('dashboard.protocol_filters.tooltips.save'), data: { toggle: 'tooltip', placement: 'top' } }<
+            = icon('fas', 'save mr-2')
+            = t('actions.save')
+        .col-lg-6.col-12.pr-0.pl-1
+          = link_to reset_filterrific_url, remote: true, title: t('dashboard.protocol_filters.tooltips.reset'), class: 'btn btn-block btn-outline-primary', data: { toggle: 'tooltip', placement: 'top' } do
+            = succeed t('actions.reset') do
+              = icon('fas', 'sync mr-2')
 
-    .panel-footer.justify-content-end
-      %button.btn.btn-default#apply-filter-button{type: "submit"}
-        = t(:actions)[:filter]
-
-
-#saved_searches
-  - if @protocol_filters.present?
-    = render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: current_user, protocol_filters: @protocol_filters }
+  = render 'dashboard/protocol_filters/saved_searches', protocol_filters: protocol_filters

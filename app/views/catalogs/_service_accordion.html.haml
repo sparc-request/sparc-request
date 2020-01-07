@@ -18,10 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-md-3.service-catalog
-  .panel.panel-primary
-    .panel-heading.text-center
-      %h4.panel-title
+.col-12.col-lg-3.pr-lg-0.mb-3.mb-lg-0#serviceCatalog
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0<
+        = icon('fas', 'book-medical mr-2')
         = t(:proper)[:catalog][:accordion][:header]
-    .panel-body
+    .card-body
       = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : []

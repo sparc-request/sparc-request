@@ -17,11 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.form-group
-  .input-group.datetimepicker.time.option
-    - if ['new', 'edit', 'preview'].include?(action_name)
-      = qr.text_field :content, class: 'form-control', maxlength: 255
-    - else
-      = text_field_tag :content, question_response.content, class: 'form-control', disabled: true
-    %span.input-group-addon
-      %span.glyphicon.glyphicon-time
+
+.input-group.datetimepicker.time{ id: "questionTimePicker#{question.id}", data: { target_input: 'nearest' } }
+  - if ['new', 'edit', 'preview'].include?(action_name)
+    = qr.text_field :content, class: 'datetimepicker-input form-control', data: { target: "#questionTimePicker#{question.id}" }
+  - else
+    = text_field_tag :content, question_response.content, class: 'form-control', disabled: true
+  .input-group-append{ data: { toggle: 'datetimepicker', target: "#questionTimePicker#{question.id}" } }
+    %span.input-group-text
+      = icon('far', 'clock')

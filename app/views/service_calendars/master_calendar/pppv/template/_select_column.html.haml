@@ -17,14 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- query               = { research_billing_qty: 0 }
-- query[:line_items]  = { sub_service_request: sub_service_request } if sub_service_request
-- checked             = visit_group.visits.joins(line_items_visit: :line_item).where(query).empty?
-- check_param         = checked ? 'uncheck' : 'check'
-- icon                = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-- klass               = checked ? 'btn-danger' : 'btn-success'
-- tooltip             = checked ? t(:calendars)[:pppv][:editable_fields][:column_select][:uncheck] : t(:calendars)[:pppv][:editable_fields][:column_select][:check]
-- url                 = toggle_calendar_column_service_calendars_path(srid: service_request.id, visit_group_id: visit_group.id, admin: admin.to_s, page: page, :"#{check_param}" => 'true')
-- url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-%span.btn.btn-xs.glyphicon.service-calendar-column{ id: "check-all-column-#{visit_group.id}", class: [icon, klass], data: { toggle: 'tooltip', animation: 'false', title: tooltip, url: url } }
+- editable_ssrs       = sub_service_request ? [sub_service_request] : service_request.sub_service_requests.select(&:can_be_edited?)
+- checked             = visit_group.visits.none?{ |v| v.research_billing_qty.zero? && editable_ssrs.include?(v.line_items_visit.line_item.sub_service_request) }
+
+- check_param         = checked ? 'uncheck'     : 'check'
+- icon                = checked ? 'times'       : 'check'
+- klass               = checked ? 'btn-danger'  : 'btn-success'
+- tooltip             = t(:calendars)[:editable_fields][:column_select][checked ? :uncheck : :check]
+- url                 = toggle_calendar_column_service_calendars_path(srid: service_request.id, visit_group_id: visit_group.id, page: page, :"#{check_param}" => 'true')
+- url                += "&ssrid=#{sub_service_request.id}" if sub_service_request
+
+%th.check-column.text-center{ colspan: 3, class: editable ? 'editable' : '', id: "toggleColumn#{visit_group.id}", title: tooltip, data: { toggle: 'tooltip' } }
+  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sq', klass, editable ? '' : 'disabled'], data: { confirm_swal: 'true', text: t('calendars.confirm_column_select') }

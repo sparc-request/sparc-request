@@ -19,107 +19,97 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::SubsidiesController < Dashboard::BaseController
-  respond_to :json, :js, :html
+  before_action :find_subsidy,              only: [:edit, :update, :destroy, :approve]
+  before_action :find_sub_service_request
+  before_action :find_protocol
+  before_action :protocol_authorizer_edit,  unless: :in_admin?
+  before_action :authorize_admin,           if: :in_admin?
 
   def new
-    @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
-    @header_text = t(:subsidies)[:new]
-    @admin = params[:admin] == 'true'
-    @path = dashboard_subsidies_path
-    @action = 'new'
+    @subsidy = @sub_service_request.build_pending_subsidy
     @subsidy.percent_subsidy = (@subsidy.default_percentage / 100.0)
+
+    respond_to :js
   end
 
   def create
-    @subsidy = PendingSubsidy.new(subsidy_params)
-    admin_param = params[:admin] == 'true'
+    @subsidy = @sub_service_request.build_pending_subsidy(subsidy_params)
 
-    if admin_param && (subsidy_params[:percent_subsidy] != 0)
+    if @admin && @subsidy.percent_subsidy == 0
       @subsidy.save(validate: false)
-      perform_subsidy_creation(admin_param)
     else
-      if @subsidy.valid?
-        @subsidy.save
-        perform_subsidy_creation
-      else
-        @errors = @subsidy.errors
-      end
+      @subsidy.save
     end
+
+    flash[:success] = t(:subsidies)[:created]
+
+    respond_to :js
   end
 
   def edit
-    @subsidy = PendingSubsidy.find(params[:id])
-    @header_text = t(:subsidies)[:edit]
-    @admin = params[:admin] == 'true'
-    @path = dashboard_subsidy_path(@subsidy)
-    @action = 'edit'
+    respond_to :js
   end
 
   def update
-    @subsidy = PendingSubsidy.find(params[:id])
-    @sub_service_request = @subsidy.sub_service_request
-    admin_param = params[:admin] == 'true'
+    @subsidy.assign_attributes(subsidy_params)
 
-    if admin_param && (subsidy_params[:percent_subsidy] != 0)
-      @subsidy.assign_attributes(subsidy_params)
+    if @admin && @subsidy.percent_subsidy != 0
       @subsidy.save(validate: false)
-      perform_subsidy_update(admin_param)
     else
-      if @subsidy.update_attributes(subsidy_params)
-        perform_subsidy_update
-      else
-        @errors = @subsidy.errors
-        @subsidy.reload
-      end
+      @subsidy.save
     end
+
+    flash[:success] = t(:subsidies)[:updated]
+
+    respond_to :js
   end
 
   def destroy
-    @subsidy = Subsidy.find(params[:id])
-    @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.destroy
-      @admin = true
-      flash[:alert] = t(:subsidies)[:destroyed]
-    end
+    authorization_error if @subsidy.status == 'Approved' && !@admin
+    @subsidy.destroy
+    flash[:alert] = t(:subsidies)[:destroyed]
+
+    respond_to :js
   end
 
   def approve
-    subsidy = PendingSubsidy.find(params[:id])
-    subsidy = subsidy.grant_approval(current_user)
-    @sub_service_request = subsidy.sub_service_request.reload
-    @admin = true
-    flash[:success] = t(:subsidies)[:approval_message]
+    authorization_error if !@admin
+    @subsidy = @subsidy.grant_approval(current_user)
+    @sub_service_request.reload
+    flash[:success] = t(:subsidies)[:approve]
+
+    respond_to :js
   end
 
   private
 
+  def find_subsidy
+    @subsidy = Subsidy.find(params[:id])
+    @subsidy = @subsidy.becomes("#{@subsidy.status}Subsidy".constantize)
+  end
+
+  def find_sub_service_request
+    @sub_service_request = @subsidy ? @subsidy.sub_service_request : SubServiceRequest.find(params[:ssrid])
+  end
+
+  def find_protocol
+    @protocol = @sub_service_request.protocol
+  end
+
+  def in_admin?
+    @admin = helpers.request_referrer_controller == 'dashboard/sub_service_requests' && helpers.request_referrer_action == 'show'
+  end
+
   def subsidy_params
-    @subsidy_params ||= begin
-      temp = params.require(:pending_subsidy).permit(:sub_service_request_id,
-        :overridden,
-        :status,
-        :percent_subsidy)
-      if temp[:percent_subsidy].present?
-        temp[:percent_subsidy] = temp[:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
-      end
-      temp
+    if params[:subsidy][:percent_subsidy]
+      params[:subsidy][:percent_subsidy] = params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
     end
-  end
 
-  def perform_subsidy_creation(admin_param=false)
-    @sub_service_request = @subsidy.sub_service_request
-    @admin = admin_param
-    flash[:success] = t(:subsidies)[:created]
-    unless @admin
-      redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
-    end
-  end
-
-  def perform_subsidy_update(admin_param=false)
-    @admin = admin_param
-    flash[:success] = t(:subsidies)[:updated]
-    unless @admin
-      redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
-    end
+    params.require(:subsidy).permit(
+      :sub_service_request_id,
+      :overridden,
+      :status,
+      :percent_subsidy
+    )
   end
 end

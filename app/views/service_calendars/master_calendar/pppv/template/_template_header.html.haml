@@ -17,48 +17,49 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %tr
-  %th.text-center.service-header.template-service-header{colspan: 4, rowspan: 2 }
-    = t(:calendars)[:pppv][:header_fields][:service]
-  %th.text-center.notes-width{ rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
-      = t(:calendars)[:pppv][:header_fields][:notes]
-  %th.text-center.status-width{ rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
-      = t(:calendars)[:pppv][:header_fields][:status]
-  %th.text-center.unit-cost-width{ colspan: 2 }
-    = t(:calendars)[:pppv][:header_fields][:unit_cost]
+  %th.service-name.text-center{ colspan: 9, rowspan: 2 }
+    = LineItem.human_attribute_name(:service)
+  %th.notes.text-center{ colspan: 2, rowspan: 2 }
+    %span{ title: t(:calendars)[:tooltips][:line_item_notes], data: { toggle: 'tooltip' } }
+      = Note.model_name.plural.capitalize
+  %th.status.text-center{ colspan: 3, rowspan: 2 }
+    %span{ title: t(:calendars)[:tooltips][:pppv_status], data: { toggle: 'tooltip' } }
+      = LineItem.human_attribute_name(:status)
+  %th.unit-cost.text-center{ colspan: 6 }
+    = LineItem.human_attribute_name(:unit_costs)
 
-  - unless portal
-    %th.text-center.sm-col-width{ rowspan: 2 }
-      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
-        = t(:calendars)[:pppv][:header_fields][:quantity_type]
+  - unless in_dashboard?
+    %th.unit-type.text-center{ colspan: 4, rowspan: 2 }
+      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip' } }
+        = raw LineItem.human_attribute_name(:clinical_quantity_type).sub(' ', '<br>')
 
-  %th.text-center.subject-count-header.xs-col-width{ rowspan: 2 }
-    %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
+  %th.subject-count.text-center{ colspan: 2, rowspan: 2 }
+    %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip' } }
       = t(:calendars)[:pppv][:header_fields][:subject_count]
-  %th.select-row-header.xs-col-width{ rowspan: 2 }
-  %th.visit-group-select.text-center{ colspan: 5 }
-    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
+  %th{ colspan: 2, rowspan: 2 }
+  %th.visit-group-select.text-center{ colspan: 15 }
+    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, merged: merged, consolidated: consolidated
 
-  - unless portal
-    %th.text-center.total-width{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:total_per_patient]
-    %th.text-center.total-width{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:total_per_study]
-
-%tr
-  %th.text-center.sm-col-width
-    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
-      = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
-  %th.text-center.sm-col-width
-    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' } }
-      = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
-  = render 'service_calendars/master_calendar/pppv/visit_groups', visit_groups: visit_groups, page: page, pages: pages, tab: tab, portal: portal, admin: admin, review: review, merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden
+  - unless in_dashboard?
+    %th.total-per-patient.text-center{ colspan: 4, rowspan: 2 }
+      = raw t(:calendars)[:pppv][:header_fields][:total_per_patient]
+    %th.total-per-study.text-center{ colspan: 4, rowspan: 2 }
+      = raw t(:calendars)[:pppv][:header_fields][:total_per_study]
 
 %tr
-  %th{ colspan: portal ? 10 : 11, class: portal ? "" : "checkbox-row-start-width" }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, admin: admin, visit_groups: visit_groups, page: page
+  %th.service-rate.text-center{ colspan: 3 }
+    %span{ title: t(:calendars)[:tooltips][:service_rate], data: { toggle: 'tooltip' } }
+      = raw LineItem.human_attribute_name(:service_rate).gsub(' ', '<br>')
+  %th.your-cost.text-center{ colspan: 3 }
+    %span{ title: t(:calendars)[:tooltips][:your_cost], data: { toggle: 'tooltip' } }
+      = raw LineItem.human_attribute_name(:displayed_cost).gsub(' ', '<br>')
+  = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, sub_service_request: sub_service_request, visit_groups: visit_groups, page: page, pages: pages, tab: tab, merged: merged
 
-  -unless portal
-    %th{ colspan: 2, class: "checkbox-row-end-width" }
+%tr.check-visits-row
+  %th{ colspan: in_dashboard? ? 24 : 28 }
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, arm: arm, visit_groups: visit_groups, page: page
+
+  -unless in_dashboard?
+    %th{ colspan: 8 }

@@ -47,10 +47,9 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
     render('dashboard/service_requests/protocol_service_request_show',
       service_request: service_request,
       protocol: service_request.protocol,
-      user: jug2,
+      current_user: jug2,
       admin: false,
-      permission_to_edit: permission_to_edit,
-      show_view_ssr_back: false)
+      permission_to_edit: permission_to_edit)
   end
 
   describe '"Modify Request" button' do

@@ -27,14 +27,13 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
     before do
       protocol        = build(:protocol_federally_funded)
       protocol.save validate: false
-      service         = create(:service_with_pricing_map)
       service_request = build(:service_request, protocol: protocol)
       service_request.save validate: false
 
 
       5.times do
-        @line_item      = create(:line_item, service: service,
-                                              service_request: service_request)
+        @line_item = create(:line_item, service: create(:service_with_pricing_map),
+                                        service_request: service_request)
       end
 
       @line_item_ids = LineItem.pluck(:id)

@@ -18,195 +18,47 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
+$ ->
+  if $('#serviceCalendar').length
+    adjustCalendarHeaders()
 
-$(document).ready ->
-  freezeHeader = (arm_container) ->
-    $(arm_container).each ->
-      $(this).find('table').addClass('scrolling-table')
-      $(this).find('table').removeClass('non-scrolling-table')
-      $(this).find('thead').addClass('scrolling-thead')
-      $(this).find('tbody').addClass('scrolling-div')
-      $(this).find('.freeze-header-button').find('.freeze-header').hide()
-      $(this).find('.freeze-header-button').find('.unfreeze-header').show()
-      $(this).find('.freeze-header-button').removeClass('freeze')
-      $(this).find('.freeze-header-button').addClass('unfreeze')
+  #########################
+  # Load Tab on Page Load #
+  #########################
 
-  toggleServiceButtons = (clicked_button) ->
-    $(clicked_button).addClass('active btn-success').removeClass('btn-custom-green')
-    $(clicked_button).siblings().first().removeClass('active btn-success').addClass('btn-custom-green')
+  if $('#serviceCalendar .nav-tabs').length
+    loadServiceCalendar()
 
-  $(document).on 'click', '.custom-tab a', ->
-    if $(this).is('#billing-strategy-tab')
-      $('.billing-info ul').removeClass('hidden')
-    else
-      $('.billing-info ul').addClass('hidden')
+  $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
+    $(this).find('.service-calendar-table thead tr th').css('top', 0)
+  ).on('shown.bs.collapse', '.service-calendar-container .collapse', ->
+    adjustCalendarHeaders()
+  )
 
-    # hide and show service toggle buttons based on current tab
-    if $(this).is('#calendar_tab') || $(this).is('#calendar-tab')
-      $('.toggle-services-btn-group').css('display', 'inline-block')
-    else
-      $('.toggle-services-btn-group').css('display', 'none')
+  ##########################
+  # Visit Checkbox / Input #
+  ##########################
 
-    # reset toggle buttons
-    toggleServiceButtons($('.toggle-services-btn-group').find('#chosen-services'))
-
-    # Hold freeze header upon tab change
-    $(document).ajaxComplete ->
-      arm_ids_with_frozen_header = []
-      frozen_headers = $('.unfreeze')
-      frozen_headers.each (index, arm) ->
-        if $(arm).data('arm-id') != undefined
-          arm_ids_with_frozen_header.push( $(arm).data('arm-id') )
-
-      $(jQuery.unique(arm_ids_with_frozen_header)).each (index, arm) ->
-        if arm == 'otf-calendar'
-          arm_container = $(".#{arm}")
-        else
-          arm_container = $(".arm-calendar-container-#{arm}")
-
-        freezeHeader(arm_container)
-
-  $(document).on 'click', '.services-toggle', (e) ->
-    if !($(this).hasClass('active'))
-      toggleServiceButtons($(this))
-      href = this.hash
-      pane = $(this)
-
-      # helps keep track of which toggle button is active when changing visit dropdown
-      if $(this).hasClass('all-services')
-        $('.visit-group-select').addClass('display_all_services')
-      else
-        $('.visit-group-select').removeClass('display_all_services')
-
+  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
+    if $(this).hasClass('editable') && event.target.tagName != 'A' && $link = $(this).find('a:not(.disabled)')
       $.ajax
-        type: 'GET'
-        url: $(this).attr("data-url")
-        dataType: 'html'
-        data:
-          display_all_services: $(this).is('#all-services')
-        success: (data) ->
-          $(href).html data
-          pane.tab('show')
+        method: $link.data('method') || 'GET'
+        dataType: 'script'
+        url: $link.attr('href')
 
-  $(document).on 'click', '.full-calendar-services-toggle', ->
-    if !($(this).hasClass('active'))
-      toggleServiceButtons($(this))
-      protocol_id = $(this).data('protocolId')
-      statuses_hidden = $(this).data('statusesHidden')
-      $.ajax
-        method: 'get'
-        url: "/service_calendars/view_full_calendar.js"
-        data:
-          portal: 'true'
-          protocol_id: protocol_id
-          statuses_hidden: statuses_hidden
-          display_all_services: $(this).is('#all-services')
+  $(document).on 'click', 'th.check-column.editable, td.check-row.editable', (event) ->
+    if event.target.tagName != 'A'
+      handleConfirm(this.querySelector('a'))
 
-  $(document).on 'click', '.page-change-arrow', ->
-    scroll = $(this).parents('.scrolling-thead').length > 0
-    unless $(this).attr('disabled')
-      $.ajax
-        type: 'GET'
-        url: $(this).data('url')
-        data:
-          scroll: scroll
-
-  $(document).on 'click', '.edit-visit-group', ->
-    $.ajax
-      type: 'GET'
-      url: "/visit_groups/#{$(this).data('id')}/edit.js"
-      data:
-        srid:                   getSRId()
-        sub_service_request_id: getSSRId()
-        tab:                    $(this).data('tab')
-        pages:                  $(this).data('pages')
-        page:                   $(this).data('page')
-        review:                 $(this).data('review')
-        portal:                 $(this).data('portal')
-        admin:                  $(this).data('admin')
-        merged:                 $(this).data('merged')
-        consolidated:           $(this).data('consolidated')
-        statuses_hidden:        $(this).data('statuses-hidden')
-
-  $(document).on 'click', '.service-calendar-row', ->
-    return false if $(this).attr('disabled')
-    if confirm(I18n['calendars']['pppv']['editable_fields']['row_select']['confirm'])
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  $(document).on 'click', '.service-calendar-column', ->
-    return false if $(this).attr('disabled')
-    if confirm(I18n['calendars']['pppv']['editable_fields']['column_select']['confirm'])
-      $.ajax
-        type: 'post'
-        url: $(this).data('url')
-
-  $(document).on 'change', '.visit-group-select .selectpicker', ->
-    scroll = $(this).parents('.scrolling-thead').length > 0
-    page = $(this).find('option:selected').attr('page')
-    display_all_services = $('.visit-group-select').hasClass('display_all_services')
-
-    $.ajax
-      type: 'GET'
-      url: $(this).data('url')
-      data:
-        page: page
-        scroll: scroll
-        display_all_services: display_all_services
-
-  $(document).on 'click', '.move-visit-button', ->
-    $.ajax
-      type: 'GET'
-      url: '/service_calendars/show_move_visits'
-      data:
-        arm_id:                 $(this).data('arm-id')
-        srid:                   getSRId()
-        sub_service_request_id: getSSRId()
-        tab:                    $(this).data('tab')
-        pages:                  $(this).data('pages')
-        page:                   $(this).data('page')
-        review:                 $(this).data('review')
-        portal:                 $(this).data('portal')
-        admin:                  $(this).data('admin')
-        merged:                 $(this).data('merged')
-        consolidated:           $(this).data('consolidated')
-        statuses_hidden:        $(this).data('statuses-hidden')
-    return false
-
-  $(document).on 'click', '.freeze-header-button', ->
-
-    arm = $(this).data('arm-id')
-
-    if arm == 'otf-calendar'
-      arm_container = $(".#{arm}")
-    else
-      arm_container = $(".arm-calendar-container-#{arm}")
-
-    if $(this).hasClass('freeze')
-      freezeHeader(arm_container)
-    else
-      $(arm_container).each ->
-        $(this).find('table').removeClass('scrolling-table')
-        $(this).find('table').addClass('non-scrolling-table')
-        $(this).find('thead').removeClass('scrolling-thead')
-        $(this).find('tbody').removeClass('scrolling-div')
-        $(this).find('.freeze-header-button').find('.unfreeze-header').hide()
-        $(this).find('.freeze-header-button').find('.freeze-header').show()
-        $(this).find('.freeze-header-button').removeClass('unfreeze')
-        $(this).find('.freeze-header-button').addClass('freeze')
-
-  $(document).on 'click', 'td.visit:has(input), td.visit:has(a)', (e) ->
-    if !(e.target.tagName in ['INPUT', 'A'])
-      if $(this).hasClass('template-visit')
-        $(this).find('input').click()
-      else
-        $(this).find('a').first().click()
+  $(document).on 'click', 'td.visit.template-visit', (event) ->
+    if event.target.tagName != 'INPUT'
+      $(this).find('input').click()
 
   $(document).on 'change', '.visit-quantity', ->
     $.ajax
-      type: 'PUT'
+      method: 'PUT'
+      dataType: 'script'
+      url: "/visits/#{$(this).data('visit-id')}"
       data:
         visit:
           quantity:               $(this).data('quantity')
@@ -214,150 +66,86 @@ $(document).ready ->
           insurance_billing_qty:  $(this).data('insurance-billing-qty')
           effort_billing_qty:     $(this).data('effort-billing-qty')
         srid:                     getSRId()
-        sub_service_request_id:   getSSRId()
-        admin:                    $(this).data('admin')
-        tab:                      $(this).data('tab')
-        page:                     $(this).data('page')
-      url: "/visits/#{$(this).data('visit-id')}"
+        ssrid:                    getSSRId()
+        tab:                      $('#tab').val()
+        page:                     $(this).parents('.service-calendar-container').data('page')
 
-  $(document).on 'click', '.edit-billing-qty', ->
+  #####################
+  # Change Visit Page #
+  #####################
+
+  $(document).on 'changed.bs.select', '.visit-group-select .selectpicker', ->
+    $.ajax
+      method: 'GET'
+      dataType: 'script'
+      url: $(this).data('url')
+      data:
+        page: $(this).find('option:selected').data('page')
+        show_unchecked: $('#show_unchecked').val()
+
+  ###########################
+  # Update Move Visit Modal #
+  ###########################
+
+  $(document).on 'change', '#visit_group_position', ->
+    $form   = $(this).parents('form')
+    action  = if $form.is('.new_visit_group') then 'new' else 'edit'
     $.ajax
       type: 'GET'
-      data:
-        srid:                   getSRId()
-        sub_service_request_id: getSSRId()
-        admin:                  $(this).data('admin')
-        page:                   $(this).data('page')
-      url: "/visits/#{$(this).data('visit-id')}/edit"
+      dataType: 'script'
+      url: "#{$form.attr('action')}/#{action}"
+      data: $form.serialize()
 
-  $(document).on 'change', '#visit_group', ->
-    arm_id = $('#arm_id').val()
-    move_visit_button = $(".arm-calendar-container-#{arm_id}").find('.move-visit-button')
-    $.ajax
-      type: 'GET'
-      url: '/service_calendars/show_move_visits'
-      data:
-        arm_id:                   arm_id
-        visit_group_id:           $(this).val()
-        srid:                     getSRId()
-        sub_service_request_id:   getSSRId()
-        tab:                      $(move_visit_button).data('tab')
-        pages:                    $(move_visit_button).data('pages')
-        page:                     $(move_visit_button).data('page')
-        review:                   $(move_visit_button).data('review')
-        portal:                   $(move_visit_button).data('portal')
-        admin:                    $(move_visit_button).data('admin')
-        merged:                   $(move_visit_button).data('merged')
-        consolidated:             $(move_visit_button).data('consolidated')
-        statuses_hidden:          $(move_visit_button).data('statuses-hidden')
+  ################################
+  # Calendar Tab Services Toggle #
+  ################################
 
-  $(document).on 'click', 'button.notes',  ->
-    id = $(this).data('notable-id')
-    type = $(this).data('notable-type')
+  $(document).on 'change', '#servicesToggle', ->
+    method = if $('#consolidated').val() == 'true' then 'view_full_calendar' else 'merged_calendar'
 
     $.ajax
       type: 'GET'
       dataType: 'script'
-      url: '/notes'
+      url: "/service_calendars/#{method}"
       data:
-        note:
-          notable_id: id
-          notable_type: type
+        srid: getSRId()
+        ssrid: getSSRId()
+        show_draft: $('#show_draft').val()
+        show_unchecked: $(this).prop('checked')
 
-(exports ? this).setup_xeditable_fields = (scroll) ->
-  # Override x-editable defaults
-  $.fn.editable.defaults.send = 'always'
-  $.fn.editable.defaults.ajaxOptions =
-    type: "PUT",
-    dataType: "json"
-  $.fn.editable.defaults.error = (response, newValue) ->
-    error_msgs = []
-    $.each JSON.parse(response.responseText), (attr, errors) ->
-      for err in errors
-        error_msgs.push(humanize_string(attr)+err)
-    return error_msgs.join("\n")
+(exports ? this).loadServiceCalendar = () ->
+  $.ajax
+    method: 'get'
+    dataType: 'script'
+    url: $('#serviceCalendar .nav-tabs .nav-link.active').attr('href')
+    success: ->
+      $('#calendarLoading').removeClass('show active')
 
-  $('.edit-your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (data) ->
-      $('#sub_service_request_header').html(data['header'])
-      $('.selectpicker').selectpicker()
+(exports ? this).adjustCalendarHeaders = () ->
+  zIndex = $('.service-calendar-container').length * 4
 
-  $('.your-cost').editable
-    display: (value) ->
-      # display field as currency, edit as quantity
-      $(this).text("$" + parseFloat(value).toFixed(2))
-    params: (params) ->
-      {
-        line_item:
-          displayed_cost: params.value
-        service_request_id: getSRId()
-      }
-    success: (response, newValue) ->
-      $('.study_level_activities').bootstrapTable('refresh', silent: true)
+  $('.service-calendar-container').each ->
+    $head   = $(this).children('.card-header')
+    $row1   = $(this).find('.service-calendar-table > thead > tr:first-child')
+    $row2   = $(this).find('.service-calendar-table > thead > tr:nth-child(2)')
+    $row3   = $(this).find('.service-calendar-table > thead > tr:nth-child(3)')
 
+    headHeight  = $head.outerHeight()
+    row1Height  = $row1.outerHeight()
+    row2Height  = $row2.outerHeight()
+    row3Height  = $row3.outerHeight()
 
-  $('.edit-subject-count').editable
-    params: (params) ->
-      {
-        line_items_visit:
-          subject_count: params.value
-        service_request_id: getSRId()
-        sub_service_request_id: getSSRId()
-      }
-    success: (data) ->
-      arm_id = $(this).data('arm-id')
+    $head.css('z-index': zIndex)
+    zIndex--
+    $row1.children('th').css({ 'top': headHeight, 'z-index': zIndex })
+    zIndex--
+    $row2.children('th').css({ 'top': headHeight + row1Height, 'z-index': zIndex })
+    zIndex--
+    $row3.children('th').css({ 'top': headHeight +  row1Height + row2Height, 'z-index': zIndex })
+    zIndex--
 
-      # Replace Per Patient / Study Totals
-      $(this).parent().siblings('.pppv-per-patient-line-item-total').replaceWith(data['total_per_patient'])
-      $(this).parent().siblings('.pppv-per-study-line-item-total').replaceWith(data['total_per_study'])
-
-      # Replace Totals
-      $(".arm-#{arm_id}.maximum-total-direct-cost-per-patient").replaceWith(data['max_total_direct'])
-      $(".arm-#{arm_id}.maximum-total-per-patient").replaceWith(data['max_total_per_patient'])
-      $(".arm-#{arm_id}.total-per-patient-per-visit-cost-per-study").replaceWith(data['total_costs'])
-
-      if data['ssr_header']
-        # Replace Admin Dashboard SSR header
-        $('#sub_service_request_header').html(data['ssr_header'])
-        $('.selectpicker').selectpicker()
-
-  $('.edit-qty').editable
-    params: (params) ->
-      {
-        line_item:
-          quantity: params.value
-        service_request_id: getSRId()
-        sub_service_request_id: getSSRId()
-      }
-    success: (data) ->
-      # Replace Study Total
-      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
-
-      # Replace Totals
-      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
-      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
-
-  $('.edit-units-per-qty').editable
-    params: (params) ->
-      {
-        line_item:
-          units_per_quantity: params.value
-        service_request_id: getSRId()
-        sub_service_request_id: getSSRId()
-      }
-    success: (data) ->
-      # Replace Study Total
-      $(this).parent().siblings('.total-per-study').replaceWith(data['total_per_study'])
-
-      # Replace Totals
-      $('.total-direct-one-time-fee-cost-per-study').replaceWith(data['max_total_direct'])
-      $('.total-one-time-fee-cost-per-study').replaceWith(data['total_costs'])
+(exports ? this).toggleServicesToggle = (toggleOn) ->
+  if toggleOn
+    $('#servicesToggle').parents('.toggle').removeClass('invisible')
+  else
+    $('#servicesToggle').parents('.toggle').addClass('invisible')

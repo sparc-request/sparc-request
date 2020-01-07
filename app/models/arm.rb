@@ -17,8 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-class Arm < ApplicationRecord
 
+class Arm < ApplicationRecord
   include RemotelyNotifiable
 
   audited
@@ -42,11 +42,20 @@ class Arm < ApplicationRecord
   after_update :update_liv_subject_counts
 
   validates :name, presence: true
-  validate :name_formatted_properly
-  validate :name_unique_to_protocol
+  validates_format_of :name, with: /\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/, if: Proc.new{ |arm| arm.name.present? }
+  validates_uniqueness_of :name, case_sensitive: false, scope: :protocol_id
 
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
+
+  def visit_groups_valid?
+    self.errors.add(:visit_groups, :invalid) unless self.visit_groups.all?(&:valid?)
+    self.errors.add(:visit_groups, :out_of_order) unless self.visit_groups.all?(&:in_order?)
+    self.errors.none?
+  end
+
+  # To add errors for moving a visit's position
+  attr_accessor :visit_group_id
 
   def name=(name)
     write_attribute(:name, name.squish)
@@ -67,19 +76,6 @@ class Arm < ApplicationRecord
         self.line_items_visits.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
       end
     end
-  end
-
-  def name_formatted_properly
-    if !name.blank? && name.match(/\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/).nil?
-      errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
-    end
-  end
-
-  def name_unique_to_protocol
-    arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)
-    arm_names = arm_names.map(&:downcase)
-
-    errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
   def per_patient_per_visit_line_items
@@ -176,12 +172,6 @@ class Arm < ApplicationRecord
     self.update_attributes(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
   end
 
-  def default_visit_days
-    self.visit_groups.each do |vg|
-      vg.update_attributes(day: vg.position * VisitGroup.admin_day_multiplier)
-    end
-  end
-
   ### audit reporting methods ###
 
   def audit_label audit
@@ -211,20 +201,17 @@ class Arm < ApplicationRecord
   end
 
   def update_liv_subject_counts
-    self.line_items_visits.each do |liv|
-      if !liv.subject_count.present? && liv.line_item.sub_service_request.can_be_edited?
-        liv.update_attributes(subject_count: self.subject_count)
-      end
+    self.line_items_visits.select{ |liv| (liv.sub_service_request.can_be_edited? && liv.subject_count.nil?) || liv.subject_count > self.subject_count }.each do |liv|
+      liv.update_attributes(subject_count: self.subject_count)
     end
   end
 
   def mass_create_visit_groups
-    last_position = self.visit_groups.any? ? self.visit_groups.last.position : 0
-    position      = last_position + 1
-    count         = self.visit_count - last_position
+    position = self.visit_groups.any? ? self.visit_groups.last.position : 0
+    count    = self.visit_count - position
 
     count.times do |index|
-      self.visit_groups.new(name: "Visit #{position}", position: position).save(validate: false)
+      self.visit_groups.new(name: "Visit #{position + 1}", position: position).save(validate: false)
       position += 1
     end
   end

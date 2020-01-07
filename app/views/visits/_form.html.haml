@@ -18,33 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.modal-dialog.modal-md
+.modal-dialog{ role: 'document' }
   .modal-content
-    = form_for visit, remote: true, url: visit_path(visit, admin: admin, tab: tab, page: page), html: { class: 'form-horizontal visit-form' } do |f|
+    = form_for visit, remote: true do |f|
+      = hidden_field_tag :srid, service_request.try(:id)
+      = hidden_field_tag :ssrid, sub_service_request.try(:id)
+      = hidden_field_tag :tab, 'billing_strategy'
+      = hidden_field_tag :page, params[:page]
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
+        %h3.modal-title
           = t(:calendars)[:pppv][:header_fields][:edit_billing_modal]
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
-        = hidden_field_tag :srid, service_request.try(:id)
-        - if sub_service_request
-          = hidden_field_tag :sub_service_request_id, sub_service_request.id
-        .form-group
-          = f.label :research_billing_qty, t(:calendars)[:pppv][:editable_fields][:research], class: 'col-sm-5 control-label required'
-          .col-sm-6
+        .form-row
+          .form-group.col-4
+            = f.label :research_billing_qty, class: 'required'
             = f.text_field :research_billing_qty, class: 'form-control'
-        .form-group
-          = f.label :insurance_billing_qty, t(:calendars)[:pppv][:editable_fields][:third_party], class: 'col-sm-5 control-label required'
-          .col-sm-6
+          .form-group.col-4
+            = f.label :insurance_billing_qty, class: 'required'
             = f.text_field :insurance_billing_qty, class: 'form-control'
-        .form-group
-          = f.label :effort_billing_qty, t(:calendars)[:pppv][:editable_fields][:percent], class: 'col-sm-5 control-label required'
-          .col-sm-6
+          .form-group.col-4
+            = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
       .modal-footer
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
-        = f.submit t(:actions)[:save], class: 'btn btn-primary'
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

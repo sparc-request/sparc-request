@@ -18,12 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%table
-  %tbody
-    - programs.select{ |prog| prog.is_available != false }.each do |p|
-      - locked = locked_ids.include?(p.id)
+- programs.select{ |prog| prog.is_available != false }.each do |p|
+  - locked = locked_ids.include?(p.id)
 
-      %tr
-        %td
-          %div.program-link.text-left{ class: [locked ? 'bg-danger text-danger locked-program' : '', @program == p ? 'clicked' : ''], data: { id: p.id } }
-            = organization_name_display(p, locked)
+  %button.program-link.org-link.btn.btn-block.btn-link.border-top.rounded-0.m-0{ class: locked ? 'locked' : 'bg-white', type: 'button', data: { id: p.id } }
+    %h6.d-flex.align-items-start.mb-0
+      = organization_name_display(p, locked, false)

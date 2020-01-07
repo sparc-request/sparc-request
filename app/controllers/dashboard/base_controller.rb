@@ -23,43 +23,12 @@ class Dashboard::BaseController < ApplicationController
   protect_from_forgery
 
   before_action :authenticate_identity!
-  before_action :set_user
   before_action :establish_breadcrumber
+
+  protected
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_dashboard'
-  end
-
-  def set_user
-    @user = current_identity
-    session['uid'] = @user.try(:id)
-  end
-
-  def clean_errors(errors)
-    errors.to_a.map { |k, v| "#{k.humanize} #{v}".rstrip + '.' }
-  end
-
-  private
-
-  def protocol_authorizer_view
-    @authorization  = ProtocolAuthorizer.new(@protocol, @user)
-
-    # Admins should be able to view too
-    unless @authorization.can_view? || @admin
-      @protocol = nil
-      render partial: 'dashboard/shared/authorization_error',
-        locals: { error: 'You are not allowed to access this protocol.' }
-    end
-  end
-
-  def protocol_authorizer_edit
-    @authorization  = ProtocolAuthorizer.new(@protocol, @user)
-
-    unless @authorization.can_edit? || @admin
-      @protocol = nil
-      render partial: 'dashboard/shared/authorization_error',
-        locals: { error: 'You are not allowed to edit this protocol.' }
-    end
   end
 
   def establish_breadcrumber
@@ -69,14 +38,31 @@ class Dashboard::BaseController < ApplicationController
   end
 
   def find_admin_for_protocol
-    if @user.super_users.where(access_empty_protocols: true).exists? && @protocol.sub_service_requests.empty?
+    if current_user.super_users.exists?(access_empty_protocols: true) && @protocol.sub_service_requests.empty?
       @admin = true
     else
-      @admin = Protocol.for_admin(@user.id).include?(@protocol)
+      @admin = Protocol.for_admin(current_user.id).include?(@protocol)
+    end
+  end
+
+  def protocol_authorizer_view
+    @authorization = ProtocolAuthorizer.new(@protocol, current_user)
+
+    # Admins should be able to view too
+    unless @authorization.can_view? || @admin
+      authorization_error('You are not allowed to access this protocol.')
+    end
+  end
+
+  def protocol_authorizer_edit
+    @authorization = ProtocolAuthorizer.new(@protocol, current_user)
+
+    unless @authorization.can_edit? || @admin
+      authorization_error('You are not allowed to edit this protocol.')
     end
   end
 
   def bypass_rmid_validations? # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    @bypass_rmid_validation = @user.catalog_overlord? || @admin
+    @bypass_rmid_validation = current_user.catalog_overlord? || @admin
   end
 end

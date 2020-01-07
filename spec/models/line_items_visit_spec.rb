@@ -33,16 +33,7 @@ RSpec.describe LineItemsVisit, type: :model do
     expect(line_items_visit.visits).to eq [ ]
   end
 
-  it 'should only belong to a PPPV LineItem' do
-    arm = create(:arm, :without_validations)
-    line_item = create(:line_item, :one_time_fee, :without_validations)
-    line_items_visit = build(:line_items_visit, line_item_id: line_item.id, arm_id: arm.id)
-
-    expect(line_items_visit).not_to be_valid
-  end
-
   describe "methods" do
-
     before :each do
       service_request.protocol.update_attributes(indirect_cost_rate: 200)
       @line_items_visit = arm1.line_items_visits.first
@@ -188,24 +179,6 @@ RSpec.describe LineItemsVisit, type: :model do
           it "should return the correct cost" do
             expect(@line_items_visit.indirect_costs_for_one_time_fee).to eq(500)
           end
-        end
-      end
-
-      describe 'any visit quantities customized' do
-        let!(:protocol)          { create(:protocol_without_validations) }
-        let!(:arm)               { create(:arm, protocol: protocol) }
-        let!(:line_items_visit1) { create(:line_items_visit, :without_validations, arm_id: arm.id) }
-        let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
-        let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
-        let!(:visit2)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
-
-        it 'should return true if any of the visits have quantities' do
-          visit2.update_attributes(research_billing_qty: 2)
-          expect(line_items_visit1.any_visit_quantities_customized?).to eq(true)
-        end
-
-        it 'should return false if the quantity is zero' do
-          expect(line_items_visit1.any_visit_quantities_customized?).to eq(false)
         end
       end
     end

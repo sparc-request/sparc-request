@@ -19,25 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitsController < ApplicationController
-  respond_to :json, :js, :html
-
   before_action :initialize_service_request, unless: :in_dashboard?
   before_action :authorize_identity,         unless: :in_dashboard?
   before_action :authorize_admin,            if: :in_dashboard?
 
   def edit
-    @visit  = Visit.find(params[:id])
-    @admin  = params[:admin]
-    @tab    = 'billing_strategy'
-    @page   = params[:page]
+    @visit = Visit.find(params[:id])
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def update
-    @admin              = params[:admin] == 'true'
     @tab                = params[:tab]
     @page               = params[:page]
     @visit              = Visit.eager_load(sub_service_request: { organization: { parent: { parent: :parent } } }, service: :pricing_maps).find(params[:id])
@@ -45,18 +37,16 @@ class VisitsController < ApplicationController
     @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
     @line_items_visit   = @line_items_visits.find(@visit.line_items_visit_id)
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
-    @visit_group        = VisitGroup.find(@visit.visit_group_id)
-    @locked             = !@visit.sub_service_request.can_be_edited? && !@admin
+    @visit_group        = @arm.visit_groups.find(@visit.visit_group_id)
+    @locked             = !@visit.sub_service_request.can_be_edited? && !@in_admin
 
     if @visit.update_attributes(visit_params)
-      @visit.sub_service_request.set_to_draft unless @admin
+      @visit.sub_service_request.set_to_draft unless @in_admin
     else
       @errors = @visit.errors
     end
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def destroy
@@ -76,17 +66,17 @@ class VisitsController < ApplicationController
       @subsidy.try(:fix_pi_contribution, percent)
       render 'dashboard/service_requests/add_per_patient_per_visit_visit'
     end
+
+    respond_to :js
   end
 
   private
 
   def visit_params
-    params.require(:visit).permit(:line_items_visit_id,
-      :visit_group_id,
-      :quantity,
-      :billing,
+    params.require(:visit).permit(
       :research_billing_qty,
       :insurance_billing_qty,
-      :effort_billing_qty)
+      :effort_billing_qty
+    )
   end
 end

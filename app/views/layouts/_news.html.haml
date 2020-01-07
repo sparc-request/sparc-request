@@ -1,0 +1,39 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.nav-item.dropdown.no-caret.news
+  = link_to 'javascript:void(0)', class: 'nav-link dropdown-toggle', id: 'newsDropdown', role: 'button', aria: { haspopup: 'true', expanded: 'false' } do
+    = icon('far', 'newspaper fa-2x')
+  .dropdown-menu.dropdown-menu-xl-right{ aria: { labelledby: 'newsDropdown' } }
+    .dropdown-header.d-flex.text-secondary
+      %h5.m-0<
+        = t('layout.navigation.news.header')
+    .dropdown-divider
+    - if @news.blank?
+      .dropdown-item.bg-white
+        = t('layout.navigation.news.none')
+    - else
+      - @news.each do |article|
+        = link_to article[:link], target: :_blank, class: 'dropdown-item text-primary' do
+          %h6.m-0<
+            = article[:title].truncate(75)
+            %br
+            %small.text-muted
+              = article[:date]

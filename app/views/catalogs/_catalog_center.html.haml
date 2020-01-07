@@ -17,21 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-md-6.catalog-center
-  #search.form-group
-    = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg"
-    %span.glyphicon.glyphicon-search.form-control-feedback.text-primary{ aria: { hidden: true } }
-  #welcome-message
+
+.col-12.col-lg-6.mb-3.mb-lg-0#catalogCenter
+  .form-group.input-group
+    %span.input-group-icon
+      = icon('fas', 'search fa-lg text-muted')
+    = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "form-control form-control-lg"
+  #welcomeMessage
     - if organization
       = render 'catalogs/description', organization: organization, service_request: service_request, locked_org_ids: locked_org_ids
     - elsif @service
       = render 'catalogs/description', organization: @program, service_request: service_request, locked_org_ids: locked_org_ids
     - else
       = render 'catalogs/welcome'
-  #calendar-blog.full
-    - if Setting.get_value('use_news_feed')
-      = render 'catalogs/news'
-    - if Setting.get_value('use_google_calendar')
-      = render 'catalogs/calendar'
-  - if Setting.get_value('use_tableau') && tableau_url = Setting.get_value('homepage_tableau_url')
-    = render 'catalogs/tableau', tableau_url: tableau_url

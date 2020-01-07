@@ -18,41 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!!
-%html
-  %head
-    %title
-      = t(:dashboard)[:header]
-    = stylesheet_link_tag "dashboard/application"
-    = javascript_include_tag 'dashboard/application'
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
-    = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-    = Gon::Base.render_data
-
-  %body#body
-    - if ENV.key?("site_name")
-      .alert.alert-danger
-        %p.text-center{:style => "letter-spacing: 8px"}
-          = ENV['site_name']
-
-    #container
-      #header
-        = render 'layouts/header_logos', location: "dashboard"
-        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render 'layouts/dashboard/dashboard_header', user: @user
-      .flash
-        = render "shared/flash"
-      #inner-content.row
-        = yield
-  %footer
-    = render 'layouts/footer'
-    = render 'shared/analytics' if Rails.env == 'production'
-    = render 'shared/ie7_modal'
-    = render 'shared/modal'
+- content_for :sub_header do
+  = render 'layouts/dashboard/dashboard_navbar'
+= render template: 'layouts/application'

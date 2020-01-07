@@ -17,12 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- checked      = liv.visits.select{ |v| v.research_billing_qty == 0 }.empty?
-- check_param  = checked ? 'uncheck' : 'check'
-- icon         = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-- klass        = checked ? 'btn-danger' : 'btn-success'
-- tooltip      = checked ? t(:calendars)[:pppv][:editable_fields][:row_select][:uncheck] : t(:calendars)[:pppv][:editable_fields][:row_select][:check]
-- url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, admin: admin, page: page, :"#{check_param}" => 'true')
-- url         += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-%span.btn.btn-xs.glyphicon.service-calendar-row{ id: "check-all-row-#{liv.id}", class: [icon, klass], data: { toggle: 'tooltip', animation: 'false', title: tooltip, url: url }, disabled: locked }
+- checked      = liv.visits.all?{ |v| v.research_billing_qty > 0 }
+- check_param  = checked ? 'uncheck'    : 'check'
+- icon         = checked ? 'times'      : 'check'
+- klass        = checked ? 'btn-danger' : 'btn-success'
+- tooltip      = t(:calendars)[:editable_fields][:row_select][checked ? :uncheck : :check]
+- url          = toggle_calendar_row_service_calendars_path(srid: service_request.id, line_items_visit_id: liv.id, page: page, :"#{check_param}" => 'true')
+- url         += "&ssrid=#{sub_service_request.id}" if sub_service_request
+
+%td.check-row.text-center{ colspan: 2, class: editable ? 'editable' : '', id: "toggleRow#{liv.id}", title: tooltip, data: { toggle: 'tooltip' } }
+  = link_to icon('fas', icon), url, method: :post, remote: true, class: ['btn btn-sq', klass, editable ? '' : 'disabled'], data: { confirm_swal: 'true', text: t('calendars.confirm_row_select') }

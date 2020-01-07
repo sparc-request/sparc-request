@@ -17,21 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors %>
-$("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>")
-<% else %>
-<% if params[:cancel] %>
-$("#modal_place").html("<%= j render 'index', notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard, notable: @notable %>")
-$('#notes-table').bootstrapTable()
-<% else %>
-$("#modal_place").modal('hide')
-$('#notes-table').bootstrapTable('refresh')
-<% end %>
 
-<% if @notes.count > 0 %>
-$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
-<% else %>
-$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
+<% if @errors %>
+$("[name^='note']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='note[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+<% end %>
+<% else %>
+$("[id=<%= @note.unique_selector %>Notes]:visible").find('span.badge').removeClass('badge-secondary').addClass('badge-warning').html("<%= @count %>")
+$("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable, disabled: false %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

@@ -1,0 +1,52 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%tr.bg-light
+  %td{ colspan: 2 }
+    %h6.mb-0
+      = t('protocols.form.research_involving.subheader', research_type: ResearchTypesInfo.human_attribute_name(:investigational_products))
+%tr.d-flex
+  %td.d-inline-block.col-3
+    %label.mb-0
+      = InvestigationalProductsInfo.human_attribute_name(:ind_number)
+  %td.d-inline-block.col-9
+    = protocol.investigational_products_info.ind_number.present? ? protocol.investigational_products_info.ind_number : t('constants.na')
+%tr.d-flex
+  %td.d-inline-block.col-3
+    %label.mb-0
+      = InvestigationalProductsInfo.human_attribute_name(:ind_on_hold)
+  %td.d-inline-block.col-9
+    - if protocol.investigational_products_info.ind_on_hold.nil?
+      = t('constants.na')
+    - else
+      = protocol.investigational_products_info.ind_on_hold? ? t('constants.yes_select') : t('constants.no_select')
+%tr.d-flex
+  %td.d-inline-block.col-3
+    %label.mb-0
+      = InvestigationalProductsInfo.human_attribute_name(:exemption_type)
+  %td.d-inline-block.col-9
+    = protocol.investigational_products_info.exemption_type.present? ? PermissibleValue.get_value('product_exemption_type', protocol.investigational_products_info.exemption_type) : t('constants.na')
+- if protocol.investigational_products_info.exemption_type.present?
+  %tr.d-flex
+    %td.d-inline-block.col-3
+      %label.mb-0
+        = "#{protocol.investigational_products_info.exemption_type.upcase} #"
+    %td.d-inline-block.col-9
+      = protocol.investigational_products_info.inv_device_number.present? ? protocol.investigational_products_info.inv_device_number : t('constants.na')

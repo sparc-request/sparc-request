@@ -17,38 +17,38 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg
+.modal-dialog.modal-lg#edit-modal{ role: 'document' }
   .modal-content
     = form_for response, url: surveyor_response_path(response), method: 'put', remote: true do |f|
       .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
+        %h3.modal-title
           = survey.title
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         #survey-response
           - unless survey.description.blank?
             .form-group
-              %p.survey-description.no-margin
+              %p.survey-description
                 = raw(survey.description)
-          .form-group.alert.alert-warning
-            = t(:errors)[:user_note]
-          .survey-sections
-            - survey.sections.each do |section|
-              .panel.panel-default.section
-                .panel-heading
-                  %h4.panel-title
+
+          .row
+            .list-group.list-group-flush.survey-sections.w-100
+              - survey.sections.eager_load(questions: :options).each do |section|
+                %section.list-group-item
+                  %h4.mb-2
                     = section.title
-                .panel-body
                   - unless section.description.blank?
                     .form-group
-                      %p.section-description.no-margin
+                      %p.section-description
                         = raw(section.description)
-                  - response.question_responses.joins(question: :section).where(questions: { sections: { id: section.id } }).each_with_index do |question_response, index|
-                    = f.fields_for :question_responses, question_response do |qr|
-                      = render 'surveyor/responses/form/response_question', qr: qr, section: section, question: question_response.question, question_response: question_response, index: index
+                  - unless section.questions.none?
+                    = render 'layouts/required_fields'
+
+                  = f.fields_for :question_responses, @response.question_responses.select{ |subqr| subqr.question.section_id == section.id } do |qr|
+                    = render 'surveyor/responses/form/response_question', section: section, question: qr.object.question, question_response: qr.object, index: qr.options[:child_index], qr: qr
       .modal-footer
         .center-block
-          %button.btn.btn-default.no-button{ type: 'button', data: { dismiss: 'modal' } }
+          %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
             = t(:actions)[:close]
           = f.submit t(:actions)[:submit], class: 'btn btn-primary'

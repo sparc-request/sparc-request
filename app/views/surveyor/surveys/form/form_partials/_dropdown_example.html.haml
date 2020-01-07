@@ -17,12 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%hr
-.col-sm-12
-  - question.options.each do |option|
-    .form-group.option{ data: {option_id: option.id } }
-      .col-lg-11.no-padding
-        = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content], maxlength: 255
-      .col-lg-1.no-padding
-        = render 'surveyor/surveys/form/form_partials/delete_option_button'
+
+- question.options.each do |option|
+  .form-group
+    .option.d-flex{ data: {option_id: option.id } }
+      = text_field_tag "option-#{option.id}-content", option.content, class: 'form-control w-75 mr-2', placeholder: t(:surveyor)[:surveys][:form][:placeholders][:option][:content]
+      = render 'surveyor/surveys/form/form_partials/delete_option_button', option: option
+
+.form-group
   = render 'surveyor/surveys/form/form_partials/add_option_button', question: question

@@ -17,49 +17,72 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %> #User already associated with Protocol
-$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-$('#authorized_user_search').val('')
-<% elsif @identity.present? %># User selected, go to 'User Form'
-$("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text, dashboard: @dashboard, service_request: @service_request, admin: @admin )) %>")
-<% else %># User not selected, go to 'Select User Form'
-$("#modal_place").html("<%= escape_javascript(render( 'associated_users/select_user_form', protocol: @protocol, header_text: @header_text )) %>")
 
-# Initialize Authorized Users Searcher
-identities_bloodhound = new Bloodhound(
-  datumTokenizer: (datum) ->
-    Bloodhound.tokenizers.whitespace datum.value
+<% if @errors %>
+$('#user_search').val('').parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$('#user_search').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+
+<% elsif @identity %>
+$("#modalContainer").html("<%= j render 'associated_users/user_form', protocol: @protocol, protocol_role: @protocol_role, identity: @identity, epic_user: @epic_user, service_request: @service_request %>")
+
+primaryPiConfirmed = false
+$('#authorizedUserForm').on 'submit', (event) ->
+  form = document.getElementById('authorizedUserForm')
+  if "<%= @protocol_role.role %>" != 'primary-pi' && $('#project_role_role').val() == 'primary-pi' && !primaryPiConfirmed
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    ConfirmSwal.fire(
+      title: I18n.t('authorized_users.form.primary_pi_change.title', protocol_type: "<%= @protocol.model_name.human %>")
+      html: I18n.t('authorized_users.form.primary_pi_change.text', new_pi_name: "<%= @protocol_role.identity.full_name %>", current_pi_name: "<%= @protocol.primary_pi.full_name %>")
+    ).then (result) ->
+      if result.value
+        primaryPiConfirmed = true
+        Rails.fire(form, 'submit')
+  else
+    primaryPiConfirmed = false
+    return true
+
+<% else %>
+$("#modalContainer").html("<%= j render 'associated_users/select_user_form', protocol: @protocol %>")
+
+identitiesBloodhound = new Bloodhound(
+  datumTokenizer: Bloodhound.tokenizers.whitespace
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: "/associated_users/search_identities?term=%QUERY&srid=#{getSRId()}",
-    wildcard: '%QUERY'
+    url: '/search/identities?term=%TERM',
+    wildcard: '%TERM'
 )
-identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
-$('#authorized_user_search').typeahead(
-  # Instantiate the Typeahead UI
+identitiesBloodhound.initialize() # Initialize the Bloodhound suggestion engine
+$('#user_search').typeahead(
   {
     minLength: 3,
     hint: false,
     highlight: true
-  },
-  {
+  }, {
     displayKey: 'label'
-    source: identities_bloodhound.ttAdapter()
-    limit: 100
+    source: identitiesBloodhound.ttAdapter()
+    limit: 100,
+    templates: {
+      notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
+      pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>"
+    }
   }
-)
-.on 'typeahead:select', (event, suggestion) ->
-  $("#loading_authorized_user_spinner").removeClass('hidden')
+).on 'typeahead:select', (event, suggestion) ->
   $.ajax
-    type: 'get'
-    url: '/associated_users/new.js'
+    method: 'get'
+    dataType: 'script'
+    url: '/associated_users/new'
     data:
-      protocol_id: $(this).data('protocol-id')
       identity_id: suggestion.value
       srid: getSRId()
-    success: ->
-      $("#loading_authorized_user_spinner").addClass('hidden')
 <% end %>
 
-$("#modal_place").modal 'show'
-$(".selectpicker").selectpicker()
+$("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

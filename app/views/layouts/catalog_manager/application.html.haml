@@ -23,31 +23,21 @@
   %head
     %title
       = t(:catalog_manager)[:header]
+    = csrf_meta_tags
     = stylesheet_link_tag    "catalog_manager/application"
     = javascript_include_tag "catalog_manager/application"
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
-    = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-
+    = favicon_link_tag asset_path('favicon.ico')
+    = render 'layouts/i18n-js'
   %body#body
     #container
       #header
-        = render 'layouts/header_logos', location: "catalog_manager"
+        = render 'layouts/catalog_manager/header_logos'
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render 'layouts/header', user: @user
-      .flash
-        = render "shared/flash"
+      = render 'layouts/catalog_manager/header', user: @user
+      - unless content_for?(:flash)
+        = render 'layouts/flash'
       #inner-content.row
         = yield
   %footer
-    = render 'layouts/footer'
-    = render 'shared/analytics' if Rails.env == 'production'
-    = render 'shared/ie7_modal'
-    = render 'shared/modal'
-
+    = render 'layouts/catalog_manager/footer'
+    = render 'layouts/modal'

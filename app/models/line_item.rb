@@ -51,17 +51,29 @@ class LineItem < ApplicationRecord
   delegate :name, to: :service
   delegate :status, to: :sub_service_request
 
-  validates :service_id, numericality: true, presence: true
-  validates :service_request_id, numericality:  true
+  validates :service_id, :service_request_id, presence: true
+  validates :service_id, uniqueness: { scope: :sub_service_request_id }
 
-  validates :quantity, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
-  validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
-  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, presence: true, numericality: true, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, if: Proc.new { |li| li.quantity && li.service && li.service.one_time_fee? && li.service.current_effective_pricing_map }
+  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
 
   after_create :build_line_items_visits_if_pppv
   before_destroy :destroy_arms_if_last_pppv_line_item, if: Proc.new { |li| !li.one_time_fee }
 
   default_scope { order('line_items.id ASC') }
+
+  scope :incomplete, -> {
+    joins(:sub_service_request).where.not(sub_service_requests: { status: Status.complete })
+  }
+
+  scope :unassigned, -> {
+    where(sub_service_request_id: nil)
+  }
+
+  def friendly_notable_type
+    Service.model_name.human
+  end
 
   ### These only pertain to OTF services
   def otf_unit_type
@@ -77,8 +89,8 @@ class LineItem < ApplicationRecord
     return true if displayed_cost.nil?
     is_float  = /\A-?[0-9]+(\.[0-9]*)?\z/ =~ displayed_cost
     num       = displayed_cost.to_f
-    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
-    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
+    errors.add(:displayed_cost, I18n.t(:validation_errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
+    errors.add(:displayed_cost, I18n.t(:validation_errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
     return is_float && num >= 0
   end
 
@@ -103,17 +115,14 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
-    pricing = Service.find(service_id).current_effective_pricing_map
-    max = pricing.units_per_qty_max
-    min = pricing.quantity_minimum
-    if quantity.nil?
-      errors.add(:quantity, "must not be blank")
-    else
-      if quantity < min
-        errors.add(:quantity, "must be greater than or equal to the minimum quantity of #{min}")
-      elsif quantity > max
-        errors.add(:quantity, "must be less than or equal to the maximum quantity of #{max}")
-      end
+    pricing           = self.service.current_effective_pricing_map
+    quantity_max      = pricing.units_per_qty_max
+    quantity_min      = pricing.quantity_minimum
+
+    if self.quantity < quantity_min
+      errors.add(:quantity, :min)
+    elsif self.quantity > quantity_max
+      errors.add(:quantity, :max)
     end
   end
 
@@ -175,8 +184,7 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_total(line_items_visit)
-    quantity_total = line_items_visit.visits.sum('research_billing_qty')
-    return quantity_total * (line_items_visit.subject_count || 0)
+    line_items_visit.sum_visits_research_billing_qty * (line_items_visit.subject_count || 0)
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -184,10 +192,7 @@ class LineItem < ApplicationRecord
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    research_billing_qty_total = line_items_visit.visits.sum(:research_billing_qty)
-
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
-    subject_total
+    line_items_visit.sum_visits_research_billing_qty * per_unit_cost(quantity_total(line_items_visit))
   end
 
   # Determine the direct costs for a visit-based service

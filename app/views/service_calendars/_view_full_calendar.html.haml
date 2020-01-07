@@ -17,46 +17,37 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.full-calendar-modal
+
+.modal-dialog.modal-2x#consolidatedRequestModal{ role: 'document'}
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center
+      %h4.modal-title
         = t(:dashboard)[:service_calendars][:consolidated_request][:header]
-        .toggle-services-btn-group.btn-group{"data-toggle" => "buttons"}
-          %label.full-calendar-services-toggle{ id: 'chosen-services', class: display_all_services ? "btn btn-custom-green" : "btn btn-success active", data: { protocol_id: service_request.protocol.id, statuses_hidden: statuses_hidden } } 
-            = t(:calendars)[:show_chosen_services]
-          %label.full-calendar-services-toggle{ id: 'all-services', class: display_all_services ? "btn btn-success active" : "btn btn-custom-green", data: { protocol_id: service_request.protocol.id, statuses_hidden: statuses_hidden } }
-            = t(:calendars)[:show_all_services]
-      .text-right
-        - if service_request.protocol.is_study?
-          %a.btn.btn-default{ href: dashboard_protocol_path(service_request.protocol,format: :pdf) }
-            = t(:dashboard)[:protocols][:service_requests][:cost_analysis_report]
-    .modal-body
-      #modal_errors
-      .row
-        .col-lg-12
-          .panel-group
-          - if has_pppv = service_request.sub_service_requests.where.not(status: statuses_hidden).joins(line_items: :service).where(services: { one_time_fee: false }).any? #Are there any non-'first_draft'-or-'draft' SSRs with PPPV services?
-            - service_request.arms.each do |arm|
-              - next if arm.visit_groups.empty? || SubServiceRequest.where(id: arm.line_items.map(&:sub_service_request_id)).where.not(status: statuses_hidden).empty?
-              = render 'service_calendars/master_calendar/pppv/pppv_calendar',
-                tab: tab, arm: arm, service_request: service_request,
-                sub_service_request: sub_service_request, page: pages[arm.id],
-                pages: pages, review: review, portal: portal, admin: admin,
-                merged: merged, consolidated: consolidated, statuses_hidden: statuses_hidden, display_all_services: display_all_services
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body#serviceCalendar
+      = hidden_field_tag :srid, service_request.id, disabled: true
+      .d-flex.justify-content-between.mb-1
+        - if service_request.protocol.is_study? && service_request.protocol.has_clinical_services?
+          = link_to dashboard_protocol_path(service_request.protocol, format: :pdf), target: :_blank, class: 'btn btn-lg btn-success' do
+            = succeed t('dashboard.protocols.service_requests.cost_analysis_report') do
+              = icon('fas', 'file-pdf mr-2')
+        = render 'service_calendars/master_calendar/pppv/services_toggle'
+      = render 'service_calendars/fields', merged: merged, consolidated: consolidated, tab: tab
 
-          - if has_otf = service_request.sub_service_requests.where.not(status: statuses_hidden).joins(line_items: :service).where(services: { one_time_fee: true }).any? #Are there any non-'first_draft'-or-'draft' SSRs with OTF services?
-            = render 'service_calendars/master_calendar/otf/otf_calendar', tab: tab,
-              service_request: service_request, sub_service_request: sub_service_request,
-              review: review, portal: portal, admin: admin, merged: merged,
-              consolidated: consolidated, statuses_hidden: statuses_hidden
+      - if has_pppv = service_request.has_per_patient_per_visit_services?
+        - service_request.arms.select{ |arm| arm.visit_groups.any? }.each do |arm|
+          = render 'service_calendars/master_calendar/pppv/pppv_calendar', tab: tab, arm: arm, service_request: service_request, sub_service_request: sub_service_request, page: pages[arm.id], pages: pages, merged: merged, consolidated: consolidated
 
-          - if has_pppv || has_otf
-            = render 'service_calendars/master_calendar/merged_grand_totals', service_request: service_request
-          - else
-            = render 'shared/alert', message: t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
-  .modal-footer
-    %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-      = t(:actions)[:close]
+      - if has_otf = service_request.has_one_time_fee_services? 
+        = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: sub_service_request, merged: merged, consolidated: consolidated
+
+      - if has_pppv || has_otf
+        = render 'service_calendars/master_calendar/merged_grand_totals', service_request: service_request
+      - else
+        %alert.alert-warning.mb-0
+          = t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
+
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

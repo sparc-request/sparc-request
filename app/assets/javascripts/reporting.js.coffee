@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on "click", "#reporting-return-to-list", (event) ->
-    event.preventDefault()
-    $('#report-container').hide()
-    $('#report-selection').show()
+
+##################################
+# Organization Select Dependency #
+##################################
 
   $(document).on "change", ".reporting-field", ->
     parent_id = "#" + $(this).attr('id')
@@ -44,11 +44,14 @@ $(document).ready ->
 
   $(document).on "submit", "#reporting-form", (event) ->
     empty = $('.required').filter ->
-      this.value == ""
+      $("##{$(this).prop('for')}").selectpicker('val') == ""
 
     if empty.length
+      $("[name^='report']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+      $('.form-error').remove()
+      empty.each ->
+        $("[name='report[#{$(this).prop('for')}]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'>#{I18n.t('constants.required_fields.required')}</small>")
       event.preventDefault()
-      alert I18n['reporting']['actions']['errors']
 
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through
@@ -84,19 +87,6 @@ rewriteoption = (myfilter, res) ->
       resultgood = true
   if resultgood
     return optionlisting
-
-window.create_date_pickers = (from, to) ->
-  $("#{from}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
-  $("#{to}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true, useCurrent: false)
-
-  $("#{from}").on "dp.change", (e) ->
-    $("#{to}").data('DateTimePicker').minDate(e.date)
-
-  $("#{to}").on "dp.change", (e) ->
-    $("#{from}").data('DateTimePicker').maxDate(e.date)
-
-window.create_single_date_pickers = ->
-  $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
 window.disable_deps = (parent_id) ->
   $("[data-dependency*=\"#{parent_id}\"]").each ->

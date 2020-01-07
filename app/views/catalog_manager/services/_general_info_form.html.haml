@@ -23,7 +23,11 @@
   .form-group
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9
-      = f.select :program, options_for_select(@programs.available.order(:order, :name).map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
+      - if service.organization.is_available?
+        = f.select :program, options_for_select(@programs.available.order(:order, :name).map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
+      - else
+        = f.select :program, options_for_select(@programs.not_available.order(:order, :name).map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
+
   .form-group
     = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
     .col-sm-9

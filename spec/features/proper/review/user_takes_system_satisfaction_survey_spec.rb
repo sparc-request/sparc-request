@@ -20,148 +20,103 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
+RSpec.describe 'User takes system satisfaction survey after reviewing their request', js: true do
   let_there_be_lane
 
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-                  create(:pricing_setup, organization: program)
-    service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol)
+    org       = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
+    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1, one_time_fee: true)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
   end
 
-  context 'but system is not using system satisfaction survey' do
+  context 'system satisfaction is turned off' do
     before :each do
       visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
-    context 'by clicking Get a Cost Estimate' do
-      scenario 'and is taken directly to Obtain Research Pricing' do
-        click_link 'Get a Cost Estimate'
-        wait_for_page(obtain_research_pricing_service_request_path)
-        expect(current_path).to eq(obtain_research_pricing_service_request_path)
+    context 'Get a Cost Estimate' do
+      it 'should not offer a survey' do
+        click_link I18n.t("proper.navigation.bottom.get_cost_estimate")
+        wait_for_javascript_to_finish
+        expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
       end
     end
 
-    context 'by clicking Submit Request' do
-      scenario 'and is taken directly to Confirmation' do
-        click_link 'Submit Request'
+    context 'Submitting Request' do
+      it 'should not offer a survey' do
+        click_link I18n.t('proper.navigation.bottom.submit')
         wait_for_javascript_to_finish
-        wait_for_page(confirmation_service_request_path)
-        expect(current_path).to eq(confirmation_service_request_path)
+        expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
       end
     end
   end
 
-  context 'and system is using system satisfaction survey' do
-    stub_config("system_satisfaction_survey", true)
-    
+  context 'system satisfaction is turned on' do
+    stub_config('system_satisfaction_survey', true)
+
     before :each do
-      @survey = create(:system_survey, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
+      @survey = create(:system_survey, :with_question, access_code: 'system-satisfaction-survey', title: 'System Satisfaction Survey', active: true)
 
       visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
     end
 
-    context 'by clicking Get a Cost Estimate' do
+    context 'Get a Cost Estimate' do
       before :each do
-        click_link 'Get a Cost Estimate'
+        click_link I18n.t("proper.navigation.bottom.get_cost_estimate")
         wait_for_javascript_to_finish
       end
 
-      scenario 'and sees the survey prompt modal' do
-        expect(page).to have_selector(".modal-title", text: "System Satisfaction Survey", visible: true)
+      it 'should offer a survey' do
+        confirm_swal
+        fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
+        click_button I18n.t('actions.submit')
+        wait_for_javascript_to_finish
+
+        expect(@survey.responses.count).to eq(1)
+        expect(jug2.responses.count).to eq(1)
+        expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
       end
 
-      context 'and closes the modal' do
-        scenario 'and is redirected to Obtain Research Pricing' do
-          find('#modal_place .no-button').click
+      context 'user declines the survey' do
+        it 'should go to Get a Cost Estimate' do
+          cancel_swal
           wait_for_javascript_to_finish
-          wait_for_page(obtain_research_pricing_service_request_path)
-          expect(current_path).to eq(obtain_research_pricing_service_request_path)
-        end
-      end
 
-      context 'and clicks yes' do
-        before :each do
-          find('#modal_place .yes-button').click
-          wait_for_javascript_to_finish
-        end
-
-        scenario 'and sees the survey' do
-          expect(page).to have_selector('#survey-response', visible: true)
-        end
-
-        context 'and fills out and submits the survey' do
-          before :each do
-            find('#modal_place input[type="submit"]').click
-            wait_for_javascript_to_finish
-          end
-
-          scenario 'and a response is recorded' do
-            expect(@survey.responses.count).to eq(1)
-          end
-
-          scenario 'and is redirected to Obtain Research Pricing' do
-            wait_for_page(obtain_research_pricing_service_request_path)
-            expect(current_path).to eq(obtain_research_pricing_service_request_path)
-          end
+          expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
         end
       end
     end
 
-    context 'By clicking Submit Request' do
+    context 'Submitting Request' do
       before :each do
-        click_link 'Submit Request'
+        click_link I18n.t('proper.navigation.bottom.submit')
         wait_for_javascript_to_finish
       end
 
-      scenario 'and sees the survey prompt modal' do
-        expect(page).to have_selector(".modal-title", text: "System Satisfaction Survey", visible: true)
+      it 'should offer a survey' do
+        confirm_swal
+        fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
+        click_button I18n.t('actions.submit')
+        wait_for_javascript_to_finish
+
+        expect(@survey.responses.count).to eq(1)
+        expect(jug2.responses.count).to eq(1)
+        # expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id)) ##TODO: This causes random failures on Travis (page seems not to load)
       end
 
-      context 'and closes the modal' do
-        scenario 'and is redirected to Confirmation ' do
-          find('#modal_place .no-button').click
+      context 'user declines the survey' do
+        it' should go to Confirmation' do
+          cancel_swal
           wait_for_javascript_to_finish
-          wait_for_page(confirmation_service_request_path)
-          expect(current_path).to eq(confirmation_service_request_path)
-        end
-      end
 
-      context 'and clicks yes' do
-        before :each do
-          find('#modal_place .yes-button').click
-          wait_for_javascript_to_finish
-        end
-
-        scenario 'and sees the survey' do
-          expect(page).to have_selector('#survey-response', visible: true)
-        end
-
-        context 'and fills out and submits the survey' do
-          before :each do
-            find('#modal_place input[type="submit"]').click
-            wait_for_javascript_to_finish
-          end
-
-          scenario 'and a response is recorded' do
-            expect(@survey.responses.count).to eq(1)
-          end
-
-          scenario 'and is redirected to Confirmation' do
-            wait_for_page(confirmation_service_request_path)
-            expect(current_path).to eq(confirmation_service_request_path)
-          end
+          expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
         end
       end
     end

@@ -1,0 +1,50 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- if current_user
+  .nav-item.dropdown.no-caret.profile
+    = link_to 'javascript:void(0)', class: 'nav-link dropdown-toggle', id: 'profileDropdown', role: 'button', aria: { haspopup: 'true', expanded: 'false' } do
+      = icon('fas', 'user-circle fa-2x')
+      - if current_user.unread_notification_count > 0
+        %span.badge.badge-pill.badge-c.badge-danger.notification-badge &nbsp;
+    .dropdown-menu.dropdown-menu-xl-right{ aria: { labelledby: 'profileDropdown' } }
+      = link_to 'javascript:void(0)', class: 'dropdown-header d-flex text-secondary' do
+        = icon('fas', 'user-circle fa-3x mr-2')
+        %h5.m-0<
+          = current_user.full_name
+          %br
+          %small
+            = "(#{current_user.email})"
+      .dropdown-divider
+      = link_to dashboard_notifications_path, id: 'userMessages', class: 'dropdown-item text-secondary' do
+        = icon('far', 'envelope mr-2')
+        = t('layout.navigation.profile.messages')
+        - if current_user.unread_notification_count > 0
+          %span.badge.badge-pill.badge-c.badge-danger.ml-1#messagesBadge
+            = format_count(current_user.unread_notification_count)
+      = link_to edit_identity_registration_path, id: 'editProfile', class: 'dropdown-item text-secondary' do
+        = icon('far', 'edit mr-2')
+        = t('layout.navigation.profile.edit')
+      = link_to destroy_identity_session_path(srid: in_dashboard? ? nil : @service_request.try(:id)), method: :delete, class: 'dropdown-item text-danger' do
+        = icon('fas', 'sign-out-alt mr-2')
+        = t('layout.navigation.sign_out')
+- else
+  .nav-item
+    = button_to t('layout.navigation.sign_in_up'), new_identity_session_path(srid: @service_request.try(:id)), class: 'nav-link btn btn-link', id: 'loginLink'

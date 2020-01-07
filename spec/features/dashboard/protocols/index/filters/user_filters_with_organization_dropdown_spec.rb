@@ -44,10 +44,10 @@ RSpec.describe "User selects organizations and filters", js: :true do
 		wait_for_javascript_to_finish
 
 		bootstrap_multiselect("#filterrific_with_organization", [good_org.name])
-		find("#apply-filter-button").click
+		click_button I18n.t('actions.filter')
 		wait_for_javascript_to_finish
 
-		expect(page).to have_selector(".protocols_index_row", count: 1)
+		expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
 		expect(page).to have_content(good_protocol.short_title)
 		expect(page).to_not have_content(bad_protocol.short_title)
 	end

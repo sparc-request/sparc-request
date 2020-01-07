@@ -18,8 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$(".tab-content [data-partial-name='<%= escape_javascript(@partial_name) %>']").html("<%= escape_javascript(render(partial: ('dashboard/' + @partial_name), locals: { tab: 'status_changes', user: @user, service_request: @service_request, sub_service_request: @sub_service_request, protocol: @protocol })) %>")
-$("li.ss_tab.active a").click()
-$(".bootstrap_table").bootstrapTable()
-$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$(".new-notification").selectpicker()
+$('#adminTabs').replaceWith("<%= j render 'dashboard/sub_service_requests/tabs', sub_service_request: @sub_service_request %>")
+$('#requestLoading').removeClass('active show')
+$("#<%= @tab.camelize(:lower) %>Tab").html('<%= j render "dashboard/sub_service_requests/#{@tab}", service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>').addClass('active show')
+
+<% if @tab == 'study_schedule' && @sub_service_request.has_per_patient_per_visit_services? %>
+loadServiceCalendar()
+<% end %>
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

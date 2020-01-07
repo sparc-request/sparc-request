@@ -17,12 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#filterrific_form").html("<%= escape_javascript(render( '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: @user, admin: @admin )) %>")
-$("#filterrific_results").html("<%= escape_javascript(render( '/dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page )) %>")
-$(".selectpicker").selectpicker()
 
-<% if @sorted_by %>
-$(".protocol-sort span").removeClass('sort-active')
-$(".protocol-sort[name='<%= @sort_name %>'] .<%= @sort_order %>").addClass('sort-active')
-$(".protocol-sort[name='<%= @sort_name %>']").data('sort-order', "<%= @new_sort_order %>")
+<% if @url %>
+window.history.pushState({}, null, "<%= @url %>")
 <% end %>
+
+$("#dashboardNav").replaceWith("<%= j render '/layouts/dashboard/dashboard_navbar' %>")
+$("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, protocol_filters: @protocol_filters, admin: @admin %>")
+$("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/table', filterrific: @filterrific %>")
+
+$('#protocolsList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

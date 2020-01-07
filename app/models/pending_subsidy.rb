@@ -20,6 +20,7 @@
 
 class PendingSubsidy < Subsidy
   audited
+
   before_save :default_values
 
   default_scope { where(status: "Pending") }
@@ -34,18 +35,17 @@ class PendingSubsidy < Subsidy
     ( total_request_cost - pi_contribution ) / 100.0
   end
 
-  def grant_approval approver
+  def grant_approval(approver)
     # Creates a new ApprovedSubsidy from this PendingSubsidy
     # Remove current approved subsidy if exists, save notes
 
     current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?
-      # log the past subsidy
-      PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
-      ApprovedSubsidy.where(sub_service_request_id: sub_service_request_id).destroy_all
+      current_approved_subsidy.overridden = true
+      current_approved_subsidy.destroy
     end
     # Create new approved subsidy from pending attributes
-    new_attributes = self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at").merge!({approved_by: approver.id})
+    new_attributes = self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden").merge!({approved_by: approver.id})
     newly_approved = ApprovedSubsidy.new(new_attributes)
     newly_approved.save(validate: false)
 

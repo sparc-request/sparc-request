@@ -17,23 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog#add-authorized-user-form
+
+.modal-dialog{ role: 'document' }
   .modal-content
     .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+      %h3.modal-title
+        = t("authorized_users.#{action_name}")
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center#modal-title
-        = header_text
     .modal-body
-      #modal_errors
-      .row
-        .col-lg-12
-          %label.col-lg-3.control-label
-            = t(:authorized_users)[:add][:select]
-          .col-lg-9
-            = text_field_tag 'authorized_user_search', "", placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control', data: { protocol_id: protocol.id }
-            = image_tag 'spinner.gif', id: 'loading_authorized_user_spinner', class: 'hidden'
+      .form-group
+        .input-group
+          .input-group-prepend
+            %span.input-group-text
+              = icon('fas', 'search')
+          = text_field_tag :user_search, "", placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control typeahead', data: { protocol_id: protocol.id }
     .modal-footer
-      .center-block
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

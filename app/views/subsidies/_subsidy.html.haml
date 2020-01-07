@@ -17,12 +17,33 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title
-      = ssr_name_display(sub_service_request)
-  .panel-body
-    .approved-subsidy
-      = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: false
-    .pending-subsidy
-      = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, admin: false
+
+- service_request ||= nil
+- collapse = defined?(collapse) ? collapse : true
+
+.card{ id: "subsidy#{sub_service_request.id}" }
+  .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: collapse ? 'collapse' : '', target: ".subsidy-#{sub_service_request.id}-collapse" } }
+    %h3.mb-0<
+      - if collapse
+        = icon('fas', 'caret-down pr-1 mr-2')
+      - if in_dashboard?
+        = t('subsidies.header')
+      - else
+        = ssr_name_display(sub_service_request)
+    - if sub_service_request.approved_subsidy
+      = notes_button(sub_service_request.approved_subsidy, ssrid: sub_service_request.id, model: sub_service_request.approved_subsidy.friendly_notable_type)
+  .collapse.show{ class: "subsidy-#{sub_service_request.id}-collapse" }
+    - if sub_service_request.approved_subsidy
+      = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: admin
+    - if sub_service_request.pending_subsidy
+      = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, service_request: service_request, admin: admin
+    - unless sub_service_request.pending_subsidy
+      - unless sub_service_request.approved_subsidy
+        .card-body
+          %p.mb-0
+            = t(:subsidies)[:approved][:none]
+      .card-footer
+        - if in_dashboard?
+          = new_subsidy_button(sub_service_request)
+        - else
+          = new_subsidy_button(sub_service_request, srid: service_request.id)

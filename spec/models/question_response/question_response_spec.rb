@@ -41,21 +41,21 @@ RSpec.describe QuestionResponse, type: :model do
     it 'should return false if invalid format' do
       q   = create(:question, question_type: 'phone')
       qr1 = build(:question_response, question: q, content: 'my phone number')
-      qr2 = build(:question_response, question: q, content: '123-456-7890')
-      qr3 = build(:question_response, question: q, content: '(123) 456-7890')
-      qr4 = build(:question_response, question: q, content: '123 456 789o') 
+      qr2 = build(:question_response, question: q, content: '123 456 789o') 
 
       expect(qr1).to_not be_valid
       expect(qr2).to_not be_valid
-      expect(qr3).to_not be_valid
-      expect(qr4).to_not be_valid
     end
     
     it 'should return true if valid format' do
       q   = create(:question, question_type: 'phone')
-      qr  = build(:question_response, question: q, content: '1234567890')
+      qr1  = build(:question_response, question: q, content: '1234567890')
+      qr2 = build(:question_response, question: q, content: '123-456-7890')
+      qr3 = build(:question_response, question: q, content: '(123) 456-7890')
 
-      expect(qr).to be_valid
+      expect(qr1).to be_valid
+      expect(qr2).to be_valid
+      expect(qr3).to be_valid
     end
   end
 

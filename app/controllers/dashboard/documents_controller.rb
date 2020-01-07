@@ -24,63 +24,77 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   before_action :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
   before_action :protocol_authorizer_view,        only: [:index]
   before_action :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
-
   before_action :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   def index
     @documents          = @protocol.documents
-    @permission_to_edit = @user.can_edit_protocol?(@protocol)
-    permission_to_view  = @user.can_view_protocol?(@protocol)
-    @admin_orgs         = @user.authorized_admin_organizations
+    @permission_to_edit = current_user.can_edit_protocol?(@protocol)
+    permission_to_view  = current_user.can_view_protocol?(@protocol)
+    @admin_orgs         = current_user.authorized_admin_organizations
+
+    respond_to :json
   end
 
   def new
-    @document     = @protocol.documents.new
-    @action       = 'new'
-    @header_text  = t(:documents)[:add][:header]
+    controller          = ::DocumentsController.new
+    controller.request  = request
+    controller.response = response
+    controller.instance_variable_set(:@protocol, @protocol)
+    controller.new
+    @document = controller.instance_variable_get(:@document)
+
+    respond_to :js
   end
 
   def create
-    @document = @protocol.documents.create(document_params)
+    controller          = ::DocumentsController.new
+    controller.request  = request
+    controller.response = response
+    controller.instance_variable_set(:@protocol, @protocol)
+    controller.instance_variable_set(:@document, @document)
+    controller.create
+    @document = controller.instance_variable_get(:@document)
+    @errors = controller.instance_variable_get(:@errors)
 
-    if @document.valid?
-      assign_organization_access
-
-      flash.now[:success] = t(:documents)[:created]
-    else
-      @errors = @document.errors
-    end
+    respond_to :js
   end
 
   def edit
-    @action       = 'edit'
-    @header_text  = t(:documents)[:edit][:header]
+    respond_to :js
   end
 
   def update
-    if @document.update_attributes(document_params)
-      assign_organization_access
+    controller          = ::DocumentsController.new
+    controller.request  = request
+    controller.response = response
+    controller.instance_variable_set(:@protocol, @protocol)
+    controller.instance_variable_set(:@document, @document)
+    controller.update
+    @document = controller.instance_variable_get(:@document)
+    @errors   = controller.instance_variable_get(:@errors)
 
-      flash.now[:success] = t(:documents)[:updated]
-    else
-      @errors = @document.errors
-    end
+    respond_to :js
   end
 
   def destroy
-    DocumentRemover.new(params[:id])
+    controller          = ::DocumentsController.new
+    controller.request  = request
+    controller.response = response
+    controller.destroy
 
-    flash.now[:success] = t(:documents)[:destroyed]
+    respond_to :js
   end
 
   private
 
   def document_params
-    params.require(:document).permit(:document,
+    params.require(:document).permit(
+      :document,
       :doc_type,
       :doc_type_other,
       :sub_service_requests,
-      :protocol_id)
+      :protocol_id
+    )
   end
 
   def find_document
@@ -90,24 +104,18 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def find_protocol
     if @document
       @protocol = @document.protocol
-    else
+    elsif params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
+    else
+      @protocol = Protocol.find(document_params[:protocol_id])
     end
   end
 
-  def assign_organization_access
-    @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
-  end
-
   def authorize_admin_access_document
-    if @user.catalog_overlord?
-      true
-    else
-      @admin_orgs = @user.authorized_admin_organizations
+    @admin_orgs = current_user.authorized_admin_organizations
 
-      unless @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this document.' }
-      end
+    unless current_user.catalog_overlord? || @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
+      authorization_error('You are not allowed to edit this document.')
     end
   end
 end

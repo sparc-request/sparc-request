@@ -34,10 +34,10 @@ RSpec.describe "User clicks a saved filter", js: :true do
     visit dashboard_protocols_path
     wait_for_javascript_to_finish
 
-    first(".saved_search_link").click
+    first(".saved-search-link").click
     wait_for_javascript_to_finish
 
-    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_selector("#protocolsTable tbody tr", count: 1)
     expect(page).to have_content(protocol_archived.short_title)
     expect(page).to_not have_content(protocol_unarchived.short_title)
   end

@@ -23,39 +23,30 @@
   %head
     %title
       = t(:proper)[:header]
-    = stylesheet_link_tag 'application'
-    = javascript_include_tag "application"
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-    = Gon::Base.render_data
-
-  %body#body
-    - if ENV.key?("site_name")
-      .alert.alert-danger
-        %p.text-center{:style => "letter-spacing: 8px"}
-          = ENV['site_name']
-
-    - if @service_request
-      = hidden_field_tag :srid, @service_request.id, disabled: true
-
-    #container
-      #header
-        = render 'layouts/header_logos', location: "proper"
-        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
-      = render 'layouts/header', user: @user, service_request: @service_request
-      .flash
-        = render 'shared/flash'
-      #inner-content.row
-        = yield
-  %footer
+    %meta{ charset: 'utf8' }
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_include_tag 'application'
+    = favicon_link_tag asset_path('favicon.ico')
+    = render 'layouts/i18n-js'
+  %body.bg-light
+    - unless Rails.env.production?
+      %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
+        = Rails.env.capitalize
+    = render 'layouts/header', location: @location || 'proper'
+    = render 'layouts/navbar'
+    = yield(:sub_header) if content_for(:sub_header)
+    .container-fluid#contentContainer
+      - if @protocol
+        = hidden_field_tag :protocol_id, @protocol.id, disabled: true
+      - if @service_request
+        = hidden_field_tag :srid, @service_request.id, disabled: true
+      - if @sub_service_request
+        = hidden_field_tag :ssrid, @sub_service_request.id, disabled: true
+      - unless content_for?(:flash)
+        = render 'layouts/flash'
+      = content_for?(:content) ? yield(:content) : yield
     = render 'layouts/footer'
-    = render 'shared/analytics' if Rails.env == 'production'
-    = render 'shared/ie7_modal'
-    = render 'shared/modal'
+    = render 'layouts/back_to_top'
+    = render 'layouts/modal'

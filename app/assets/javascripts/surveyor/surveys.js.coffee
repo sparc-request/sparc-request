@@ -18,97 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 $(document).ready ->
-  $("[data-toggle='tooltip']").tooltip()
-
-  ### Survey Table ###
-  $(document).on 'change', '.survey-actions', ->
-    $selected = $(this).find('option:selected')
-    $this = $(this)
-
-    if $selected.data('url')
-      $.ajax
-        type: $selected.data('method') || 'get'
-        dataType: 'script'
-        url: $selected.data('url')
-        success: ->
-          $this.selectpicker('val', '')
-    else if $selected.hasClass('delete-survey')
-      survey_id = $selected.data('survey-id')
-      swal {
-        title: I18n['swal']['swal_confirm']['title']
-        text: I18n['swal']['swal_confirm']['text']
-        type: 'warning'
-        showCancelButton: true
-        confirmButtonColor: '#DD6B55'
-        confirmButtonText: 'Delete'
-        closeOnConfirm: true
-      }, ->
-        $.ajax
-          type: 'delete'
-          dataType: 'script'
-          url: "/surveyor/surveys/#{survey_id}"
-          success: ->
-            $this.selectpicker('val', '')
-
-  $(document).on 'load-success.bs.table', '.survey-table, .form-table', ->
-    $('.selectpicker').selectpicker()
 
   ### Survey Modal ###
-  $(document).on 'hide.bs.modal', '#modal_place', ->
+  $(document).on 'hide.bs.modal', '#modalContainer', ->
     if $(this).children("#survey-modal").length > 0
-      $('.survey-table').bootstrapTable('refresh')
+      $('.system-survey-table').bootstrapTable('refresh')
     else if $(this).children("#form-modal").length > 0
       $('.form-table').bootstrapTable('refresh')
 
-  $(document).on 'click', '.add-section', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/sections'
-      data:
-        survey_id: $('.survey').data('survey-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.delete-section', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/sections/#{$(this).parents('.section').data('section-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.add-question', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/questions'
-      data:
-        section_id: $(this).parents('.section').data('section-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.delete-question', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/questions/#{$(this).parents('.question').data('question-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.add-option', ->
-    $.ajax
-      type: 'post'
-      url: '/surveyor/options'
-      data:
-        question_id: $(this).parents('.question').data('question-id')
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'click', '.delete-option', ->
-    $.ajax
-      type: 'delete'
-      url: "/surveyor/options/#{$(this).parents('.option').data('option-id')}"
-      success: ->
-        build_dependents_selectpicker($('.survey').data('survey-id'))
-
-  $(document).on 'change', '.select-depender, .select-question-type', ->
+  $(document).on 'change', 'select.select-depender, select.select-question-type', ->
     send_update_request($(this), $(this).val())
 
   $(document).on 'focusout', '#survey-modal input[type="text"], #form-modal input[type="text"]:not([id$="-surveyable"]), #survey-modal textarea, #form-modal textarea', ->
@@ -121,10 +39,10 @@ $(document).ready ->
     question = $(this).parents('.question')
     container = $(question).find('.dependent-dropdown-container')
 
-    if $(container).hasClass('hidden')
-      $(container).removeClass('hidden')
+    if $(container).hasClass('d-none')
+      $(container).removeClass('d-none')
     else
-      $(container).addClass('hidden')
+      $(container).addClass('d-none')
 
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
@@ -143,7 +61,7 @@ send_update_request = (obj, val) ->
       if attribute == 'question_type' || attribute == 'content'
         build_dependents_selectpicker($('.survey').data('survey-id'))
 
-build_dependents_selectpicker = (survey_id) ->
+(exports ? this).build_dependents_selectpicker = (survey_id) ->
   $.ajax
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list.js"

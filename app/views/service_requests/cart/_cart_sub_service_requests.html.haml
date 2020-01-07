@@ -1,0 +1,41 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- sub_service_requests.each do |ssr|
+  .list-group.list-group-flush
+    .list-group-item.sub-service-request{ class: [ssr.is_complete? ? 'list-group-item-success' : ssr.is_locked? ? 'list-group-item-danger' : 'list-group-item-primary', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
+      %h6.d-flex.align-items-start.mb-0<
+        = icon('fas', 'caret-down mr-2')
+        = ssr_name_display(ssr)
+    .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
+      - ssr.line_items.each do |li|
+        .list-group-item.line-item
+          .row
+            .col-10.d-flex.align-items-center.pr-0
+              %h6.mb-0{ class: ssr.is_complete? ? 'text-success' : ssr.is_locked? ? 'text-danger' : '' }<
+                = li.service.abbreviation
+                - if li.service.cpt_code.present?
+                  %strong
+                    = "(#{li.service.cpt_code})"
+                - unless li.service.is_available
+                  = inactive_tag
+            - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
+              .col-2.pl-0.text-right
+                = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }

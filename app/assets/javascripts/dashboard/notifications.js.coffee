@@ -22,7 +22,7 @@ $(document).ready ->
   $(document).on('click', '.notifications_row > td.user,td.subject,td.time', ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents('tr').data('index')
-    notification_id = $(this).parents('table.notifications_table').bootstrapTable('getData')[row_index].id
+    notification_id = $(this).parents('table.notifications-table').bootstrapTable('getData')[row_index].id
     data =
       'notification_id' : notification_id
     $.ajax
@@ -33,7 +33,7 @@ $(document).ready ->
 
   $(document).on('click', '.notifications_row > .bs-checkbox', ->
     #clicks checkbox if you click in the same td
-    $(this).children("input[type='checkbox']").trigger('click')
+    $(this).find("input[type='checkbox']").trigger('click')
   )
 
   $(document).on 'change', '.new-notification', ->
@@ -62,15 +62,8 @@ $(document).ready ->
             success: ->
               $this.selectpicker('val', '')
 
-  $(document).on 'click', 'button.message.new',  ->
-    data = notification_id: $(this).data('notification-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/messages/new'
-      data: data
-
   $(document).on 'click', 'button.mark_as_read_unread',  ->
-    selections = $('#notifications-table').bootstrapTable 'getSelections'
+    selections = $('.notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
     sub_service_request_id = $(this).data('sub-service-request-id')
     if notification_ids.length > 0
@@ -84,30 +77,9 @@ $(document).ready ->
         url: '/dashboard/notifications/mark_as_read'
         data: data
 
-  $(document).on 'click', 'button#notifications_sent',  ->
-    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#notification_tabs').data('selected', 'sent')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'sent' } }
-
-  $(document).on 'click', 'button#notifications_inbox',  ->
-    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
-    $('#notification_tabs').data('selected', 'inbox')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'inbox' } }
-
-  $(document).on 'click', '#compose-notification',  ->
-    $.ajax
-      type: 'GET'
-      url:  '/dashboard/notifications/new'
-
   window.notifications_row_style = (row, index) ->
     class_string = 'notifications_row'
     if not row.read
       #makes unread messages appear green in notifications bs table
-      class_string += ' success'
+      class_string += ' alert-success'
     return { classes: class_string }
-
-  window.refresh_notifications_table = ->
-    table = $('#notification_tabs').data('selected')
-    $('#notifications-table').bootstrapTable 'refresh', { query: { table: "#{table}" } }

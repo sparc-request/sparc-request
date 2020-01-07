@@ -17,38 +17,35 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary#authorized-users-panel
-  .panel-heading
-    %h4.panel-title
-      - if service_request.previously_submitted?
-        = link_to '#authorized-users', data: { toggle: 'collapse' } do
-          %span.caret
-          = t(:authorized_users)[:header]
-      - else
-        = t(:authorized_users)[:header]
-  .collapse#authorized-users{ class: service_request.previously_submitted? ? '' : 'in' }
-    .panel-body
-      .bootstrap-table-dropdown-overflow
-        #associated-users-custom-toolbar
-          %button.btn.btn-success#new-associated-user-button{ data: { protocol_id: protocol.id } }
-            = t(:authorized_users)[:add_user]
-        %table#associated-users-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: associated_users_path(format: :json, protocol_id: protocol.id, srid: service_request.id), striped: 'true', toolbar: '#associated-users-custom-toolbar' } }
-          %thead.primary-header
-            %tr
-              %th.col-sm-2{ data: { field: 'name', align: 'left', sortable: 'true' } }
-                = t(:authorized_users)[:table_fields][:name]
-              %th.col-sm-2{ data: { field: 'role', align: 'left', sortable: 'true' } }
-                = t(:authorized_users)[:table_fields][:role]
-              %th.col-sm-2.break-all{ data: { field: 'email', align: 'left', sortable: 'false' } }
-                = t(:authorized_users)[:table_fields][:email]
-              %th.col-sm-2.break-all{ data: { field: 'phone', align: 'left', sortable: 'false' } }
-                = t(:authorized_users)[:table_fields][:phone]
-              %th.col-sm-2{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
-                = t(:authorized_users)[:table_fields][:rights]
-              - if Setting.get_value('use_epic') && protocol.selected_for_epic?
-                %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
-                  = raw(t(:authorized_users)[:table_fields][:epic_emr_access])
-              %th.edit-delete-col{ data: { field: 'edit', align: 'center', sortable: 'false' } }
-                = t(:actions)[:edit]
-              %th.edit-delete-col{ data: { field: 'delete', align: 'center', sortable: 'false' } }
-                = t(:actions)[:delete]
+
+.card.w-100#authorizedUsersCard
+  .card-header.bg-primary.text-white{ class: action_name == 'protocol' && service_request.previously_submitted? ? 'collapsed' : 'show', data: { toggle: 'collapse', target: '#authorizedUsers' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('authorized_users.header')
+  .collapse#authorizedUsers{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
+    #associatedUsersTableToolbar
+      - if in_dashboard?
+        = new_authorized_user_button(protocol_id: protocol.id, permission: permission_to_edit || admin)
+      - elsif !in_review?
+        = new_authorized_user_button(srid: service_request.id)
+    - url = in_dashboard? ? dashboard_associated_users_path(format: :json, protocol_id: protocol.id) : associated_users_path(format: :json, srid: service_request.id)
+    %table#authorizedUsersTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: '#associatedUsersTableToolbar' } }
+      %thead.bg-light
+        %tr
+          %th{ data: { field: 'name', sortable: 'true' } }
+            = Identity.human_attribute_name(:name)
+          %th{ data: { field: 'role', sortable: 'true' } }
+            = ProjectRole.human_attribute_name(:role)
+          %th{ data: { field: 'email', sortable: 'true' } }
+            = Identity.human_attribute_name(:email)
+          %th{ data: { field: 'phone', sortable: 'true' } }
+            = Identity.human_attribute_name(:phone)
+          %th{ data: { field: 'project_rights', sortable: 'true' } }
+            = ProjectRole.human_attribute_name(:project_rights)
+          - if Setting.get_value('use_epic') && protocol.selected_for_epic?
+            %th{ data: { field: 'epic_access', align: 'center', sortable: 'true' } }
+              = ProjectRole.human_attribute_name(:epic_access)
+          - unless in_review?
+            %th{ data: { field: 'actions', align: 'center' } }
+              = t('actions.actions')

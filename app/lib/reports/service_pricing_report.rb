@@ -184,7 +184,7 @@ class ServicePricingReport < ReportingModule
 
     service_organizations = Organization.where(id: service_organization_ids)
 
-    date = args[:services_pricing_date] ? Date.parse(args[:services_pricing_date]) : Date.today
+    date = args[:services_pricing_date] ? Date.strptime(args[:services_pricing_date], "%m/%d/%Y") : Date.today
     query = "`pricing_maps`.`display_date` <= '#{date}' and `services`.`organization_id` IN (#{service_organization_ids.join(',')})"
     ## commented out to remove tags, but will likely be added in later ##
     return query # + (args[:tags] ? " and tags.name IN (\"#{args[:tags].join('\",\"')}\")" : "")

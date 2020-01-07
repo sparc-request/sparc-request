@@ -17,14 +17,30 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- sr_table ||= false
-%div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' }, title: t("dashboard.notifications.tooltips.#{sr_table ? "table_button" : "main_button"}") }
-  %select.selectpicker.new-notification{ data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
-    %option{ label: ' ', value: '' }
-      = t(:dashboard)[:notifications][:table][:send]
-    %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
-      - sub_service_request.protocol.project_roles.each do |pr|
-        %option{ value: pr.identity_id, data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } }
-    %optgroup{ label: t(:dashboard)[:notifications][:table][:service_providers]}
-      - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
-        %option{ value: sp.identity_id, data: { identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id, content: display_service_provider(sp, sub_service_request.owner_id) } }
+
+- tooltip = controller_name == 'sub_service_requests' ? 'table_button' : 'main_button'
+
+.tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', boundary: 'window' } }
+  .dropdown.no-caret
+    %button.btn.btn-success.dropdown-toggle.send-notification{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
+      = icon('far', 'envelope', class: in_admin? ? 'mr-2' : '')
+      - if in_admin?
+        = t('dashboard.notifications.compose')
+    .dropdown-menu.dropdown-menu-right{ aria: { labelledby: "sendNotificationRequest#{sub_service_request.id}" } }
+      .dropdown-header
+        %h5.mb-0
+          = t('dashboard.notifications.authorized_users.header')
+      .dropdown-divider
+      - sub_service_request.protocol.project_roles.includes(:identity).order("identities.first_name", "identities.last_name").each do |pr|
+        = link_to new_dashboard_notification_path(identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: ['dropdown-item', pr.identity_id == current_user.id ? 'disabled' : ''] do
+          = icon('far mr-2', 'envelope')
+          = display_authorized_user(pr, sub_service_request)
+      .dropdown-divider
+      .dropdown-header
+        %h5.mb-0
+          = t('dashboard.notifications.service_providers.header')
+      .dropdown-divider
+      - sub_service_request.organization.service_providers.includes(:identity).order("identities.first_name", "identities.last_name").each do |sp|
+        = link_to new_dashboard_notification_path(identity_id: sp.identity_id, sub_service_request_id: sub_service_request.id), remote: true, class: ['dropdown-item', sp.identity_id == current_user.id ? 'disabled' : ''] do
+          = icon('far mr-2', 'envelope')
+          = display_service_provider(sp, sub_service_request)

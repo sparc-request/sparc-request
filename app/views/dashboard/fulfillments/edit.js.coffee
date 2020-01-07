@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/study_level_activities/fulfillment_form', locals: { fulfillment: @fulfillment, header_text: @header_text })) %>");
-$("#modal_place").modal 'show'
-$("#date_fulfilled_field").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$(".selectpicker").selectpicker()
+$("#modalContainer").html("<%= j render 'dashboard/fulfillments/form', fulfillment: @fulfillment, sub_service_request: @sub_service_request %>")
+$("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

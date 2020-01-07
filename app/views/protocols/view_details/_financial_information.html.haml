@@ -17,43 +17,79 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary
-  .panel-heading
-    %h5
-      %strong
-        = t(:protocols)[:studies][:financial_information][:header]
-  %table.table
-    %tbody
-      %tr.row
-        %td
-          %label.col-lg-4
-            = t(:protocols)[:studies][:financial_information][:udak_project_number]
-          .col-lg-8
-            = protocol.udak_project_number
-      - if Setting.get_value("use_indirect_cost")
-        %tr.row
-          %td
-            %label.col-lg-4
-              = t(:protocols)[:studies][:financial_information][:rate]
-            .col-lg-8
-              = protocol.indirect_cost_rate
-      %tr.row
-        %td
-          %label.col-lg-4
-            = t(:protocols)[:studies][:financial_information][:rfa]
-          .col-lg-8
-            = protocol.funding_rfa
 
-      /start date
-      %tr.row
-        %td
-          - if protocol.funding_status == "funded" 
-            %label.col-lg-4
-              = t(:protocols)[:studies][:financial_information][:start_date]
-            .col-lg-8
-              = format_date(protocol.funding_start_date)
+%section.pt-3#financialInformation
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('protocols.form.financial_information.header')
+    %table.table.mb-0
+      %tbody
+        %tr
+          %td.w-25
+            = label :protocol, :funding_status, class: 'mb-0', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
+          %td.w-75
+            = PermissibleValue.get_value('funding_status', protocol.funding_status)
+        %tr
+          %td.w-25
+            = label :protocol, protocol.funded? ? :funding_source : :potential_funding_source, class: 'mb-0', title: protocol.funded? ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' }
+          %td.w-75
+            = protocol.display_funding_source_value
+        - if protocol.is_a?(Study)
+          - if protocol.funded?
+            %tr
+              %td.w-25
+                = label :protocol, :funding_start_date, class: 'mb-0'
+              %td.w-75
+                = protocol.funding_start_date.present? ? format_date(protocol.funding_start_date) : t('constants.na')
           - else
-            %label.col-lg-4
-              = t(:protocols)[:studies][:financial_information][:potential_start_date]
-            .col-lg-8
-              = format_date(protocol.potential_funding_start_date)
+            %tr
+              %td.w-25
+                = label :protocol, :potential_funding_start_date, class: 'mb-0'
+              %td.w-75
+                = protocol.potential_funding_start_date.present? ? format_date(protocol.potential_funding_start_date) : t('constants.na')
+          %tr
+            %td.w-25
+              = label :protocol, :sponsor_name, class: 'mb-0'
+            %td.w-75
+              = protocol.sponsor_name
+          %tr
+            %td.w-25
+              = label :protocol, :udak_project_number, class: 'mb-0'
+            %td.w-75
+              = protocol.udak_project_number.present? ? protocol.udak_project_number : t('constants.na')
+          - if protocol.pending_funding?
+            %tr
+              %td.w-25
+                = label :protocol, :funding_rfa, class: 'mb-0'
+              %td.w-75
+                = protocol.funding_rfa.present? ? protocol.funding_rfa : t('constants.na')
+        - if Setting.get_value('use_indirect_cost')
+          %tr
+            %td.w-25
+              = label :protocol, :indirect_cost_rate, class: 'mb-0'
+            %td.w-75
+              = protocol.indirect_cost_rate.present? ? protocol.indirect_cost_rate : t('constants.na')
+        - if protocol.is_a?(Study)
+          %tr.bg-light
+            %td{ colspan: 2 }
+              %h6.mb-0
+                = t('protocols.form.financial_information.guarantor_header')
+          %tr
+            %td.w-25
+              = label :protocol, :guarantor_contact, class: 'mb-0'
+            %td.w-75
+              = protocol.guarantor_contact.present? ? protocol.guarantor_contact : t('constants.na')
+          %tr
+            %td.w-25
+              = label :protocol, :guarantor_email, class: 'mb-0'
+            %td.w-75
+              = protocol.guarantor_email.present? ? protocol.guarantor_email : t('constants.na')
+          %tr
+            %td.w-25
+              = label :protocol, :guarantor_phone, class: 'mb-0'
+            %td.w-75
+              = protocol.guarantor_phone.present? ? format_phone(protocol.guarantor_phone) : t('constants.na')
+
+        - if protocol.federally_funded?
+          = render 'protocols/view_details/federal_grant_information', protocol: protocol

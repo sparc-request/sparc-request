@@ -1,9 +1,6 @@
 module CostAnalysis
   class StudyInformation
   
-    ## display_funding_source
-    include Dashboard::ProjectsHelper
-
     HEADERS = {
       :protocol_number => "CRU Protocol #",
       :enrollment_period => "Enrollment Period",
@@ -20,7 +17,7 @@ module CostAnalysis
       @enrollment_period = "#{protocol.start_date.strftime("%m/%d/%Y")} - #{protocol.end_date.strftime("%m/%d/%Y")}"
       @short_title = protocol.short_title
       @study_title = protocol.title
-      @funding_source = "#{protocol.sponsor_name} (#{display_funding_source(protocol)})"
+      @funding_source = "#{protocol.sponsor_name} (#{protocol.display_funding_source_value})"
       @target_enrollment = ""
       
       @contacts = protocol.project_roles.map do |au|

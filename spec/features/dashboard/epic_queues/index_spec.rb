@@ -57,8 +57,8 @@ RSpec.describe 'Notifications index', js: true do
     context 'panel title' do
       it 'should display a title of current and past' do
         visit_epic_queues_index_page
-        expect(page).to have_css('li.active', text: 'Current')
-        expect(page).to have_css('li', text: 'Past')
+        expect(page).to have_css('.nav-link.active', text: 'Current')
+        expect(page).to have_css('.nav-link', text: 'Past')
       end
     end
     context "Queued protocol header" do
@@ -92,6 +92,7 @@ RSpec.describe 'Notifications index', js: true do
         protocol.update_attribute(:last_epic_push_time, Date.current)
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
+        wait_for_javascript_to_finish
         wait_for_javascript_to_finish
         date = protocol.last_epic_push_time.strftime("%m/%d/%Y %I:%M:%S %p")
 
@@ -138,7 +139,6 @@ RSpec.describe 'Notifications index', js: true do
 
   it "should display PI name" do
     page = visit_epic_queues_index_page
-    wait_for_javascript_to_finish
 
     click_link 'Past'
     protocol.principal_investigators.map(&:full_name).each do |pi|
@@ -160,7 +160,6 @@ RSpec.describe 'Notifications index', js: true do
 
   it 'should display identity associated to eqr' do
     page = visit_epic_queues_index_page
-    wait_for_javascript_to_finish
 
     click_link 'Past'
 

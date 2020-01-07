@@ -17,14 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.form-group
-  - question.options.each do |option|
-    .col-lg-2.no-padding
-      - if ['new', 'edit', 'preview'].include?(action_name)
-        .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
-          = qr.radio_button :content, option.content.downcase
+
+- question.options.each do |option|
+  .form-check.option.mb-1{ data: { question_id: question.id, option_id: option.id } }
+    - if ['new', 'edit', 'preview'].include?(action_name)
+      = qr.radio_button :content, option.content.downcase, class: 'form-check-input mt-1'
+      .form-check-label
         = option.content
-      - else
-        .col-lg-6.no-padding.text-center.option{ data: { question_id: question.id, option_id: option.id } }
-          = radio_button_tag "question_response_#{question_response.id}", option.content.downcase, question_response.content.try(:downcase) == option.content.downcase, disabled: true, id: "question_response_#{question_response.id}"
+    - else
+      = radio_button_tag "question_response_#{question_response.id}", option.content.downcase, question_response.content.try(:downcase) == option.content.downcase, disabled: true, id: "question_response_#{question_response.id}", class: 'form-check-input'
+      .form-check-label
         = option.content

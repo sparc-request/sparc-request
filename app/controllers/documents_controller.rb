@@ -19,27 +19,27 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class DocumentsController < ApplicationController
-  respond_to :html, :js, :json
-
   before_action :initialize_service_request
   before_action :authorize_identity
   before_action :find_document,             only: [:edit, :update, :destroy]
   before_action :find_protocol,             only: [:index, :new, :create, :update]
 
   def index
-    @documents = @protocol.documents
+    @documents = @protocol.documents.eager_load(:organizations)
+    
+    respond_to :json
   end
 
   def new
-    @document     = @protocol.documents.new
-    @header_text  = t(:documents)[:add][:header]
-    @path         = documents_path(@document)
+    @document = @protocol.documents.new
+
+    respond_to :js
   end
 
   def create
-    @document = @protocol.documents.create( document_params )
+    @document = @protocol.documents.new(document_params)
 
-    if @document.valid?
+    if @document.save
       assign_organization_access
 
       flash.now[:success] = t(:documents)[:created]
@@ -47,12 +47,11 @@ class DocumentsController < ApplicationController
       @errors = @document.errors
     end
 
-    render 'create', format: :js, type: :script
+    respond_to :js
   end
 
   def edit
-    @header_text  = t(:documents)[:edit][:header]
-    @path         = document_path(@document)
+    respond_to :js
   end
 
   def update
@@ -63,18 +62,23 @@ class DocumentsController < ApplicationController
     else
       @errors = @document.errors
     end
+
+    respond_to :js
   end
 
   def destroy
     DocumentRemover.new(params[:id])
 
     flash.now[:success] = t(:documents)[:destroyed]
+
+    respond_to :js
   end
 
   private
 
   def document_params
-    params.require(:document).permit(:document,
+    params.require(:document).permit(
+      :document,
       :doc_type,
       :doc_type_other,
       :sub_service_requests,
@@ -88,8 +92,12 @@ class DocumentsController < ApplicationController
   def find_protocol
     if @document
       @protocol = @document.protocol
-    else
+    elsif @service_request
+      @protocol = @service_request.protocol
+    elsif params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
+    else
+      @protocol = Protocol.find(document_params[:protocol_id])
     end
   end
 

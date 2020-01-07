@@ -1,0 +1,42 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog.modal-sm{ role: 'document' }
+  .modal-content
+    = form_for [:dashboard, line_item], url: dashboard_clinical_line_items_path, method: action_name == 'new' ? :post : :delete, remote: true do |f|
+      = hidden_field_tag :ssrid, sub_service_request.id
+      = hidden_field_tag :tab, tab
+      .modal-header
+        %h3.modal-title
+          = t("dashboard.sub_service_requests.study_schedule.#{action_name == 'new' ? 'add_services' : 'delete_services'}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group
+          - if action_name == 'new'
+            = f.label :service_id, class: 'required'
+            = f.select :service_id, options_from_collection_for_select(sub_service_request.candidate_services.per_patient_per_visit.reorder(:name), :id , :display_service_name), { include_blank: true }, class: 'selectpicker', data: { live_search: 'true' }
+          - else
+            = f.label :id, class: 'required'
+            = f.select :id, options_from_collection_for_select(sub_service_request.per_patient_per_visit_line_items.reorder('services.name'), :id , :name), { include_blank: true }, class: 'selectpicker', data: { live_search: 'true' }
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

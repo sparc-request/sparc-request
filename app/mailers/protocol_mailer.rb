@@ -26,15 +26,13 @@ class ProtocolMailer < ActionMailer::Base
 
   # https://www.pivotaltracker.com/story/show/161483270
   def archive_email
+    @recipient            = params[:recipient]
     @protocol             = params[:protocol]
     @archiver             = params[:archiver]
     @action               = params[:action]
     @service_request      = @protocol.service_requests.first
-    @ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
 
-    archive_email_recipients.each do |recipient|
-      send_email(recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
-    end
+    send_email(@recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
   end
 
   private
@@ -43,9 +41,5 @@ class ProtocolMailer < ActionMailer::Base
     @send_to = recipient
 
     mail(to: recipient.email, subject: subject)
-  end
-
-  def archive_email_recipients
-    (@protocol.identities + @ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq
   end
 end

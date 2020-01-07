@@ -32,7 +32,7 @@ module Features
     end
 
     def jquery_defined?
-      page.evaluate_script(%Q{typeof jQuery !== 'undefined'}) && page.evaluate_script(%Q{typeof $ !== 'undefined'})
+      page.evaluate_script(%Q{typeof jQuery !== 'undefined'}) && page.evaluate_script(%Q{typeof $ !== 'undefined'}) && page.evaluate_script(%Q{window.jQuery != undefined})
     end
 
     def finished_all_ajax_requests?

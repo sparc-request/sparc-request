@@ -46,6 +46,8 @@ en:
         state_filters:
           active: "Active"
           inactive: "Inactive"
+        form_filter:
+          version: "Version"
         completion_date: "Completion Date"
         from: "From"
         to: "To"
@@ -96,9 +98,9 @@ en:
           grant_info: "&quot;This publication [or project] was supported by the South Carolina Clinical & Translation Research (SCTR) Institute, with an academic home at the Medical University of South Carolina <strong class='din-gray-text'>NIH - NCATS Grant Number UL1 TR001450.</strong>&quot;"
       tooltips:
         complete: "Forms to collect additional information related to requesting a service"
-        view: "View existing %{klass} answers."
-        edit: "Edit existing %{klass} answers."
-        delete: "Delete existing %{klass} answers."
+        view: "View Response"
+        edit: "Edit Response"
+        delete: "Delete Response"
         resend: "Resend Survey"
 
     surveys:
@@ -117,11 +119,18 @@ en:
           active: "Active:"
         content:
           section:
+            header: "Section Information"
+            title: "Section Title:"
+            description: "Section Description:"
             add: "Add Section"
             delete: "Delete Section"
           question:
+            header: "Question Information"
             add: "Add Question"
+            content: "Question:"
             delete: "Delete Question"
+            description: "Question Description:"
+            type: "Question Type:"
             required: "Required:"
             dependent:
               label: "Dependent:"
@@ -135,14 +144,18 @@ en:
           survey:
             description: "Describe this %{klass} (Recommended)"
             surveyable: "Select an Organization or Service for this form"
-          section:
-            title: "Section Title (Required)"
-            description: "Describe this section (Optional)"
           question:
             content: "Question (Required)"
             description: "Describe this question (Optional)"
             zipcode: "XXXXX or XXXXX-XXXX"
-            phone: "XXXXXXXXXX"
+            phone: "(XXX) XXX-XXXX"
+          example:
+            email: "example@email.com"
+            date: "XX/XX/XXXX"
+            number: "1234567890"
+            text: "Text response here..."
+            text_area: "Text area response here..."
+            time: "XX:XX"
           option:
             content: "Option (Required)"
       full_title: "%{title} (Version %{version})"

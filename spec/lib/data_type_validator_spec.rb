@@ -51,14 +51,22 @@ RSpec.describe DataTypeValidator do
   describe '#is_email?' do
     it 'should allow valid email' do
       expect(is_email?('myname@email.com')).to eq(true)
+      expect(is_email?('my_email@musc.edu')).to eq(true)
+      expect(is_email?('email@email.org.us')).to eq(true)
+      expect(is_email?('my-email@email.gov')).to eq(true)
     end
 
     it 'should allow valid comma-separated emails' do
       expect(is_email?('person1@musc.edu, person2@musc.edu')).to eq(true)
+      expect(is_email?('person1@musc.edu,person2@musc.edu')).to eq(true)
     end
 
-    it 'should not allow invalid email' do
+    it 'should not allow invalid emails or incorrectly formatted email lists' do
       expect(is_email?('my.name.email.com')).to eq(false)
+      expect(is_email?('my email')).to eq(false)
+      expect(is_email?('my@name@email.com')).to eq(false)
+      expect(is_email?('person1@musc.edu,  person2@musc.edu')).to eq(false)
+      expect(is_email?('person1@musc.edu person2@musc.edu')).to eq(false)
     end
   end
 

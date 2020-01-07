@@ -1,0 +1,52 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%section.pt-3#researchInvolving
+  .card
+    .card-body.p-5
+      %h2.text-center
+        = t('protocols.form.research_involving.header')
+      %h4.text-muted.text-center.mb-5
+        = t('constants.prompts.check_all')
+
+      = f.fields_for :research_types_info do |ff_rti|
+        %section
+          .form-row
+            .form-group.col-6
+              .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
+                = ff_rti.check_box :human_subjects, class: 'custom-control-input research-involving', data: { target: '#humanSubjectsInfoContainer' }
+                = ff_rti.label :human_subjects, class: 'custom-control-label'
+            .form-group.col-6
+              .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
+                = ff_rti.check_box :vertebrate_animals, class: 'custom-control-input research-involving', data: { target: '#vertebrateAnimalsInfoContainer' }
+                = ff_rti.label :vertebrate_animals, class: 'custom-control-label'
+            .form-group.col-6
+              .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
+                = ff_rti.check_box :investigational_products, class: 'custom-control-input research-involving', data: { target: '#investigationalProductsInfoContainer' }
+                = ff_rti.label :investigational_products, class: 'custom-control-label'
+            .form-group.col-6
+              .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
+                = ff_rti.check_box :ip_patents, class: 'custom-control-input research-involving', data: { target: '#ipPatentsInfoContainer' }
+                = ff_rti.label :ip_patents, class: 'custom-control-label'
+
+        = render 'protocols/form/research_involving/human_subjects', f: f, ff_rti: ff_rti, protocol: protocol
+        = render 'protocols/form/research_involving/vertebrate_animals', f: f, ff_rti: ff_rti, protocol: protocol
+        = render 'protocols/form/research_involving/investigational_products', f: f, ff_rti: ff_rti, protocol: protocol
+        = render 'protocols/form/research_involving/ip_patents', f: f, ff_rti: ff_rti, protocol: protocol

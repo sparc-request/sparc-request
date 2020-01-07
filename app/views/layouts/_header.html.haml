@@ -17,18 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- url_params = defined?(service_request) ? { srid: service_request.try(:id) } : {}
 
-%nav.navbar.navbar-default
-  .container-fluid
-    .navbar-header
-      %ul.nav.navbar-nav
-        - Setting.get_value("navbar_links").each do |identifier, data|
-          = navbar_link(identifier, data, @highlighted_link)
-    %p.navbar-text.navbar-right.welcome-nav
-      - if current_user.present?
-        %span
-          = I18n.t('proper.navbar.logged_in', email: current_user.email)
-        = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path(url_params), method: :delete, class: 'btn btn-warning'
-      - else
-        = link_to t(:proper)[:navbar][:login], new_identity_session_path(url_params), class: 'btn btn-primary', id: 'login-link'
+%header.bg-white#siteHeader
+  .container-fluid.d-flex.p-2.p-md-3
+    .logo-container.col-3.d-none.d-lg-flex.justify-content-center
+      = link_to Setting.get_value("header_link_1"), target: :_blank do
+        = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'
+    .logo-container.col-12.col-lg-6.d-flex.justify-content-center
+      = link_to Setting.get_value("header_link_2_#{location}") do
+        = image_tag "logos/#{location}_logo.jpg", alt: t('layout.header.brand_logo_alt', location: location), id: 'sparcLogo', class: 'header-logo'
+    .logo-container.col-3.d-none.d-lg-flex.justify-content-center
+      = link_to Setting.get_value("header_link_3"), target: :_blank do
+        = image_tag ENV['institution_logo'] || 'logos/musc_header.jpg', alt: t('layout.header.institution_logo_alt'), id: 'institutionLogo', class: 'header-logo'

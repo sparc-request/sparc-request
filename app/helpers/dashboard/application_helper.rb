@@ -19,16 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::ApplicationHelper
-
-  def format_datetime date
-    if date.present?
-      date.strftime('%D %I:%M:%S %p')
-    else
-      ''
-    end
-  end
-
-  def display_if to_compare_1, to_compare_2=true
+  def display_if(to_compare_1, to_compare_2=true)
     if to_compare_1 == to_compare_2
       return { style: "display: block;" }
     else
@@ -57,7 +48,7 @@ module Dashboard::ApplicationHelper
   end
 
   def display_user_role(user)
-    user.role == 'other' ? user.role_other.humanize : user.role.humanize
+    user.role == 'other' ? user.role_other.humanize : PermissibleValue.get_value('user_role', user.role)
   end
 
   def truncate_string_length(s, max=70, elided = ' ...')

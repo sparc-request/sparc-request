@@ -18,52 +18,41 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-- if subsidy.present?
-  .panel.panel-default
-    .panel-heading.justify-content-between
-      %h4.panel-title
-        = t(:subsidies)[:approved][:header]
+.alert.alert-success.rounded-0.mb-0
+  %h4.alert-heading.mb-0
+    = t(:subsidies)[:approved][:header]
+%table.table.table-bordered.table-centered.mb-0.approved-subsidy
+  %thead.bg-light
+    %tr
+      %th
+        = Subsidy.human_attribute_name(:request_cost)
+      %th
+        = Subsidy.human_attribute_name(:subsidy_cost)
+      %th
+        = Subsidy.human_attribute_name(:percent_subsidy)
+      %th
+        = Subsidy.human_attribute_name(:pi_contribution)
+      %th
+        = Subsidy.human_attribute_name(:approver)
+      %th
+        = Subsidy.human_attribute_name(:approved_at)
       - if admin
-        %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }
-          = t(:models)[:note][:plural]
-    %table.table.table-condensed.approved-subsidy-table
-      %thead
-        %tr.default
-          %th
-            = t(:subsidies)[:approved][:request_cost]
-          %th
-            = t(:subsidies)[:approved][:percent]
-          %th
-            = t(:subsidies)[:approved][:pi_contribution]
-          %th
-            = t(:subsidies)[:approved][:cost]
-          %th
-            = t(:subsidies)[:approved][:approved_by]
-          %th
-            = t(:subsidies)[:approved][:approved_at]
-          - if admin
-            %th.text-center
-              = t(:actions)[:delete]
-      %tbody
-        %tr
-          %td.request-cost
-            = number_to_currency(subsidy.total_at_approval/100.0)
-          %td.subsidy-percent
-            = display_as_percent(subsidy.percent_subsidy)
-          %td.subsidy-contribution
-            = number_to_currency(subsidy.approved_pi_contribution/100.0)
-          %td.subsidy-effective-current-cost
-            = number_to_currency(subsidy.approved_cost)
-          %td.approved-by
-            = subsidy.approver.try(:full_name)
-          %td.approved-at
-            = format_datetime(subsidy.approved_at)
-          - if admin
-            %td.text-center.delete-subsidy
-              %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
-                %span.glyphicon.glyphicon-remove
-- else
-  %span
-    = t(:subsidies)[:approved][:none]
-  %hr
+        %th.text-center
+          = t(:actions)[:actions]
+  %tbody
+    %tr
+      %td
+        = number_to_currency(subsidy.total_at_approval/100.0)
+      %td
+        = number_to_currency(subsidy.approved_cost)
+      %td
+        = "#{display_as_percent(subsidy.percent_subsidy)}%"
+      %td
+        = number_to_currency(subsidy.approved_pi_contribution/100.0)
+      %td
+        = subsidy.approver.try(:full_name)
+      %td
+        = format_datetime(subsidy.approved_at)
+      - if admin
+        %td.text-center
+          = delete_subsidy_button(subsidy)

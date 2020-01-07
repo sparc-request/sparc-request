@@ -18,26 +18,25 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.bootstrap-table-dropdown-overflow
-  %div{ class: "service-requests-custom-toolbar-#{service_request.id}" }
-    - permission_to_edit = permission_to_edit || user.catalog_overlord
-    - if permission_to_edit
-      %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:dashboard)[:service_requests][:tooltips][:modify_request] }
-        = link_to t(:dashboard)[:service_requests][:modify_request], catalog_service_request_path(srid: service_request.id), class: ['edit-service-request btn btn-warning btn-sm', permission_to_edit ? '' : 'disabled']
-  %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id, show_view_ssr_back: show_view_ssr_back), striped: 'true', toolbar: ".service-requests-custom-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC' } }
-    %thead.primary-header
-      %tr
-        %th.col-md-1{ data: { field: 'srid', align: 'left', sortable: 'true' } }
-          = t(:dashboard)[:service_requests][:srid]
-        %th.col-md-3{ data: { field: 'organization', align: 'left', sortable: 'true' } }
-          = t(:dashboard)[:service_requests][:organization]
-        %th.col-md-2{ data: { field: 'owner', align: 'left', sortable: 'true' } }
-          = t(:dashboard)[:service_requests][:owner]
-        %th.col-md-1{ data: { field: 'status', align: 'left', sortable: 'true' } }
-          = t(:dashboard)[:service_requests][:status]
-        %th.col-md-1{ data: {field: 'notifications', align: 'center' } }
-          = t(:dashboard)[:service_requests][:notifications]
-        %th.col-md-3{ data: { field: 'actions', align: 'center' } }
-          = t(:dashboard)[:service_requests][:actions][:header]
-        %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
-          = t(:dashboard)[:service_requests][:forms][:header]
+- permission_to_edit = permission_to_edit || current_user.catalog_overlord?
+
+%div{ class: "service-requests-table-toolbar-#{service_request.id}" }
+  - if permission_to_edit
+    = link_to catalog_service_request_path(srid: service_request.id), title: t('dashboard.service_requests.tooltips.modify_request'), class: 'btn btn-success', data: { toggle: 'tooltip' } do
+      = succeed t('dashboard.service_requests.modify_request') do
+        = icon('fas', 'plus mr-2')
+%table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id), striped: 'true', toolbar: ".service-requests-table-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC' } }
+  %thead.bg-light
+    %tr
+      %th{ data: { field: 'srid', align: 'left', sortable: 'true' } }
+        = ServiceRequest.human_attribute_name(:id)
+      %th{ data: { field: 'organization', align: 'left', sortable: 'true' } }
+        = ServiceRequest.human_attribute_name(:organization)
+      %th{ data: { field: 'owner', align: 'left', sortable: 'true' } }
+        = ServiceRequest.human_attribute_name(:owner)
+      %th{ data: { field: 'status', align: 'left', sortable: 'true' } }
+        = ServiceRequest.human_attribute_name(:status)
+      %th{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
+        = ServiceRequest.human_attribute_name(:forms)
+      %th{ data: { field: 'actions', align: 'center' } }
+        = t('actions.actions')

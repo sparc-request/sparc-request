@@ -21,103 +21,32 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
-
   describe 'POST #create' do
+    before :each do
+      @logged_in_user = build_stubbed(:identity)
+      log_in_dashboard_identity( obj: @logged_in_user )
 
-    context 'success' do
-
-      before( :each ) do
-        @logged_in_user = build_stubbed( :identity )
-        
-        protocol = build( :study_with_blank_dates )
-
-        project_role_attributes = { "0" => { identity_id: @logged_in_user.id, role: 'primary-pi', project_rights: 'approve' } }
-
-        @protocol_attributes = protocol.attributes.merge( { project_roles_attributes: project_role_attributes } )
-
-        allow( StudyTypeQuestionGroup ).to receive( :active_id ).
-          and_return( "active group id" )
-        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-        log_in_dashboard_identity( obj: @logged_in_user )
-      end
-
-      it 'creates a new protocol record' do
-        expect{ post :create, params: {
-                    protocol: @protocol_attributes
-                    }, xhr: true }.
-                    to change{ Protocol.count }.by( 1 )
-      end
-
-      it 'creates a new service request record' do
-        expect{ post :create, params: {
-                    protocol: @protocol_attributes
-                    }, xhr: true }.
-                    to change{ ServiceRequest.count }.by( 1 )
-      end
-
-      it 'creates a new project role record' do
-        expect{ post :create, params: {
-                    protocol: @protocol_attributes
-                    }, xhr: true }.
-                    to change{ ProjectRole.count }.by( 1 )
-      end
-
-      it 'creates an extra project role record if the current user is not assigned to the protocol' do
-        @protocol_attributes[:project_roles_attributes]["0"][:identity_id] = build_stubbed(:identity).id
-        expect{ post :create, params: {
-                    protocol: @protocol_attributes
-                    }, xhr: true }.
-                    to change{ ProjectRole.count }.by( 2 )
-      end
-
-      it 'receives the correct flash message' do
-        post :create, params: { protocol: @protocol_attributes }, xhr: true
-        expect(flash[:success]).to eq(I18n.t('protocols.created', protocol_type: @protocol_attributes['type']))
-      end
-
+      @protocol = build(:study_federally_funded)
     end
 
-    context 'unsuccessful' do
+    context 'current user is not the primary pi' do
+      it 'should create a general access user' do
+        attrs = @protocol.attributes.merge({ primary_pi_role_attributes: { identity_id: build_stubbed(:identity).id } })
 
-      before( :each ) do
-        @logged_in_user = build_stubbed( :identity )
-        
-        @protocol = build( :study_with_blank_dates )
-
-        allow( StudyTypeQuestionGroup ).to receive( :active_id ).
-          and_return( "active group id" )
-        allow_any_instance_of(Protocol).to receive(:rmid_server_status).and_return(false)
-        log_in_dashboard_identity( obj: @logged_in_user )
+        expect{
+          post :create, params: { protocol: attrs, format: :js }, xhr: true
+        }.to change{ ProjectRole.where(role: 'general-access-user', project_rights: 'approve', identity_id: @logged_in_user.id).count }.by(1)
       end
-
-      it 'gives the correct error message' do
-        post :create, params: { protocol: @protocol.attributes }, xhr: true
-        expect(assigns(:errors)).to eq(assigns(:protocol).errors)
-      end
-
-      it 'does not create a new protocol record' do
-        expect{ post :create, params: {
-                    protocol: @protocol.attributes
-                    }, xhr: true }.
-                    not_to change{ Protocol.count }
-      end
-
-      it 'does not create a new service request record' do
-        expect{ post :create, params: {
-                    protocol: @protocol.attributes
-                    }, xhr: true }.
-                    not_to change{ ServiceRequest.count }
-      end
-
-      it 'does not create a new project role record' do
-        expect{ post :create, params: {
-                    protocol: @protocol.attributes
-                    }, xhr: true }.
-                    not_to change{ ProjectRole.count }
-      end
-
     end
 
+    context 'Epic configuration enabled and protocol selected for epic' do
+      it 'should notify for epic approval' do
+        attrs = @protocol.attributes.merge({ selected_for_epic: true, primary_pi_role_attributes: { identity_id: @logged_in_user.id } })
+
+        expect(Notifier).to receive_message_chain(:notify_for_epic_user_approval, :deliver)
+
+        post :create, params: { protocol: attrs, format: :js }
+      end
+    end
   end
-
 end

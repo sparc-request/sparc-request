@@ -25,76 +25,37 @@ en:
     ##########
     header: "SPARCRequest Dashboard"
 
-    ###########
-    #  ADMIN  #
-    ###########
-    admin:
-
-    ###############
-    #  APPROVALS  #
-    ###############
-    approvals:
-      header: "Administrative Approvals"
-      nursing: "Nursing/Nutrition Approved:"
-      lab: "Lab Approved:"
-      imaging: "Imaging Approved:"
-      committee: "Committee Approved:"
-
-    ##########
-    #  ARMS  #
-    ##########
-    arms:
-      manage: "Manage Arms"
-
-    ###############
-    #  DOCUMENTS  #
-    ###############
-    documents:
-      header: "Documents"
-
     #################
     #  EPIC QUEUES  #
     #################
     epic_queues:
-      headers:
+      tabs:
         current: "Current"
         past: "Past"
         protocol_update: "Protocol Update"
+      headers:
+        current: "Queued Epic Protocols"
+        past: "Previously Queued Epic Protocols"
+        protocol_update: "Epic Protocols Queued for Update"
+      confirm: "Are you sure you want to delete this item from the Epic Queue?"
+      date_formatter: "%m/%d/%Y %I:%M:%S %p"
+      date: "Last Queue Date"
+      PIs: "PI(s)"
+      protocol: "Queued Protocol"
+      notes: "Notes"
+      status: "Last Queue Status"
+      created_at: 'Current Queue Date'
+      by: 'By'
+      sent_protocols: 'Sent Protocols'
+      type: 'Type'
+      actions: 'Actions'
+
 
     #########
     # FORMS #
     #########
     forms:
       header: "Form Submissions"
-
-    ##################
-    #  FULFILLMENTS  #
-    ##################
-    fulfillments:
-      add: "Add Fulfillment"
-      edit: "Edit Fulfillment"
-      created: "Fulfillment Created!"
-      updated: "Fulfillment Updated!"
-      destroyed: "Fulfillment Destroyed!"
-      table:
-        date: "Fulfillment Date"
-        time_unit: "Qty Type"
-        time: "Quantity"
-        actions: "Actions"
-      actions:
-        notes: " Notes"
-        edit: " Edit Fulfillment"
-        delete: " Delete Fulfillment"
-      form:
-        date: "Fulfillment Date:*"
-        time: "Quantity:*"
-        time_unit: "Qty Type:*"
-
-    ################
-    #  LINE ITEMS  #
-    ################
-    line_items:
-      updated: "Line Item Updated!"
 
     ##############
     #  MESSAGES  #
@@ -105,47 +66,20 @@ en:
         user: "User"
         date: "Date"
         message: "Message"
-        no_messages: "This Notification currently has no Messages."
       new:
         header: "New Message to "
-        message: "Message:"
-
-    #########################
-    #  MULTIPLE LINE ITEMS  #
-    #########################
-    multiple_line_items:
-      manage: "Manage Services"
-      add: "Add Service"
-      remove: "Remove Service"
-      created: "Services Added!"
-      destroyed: "Services Removed!"
-      service: "Service:"
-
-    ##########
-    # NAVBAR #
-    ##########
-    navbar:
-      logged_in_as: "Logged in as "
-      epic_queue: "Epic Queue"
-      messages: "All Notifications"
-      tooltips:
-        epic_queue: "View or edit protocols for Epic interface"
-        messages: "Access to correspondence"
-
-    ##############
-    # NAVIGATION #
-    ##############
-    navigation:
-      bottom:
-        saving: "Saving..."
 
     ###################
     #  NOTIFICATIONS  #
     ###################
     notifications:
+      header: "Messages"
+      compose: "Compose Message"
+      authorized_users:
+        header: "Message an Authorized User"
+      service_providers:
+        header: "Message a Service Provider"
       table:
-        send: "Send Notification"
-        compose: "Compose Message"
         requester: "Requester"
         authorized_users: "Authorized Users"
         service_providers: "Service Providers"
@@ -153,41 +87,38 @@ en:
         sent: "Sent"
         mark_as_unread: "Mark as Unread"
         mark_as_read: "Mark as Read"
-        user: "User"
+        from: "From"
+        to: "To"
         subject: "Subject"
         time: "Time"
         owner: "(Owner)"
         requester: "(Requester)"
       form:
         select_header: "Send Notification"
-        select: "Select User:"
-        subject: "Subject"
         message: "Please enter message text here..."
       tooltips:
-        table_button: "Ability to send correspondence to Service Providers or Authorized Users"
+        table_button: "Send correspondence related to this request to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
-
-
 
     ######################
     #  PROTOCOL FILTERS  #
     ######################
     protocol_filters:
       header: "Filter Protocols"
-      search_by: "Search All"
+      search_by: "All"
+      search_placeholder: "Search for Protocols"
       archived: "Archived"
+      unarchived: "Unarchived"
       inactive: "(inactive)"
       status: "Status"
       organization: "Organization"
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
-      empty_protocols: "Empty Protocols (No Services)"
+      modal:
+        header: "Choose a name for your search"
       saved_filters:
         header: "Recently Saved Filters"
-        modal:
-          header: "Choose a name for your search."
-          name: "Name"
       tooltips:
         save: "Save current search"
         reset: "Clear current search"
@@ -196,6 +127,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'
         cancel_edit_selected_for_epic: 'Cancel Edit'
@@ -204,15 +136,8 @@ en:
         cancel_edit_answer: 'Cancel Edit'
 
       table:
-        export: "Export"
         header: "Protocols"
-        new_protocol: "New Protocol"
-        new_study: "New Study"
-        new_project: "New Project"
         short_title: "Short Title"
-        id: "Protocol ID"
-        pis: "PI(s)"
-        requests: Requests
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
@@ -220,16 +145,13 @@ en:
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
 
-      documents:
-        header: "Documents"
-        add_document: "Add Document"
-
       service_requests:
-        header: "Requests"
-        view_consolidated: "View Consolidated Request"
-        export_consolidated: "Export Consolidated Request"
-        coverage_report: 'Coverage Analysis Report'
-        cost_analysis_report: 'Cost Analysis Report'
+        header: "Requests - %{status} - %{date}"
+        view_consolidated: "Consolidated Request"
+        export_consolidated: "Export"
+        coverage_report: 'Coverage Analysis'
+        cost_analysis_report: 'Cost Analysis'
+        consolidated_all: "All Requests"
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
         tooltips:
@@ -247,24 +169,34 @@ en:
           end_date: "Project/Study estimated end date (used by service providers to prioritize)"
           recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
           recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
+    
+    ####################
+    #  PROTOCOL MERGE  #
+    ####################
+    protocol_merge:
+      modal_header: "Merge Protocols"
+      enter_master_protocol: "Enter the id of the Master Protocol:"
+      enter_merged_protocol: "Enter the id of the Protocol to be merged into the Master Protocol:"
+      perform_protocol_merge: "Perform Protocol Merge"
+      warning: "Preparing to merge protocol %{master_protocol_id} and protocol %{merged_protocol_id}. Do you wish to continue?"
+      yes_button: "<b>Yes</b> <br>Continue Merging"
+      no_button: "<b>No</b> <br>Cancel Merge"
+      errors:
+        access:  "You do not have access to perform a Protocol Merge"
+        master_blank: "Master protocol can't be blank"
+        merged_blank: "Protocol to be merged can't be blank"
+        master_does_not_exist: "Master protocol ID does not exist"
+        merged_does_not_exist: "Protocol to be merged ID does not exist"
+        one_calendar: "Only one protocol may have a calendar to be merged"
+        cannot_merge: "Protocol to be merged has already been pushed to SPARCFulfillment and can't be merged"
+      success: "Protocol merge successful"
+
     #####################
     # SERVICE CALENDARS #
     #####################
     service_calendars:
       consolidated_request:
         header: "Consolidated Request Summary"
-        protocol_information:
-          header: " Information"
-          srid: "SRID:"
-          short_title: "Short Title:"
-          title: " Title:"
-          sponsor: "Sponsor Name:"
-          funding_source: "Funding Source:"
-        authorized_users:
-          header: "Authorized Users"
-          name: "Name"
-          role: "Role"
-          rights: "Proxy Rights"
         services:
           none: "This protocol does not have any services outside of 'draft' status."
 
@@ -272,183 +204,127 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      modify_request: "Add / Modify Request"
-      srid: "SRID"
-      organization: "Organization"
-      owner: "Owner"
-      status: "Status"
-      notifications: "Notifications"
-      actions:
-        header: "Actions"
-        view: "View"
-        edit: "Edit"
-        admin_edit: "Admin Edit"
-        tooltips:
-          view: "Quick access to view services for selected provider"
-          edit: "Ability to change services for a selected provider (routes to SPARCRequest)"
-          admin: "Service Provider administrative access to track and manage services"
+      modify_request: "Add / Modify Requests"
       forms:
-        header: "Forms"
-        selectpicker: "Complete Form"
+        selectpicker: "Complete Forms"
       tooltips:
+        view: "Quick access to view services from this provider"
+        admin_edit: "Service Provider administrative access to track and manage services"
         modify_request: "Allows Authorized User to add or edit services (routes to SPARCRequest)"
         coverage_report: "Ability to export research and third-party payer information to Excel"
-      view_ssr:
-        documents:
-          header: "Documents"
-          none: "No Documents"
-          file_name: "File Name"
-          program_core: "Program/Core"
-
-    ############################
-    #  Non-clinical Services #
-    ############################
-    study_level_activities:
-      add: "Add Non-clinical Services"
-      edit: "Edit Non-clinical Services"
-      created: "Non-clinical Services Created!"
-      updated: "Non-clinical Services Updated!"
-      destroyed: "Non-clinical Services Destroyed!"
-      table:
-        service: "Service"
-        unit_requested: "Units Requested"
-        unit_type: "Unit Type"
-        quantity_requested: "Qty Requested"
-        quantity_type: "Qty Type"
-        service_rate: "Service Rate"
-        cost: "Your Cost"
-        total: "Total Per Study"
-        in_process: "In Process"
-        complete: "Complete"
-        actions: "Actions"
-      form:
-        service: "Service:"
-        unit_per_quantity: "Units Requested:"
-        quantity_requested: "Quantity Requested:"
-        in_process: "In Process Date:"
-        complete: "Complete Date:"
-      actions:
-        details: " Details"
-        notes: " Notes"
-        admin_rate: " Add Admin Rate"
-        edit: " Edit Activity"
-        delete: " Delete Activity"
-      details:
-        header: "Non-clinical Services Details"
-        charge_code: "Charge Code"
-        unit_quantity: "Units Requested"
-        unit_type: "Unit Type"
-        quantity_requested: "Quantity Requested"
-        quantity_type: "Quantity Type"
-        cost: "Cost"
-        received: "Received"
-        in_process: "In Process"
-        complete: "Complete"
-      admin_rate:
-        header: "Add Admin Rate"
-        cost: "Cost:"
-      tooltips:
-        add_non_clinical_services: "Add Non-clinical services related to selected organization"
-        modified_rate: 'Modified Rate'
-        change_rate: "Click to modify rate"
 
     ##########################
     #  SUB SERVICE REQUESTS  #
     ##########################
     sub_service_requests:
+      updated: "Request updated!"
+      deleted: "Request deleted!"
+      pushed_to_epic: "Request pushed to Epic!"
       header:
-        status: "Status"
-        not_submitted: "Request must be submitted first"
-        lock_message: "Request is in a locked status, and cannot be changed."
-        owner: "Owner"
+        delete_request: "Delete Request"
+        status:
+          header: "Status"
+          menu_header: "Change Request Status"
+        owner: 
+          header: "Owner"
+          menu_header: "Change Request Owner"
+          not_available: "Not available in %{status} status"
+          none: "No Owner Selected"
+        epic:
+          header: "Epic"
+          push: "Push to Epic"
+          pushed: "Request sent to Epic!"
+          failed: "Request has errors and"
         fulfillment:
           header: "Fulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           pending: "Pending"
-          send_to_fulfillment: "Send to Fulfillment"
-          not_enabled: "Not enabled in SPARCCatalog."
-        cost: "Cost"
+          send_to_fulfillment: "Push to Fulfillment"
+          not_enabled: "Not enabled in SPARCCatalog"
+        surveys:
+          header: "Surveys"
+          resend: "Resend Surveys"
+          last_sent: "Surveys last sent on %{date}"
+          completed: "All surveys completed"
+        notes_label: "Admin"
+        cost: "%{provider} Cost"
         user_cost: "Total Cost"
-
-      tabs:
-        request_details:
-          header: "Request Details"
-          options:
-            header: "Options"
-            send_to_epic: "Send to Epic"
-            core_approvals: "Administrative Approvals"
-            export_to_excel: "Export to Excel"
-            last_sent: "Survey last sent on: %{date}"
-            resend_surveys: "Resend Surveys"
-            delete_request: "Delete Request"
-          timeline:
-            header: "Timeline"
-            start_date: "Proposed Start Date"
-            end_date: "Proposed End Date"
-            arranged_date: "Consult Arranged Date"
-            contacted_date: "Requester Contacted Date"
-          tooltips:
-            send_to_epic: "Push entire protocol to Epic Research EMR"
-            export_to_excel: "Generates spreadsheet with request information"
-            delete_request: "Deletes requested services and all associated information"
-
-        study_schedule:
-          header: "Clinical Services"
-          no_requests: "There are no clinical services requested."
-
-        study_level_activities:
-          header: "Non-clinical Services"
-
-        documents:
-          header: "Documents"
-
-        history:
-          header: "History"
-          status:
-            header: "Status History"
-            date: "Date Changed"
-            from: "Status Changed From"
-            to: "Status Changed To"
-            by: "Changed by"
-          approval:
-            header: "Administrative Approvals"
-            date: "Date Approved"
-            type: "Type"
-            by: "Approved By"
-          subsidy:
-            header: "Subsidy History"
-            request_cost: "Request Cost at Approval"
-            percent: "% Subsidy"
-            contribution: "PI Contribution"
-            subsidy_cost: "Subsidy Cost"
-            approved_by: "Approved By"
-            date: "Date Approved"
-          tooltips:
-            status_history: "Status log of request"
-            approval_history: "Time stamp log of approvals"
-            subsidy_history: "Time stamp of approved subsidies"
-
-        notifications:
-          header: "Notifications"
-
-    ###############
-    #  SUBSIDIES  #
-    ###############
-    subsidies:
-      header: "Subsidy Information"
-
-    ##################
-    #  VISIT GROUPS  #
-    ##################
-    visit_groups:
-      manage: "Manage Visits"
-      add: "Add Visit Group"
-      remove: "Remove Visit Group"
-      edit: "Edit Visit Group"
-      add_visit: "Add Visit"
-      edit_visit: "Edit Visit"
-      remove_visit: "Remove Visit"
-      created: "Visit Created!"
-      updated: "Visit Updated!"
-      destroyed: "Visit Destroyed!"
+      request_details:
+        header: "Request Details"
+        approvals:
+          header: "Administrative Approvals"
+          submitted: "Approval submitted!"
+        timeline:
+          header: "Timeline"
+      study_schedule:
+        header: "Clinical Services"
+        add_services: "Add Clinical Services"
+        delete_services: "Delete Clinical Services"
+        none: "This request does not have any Clinical Services."
+      study_level_activities:
+        header: "Non-Clinical Services"
+        none: "This request does not have any Non-Clinical Services."
+        new: "Add Non-Clinical Service"
+        edit: "Edit Non-Clinical Service"
+        created: "Non-clinical Service Added!"
+        updated: "Non-clinical Service Updated!"
+        destroyed: "Non-clinical Service Removed!"
+        fulfillments:
+          header: "Fulfillments - %{service}"
+          new: "Add Fulfillment"
+          edit: "Edit Fulfillment"
+          created: "Fulfillment Added!"
+          updated: "Fulfillment Updated!"
+          deleted: "Fulfillment Deleted!"
+        tooltips:
+          new: "Add Non-Clinical Services related to the selected organization"
+          view: "View Details"
+          fulfillments: "View Fulfillments for this Service"
+      history:
+        header: "History"
+        status_history:
+          header: "Status History"
+          date: "Date Changed"
+          from: "Status Changed From"
+          to: "Status Changed To"
+          by: "Changed by"
+        approval_history:
+          header: "Administrative Approvals"
+          date: "Date Approved"
+          type: "Type"
+          by: "Approved By"
+        subsidy_history:
+          header: "Subsidy History"
+          request_cost: "Request Cost at Approval"
+          percent: "% Subsidy"
+          contribution: "PI Contribution"
+          subsidy_cost: "Subsidy Cost"
+          approved_by: "Approved By"
+          date: "Date Approved"
+          action: "Action"
+          actions:
+            overridden: "Overridden"
+            deleted: "Deleted"
+        tooltips:
+          status_history: "Status log of request"
+          approval_history: "Time stamp log of approvals"
+          subsidy_history: "Time stamp of approved subsidies"
+      notifications:
+        header: "Messages"
+      tooltips:
+        finished_status: "This status will complete the request"
+        locked_status: "This status will lock the request"
+        export: "Generates spreadsheet with request information"
+        delete: "Deletes requested services and all associated information"
+        not_submitted: "Request must be submitted first in order to manually change the status"
+        request_invalid: "Request has errors and can't be pushed at this time"
+        push_to_epic: "Push entire protocol to Epic Research EMR"
+        request_completed: "Services cannot be added once a request has been completed. Please start a new request to add additional Services."
+      confirm:
+        finished_status:
+          text: "Changing this request to <em>%{status}</em> will be irreversible.<br><br>Are you sure you want to proceed?"
+        delete:
+          text: "This request and all requested services and associated information will be lost forever.<br><br>Are you sure you want to proceed?"
+        push_to_epic:
+          text: "This request could not be push to Epic due to an unexpected error.<br><br><i>%{error}</i><br><br>Please try again later."

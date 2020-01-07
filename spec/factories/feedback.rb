@@ -20,11 +20,19 @@
 
 FactoryBot.define do
   factory :feedback do
-    letters {Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16]}
-    name {'name'}
-    email {'email@email.com'}
-    date {Date.today}
-    version {'1'}
-    sparc_request_id {'123'}
+    name              { Faker::Lorem.word }
+    email             { Faker::Internet.email }
+
+    trait :redcap do
+      date              { Date.today }
+      sparc_request_id  { '1234' }
+      typeofrequest     { %w(1 2 3 4).sample }
+      priority          { %w(1 2 3 4).sample }
+      letters           { Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16] }
+    end
+
+    trait :standard do
+      message { Faker::Lorem.sentence }
+    end
   end
 end

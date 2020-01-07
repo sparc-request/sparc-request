@@ -35,13 +35,14 @@ RSpec.describe 'User views a System Satisfaction Survey response', js: true do
                 create(:question_response, question: @question, response: @response, content: 'It was great')
   end
 
-  scenario 'and sees the response' do
+  it 'should show the response' do
     visit surveyor_response_path(@response)
     wait_for_javascript_to_finish
 
     expect(page).to have_content('System Satisfaction Survey')
     expect(page).to have_selector('.question', count: 1)
-    expect(page).to have_selector('.likert-group.disabled', count: 1)
+    expect(page).to have_selector('.likert-group', count: 1)
     expect(page).to have_selector('.likert input[checked="checked"]', count: 1)
+    expect(page).to have_selector('.likert input[disabled="disabled"]', count: 2)
   end
 end

@@ -19,49 +19,36 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 catalog:
-  step_text: "STEP 1: Add/Update Services"
-  css_class: "blue-provider"
+  css_class: "primary"
+  forward: "protocol"
 
 protocol:
-  step_text: 'STEP 2: Services and Protocol Information'
-  css_class: blue-green-provider
-  back: catalog
-  forward: service_details
+  css_class: "success"
+  back: "catalog"
+  forward: "service_details"
 
 service_details:
-  step_text: 'STEP 3: Milestones and Calendar Structure'
-  css_class: green-provider
-  back: protocol
-  forward: service_calendar
-
-service_calendar:
-  step_text: 'STEP 4: Service Calendar'
-  css_class: light-blue-provider
-  back: service_details
-  forward: service_subsidy
+  css_class: "info"
+  back: "protocol"
+  forward: "service_subsidy"
 
 service_subsidy:
-  step_text: 'STEP 4a: Subsidy Information'
-  css_class: pink-provider
-  back: service_calendar
-  forward: document_management
+  css_class: "info-alt"
+  back: "service_details"
+  forward: "document_management"
 
 document_management:
-  step_text: 'STEP 5: Document, Notes, and Forms'
-  css_class: orange-provider
-  back: service_subsidy
-  forward: review
+  css_class: "warning"
+  back: "service_subsidy"
+  forward: "review"
 
 review:
-  step_text: 'STEP 6: Review Your Request'
-  css_class: red-provider
-  back: document_management
-  forward: confirmation
+  css_class: "danger"
+  back: "document_management"
+  forward: "confirmation"
 
 obtain_research_pricing:
-  step_text: 'Get a Cost Estimate'
-  css_class: green-provider
+  css_class: "success"
 
 confirmation:
-  step_text: 'Submission Confirmation'
-  css_class: green-provider
+  css_class: "success"

@@ -26,4 +26,8 @@ class Status
   def self.complete?(status)
     Setting.get_value('finished_statuses').include?(status)
   end
+
+  def self.complete
+    Setting.get_value('finished_statuses')
+  end
 end

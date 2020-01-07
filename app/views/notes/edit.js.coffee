@@ -17,5 +17,5 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= j render 'notes/form', note: @note, notable: @notable, notable_id: @notable_id, notable_type: @notable_type %>")
-$('#modal_place').modal('show')
+
+$("#note<%= @note.id %> .note-body").html("<%= j render 'notes/edit', note: @note, notable: @notable, notable_id: @notable_id, notable_type: @notable_type %>")

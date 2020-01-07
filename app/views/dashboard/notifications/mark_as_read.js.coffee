@@ -22,6 +22,5 @@
 $('#notification_count').text(<%= @unread_notification_count_for_ssr %>)
 <% end %>
 
-$('#messages-btn .badge').text(<%= @unread_notification_count %>)
-
-refresh_notifications_table()
+$('#messagesBadge').text(<%= @unread_notification_count %>)
+$('.notifications-table').bootstrapTable 'refresh'

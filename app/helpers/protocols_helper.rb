@@ -46,7 +46,7 @@ module ProtocolsHelper
 
   def display_rmid_validated_protocol(protocol, option)
     if Setting.get_value("research_master_enabled") && protocol.rmid_validated?
-      content_tag(:h6, t("protocols.summary.rmid_validated", title: option), class: "text-success")
+      content_tag(:h6, t("protocols.rmid.validated", title: option), class: "text-success")
     end
   end
 

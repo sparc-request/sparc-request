@@ -20,7 +20,7 @@
 <% if @errors.present? %>
 <% @errors.each do |field, message| %>
 $("#<%= field.to_s %>").parents('.form-group').find('.form-text').remove()
-$("#<%= field.to_s %>").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$("#<%= field.to_s %>").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% elsif @no_errors %>
 ConfirmSwal.fire(

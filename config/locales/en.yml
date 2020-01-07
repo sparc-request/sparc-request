@@ -709,6 +709,13 @@ en:
     edit: "Edit %{protocol_type} Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
+    rmid:
+      note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+      validated: "Updated to corresponding Research Master ID %{title}"
+      errors:
+        server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
+        not_found: "Research Master ID %{rmid} does not match any records in our system. Please visit <a href='%{rmid_link}' target='_blank'>%{rmid_link}</a> to create a Research Master ID."
+        taken: "Research Master ID %{rmid} is already in use by<br>Protocol #%{protocol_id}."
     summary:
       header: "%{protocol_type} Summary"
       archive: "Archive"
@@ -716,14 +723,12 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
-      rmid_validated: "Updated to corresponding Research Master ID %{title}"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
         edit: "Quick access to edit protocol information"
         archive: "Ability to hide study from all Authorized User dashboards"
         unarchive: "Click to reveal on all associated Authorized User dashboards"
-        rmid_server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
     view_details:
       button: "%{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

@@ -101,10 +101,16 @@ class ProtocolsController < ApplicationController
     respond_to :js
 
     if protocol_params[:research_master_id]
-      @protocol = Protocol.new(protocol_params)
+      if params[:protocol_id].present?
+        @protocol = Protocol.find(params[:protocol_id])
+        @protocol.assign_attributes(protocol_params)
+      else
+        @protocol = Protocol.new(protocol_params)
+      end
       @protocol.valid?
+      @errors = @protocol.errors.messages[:base] + @protocol.errors.messages[:research_master_id]
 
-      unless (@errors = @protocol.errors.messages[:base]).any?
+      unless @errors.any?
         @rmid_record = Protocol.get_rmid(protocol_params[:research_master_id])
       end
     end

@@ -19,18 +19,26 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
-  def format_date(date)
+  def format_date(date, opts={})
     if date.present?
-      content_tag :span do
-        raw date.strftime('%m/%d/%Y')
+      if opts[:html]
+        content_tag :span do
+          raw date.strftime('%m/%d/%Y')
+        end
+      else
+        date.strftime('%m/%d/%Y')
       end
     end
   end
 
-  def format_datetime(datetime)
+  def format_datetime(datetime, opts={})
     if datetime.present?
-      content_tag :span do
-        raw datetime.strftime('%m/%d/%Y %l:%M') + content_tag(:span, datetime.strftime(':%S'), class: 'd-none') + datetime.strftime(' %p')
+      if opts[:html]
+        content_tag :span do
+          raw datetime.strftime('%m/%d/%Y %l:%M') + content_tag(:span, datetime.strftime(':%S'), class: 'd-none') + datetime.strftime(' %p')
+        end
+      else
+        datetime.strftime('%m/%d/%Y %l:%M')
       end
     end
   end
@@ -223,5 +231,9 @@ module ApplicationHelper
 
   def request_referrer_action
     Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+  end
+
+  def request_referrer_controller
+    Rails.application.routes.recognize_path(request.referrer)[:controller] rescue nil
   end
 end

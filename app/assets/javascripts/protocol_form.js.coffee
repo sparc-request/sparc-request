@@ -217,30 +217,16 @@ updateRmidFields = () ->
 
     rmidAjax = $.ajax(
       method: 'get'
-      dataType: 'json'
-      url: "#{gon.rmid_api_url}research_masters/#{rmid}"
-      headers:
-        Accept: "application/json"
-        Authorization: "Token token=\"#{gon.rmid_api_token}\""
-      success: (data) ->
-        $('#protocol_short_title').val(data.short_title).prop('readonly', true)
-        $('#protocol_title').val(data.long_title).prop('readonly', true)
-
-        if data.eirb_validated
-          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number).prop('readonly', true)
-          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved).prop('readonly', true)
-          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved).prop('readonly', true)
-          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration).prop('readonly', true)
-      error: ->
-        AlertSwal.fire(
-          type: 'error',
-          title: I18n.t('protocols.form.information.rmid.error.title'),
-          html: I18n.t('protocols.form.information.rmid.error.text', rmid: rmid)
-        )
-        resetRmidFields()
+      dataType: 'script'
+      url: '/protocols/validate_rmid'
+      data:
+        protocol_id: $('#protocol_id').val()
+        protocol:
+          research_master_id: rmid
     )
 
 resetRmidFields = () ->
+  $('#protocol_research_master_id').parents('.form-group').removeClass('is-valid is-invalid')
   $('#protocol_short_title').val('').prop('readonly', false)
   $('#protocol_title').val('').prop('readonly', false)
   $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)

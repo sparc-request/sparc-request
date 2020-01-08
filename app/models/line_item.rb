@@ -52,6 +52,7 @@ class LineItem < ApplicationRecord
   delegate :status, to: :sub_service_request
 
   validates :service_id, :service_request_id, presence: true
+  validates :service_id, uniqueness: { scope: :sub_service_request_id }
 
   validates :quantity, presence: true, numericality: true, if: Proc.new { |li| li.service.nil? || li.service.one_time_fee? }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, if: Proc.new { |li| li.quantity && li.service && li.service.one_time_fee? && li.service.current_effective_pricing_map }
@@ -64,6 +65,10 @@ class LineItem < ApplicationRecord
 
   scope :incomplete, -> {
     joins(:sub_service_request).where.not(sub_service_requests: { status: Status.complete })
+  }
+
+  scope :unassigned, -> {
+    where(sub_service_request_id: nil)
   }
 
   def friendly_notable_type
@@ -179,8 +184,7 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_total(line_items_visit)
-    quantity_total = line_items_visit.visits.sum('research_billing_qty')
-    return quantity_total * (line_items_visit.subject_count || 0)
+    line_items_visit.sum_visits_research_billing_qty * (line_items_visit.subject_count || 0)
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -188,10 +192,7 @@ class LineItem < ApplicationRecord
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    research_billing_qty_total = line_items_visit.visits.sum(:research_billing_qty)
-
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
-    subject_total
+    line_items_visit.sum_visits_research_billing_qty * per_unit_cost(quantity_total(line_items_visit))
   end
 
   # Determine the direct costs for a visit-based service

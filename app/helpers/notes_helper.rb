@@ -69,9 +69,9 @@ module NotesHelper
   def note_date(note)
     content_tag :small, class: 'text-muted mb-0' do
       if note.created_at == note.updated_at
-        format_datetime(note.created_at)
+        format_datetime(note.created_at, html: true)
       else
-        raw(format_datetime(note.updated_at) + content_tag(:i, t('notes.edited'), class: 'ml-1'))
+        raw(format_datetime(note.updated_at, html: true) + content_tag(:i, t('notes.edited'), class: 'ml-1'))
       end
     end
   end

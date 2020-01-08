@@ -20,7 +20,7 @@
 <% if @errors %>
 <% @errors.zip(@errors.full_messages).each do |error, message| %>
 if !$("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').hasClass('is-invalid')
-  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+  $("#<%=@klass%>-<%=@object.id%>-<%=error[0]%>").parents('.form-group').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
   <% if @field == 'active' %>
   if $('#modalContainer:visible').length > 0
     $("#<%=@klass%>-<%=@object.id%>-<%=@field%>").attr("checked", false)

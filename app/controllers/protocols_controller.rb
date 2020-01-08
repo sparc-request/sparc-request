@@ -24,7 +24,6 @@ class ProtocolsController < ApplicationController
   before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :find_protocol,               only:   [:edit, :update, :show]
-  before_action :set_rmid_api,                only:   [:new, :edit]
 
   def show
     respond_to :js
@@ -96,6 +95,25 @@ class ProtocolsController < ApplicationController
     flash[:success] = t('protocols.change_type.updated')
 
     respond_to :js
+  end
+
+  def validate_rmid
+    respond_to :js
+
+    if protocol_params[:research_master_id]
+      if params[:protocol_id].present?
+        @protocol = Protocol.find(params[:protocol_id])
+        @protocol.assign_attributes(protocol_params)
+      else
+        @protocol = Protocol.new(protocol_params)
+      end
+      @protocol.valid?
+      @errors = @protocol.errors.messages[:base] + @protocol.errors.messages[:research_master_id]
+
+      unless @errors.any?
+        @rmid_record = Protocol.get_rmid(protocol_params[:research_master_id])
+      end
+    end
   end
 
   def push_to_epic_status

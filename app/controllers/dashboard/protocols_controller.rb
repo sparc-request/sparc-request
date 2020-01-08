@@ -24,7 +24,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
-  before_action :set_rmid_api,              only: [:new, :edit]
 
   def index
     admin_orgs = current_user.authorized_admin_organizations

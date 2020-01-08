@@ -85,40 +85,6 @@ class ApplicationController < ActionController::Base
     @highlighted_link ||= ''
   end
 
-  def get_news_feed
-    if Setting.get_value("use_news_feed")
-      @news =
-        if Setting.get_value("use_news_feed_api")
-          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
-        else
-          @news = NewsFeed::PageParser.new.posts
-        end
-    end
-  end
-
-  def get_calendar_events
-    if Setting.get_value("use_google_calendar")
-      begin
-        @events = GoogleCalendarImporter.new.events
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception, ArgumentError => e
-        @events = []
-
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-  end
-
-  def set_rmid_api
-    gon.rmid_api_url    = Setting.get_value("research_master_api")
-    gon.rmid_api_token  = Setting.get_value("rmid_api_token")
-  end
-
   #####################
   ### Other Methods ###
   #####################
@@ -139,7 +105,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_identity
-    if @service_request.new_record? && action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && !request.format.html?)
+    if @service_request.new_record? && action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && !request.format.html?)
       # The user is viewing the catalog without starting a request
       return true
     elsif identity_signed_in? && (@service_request.new_record? || current_user.can_edit_service_request?(@service_request))

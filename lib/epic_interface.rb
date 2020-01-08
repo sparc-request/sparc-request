@@ -134,6 +134,10 @@ class EpicInterface
 
   # Send a full study to the Epic InterConnect server.
   def send_study(study)
+    # Preload associations to improve performance
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+
     message = full_study_message(study)
     call('RetrieveProtocolDefResponse', message)
 
@@ -142,6 +146,10 @@ class EpicInterface
 
   # Send a study creation to the Epic InterConnect server.
   def send_study_creation(study)
+    # Preload associations to improve performance
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
 
@@ -440,6 +448,8 @@ class EpicInterface
   end
 
   def emit_procedures(xml, study, arm, visit_group, cycle)
+    livs = arm.line_items_visits
+
     arm.line_items.each do |line_item|
       # We want to skip line items contained in a service request that is still in first draft
       next if ['first_draft', 'draft'].include?(line_item.sub_service_request.status)
@@ -461,8 +471,8 @@ class EpicInterface
         next
       end
 
-      liv = LineItemsVisit.for(arm, line_item)
-      visit = Visit.for(liv, visit_group)
+      liv = livs.detect{ |liv| liv.line_item_id == line_item.id }
+      visit = liv.visits.detect{ |v| v.visit_group_id == visit_group.id }
 
       # TODO: we don't know if this is right or not
       billing_modifiers = [

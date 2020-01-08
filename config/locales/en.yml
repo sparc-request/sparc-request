@@ -189,7 +189,7 @@ en:
         recruitment_start_date: "Estimated Recruitment Start Date"
         requests: "Requests"
         research_master_id: "Research Master ID"
-        selected_for_epic: "Publish Study in Epic?"
+        selected_for_epic: "Do you want to have your Study Published in Epic?"
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
@@ -277,6 +277,8 @@ en:
               invalid: "Can only have two decimal places"
         line_item:
           attributes:
+            service_id:
+              taken: "Already added to this request"
             quantity:
               min: "must be greater than or equal to #{min}"
               max: "must be less than or equal to #{max}"
@@ -288,6 +290,8 @@ en:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
+            research_master_id:
+              not_a_number: "The Research Master ID entered is invalid."
             selected_for_epic:
               inclusion: "can't be blank"
             start_date:
@@ -546,6 +550,7 @@ en:
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
     supported_types: "Supported File Types:<br>%{file_types}"
+    providers: "%{provider_count} Service Providers"
     tooltips:
       new: "Visible to Authorized Users and selected Service Providers"
       access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
@@ -706,6 +711,13 @@ en:
     edit: "Edit %{protocol_type} Information"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
+    rmid:
+      note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+      validated: "Updated to corresponding Research Master ID %{title}"
+      errors:
+        server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
+        not_found: "Research Master ID %{rmid} does not match any records in our system. Please visit <a href='%{rmid_link}' target='_blank'>%{rmid_link}</a> to create a Research Master ID."
+        taken: "Research Master ID %{rmid} is already in use by<br>Protocol #%{protocol_id}."
     summary:
       header: "%{protocol_type} Summary"
       archive: "Archive"
@@ -713,14 +725,12 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
-      rmid_validated: "Updated to corresponding Research Master ID %{title}"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
         edit: "Quick access to edit protocol information"
         archive: "Ability to hide study from all Authorized User dashboards"
         unarchive: "Click to reveal on all associated Authorized User dashboards"
-        rmid_server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
     view_details:
       button: "%{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -770,7 +780,7 @@ en:
       end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"
       epic: "Defines whether record will interface to Epic EMR."
       funding_source: "Funding source which drives research pricing for your Study/Project"
-      funding_status: "Indicates whether or not funding has been applied for or obtained."
+      funding_status: "Indicates whether or not funding has been applied for or obtained. Choose 'Pending Funding' if you are applying for grant service."
       ind_number: "Investigational New Drug Number"
       nct_number: "Clinicaltrials.gov Registry Number."
       new_study: >

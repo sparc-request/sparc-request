@@ -84,6 +84,24 @@ class LineItemsVisit < ApplicationRecord
     sum_visits_research_billing_qty * (self.subject_count || 0)
   end
 
+  def sum_visits_research_billing_qty
+    @research_billing_total ||= 
+      if self.visits.loaded?
+        self.visits.to_a.sum(&:research_billing_qty)
+      else
+        self.visits.sum(:research_billing_qty) || 0
+      end
+  end
+
+  def sum_visits_research_billing_qty_gte_1
+    @research_billing_gte1_total ||=
+      if self.visits.loaded?
+        self.visits.select{ |v| v.research_billing_qty >= 1 }.sum(&:research_billing_qty)
+      else
+        self.visits.where(Visit.arel_table[:research_billing_qty].gteq(1)).sum(:research_billing_qty) || 0
+      end
+  end
+
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
   # to compute one visit at a time
@@ -183,18 +201,5 @@ class LineItemsVisit < ApplicationRecord
     if LineItemsVisit.where(arm_id: arm_id).none?
       Arm.find(arm_id).destroy
     end
-  end
-
-  def sum_visits_research_billing_qty
-    @research_billing_total ||= 
-      if self.visits.loaded?
-        self.visits.sum(&:research_billing_qty) || 0
-      else
-        self.visits.sum(:research_billing_qty) || 0
-      end
-  end
-
-  def sum_visits_research_billing_qty_gte_1
-    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
   end
 end

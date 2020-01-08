@@ -25,7 +25,7 @@ class DocumentsController < ApplicationController
   before_action :find_protocol,             only: [:index, :new, :create, :update]
 
   def index
-    @documents = @protocol.documents
+    @documents = @protocol.documents.eager_load(:organizations)
     
     respond_to :json
   end

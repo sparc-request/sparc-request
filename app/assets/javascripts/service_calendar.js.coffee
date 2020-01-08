@@ -146,6 +146,6 @@ $ ->
 
 (exports ? this).toggleServicesToggle = (toggleOn) ->
   if toggleOn
-    $('#servicesToggle').parent().removeClass('invisible')
+    $('#servicesToggle').parents('.toggle').removeClass('invisible')
   else
-    $('#servicesToggle').parent().addClass('invisible')
+    $('#servicesToggle').parents('.toggle').addClass('invisible')

@@ -29,11 +29,20 @@ class RemoveService
   end
 
   def confirm_previously_submitted?
-    !@confirmed && @service_request.previously_submitted?
+    # If the SSR is in draft status, treat it as if it hasn't been submitted before.
+    !@confirmed && @ssr.previously_submitted? && !@ssr.is_in_draft?
   end
 
   def confirm_last_service?
     !@confirmed && @page != 'catalog' && @service_request.line_items.count == 1
+  end
+
+  def line_item
+    @line_item
+  end
+
+  def sub_service_request
+    @ssr
   end
 
   def remove_service

@@ -49,15 +49,14 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: nil)
         ### SSR SETUP ###
         @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, submitted_at: nil, service_requester: service_requester)
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         new_sr(@sr, @ssr, @ssr2)
         @sr.reload
@@ -128,15 +127,14 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
         ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         ### DELETE LINE ITEM WHICH IN TURNS DELETES SSR ###
         # mimics the service_requests_controller remove_service method
@@ -215,7 +213,6 @@ RSpec.describe NotifierLogic do
         @org2         = create(:organization_with_process_ssrs)
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
@@ -223,8 +220,8 @@ RSpec.describe NotifierLogic do
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: nil, submitted_at: nil, service_requester: service_requester)
         @ssr2.update_attribute(:status, 'draft')
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
                       create(:service_provider, identity: logged_in_user, organization: @org)
         @sr.reload
         add_li_creating_a_new_ssr_then_delete_li_destroying_ssr(@sr, ssr, @ssr2)
@@ -295,15 +292,14 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
         ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         @sr.reload
         add_li_adding_a_new_ssr(@sr, ssr, @ssr2)
@@ -379,16 +375,15 @@ RSpec.describe NotifierLogic do
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
         ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
-        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
 
         @ssr2.update_attribute(:status, 'draft')
@@ -466,16 +461,15 @@ RSpec.describe NotifierLogic do
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         @admin_email = 'hedwig@owlpost.com'
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
         ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
-        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
 
         destroyed_li_id = li_2.id
         @ssr2.update_attributes(status: 'submitted', submitted_at: Time.now.yesterday.utc + 1.hours)
@@ -557,17 +551,16 @@ RSpec.describe NotifierLogic do
         @org2         = create(:organization_with_process_ssrs)
         ### ADMIN EMAIL ###
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
-        service     = create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
         ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
-        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
                       create(:service_provider, identity: logged_in_user, organization: @org)
-        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+        li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
 
         destroyed_li_id = li_2.id
 

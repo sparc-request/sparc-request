@@ -23,7 +23,7 @@ $("[name^='document']:not([type='hidden'])").parents('.form-group').removeClass(
 $('.form-error').remove()
 <% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
-$("[name='document[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$("[name='document[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% end %>
 <% else %>

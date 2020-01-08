@@ -20,15 +20,12 @@
 
 - rmid_server_down = !Protocol.rmid_status
 
-.form-row
+.form-row#rmidContainer
   .form-group.col-12.mb-0
     %h5
-      = raw t('protocols.form.information.rmid.note', rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
+      = raw t('protocols.rmid.note', rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
   .form-group.col-6.mb-0
     = f.label :research_master_id
     = f.text_field :research_master_id, class: 'form-control research-master-field', disabled: rmid_server_down
   - if rmid_server_down
-    .form-group.col-12.mb-0
-      %span.form-text.text-danger<
-        = icon('fas', 'exclamation-circle mr-1')
-        = t('protocols.summary.tooltips.rmid_server_down')
+    = render 'protocols/form/rmid_server_down'

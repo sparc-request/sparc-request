@@ -20,13 +20,13 @@
 
 module Dashboard::ClinicalLineItemsHelper
   def new_clinical_line_item_button(opts={})
-    link_to dashboard_clinical_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: 'btn btn-success', title: t('line_items.new'), data: { toggle: 'tooltip' } do
+    link_to dashboard_clinical_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab]), remote: true, class: 'btn btn-success', title: t('line_items.new'), data: { toggle: 'tooltip' } do
       icon('fas', 'plus mr-2') + t('dashboard.sub_service_requests.study_schedule.add_services')
     end
   end
 
   def delete_clinical_line_item_button(opts={})
-    link_to edit_dashboard_clinical_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: 'btn btn-danger', title: t('line_items.delete'), data: { toggle: 'tooltip' } do
+    link_to edit_dashboard_clinical_line_items_path(ssrid: opts[:ssrid], tab: opts[:tab]), remote: true, class: 'btn btn-danger', title: t('line_items.delete'), data: { toggle: 'tooltip' } do
       icon('fas', 'trash-alt mr-2') + t('dashboard.sub_service_requests.study_schedule.delete_services')
     end
   end

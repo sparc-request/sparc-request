@@ -102,11 +102,8 @@ RSpec.describe Dashboard::ServiceCalendars do
         it 'should include all SSRs' do
           livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(@arm, @sr, @ssr, merged: true, consolidated: false)
 
-          expect(livs.keys).to contain_exactly(@ssr, @draft_ssr, @first_draft_ssr, @other_ssr)
-          expect(livs[@ssr]).to contain_exactly(@liv_pppv1, @liv_pppv2)
-          expect(livs[@draft_ssr]).to contain_exactly(@liv_draft)
-          expect(livs[@first_draft_ssr]).to contain_exactly(@liv_first_draft)
-          expect(livs[@other_ssr]).to contain_exactly(@liv_other_ssr)
+          expect(livs.keys).to contain_exactly(@ssr)
+          expect(livs[@ssr]).to contain_exactly(@liv_pppv1, @liv_pppv2, @liv_unchecked)
         end
       end
 

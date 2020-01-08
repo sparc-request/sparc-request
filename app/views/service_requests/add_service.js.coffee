@@ -17,16 +17,42 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @duplicate_service %>
-$('#modal_place').html("<%= j render 'service_requests/modals/service_already_added_modal' %>")
-$('#modal_place').modal('show')
+
+<% if @confirm_new_request %>
+ConfirmSwal.fire(
+  type: 'question'
+  title: I18n.t('proper.catalog.new_request.header')
+  text: I18n.t('proper.catalog.new_request.warning')
+  confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
+  cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
+).then (result) ->
+  if result.value
+    $.ajax
+      type: 'post'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        service_id: "<%= params[:service_id] %>"
+        confirmed: "true"
+  else if result.dismiss == 'cancel'
+    window.location = "<%= dashboard_root_path %>"
+<% elsif @duplicate_service %>
+AlertSwal.fire(
+  type: 'error'
+  title: I18n.t('proper.cart.duplicate_service.header')
+)
 <% else %>
-$('.catalog-right').replaceWith("<%= j render 'catalogs/catalog_right', service_request: @service_request, sub_service_requests: @sub_service_requests %>")
+$('.profile').replaceWith("<%= j render 'layouts/profile' %>")
+$('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
+$('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
 url = new URL(window.location.href)
 if !url.searchParams.get('srid')
   url.searchParams.append('srid', "<%= @service_request.id %>")
   window.history.pushState({}, null, url.href)
   $('input[name=srid]').val("<%= @service_request.id %>")
-  $('#login-link').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
+  $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
+  $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
+
+  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

@@ -19,26 +19,27 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItemsController < ApplicationController
-  respond_to :json, :js, :html
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_admin,             if: :in_dashboard?
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  def edit
+    @line_item = LineItem.find(params[:id])
 
-  # Used for x-editable update and validations
+    respond_to :js
+  end
+
   def update
-    line_item = LineItem.find(params[:id])
+    @line_item  = LineItem.find(params[:id])
+    @field      = params[:field]
 
-    if line_item.update_attributes(line_item_params)
-      @service_request.update_attribute(:status, 'draft')
-      line_item.sub_service_request.update_attribute(:status, 'draft')
-      
-      render json: {
-        total_per_study: render_to_string(partial: 'service_calendars/master_calendar/otf/total_per_study', locals: { line_item: line_item }),
-        max_total_direct: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', locals: { service_request: @service_request }),
-        total_costs: render_to_string(partial: 'service_calendars/master_calendar/otf/totals/total_cost_per_study', locals: { service_request: @service_request })
-      }
+    if @line_item.displayed_cost_valid?(line_item_params[:displayed_cost]) && @line_item.update_attributes(line_item_params)
+      if @field != 'displayed_cost'
+        @service_request.update_attribute(:status, 'draft') unless @service_request.previously_submitted?
+        @line_item.sub_service_request.update_attribute(:status, 'draft')
+      end
     else
-      render json: line_item.errors, status: :unprocessable_entity
+      @errors = @line_item.errors
     end
   end
 

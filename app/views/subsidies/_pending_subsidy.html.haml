@@ -17,51 +17,40 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if subsidy.present?
-  .panel.panel-default
-    .panel-heading
-      %h4.panel-title
-        = t(:subsidies)[:pending][:header]
-    %table.table.table-condensed.pending-subsidy-table
-      %thead
-        %tr.default
-          %th
-            = t(:subsidies)[:pending][:request_cost]
-          %th
-            = t(:subsidies)[:pending][:percent]
-          %th
-            = t(:subsidies)[:pending][:pi_contribution]
-          %th
-            = t(:subsidies)[:pending][:cost]
-          - if admin
-            %th.text-center
-              = t(:actions)[:approve]
-          %th.text-center
-            = t(:actions)[:edit]
-          %th.text-center
-            = t(:actions)[:delete]
-      %tbody
-        %tr
-          %td.request-cost
-            = number_to_currency(subsidy.total_request_cost/100.0)
-          %td.subsidy-percent
-            = display_as_percent(subsidy.percent_subsidy)
-          %td.subsidy-contribution
-            = number_to_currency(subsidy.pi_contribution/100.0)
-          %td.subsidy-effective-current-cost
-            = number_to_currency(subsidy.current_cost)
-          - if admin
-            %td.text-center.approve-subsidy
-              %button.btn.btn-sm.btn-success#approve-subsidy-button{ data: { subsidy_id: subsidy.id } }
-                %span.glyphicon.glyphicon-ok
-          %td.text-center.edit-subsidy
-            .btn.btn-warning.btn-sm.edit-subsidy-button{ data: { subsidy_id: subsidy.id, admin: admin.to_s } }
-              %span.glyphicon.glyphicon-edit
-          %td.text-center.delete-subsidy
-            %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
-              %span.glyphicon.glyphicon-remove
-- else
-  .col-xs-12
-    %button.btn.btn-sm.btn-success.add-subsidy-button{ title: t(:subsidies)[:tooltips][:request_subsidy], data: { ssrid: sub_service_request.id, admin: admin.to_s, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-      %span
-        = t(:subsidies)[:add]
+
+.alert.alert-warning.rounded-0.mb-0
+  %h4.alert-heading.mb-0
+    = t(:subsidies)[:pending][:header]
+%table.table.table-bordered.table-centered.mb-0.pending-subsidy
+  %thead.bg-light
+    %tr
+      %th
+        = Subsidy.human_attribute_name(:request_cost)
+      %th
+        = Subsidy.human_attribute_name(:subsidy_cost)
+      %th
+        = Subsidy.human_attribute_name(:percent_subsidy)
+      %th
+        = Subsidy.human_attribute_name(:pi_contribution)
+      %th.text-center
+        = t(:actions)[:actions]
+  %tbody
+    %tr
+      %td
+        = number_to_currency(subsidy.total_request_cost/100.0)
+      %td
+        = number_to_currency(subsidy.current_cost)
+      %td
+        = "#{display_as_percent(subsidy.percent_subsidy)}%"
+      %td
+        = number_to_currency(subsidy.pi_contribution/100.0)
+      %td.text-center<
+        .d-flex.justify-content-center
+          - if in_dashboard?
+            - if admin
+              = approve_subsidy_button(subsidy)
+            = edit_subsidy_button(subsidy)
+            = delete_subsidy_button(subsidy)
+          - else
+            = edit_subsidy_button(subsidy, srid: service_request.id)
+            = delete_subsidy_button(subsidy, srid: service_request.id)

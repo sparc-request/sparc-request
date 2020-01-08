@@ -18,55 +18,51 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).each do |ssr, line_items|
-  - locked = !ssr.can_be_edited? && !admin
+- line_items = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft)
+
+- if line_items.empty? && merged 
+  %tr
+    %td.alert-warning.text-center{ colspan: 11 }
+      = t('calendars.no_line_items')
+
+- line_items.each do |ssr, line_items|
+  - complete      = ssr.is_complete? && !in_admin?
+  - locked        = ssr.is_locked? && !in_admin?
+  - editable      = !(complete || locked)
+  - text_context  = complete ? 'success' : locked ? 'danger' : ''
+  - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
-    %th{ colspan: 14 }
-      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked)
+  %tr{ class: "alert-#{bg_context}" }
+    %th{ colspan: 11 }
+      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked, complete)
 
   -# Line Items
   - line_items.each do |line_item|
-    %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
-      %td.service-name{ colspan: 2 }
-        = line_item.service.display_service_name
-        - unless line_item.service.is_available
-          = inactive_tag
-      %td.notes.text-center
-        = notes_button(line_item, locked)
-      %td.status.text-center
+    %tr{ class: ["line-item-#{line_item.id}", "text-#{text_context}"] }
+      %td.service-name{ colspan: 2, title: calendar_service(line_item), data: { toggle: 'tooltip', html: 'true' } }
+        = calendar_service(line_item)
+      %td.notes.editable.text-center{ title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }
+        = notes_button(line_item, srid: service_request.id, disabled: !editable)
+      %td.status.text-center{ title: PermissibleValue.get_value('status', ssr.status), data: { toggle: 'tooltip' } }
         = PermissibleValue.get_value('status', ssr.status)
-      %td.service-rate.text-center
+      %td.service-rate.text-center{ title: display_service_rate(line_item), data: { toggle: 'tooltip' } }
         = display_service_rate(line_item)
-      %td.text-center
-        - if line_item.admin_rates.present?
-          %span.text-danger{data: {toggle: 'tooltip', title: t(:dashboard)[:study_level_activities][:tooltips][:modified_rate]}}
-            = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
-        -else
-          = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
-
+      = render 'service_calendars/displayed_cost', service_request: service_request, sub_service_request: sub_service_request, line_item: line_item, merged: merged
       - if line_item.otf_unit_type == 'N/A'
-        %td.unit-type-number.unit-type.text-center{ colspan: 2 }
+        %td.unit-type.text-center{ colspan: 2, title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
       - else
-        %td.unit-type-number.unit-type.text-center
+        = render 'service_calendars/units_per_quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
+        %td.unit-type.text-center{ title: line_item.otf_unit_type, data: { toggle: 'tooltip' } }
           = line_item.otf_unit_type
-        %td.unit-type-number.units-per-qty.text-center
-          - if locked || tab == 'calendar'
-            = line_item.units_per_quantity
-          - else
-            %a.edit-units-per-qty{ href: 'javascript:void(0)', data: { name: 'units_per_quantity', title: t(:calendars)[:otf][:editable_fields][:unit_quantity], value: line_item.units_per_quantity, url: line_item_path(line_item, srid: service_request.id) } }
 
-      %td.qty-type-number.qty-type.text-center
+      = render 'service_calendars/quantity', line_item: line_item, service_request: service_request, editable: editable, merged: merged
+
+      %td.quantity-type.text-center{ title: line_item.quantity_type, data: { toggle: 'tooltip' } }
         = line_item.quantity_type
-      %td.qty-type-number.qty.text-center
-        - if locked || tab == 'calendar'
-          = line_item.quantity
-        - else
-          %a.edit-qty{ href: 'javascript:void(0)', data: { name: 'quantity', title: t(:calendars)[:otf][:editable_fields][:quantity], value: line_item.quantity, url: line_item_path(line_item, srid: service_request.id) } }
 
       = render 'service_calendars/master_calendar/otf/total_per_study', line_item: line_item
 
-- unless review
+- unless in_review?
   = render 'service_calendars/master_calendar/otf/totals/otf_totals', service_request: service_request

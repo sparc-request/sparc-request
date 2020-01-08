@@ -19,42 +19,93 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroupsController < ApplicationController
-  respond_to :json
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_dashboard_access,  if: :in_dashboard?
+  before_action :find_visit_group,            only: [:edit, :update, :destroy]
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  def new
+    @arm          = Arm.find(params[:arm_id])
+    @tab          = params[:tab]
+    @visit_group  =
+      if params[:visit_group]
+        # If you mass assign position then arm_id is nil
+        # making position= set position to nil as well
+        vg = @arm.visit_groups.new(visit_group_params.except(:position))
+        vg.assign_attributes(position: visit_group_params[:position])
+        vg
+      else
+        @arm.visit_groups.new
+      end
 
-  def edit
-    @visit_group = VisitGroup.find(params[:id])
+    setup_calendar_pages
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
-  # Used for x-editable update and validations
-  def update
-    @visit_group  = VisitGroup.find(params[:id])
-    @portal       = params[:portal] == 'true'
-    @review       = params[:review] == 'true'
-    @admin        = params[:admin] == 'true'
-    @merged       = params[:merged] == 'true'
-    @consolidated = params[:consolidated] == 'true'
-    @pages        = eval(params[:pages]) rescue {}
-    @page         = params[:page].to_i
+  def create
+    @visit_group  = VisitGroup.new(visit_group_params.except(:position))
+    @visit_group.assign_attributes(position: visit_group_params[:position])
+    @tab          = params[:tab]
 
-    unless @visit_group.update_attributes(visit_group_params)
+    setup_calendar_pages
+
+    if @visit_group.save
+      flash[:success] = t('visit_groups.created')
+    else
       @errors = @visit_group.errors
     end
 
-    respond_to do |format|
-      format.js
+    @arm = @visit_group.arm ##This is after visit_group creation, so visit_count will be loaded correctly
+
+    respond_to :js
+  end
+
+  def edit
+    @visit_group.assign_attributes(visit_group_params) if params[:visit_group]
+
+    @arm = @visit_group.arm
+    @tab = params[:tab]
+
+    setup_calendar_pages
+
+    respond_to :js
+  end
+
+  def update
+    @arm = @visit_group.arm
+    @tab = params[:tab]
+
+    setup_calendar_pages
+
+    if @visit_group.update_attributes(visit_group_params)
+      flash[:success] = t('visit_groups.updated')
+    else
+      @errors = @visit_group.errors
     end
+
+    respond_to :js
+  end
+
+  def destroy
+    @arm = @visit_group.arm
+    @tab = params[:tab]
+
+    setup_calendar_pages
+    @visit_group.destroy
+
+    flash[:success] = t('visit_groups.deleted')
+
+    respond_to :js
   end
 
   private
 
   def visit_group_params
     params.require(:visit_group).permit(:day, :name, :window_before, :window_after, :position, :arm_id)
+  end
+
+  def find_visit_group
+    @visit_group = VisitGroup.find(params[:id])
   end
 end

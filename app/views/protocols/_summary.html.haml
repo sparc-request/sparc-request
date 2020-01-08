@@ -17,56 +17,68 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary#summary-panel
-  .panel-heading.justify-content-between
-    %h1.panel-title.pull-left
-      - if service_request.previously_submitted?
-        = link_to '#protocol-summary', data: { toggle: 'collapse' } do
-          %span.caret
-          = I18n.t('protocols.summary.header', protocol_type: protocol_type)
+
+- milestone_fields = [:start_date, :end_date, :recruitment_start_date, :recruitment_end_date, :initial_budget_sponsor_received_date, :budget_agreed_upon_date, :initial_amount, :negotiated_amount, :initial_amount_clinical_services, :negotiated_amount_clinical_services]
+
+.card.w-100#protocolSummaryCard
+  .card-header.justify-content-between.bg-primary.text-white{ class: action_name == 'protocol' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolSummary' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human)
+    .protocol-links-container<
+      - if in_dashboard?
+        = notes_button(protocol, protocol_id: protocol.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
+        = protocol_details_button(protocol)
+        = edit_protocol_button(protocol, permission: permission_to_edit || admin)
+        = archive_protocol_button(protocol, permission: permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol))
       - else
-        = I18n.t('protocols.summary.header', protocol_type: protocol_type)
-    .protocol-links-container
-      %button.btn.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
-        = I18n.t('protocols.view_details.button', protocol_type: protocol_type)
-      - if action_name == 'protocol'
-        = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id), class: 'btn btn-warning edit-protocol-information-button'
-  .collapse#protocol-summary{ class: service_request.previously_submitted? ? '' : 'in' }
-    .panel-body
+        = notes_button(protocol, srid: service_request.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
+        = protocol_details_button(protocol, srid: service_request.id)
+        - unless in_review?
+          = edit_protocol_button(protocol, srid: service_request.id)
+  -# Do we have errors that aren't related to the milestone fields?
+  - if @errors && (@errors.details.keys - milestone_fields).any?
+    - messages = @errors.messages.reject{ |m, _| milestone_fields.include?(m) }.map{ |m, _| @errors.full_messages_for(m) }.flatten
+    = render 'layouts/modal_errors', messages: messages, margin: false, rounded: false
+  .collapse#protocolSummary{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
+    %table.table.mb-0
       - if Setting.get_value("research_master_enabled") && protocol.is_study?
-        .row
-          %label.col-sm-3
-            = I18n.t('protocols.summary.research_master_id')
-          .col-sm-9
-            - if protocol.research_master_id.nil?
-              = I18n.t('protocols.summary.na_research_master_id')
-            - else
-              = protocol.research_master_id
-      .row
-        %label.col-sm-3
-          = I18n.t('protocols.summary.id', protocol_type: protocol_type)
-        .col-sm-9
+        %tr.d-flex
+          %td.d-inline-block.col-2
+            %label.mb-0<
+              = Protocol.human_attribute_name(:research_master_id)
+          %td.d-inline-block.col-10
+            = protocol.research_master_id.present? ? protocol.research_master_id : t('constants.na')
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0<
+            = protocol.class.human_attribute_name(:id)
+        %td.d-inline-block.col-10
           = protocol.try(:id)
-      .row
-        %label.col-sm-3{ title: t(:protocols)[:tooltips][:title], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-          = t(:protocols)[:summary][:title]
-        .col-sm-9
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: t('protocols.tooltips.title'), data: { toggle: 'tooltip', placement: 'right' } }<
+            = protocol.class.human_attribute_name(:title)
+        %td.d-inline-block.col-10
           = protocol.try(:title)
-          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_title'))
-      .row
-        %label.col-sm-3{ title: t(:protocols)[:tooltips][:short_title], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-          = t(:protocols)[:summary][:short_title]
-        .col-sm-9
-          = protocol.try(:short_title)
-          = display_rmid_validated_protocol(protocol, t('protocols.summary.rmid_short_title'))
-      - if protocol_type == 'Study'
-        .row
-          %label.col-sm-3{ title: t(:protocols)[:tooltips][:sponsor_name], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-            = t(:protocols)[:summary][:sponsor]
-          .col-sm-9
-            = protocol.try(:sponsor_name)
-      .row
-        %label.col-sm-3{ title: protocol.funding_status == "funded" ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-          = display_funding_source_title(protocol)
-        .col-sm-9
-          = display_funding_source(protocol)
+          = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:title))
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' } }<
+            = Protocol.human_attribute_name(:short_title)
+        %td.d-inline-block.col-10
+          = protocol.short_title
+          = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
+      - if protocol.is_a?(Study)
+        %tr.d-flex
+          %td.d-inline-block.col-2
+            %label.mb-0{ title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' } }<
+              = Protocol.human_attribute_name(:sponsor_name)
+          %td.d-inline-block.col-10
+            = protocol.sponsor_name
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0{ title: protocol.funded? ? t('protocols.tooltips.funding_source') : t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' } }<
+            = Protocol.human_attribute_name(protocol.funded? ? :funding_source : :potential_funding_source)
+        %td.d-inline-block.col-10
+          = protocol.display_funding_source_value

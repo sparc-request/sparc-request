@@ -17,11 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag 'document_management'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
-.col-sm-12.body-container#documents-page
-  = form_tag navigate_service_request_path(srid: @service_request.id), id: 'service-request-form' do
-    = render 'service_requests/document_management/document_management_left', service_request: @service_request, notable_type: @notable_type, notable_id: @notable_id
-    = render 'service_requests/document_management/document_management_right', service_request: @service_request, sub_service_requests: @sub_service_requests
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
+  = render '/service_requests/navigation/steps'
+  = render '/service_requests/navigation/header'
+  .row
+    .col-12.col-lg-9.mb-3.mb-lg-0#documentsPage
+      = render 'documents/table', protocol: @service_request.protocol, service_request: @service_request
+      = render "forms/table", service_request: @service_request
+    = render 'service_requests/cart/cart', service_request: @service_request
+  = render 'service_requests/navigation/footer'

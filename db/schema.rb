@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_14_181151) do
+ActiveRecord::Schema.define(version: 2019_10_31_190917) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_181151) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "auditable_id"
     t.string "auditable_type"
     t.bigint "associated_id"
@@ -219,8 +219,9 @@ ActiveRecord::Schema.define(version: 2019_05_14_181151) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "feedbacks", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "feedbacks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.text "message"
+    t.string "name"
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -266,8 +267,8 @@ ActiveRecord::Schema.define(version: 2019_05_14_181151) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean "catalog_overlord"
     t.string "credentials_other"
@@ -949,6 +950,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_181151) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "access_empty_protocols", default: false
+    t.boolean "billing_manager"
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end
@@ -967,7 +969,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_181151) do
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
-  create_table "taggings", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"

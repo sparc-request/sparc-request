@@ -1,9 +1,7 @@
 json.(@documents) do |doc|
-  json.id           doc.id
+  json.document     display_document_title(doc)
   json.type         doc.display_document_type
-  json.title        display_document_title(doc)
-  json.uploaded     format_datetime(doc.document_updated_at)
-  json.edit         documents_edit_button(doc)
-  json.delete       documents_delete_button(doc)
-  json.shared_with  doc.sub_service_requests.map(&:organization).map(&:name).join('<br>')
+  json.uploaded     format_date(doc.document_updated_at, html: true)
+  json.shared_with  display_document_providers(doc)
+  json.actions      document_actions(doc, srid: @service_request.id)
 end

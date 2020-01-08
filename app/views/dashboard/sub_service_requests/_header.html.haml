@@ -18,39 +18,79 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel-group#ssr_show_panel
-  .panel.panel-primary
-    .panel-heading.justify-content-between
-      %h4.panel-title
-        = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
-      %button.btn.btn-sm.btn-success.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
-        = t(:models)[:note][:plural]
-        %span.badge{id: "subservicerequest_#{sub_service_request.id}_notes"}
-          = sub_service_request.notes.count
+- use_epic        = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
+- use_fulfillment = Setting.get_value('fulfillment_contingent_on_catalog_manager')
+- request_valid   = sub_service_request.service_request.protocol_valid? && sub_service_request.service_request.service_details_valid?
 
-    %table.table.table-bordered.table-condensed
-      %thead
-        %tr.default
-          %th
-            = t(:dashboard)[:sub_service_requests][:header][:status]
-          %th
-            = t(:dashboard)[:sub_service_requests][:header][:owner]
-          %th
-            = t(:dashboard)[:sub_service_requests][:header][:fulfillment][:header]
-          %th
-            = "#{sub_service_request.organization.abbreviation} #{t(:dashboard)[:sub_service_requests][:header][:cost]}"
-          %th
-            = t(:dashboard)[:sub_service_requests][:header][:user_cost]
-
-      %tbody
-        %tr
-          %td.text-center#service_request_status_dropdown{ title: sub_service_request.previously_submitted? ? '' : t(:dashboard)[:sub_service_requests][:header][:not_submitted], data: { toggle: 'tooltip', container: 'body' } }
-            = select_tag "sub_service_request_status", options_for_select(ssr_select_options(sub_service_request), sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker', disabled: !sub_service_request.previously_submitted?
-          %td.text-center#service_request_owner_dropdown
-            = service_request_owner_display(sub_service_request)
-          %td.text-center#ssr_fulfillment_status
-            = ready_for_fulfillment_display(current_user, sub_service_request)
-          %td.effective_cost
-            = number_to_currency(effective_current_total(sub_service_request))
-          %td.display_cost
-            = number_to_currency(user_display_protocol_total(sub_service_request.protocol, sub_service_request.service_request))
+.card.mb-5#subServiceRequestSummary
+  .card-header.justify-content-between.bg-primary.text-white
+    %h3.mb-0<
+      = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.display_id})"
+    .ssr-links-container.d-flex<
+      = notes_button(sub_service_request, model: t('dashboard.sub_service_requests.header.notes_label'), class: 'mr-1', ssrid: sub_service_request.id)
+      = export_ssr_button(sub_service_request)
+      - unless sub_service_request.in_work_fulfillment? || sub_service_request.is_complete?
+        .mx-3
+        = delete_ssr_button(sub_service_request)
+  %table.table.table-bordered.table-centered.table-fixed.mb-0
+    %thead.bg-light
+      %tr
+        %th.text-center
+          = t('dashboard.sub_service_requests.header.status.header')
+        %th.text-center
+          = t('dashboard.sub_service_requests.header.owner.header')
+        - if use_epic
+          %th.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }<
+            - unless request_valid
+              = icon('fas', 'exclamation-circle text-warning mr-1')
+            = t('dashboard.sub_service_requests.header.epic.header')
+        - if use_fulfillment
+          %th.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }<
+            - unless request_valid
+              = icon('fas', 'exclamation-circle text-warning mr-1')
+            = t('dashboard.sub_service_requests.header.fulfillment.header')
+        - if sub_service_request.is_complete? && !sub_service_request.available_surveys.empty?
+          %th.text-center
+            = t('dashboard.sub_service_requests.header.surveys.header')
+        %th.text-center
+          = t('dashboard.sub_service_requests.header.cost', provider: sub_service_request.organization.abbreviation)
+        %th.text-center
+          = t('dashboard.sub_service_requests.header.user_cost')
+    %tbody
+      %tr
+        %td.text-center{ title: sub_service_request.previously_submitted? ? '' : t('dashboard.sub_service_requests.tooltips.not_submitted'), data: { toggle: 'tooltip', container: 'body' } }
+          .dropdown
+            = ssr_status_dropdown_button(sub_service_request)
+            .dropdown-menu{ aria: { labelledby: "requestStatus" } }
+              .dropdown-header
+                %h5.mb-0
+                  = t('dashboard.sub_service_requests.header.status.menu_header')
+              .dropdown-divider
+              = ssr_status_dropdown_statuses(sub_service_request)
+        %td.text-center
+          - if sub_service_request.status == 'draft'
+            .alert.alert-sm.alert-warning.mb-0
+              = t('dashboard.sub_service_requests.header.owner.not_available', status: PermissibleValue.get_value('status', 'draft'))
+          - else
+            .dropdown
+              %button.btn.btn-block.btn-light.dropdown-toggle#requestOwner{ role: 'button', data: { toggle: 'dropdown', flip: 'false', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }
+                = sub_service_request.owner.try(&:full_name) || t('dashboard.sub_service_requests.header.owner.none')
+              .dropdown-menu{ aria: { labelledby: "requestStatus" } }
+                .dropdown-header
+                  %h5.mb-0
+                    = t('dashboard.sub_service_requests.header.owner.menu_header')
+                .dropdown-divider
+                = link_to raw("&nbsp;"), dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: nil }), remote: true, method: :put, class: 'dropdown-item'
+                - sub_service_request.candidate_owners.each do |owner|
+                  = link_to owner.full_name, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: owner.id }), remote: true, method: :put, class: 'dropdown-item'
+        - if use_epic
+          %td.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
+            = push_to_epic_ssr_button(sub_service_request, request_valid)
+        - if use_fulfillment
+          %td.text-center#fulfillmentStatusContainer{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
+            = ready_for_fulfillment_display(sub_service_request, request_valid)
+        - if sub_service_request.is_complete? && !sub_service_request.available_surveys.empty?
+          %td.text-center#surveys
+            = resend_surveys_ssr_button(sub_service_request)
+        = render 'dashboard/sub_service_requests/effective_cost', sub_service_request: sub_service_request
+        = render 'dashboard/sub_service_requests/displayed_cost', sub_service_request: sub_service_request

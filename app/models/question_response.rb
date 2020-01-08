@@ -24,41 +24,31 @@ class QuestionResponse < ActiveRecord::Base
 
   delegate :depender, to: :question
 
-  validate :phone_number_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'phone' }
-  validate :email_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'email' }
-  validate :zipcode_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'zipcode' }
+  validates_format_of :content, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'phone' }
+  validates_format_of :content, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'email' }
+  validates_format_of :content, with: /\A[0-9]{5}(?:-[0-9]{4})?\z/, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'zipcode' }
   
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
   validates_presence_of :content, if: Proc.new{ |qr| qr.must_be_answered? }
+  validate :checkbox_presence, if: Proc.new{ |qr| qr.must_be_answered? && (qr.question.question_type == 'checkbox' || qr.question.question_type == 'multiple_dropdown') }
   
   # Callbacks occur after validation. Any blank responses at this point must
   # have a depender that was not selected, therefore we don't want to save
   # a response for the particular question. Replaces old controller logic.
   before_save :remove_unanswered
 
-  def phone_number_format
-    if content.match(/\d{10}/).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
+  # This is to sanitize phone numbers for validation
+  def content=(val)
+    if question.try(:question_type) == 'phone'
+      val = val.gsub(/\(|\)|-|\s/, '').gsub(I18n.t('constants.phone.extension'), '#') rescue ""
     end
+
+    write_attribute(:content, val)
   end
 
-  def email_format
-    # Valid Formats:
-    # X@X.X
-    # X_X@X.X
-    # X@X.X.X
-    # X-X@X.X
-    if content.match(Devise::email_regexp).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:email_invalid])
-    end
-  end
-
-  def zipcode_format
-    # Valid Formats:
-    # XXXXX
-    # XXXXX-XXXX
-    if content.match(/\A[0-9]{5}(?:-[0-9]{4})?\z/).nil?
-      errors.add(:base, I18n.t(:errors)[:question_responses][:zipcode_invalid])
+  def checkbox_presence
+    if JSON.parse(content).all?(&:blank?)
+      errors.add(:content, :blank)
     end
   end
 
@@ -86,10 +76,14 @@ class QuestionResponse < ActiveRecord::Base
   end
 
   def depender_selected?
-    self.depender && self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id }.try(:content).try(:downcase) == self.depender.content.downcase
+    self.depender && split_options(self.response.question_responses.detect{ |qr| qr.question_id == self.depender.question_id }.try(:content).try(:downcase)).try(:include?, self.depender.content.downcase)
   end
 
   private
+
+  def split_options(content)
+    !content.nil? && content.start_with?("[\"") && content.end_with?("\"]") ? content.tr("[]\"", "").split(',').map(&:strip) : content
+  end
 
   def remove_unanswered
     return false if self.required? && self.content.blank?

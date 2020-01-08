@@ -32,10 +32,10 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
     end
 
     it "should render dashboard/notifications/_dropdown.html.haml" do
-      render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user
+      render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, table: 'inbox'
 
       expect(response).to render_template(partial: 'dashboard/notifications/dropdown',
-              locals: { sub_service_request: @sub_service_request, user: @logged_in_user })
+              locals: { sub_service_request: @sub_service_request })
     end
   end
 end

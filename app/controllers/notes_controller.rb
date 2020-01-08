@@ -19,54 +19,59 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class NotesController < ApplicationController
-  respond_to :js, :json
-
-  before_action :find_notable, except: [:destroy]
-  before_action :find_note, only: [:edit, :update, :destroy]
-  before_action :set_review
+  before_action :initialize_service_request,  unless: :in_dashboard?
+  before_action :authorize_identity,          unless: :in_dashboard?
+  before_action :authorize_dashboard_access,  if: :in_dashboard?
+  before_action :find_note,                   only: [:edit, :update, :destroy]
+  before_action :find_notable
 
   def index
-    respond_to do |format|
-      format.js
-      format.json {
-        @notes = @notable.notes
-      }
-    end
-  end
+    @notes    = @notable.notes
+    @note     = current_user.notes.new(note_params)
+    @disabled = params[:disabled] == 'true'
 
-  def new
-    @note = current_user.notes.new(note_params)
+    respond_to :js
   end
 
   def create
-    @note  = current_user.notes.new(note_params)
-    @notes = @notable.notes
+    @note = current_user.notes.new(note_params)
 
     if @note.save
-      flash[:success] = t(:notes)[:created]
+      @notes  = @notable.notes
+      @note   = current_user.notes.new(notable_id: @notable_id, notable_type: @notable_type)
+      @count  = helpers.format_count(@notes.count, 1)
     else
       @errors = @note.errors
     end
+
+    respond_to :js
   end
 
   def edit
+    respond_to :js
   end
 
   def update
     @notes = @notable.notes
 
     if @note.update_attributes(note_params)
-      flash[:success] = t(:notes)[:updated]
+      @notes  = @notable.notes
+      @note   = current_user.notes.new(notable_id: @notable_id, notable_type: @notable_type)
     else
       @errors = @note.errors
     end
+
+    respond_to :js
   end
 
   def destroy
+    @selector = @note.unique_selector
     @note.destroy
-    @notes = @note.notable.notes
+    @notes    = @notable.notes
+    @note     = current_user.notes.new(notable_id: @notable_id, notable_type: @notable_type)
+    @count    = helpers.format_count(@notes.count, 1)
 
-    flash[:success] = t(:notes)[:destroyed]
+    respond_to :js
   end
 
   private
@@ -76,16 +81,12 @@ class NotesController < ApplicationController
   end
 
   def find_notable
-    @notable_id = note_params[:notable_id]
-    @notable_type = note_params[:notable_type]
-    @notable = @notable_type.constantize.find(@notable_id)
+    @notable_id   = @note ? @note.notable_id    : note_params[:notable_id]
+    @notable_type = @note ? @note.notable_type  : note_params[:notable_type]
+    @notable      = @note ? @note.notable       : @notable_type.constantize.find(@notable_id)
   end
 
   def find_note
     @note = Note.find(params[:id])
-  end
-
-  def set_review
-    @review = params[:review] == 'true'
   end
 end

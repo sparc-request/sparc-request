@@ -27,4 +27,6 @@ class StudyTypeQuestion < ApplicationRecord
 
   scope :active, -> { joins(:study_type_question_group).where(study_type_question_groups: { active: true })  }
   scope :inactive, -> { joins(:study_type_question_group).where(study_type_question_groups: { active: false }) }
+
+  delegate :active, :active?, to: :study_type_question_group
 end

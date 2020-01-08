@@ -18,42 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-= javascript_include_tag 'funding/documents'
-#custom-toolbar
-  .row.tabs{role: 'tabpanel'}
-    #document_tabs{data: {selected: "loi"}}
-      .col-lg-6
-        %button.btn.btn-primary.btn-block.document_nav#documents_loi
-          %span.pull-left
-            %span.glyphicon.glyphicon-file
-            %span
-              = t(:funding)[:download][:loi]
-          %span.glyphicon.glyphicon-refresh.pull-right
-      .col-lg-6
-        %button.btn.btn-default.btn-block.document_nav#documents_application
-          %span.pull-left
-            %span.glyphicon.glyphicon-file
-            %span
-              = t(:funding)[:download][:application]
-          %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
+- tab = cookies["table-type-#{@service.id}"]
 
-.bootstrap-table-dropdown-overflow
-  %table.documents.bootstrap_table{id: "document-table", data: {pagination: 'true', 'page-size' => 25, 'show-columns' => 'true', 'show-export' => 'true', 'export-types' => ['csv'], toggle: 'table', search: "true", url: documents_funding_service_path(id: service.id, table: "loi", format: :json ), 'sort-name' => 'srid', 'sort-order' => 'ssc', 'row-style' => 'documents_row_style'}}
-    %thead.primary-header
-      %tr
-        %th{data: {class: 'col-sm-1 srid', align: "left", sortable: "true", field: "srid"}}
-          = t(:funding)[:download][:table][:srid]
-        %th{data: {class: 'col-sm-1 pi', align: "left", sortable: "true", field: "pi"}}
-          = t(:funding)[:download][:table][:pi]
-        %th{data: {class: 'col-sm-1 institution', align: "left", sortable: "true", field: "institution"}}
-          = t(:funding)[:download][:table][:institution]
-        %th{data: {class: 'col-sm-2 short_title', align: "left", sortable: "false", field: "short_title"}}
-          = t(:funding)[:download][:table][:short_title]
-        %th{data: {class: 'col-sm-3 doc_title', align: "left", sortable: "false", field: "doc_title"}}
-          = t(:funding)[:download][:table][:doc_title]
-        %th{data: {class: 'col-sm-1 uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter"}}
-          = t(:funding)[:download][:table][:uploaded]
-        %th{data: {class: 'col-sm-1 status', align: "left", sortable: "true", field: "status"}}
-          = t(:funding)[:download][:table][:status]
-        %th{data: {class: 'col-sm-2 Actions', align: "center", sortable: "false", field: "actions"}}
-          = t(:funding)[:download][:table][:actions][:label]
+.tabs.w-100#docTabs
+  %nav.nav.nav-tabs.mt-4{ role: 'tablist' }
+    = link_to t(:funding)[:download][:loi], '#loi', class: 'nav-link h4 mb-0 active', data: { toggle: 'tab' }
+    = link_to t(:funding)[:download][:application], '#application', class: 'nav-link h4 mb-0', data: { toggle: 'tab' }
+  .tab-content
+    .tab-pane.fade.show.active#loi{ role: 'tabpanel' }
+      = render "loi_table"
+    .tab-pane.fade#application{ role: 'tabpanel' }
+      = render "application_table"

@@ -18,20 +18,22 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-.bootstrap-table-dropdown-overflow
-  #epic-queues-custom-toolbar
-  %table.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queues_path(user_change: true), striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
+.card.border-top-0
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t(:dashboard)[:epic_queues][:headers][:protocol_update]
+  %table.table-interactive.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queues_path(user_change: true) } }
     %thead.primary-header
       %tr
-        %th{data: { field: "protocol", align: "left", sortable: 'true', class: 'text-primary' } }
-          = t(:epic_queues)[:protocol]
+        %th{data: { field: "protocol", align: "left", sortable: 'true' } }
+          = t(:dashboard)[:epic_queues][:protocol]
         %th{data: { field: "pis", align: "left", sortable: 'true' } }
-          = t(:epic_queues)[:PIs]
+          = t(:dashboard)[:epic_queues][:PIs]
         %th{data: { field: 'created_at', align: 'left', sortable: 'true' } }
-          = t(:epic_queues)[:created_at]
+          = t(:dashboard)[:epic_queues][:created_at]
         %th{data: { field: 'name', align: 'left', sortable: 'true' } }
-          = t(:epic_queues)[:by]
+          = t(:dashboard)[:epic_queues][:by]
         %th{data: { field: "date", align: "left", sortable: 'true', sorter: "dateSorter" } }
-          = t(:epic_queues)[:date]
+          = t(:dashboard)[:epic_queues][:date]
         %th{data: { field: "status", align: "left", sortable: 'true' } }
-          = t(:epic_queues)[:status]
+          = t(:dashboard)[:epic_queues][:status]

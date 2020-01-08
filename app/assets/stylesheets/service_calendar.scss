@@ -1,0 +1,134 @@
+// Copyright © 2011-2019 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#studyScheduleTab #serviceCalendar #billingStrategyTab,
+#studyScheduleTab #serviceCalendar #templateTab {
+  .service-calendar-container .service-calendar-table .visit-group:last-child::before {
+    border-right: 0;
+  }
+}
+
+#serviceCalendar .service-calendar-container {
+  .service-calendar-table {
+    border-left: 0;
+    border-right: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+    table-layout: fixed;
+
+    &> thead > tr > th {
+      @extend .sticky-top;
+      border: 0;
+      background: white;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-right: $table-border-width solid $table-border-color;
+        border-bottom: $table-border-width solid $table-border-color;
+        pointer-events: none;
+      }
+    }
+
+    tbody th:first-child, tbody td:first-child {
+      border-left: 0;
+    }
+
+    &> thead > tr:first-child > th:last-child::before, &> thead > tr.check-visits-row th:last-child::before, tbody th:last-child, tbody td:last-child {
+      border-right: 0;
+    }
+
+    tbody tr:last-child td, tbody tr:last-child th {
+      border-bottom: 0;
+    }
+
+    th, td {
+      vertical-align: middle;
+      padding: 0.5rem 0.25rem;
+    }
+  }
+
+  .visit-group-select .dropdown-menu {
+    li:not(.active) .vg-page-header {
+      @extend .bg-light;
+    }
+
+    .vg-page-header {
+      @extend .border-top;
+      @extend .border-bottom;
+      @extend .font-weight-bold;
+    }
+  }
+
+  .visit-group table, .visit table {
+    table-layout: fixed;
+  }
+
+  th.visit-group, th.check-column, td.check-row, td.notes, td.displayed-cost, td.subject-count, td.visit:not(.calendar-visit), td.units-per-quantity, td.quantity {
+    &.editable {
+      transition: $btn-transition;
+
+      &:hover {
+        cursor: pointer;
+        background: theme-color('light');
+
+        a {
+          @extend .active;
+        }
+      }
+    }
+
+    &:not(.editable):hover {
+      cursor: not-allowed;
+
+      input {
+        cursor: not-allowed;
+      }
+    } 
+
+    .visit-quantity {
+      transform: scale(1.5);
+      cursor: pointer;
+    }
+  }
+
+  tbody td, tbody th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Admin Styling
+.card #serviceCalendar {
+  nav .nav-link:first-of-type {
+    border-left: 0;
+  }
+
+  .card {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+}

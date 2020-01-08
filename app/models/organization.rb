@@ -114,6 +114,10 @@ class Organization < ApplicationRecord
     where(is_available: true)
   }
 
+  scope :not_available, -> {
+    where(is_available: false)
+  }
+
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
@@ -226,15 +230,15 @@ class Organization < ApplicationRecord
   # deep children.
   def all_child_services(include_self=true)
     org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
-    Service.where(organization_id: org_ids).sort_by{|x| x.name}
+    Service.where(organization_id: org_ids)
   end
 
-  def has_one_time_fee_services?
-    Service.where(one_time_fee: true, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  def has_one_time_fee_services?(opts={})
+    Service.where(one_time_fee: true, is_available: (opts[:is_available] ? opts[:is_available] : [true, false]), organization_id: Organization.authorized_child_organization_ids([self.id])).any?
   end
 
-  def has_per_patient_per_visit_services?
-    Service.where(one_time_fee: false, organization_id: Organization.authorized_child_organization_ids([self.id])).any?
+  def has_per_patient_per_visit_services?(opts={})
+    Service.where(one_time_fee: false, is_available: (opts[:is_available] ? opts[:is_available] : [true, false]), organization_id: Organization.authorized_child_organization_ids([self.id])).any?
   end
 
   ###############################################################################
@@ -413,7 +417,15 @@ class Organization < ApplicationRecord
 
   def get_editable_statuses
     if process_ssrs
-      self.use_default_statuses ? AvailableStatus.defaults : self.editable_statuses.selected.pluck(:status)
+      if self.use_default_statuses
+        AvailableStatus.defaults
+      else
+        if self.editable_statuses.loaded?
+          self.editable_statuses.select{ |es| es.selected? }.map(&:status)
+        else
+          self.editable_statuses.selected.pluck(:status)
+        end
+      end
     elsif process_ssrs_parent
       process_ssrs_parent.get_editable_statuses
     else

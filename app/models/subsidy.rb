@@ -23,14 +23,22 @@ class Subsidy < ApplicationRecord
 
   belongs_to :sub_service_request
   belongs_to :identity, foreign_key: 'approved_by'
+
   has_many :notes, as: :notable
 
   delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true
   delegate :max_dollar_cap, :max_percentage, :default_percentage, to: :subsidy_map, allow_nil: true
+
   alias_attribute :total_request_cost, :direct_cost_total
 
   validate :contribution_caps
+
+  validates_numericality_of :percent_subsidy, greater_than: 0
+
+  def friendly_notable_type
+    Subsidy.model_name.human
+  end
 
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
@@ -49,8 +57,6 @@ class Subsidy < ApplicationRecord
       errors.add(:percent_subsidy, "must be less than than the cap of #{max_percentage}")
     elsif pi_contribution > total_request_cost
       errors.add(:pi_contribution, "must be less than than the total request cost")
-    elsif percent_subsidy == 0
-      errors.add(:percent_subsidy, "must not be 0")
     end
   end
 

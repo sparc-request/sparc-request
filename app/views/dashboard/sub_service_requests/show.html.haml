@@ -18,38 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= hidden_field_tag :sub_service_request_id, @sub_service_request.id
-
-#sub_service_request_header
+.w-100#subServiceRequestDetails
   = render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request
-
-.tabs{role: 'tabpanel'}
-  %ul.nav.nav-tabs.nav-justified{role: 'tablist', data: {protocol_id: @protocol.id, ssr_id: @sub_service_request.id}}
-    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] ? (cookies['admin-tab'] == 'details-tab' ? 'active' : '') : 'active'}
-      = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:header], "#details", {id: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab', data: {partial_name: 'sub_service_requests/request_details'}}
-    - if @sub_service_request.process_ssrs_organization.has_per_patient_per_visit_services?
-      %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
-        = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header], "#study_schedule", {id: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab', data: {partial_name: 'sub_service_requests/per_patient_per_visit'}}
-    - if @sub_service_request.process_ssrs_organization.has_one_time_fee_services?
-      %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
-        = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header], "#study_level_activities", {id: 'study_level_activities-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_level_activities-tab', data: {partial_name: 'study_level_activities/study_level_activities_table'}}
-    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
-      = link_to t(:dashboard)[:sub_service_requests][:tabs][:history][:header], "#history", {id: 'history-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'history-tab', data: {partial_name: 'sub_service_requests/history/status_changes'}}
-    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}
-      %a#notifications-tab{href: "#notifications", role: 'tab', 'aria-controls' => 'notifications-tab', data: {toggle: 'tab', partial_name: 'notifications/notifications'}}
-        = t(:dashboard)[:sub_service_requests][:tabs][:notifications][:header]
-        %span#notification_count.badge
-          = @user.unread_notification_count(@sub_service_request.id)
-
-  .tab-content
-    .tab-pane#details{role: 'tabpanel', class: cookies['admin-tab'] == 'details-tab' ? 'active' : '', data: {partial_name: 'sub_service_requests/request_details'}}
-      = render 'dashboard/sub_service_requests/request_details', protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request if cookies['admin-tab'] == 'details-tab'
-    .tab-pane#study_schedule{role: 'tabpanel', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
-      #per_patient_services{data: {partial_name: 'sub_service_requests/per_patient_per_visit'}}
-        = render 'dashboard/sub_service_requests/per_patient_per_visit', sub_service_request: @sub_service_request, service_request: @service_request if cookies['admin-tab'] == 'study_schedule-tab'
-    .tab-pane#study_level_activities{role: 'tabpanel', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : '', data: {partial_name: 'study_level_activities/study_level_activities_table'}}
-      = render 'dashboard/study_level_activities/study_level_activities_table', sub_service_request: @sub_service_request if cookies['admin-tab'] == 'study_level_activities-tab'
-    .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : '', data: {partial_name: 'sub_service_requests/history/status_changes'}}
-      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request: @sub_service_request, tab: 'status_changes' if cookies['admin-tab'] == 'history-tab'
-    .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : '', data: {partial_name: 'notifications/notifications'}}
-      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user if cookies['admin-tab'] == 'notifications-tab'
+  = render 'dashboard/sub_service_requests/tabs', sub_service_request: @sub_service_request

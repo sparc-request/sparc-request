@@ -18,17 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% unless @errors %>
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
-$("#details").html("<%= j render 'dashboard/sub_service_requests/request_details', protocol: @sub_service_request.protocol, service_request: @sub_service_request.service_request, sub_service_request: @sub_service_request %>")
-
-$("#status-history-table").bootstrapTable 'refresh'
-
-$(".selectpicker").selectpicker()
-$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY')
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-
+<% if @errors %>
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash', errors: { 'alert' => @errors } %>")
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$("#statusHistoryTable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

@@ -1,0 +1,55 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.card.w-100.border-top-0
+  - unless sub_service_request.has_one_time_fee_services?
+    .alert.alert-warning.mb-0.rounded-0
+      = t(:dashboard)[:sub_service_requests][:study_level_activities][:none]
+  #studyLevelActivitiesTableToolbar
+    = new_sla_button(ssrid: sub_service_request.id)
+  %table#studyLevelActivitiesTable{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", url: dashboard_study_level_activities_path(format: :json, ssrid: sub_service_request.id), toolbar: "#studyLevelActivitiesTableToolbar" } }
+    %thead.bg-light
+      %tr
+        %th{ data: { class: 'service', align: 'left', field: 'service' } }
+          = LineItem.human_attribute_name(:service)
+        %th{ data: { class: 'fulfillments', align: 'center', switchable: 'false', field: 'fulfillments' } }
+          = Fulfillment.model_name.plural.capitalize
+        %th{ data: { class: 'fulfillments', align: 'center', field: 'notes' } }
+          = Note.model_name.plural.capitalize
+        %th{ data: { class: 'units-requested', align: 'left', field: 'units_requested', visible: 'false' } }
+          = LineItem.human_attribute_name(:units_per_quantity)
+        %th{ data: { class: 'unit-type', align: 'left', field: 'unit_type', visible: 'false' } }
+          = LineItem.human_attribute_name(:unit_type)
+        %th{ data: { class: 'qty_req', align: 'left', sortable: 'true', field: 'quantity_requested' } }
+          = LineItem.human_attribute_name(:quantity)
+        %th{ data: { class: 'qty_rem', align: 'left', sortable: 'true', field: 'quantity_type' } }
+          = LineItem.human_attribute_name(:quantity_type)
+        %th{ data: { class: 'service-rate', align: 'left', sortable: 'true', field: 'service_rate' } }
+          = LineItem.human_attribute_name(:service_rate)
+        %th{ data: { class: 'cost', align: 'left', sortable: 'true', field: 'cost' } }
+          = LineItem.human_attribute_name(:displayed_cost)
+        %th{ data: { class: 'total', align: 'left', sortable: 'true', field: 'total', visible: 'false' } }
+          = t('calendars.otf.header_fields.total_per_study').gsub('<br>', '')
+        %th{ data: { class: 'date-started', align: 'left', sortable: 'true', field: 'date_started', sorter: 'dateSorter' } }
+          = LineItem.human_attribute_name(:in_process_date)
+        %th{ data: { class: 'date-completed', align: 'left', sortable: 'true', field: 'date_completed', sorter: 'dateSorter' } }
+          = LineItem.human_attribute_name(:complete_date)
+        %th{ data: { class: 'actions', align: 'center', field: 'actions' } }
+          = t('actions.actions')

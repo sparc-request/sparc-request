@@ -17,13 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - question.options.each do |option|
-  .form-group.option{ data: { question_id: question.id, option_id: option.id } }
+  .form-check.option.mb-0{ data: { question_id: question.id, option_id: option.id } }
     - if ['new', 'edit', 'preview'].include?(action_name)
-      .col-lg-1.text-center
-        = qr.check_box :content, { multiple: true }, option.content, nil
-      = option.content
+      = label_tag nil, class: 'mb-0' do
+        = qr.check_box :content, { multiple: true, checked: question_response.content.nil? ? false : multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), class: 'form-check-input mt-1' }, option.content, ""
+        .form-check-label
+          = option.content
     - else
-      .col-lg-1.text-center
-        = check_box_tag :content_checkbox, '', multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), disabled: true, multiple: true
-      = option.content
+      = check_box_tag :content_checkbox, '', question_response.content.nil? ? false : multiple_select_formatter(question_response.content.try(:downcase)).include?(option.content.downcase), disabled: true, multiple: true, class: 'form-check-input'
+      .form-check-label
+        = option.content

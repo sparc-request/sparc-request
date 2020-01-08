@@ -22,35 +22,14 @@ class Fulfillment < ApplicationRecord
   audited
 
   belongs_to :line_item
-  has_many :notes, as: :notable, dependent: :destroy
-  validates :date, presence: true
 
-  validates :time, format: { with: /\A\d+(?:\.\d{0,2})?\z/,
-                             message: 'cannot be a decimal with more than two places after the decimal point. Correct format: "1.23"' },
-                             numericality: { greater_than: 0,
-                                             message: 'must be numerical'}
+  has_many :notes, as: :notable, dependent: :destroy
+
+  validates :date, :time, :timeframe, presence: true
+
+  validates :time, format: { with: /\A\d+(?:\.\d{0,2})?\z/ }, numericality: { greater_than: 0 }, if: Proc.new{ |f| f.time.present? }
 
   default_scope -> { order('fulfillments.id ASC') }
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
-  CWF_QUANTITY_TYPES = ['Each', 'Sample', 'Aliquot', '3kg unit']
-  UNIT_TYPES = ['N/A', 'Each', 'Sample', 'Aliquot', '3kg unit']
-
-  def date=(date_arg)
-    write_attribute(:date, Time.strptime(date_arg, "%m/%d/%Y")) if date_arg.present?
-  end
-
-  def within_date_range? start_date, end_date
-    date = self.date.try(:to_date)
-
-    if (date.nil? or start_date.nil? or end_date.nil?)
-      false
-    elsif (date >= start_date) && (date <= end_date)
-      true
-    else
-      false
-    end
-  end
-
-  private
 end

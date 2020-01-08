@@ -17,28 +17,46 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @errors.present? %>
-$("#modal_place #modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
-$("#modal_place").scrollTop(0)
-<% else %>
-$("#modal_place").modal('hide')
-# Send the user back to dashboard if theyre a member and not an admin
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-# Update the entire view to account for the current users rights change
-<% elsif @current_user_updated %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin, user: @user)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false)) %>")
 
-$("#associated-users-table").bootstrapTable()
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
+<% if @errors %>
+$("[name^='project_role']:not([type='hidden']), #professionalOrganizationForm select").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-reset_service_requests_handlers()
-<% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+<% end %>
+
+<% @protocol_role.identity.errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='project_role[identity_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+
+<% if @protocol_role.identity == current_user && !current_user.catalog_overlord? %>
+
+<% if !@admin && ['none'].include?(@protocol_role.project_rights) %>
+# Redirect to Dashboard if removing your rights as a user and you don't have admin/overlord access
+window.location = "<%= dashboard_root_path %>"
+<% else %>
+# Refresh page contents to reflect updated rights for admins
+$("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
+$("#authorizedUsersCard").replaceWith("<%= j render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin %>")
+$("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin  %>")
+$('.service-request-card:not(:eq(0))').remove()
+$(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+
+$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#documentsTable").bootstrapTable()
+$(".service-requests-table").bootstrapTable()
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% end %>
+
+<% else %>
+$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#modalContainer").modal('hide')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% end %>
 <% end %>

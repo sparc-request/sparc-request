@@ -17,18 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.modal-lg#requests-modal
+
+.modal-dialog.modal-xl#protocolRequestsModal{ role: 'document'}
   .modal-content
     .modal-header
-      %button.close{type: 'button', data: {dismiss: 'modal'}}
-        %span{aria: {hidden:'true'}} &times;
-        %span.sr-only &times;
-      %h4.modal-title.text-center
-        = protocol.short_title
+      %h3.modal-title
+        = "#{protocol.model_name.human} ##{protocol.id}"
+        %small.text-muted
+          = protocol.short_title
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - protocol.service_requests.each do |sr|
-        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: true, show_view_ssr_back: show_view_ssr_back
+        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit
     .modal-footer
-      .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 
-          = t(:actions)[:close]
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

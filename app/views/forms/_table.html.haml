@@ -17,21 +17,35 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- review ||= false
-- complete ||= false
-.bootstrap-table-dropdown-overflow
-  #forms-custom-toolbar
-.bootstrap-table-dropdown-overflow
-  %table#forms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: forms_path(format: :json, srid: service_request.id, complete: complete.to_s, review: review.to_s), striped: "true", toolbar: "#forms-custom-toolbar" } }
-    %thead.primary-header
-      %tr
-        %th.col-sm-2{ data: { field: "srid", align: "left", sortable: "true" } }
-          = t(:forms)[:table_fields][:srid]
-        %th.col-sm-4{ data: { field: "association", align: "left", sortable: "true" } }
-          = t(:forms)[:table_fields][:association]
-        %th.col-sm-2{ data: { field: "title", align: "left", sortable: "true" } }
-          = t(:forms)[:table_fields][:title]
-        %th.col-sm-1{ data: { field: "completed", align: "center", sortable: "false" } }
-          = t(:forms)[:table_fields][:completed]
-        %th.col-sm-3{ data: { field: "options", align: "center", sortable: "false" } }
-          = t(:forms)[:table_fields][:options]
+
+- protocol ||= nil
+- service_request ||= nil
+- has_forms = service_request ? service_request.has_associated_forms? : protocol.service_requests.any?(&:has_associated_forms?)
+- has_completed_forms = service_request ? service_request.completed_forms.any? : protocol.service_requests.map(&:completed_forms).flatten.present?
+
+.card.w-100#forms{ class: !in_dashboard? || has_completed_forms ? '' : 'd-none' }
+  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: '#formsCollapse' } }
+    %h3.mb-0{ title: t(:proper)[:document_management][:tooltips][:forms], data: { toggle: 'tooltip' } }<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      - if in_dashboard?
+        = t(:dashboard)[:forms][:header]
+      - else
+        = t(:proper)[:document_management][:forms_notice]
+  .collapse.show#formsCollapse
+    - if has_forms
+      %table#formsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: forms_path(format: :json, protocol_id: protocol.try(:id), srid: service_request.try(:id)) } }
+        %thead.bg-light
+          %tr
+            %th{ data: { field: "srid", align: "left", sortable: "true" } }
+              = Form.human_attribute_name(:respondable_id)
+            %th{ data: { field: "association", align: "left", sortable: "true" } }
+              = Form.human_attribute_name(:surveyable)
+            %th{ data: { field: "title", align: "left", sortable: "true" } }
+              = Form.human_attribute_name(:title)
+            %th{ data: { field: "completed", align: "center", sortable: "false" } }
+              = Form.human_attribute_name(:completed)
+            %th{ data: { field: "actions", align: "center", sortable: "false" } }
+              = t('actions.actions')
+    - else
+      .alert.alert-success.mb-0.rounded-0.text-center
+        = t('forms.none')

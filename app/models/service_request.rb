@@ -27,6 +27,8 @@ class ServiceRequest < ApplicationRecord
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
+  has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
@@ -34,6 +36,7 @@ class ServiceRequest < ApplicationRecord
 
   has_many :arms, through: :protocol
   has_many :services, through: :line_items
+  has_many :forms, through: :services
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :visit_groups, through: :arms
@@ -41,25 +44,7 @@ class ServiceRequest < ApplicationRecord
   after_save :set_original_submitted_date
   after_save :set_ssr_protocol_id
 
-  validation_group :catalog do
-    validate :validate_line_items
-  end
-
-  validation_group :protocol do
-    validate :validate_line_items
-    validate :validate_protocol
-  end
-
-  validation_group :service_details do
-    validate :validate_service_details
-    validate :validate_arms
-  end
-
-  validation_group :service_calendar do
-    validate :validate_service_calendar
-  end
-
-  attr_accessor   :previous_submitted_at
+  attr_accessor :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -68,51 +53,21 @@ class ServiceRequest < ApplicationRecord
 
   #after_save :fix_missing_visits
 
-  def validate_line_items
-    if self.line_items.empty?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:line_items_missing])
-    end
+  def catalog_valid?
+    self.errors.add(:line_items, :blank) if self.line_items.empty?
+    self.errors.none?
   end
 
-  def validate_protocol
-    if self.protocol_id.blank?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
-    elsif !self.protocol.valid?
-      self.protocol.errors.full_messages.each{ |e| errors.add(:base, e) }
-    end
+  def protocol_valid?
+    self.errors.add(:protocol, :blank) if self.protocol_id.blank?
+    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.valid?
+    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.validate_dates
+    self.errors.none?
   end
 
-  def validate_service_details
-    if protocol
-      if protocol.start_date.nil?
-        errors.add(:base, I18n.t(:errors)[:protocols][:start_date_missing])
-      end
-      if protocol.end_date.nil?
-        errors.add(:base, I18n.t(:errors)[:protocols][:end_date_missing])
-      end
-      if protocol.start_date && protocol.end_date && protocol.start_date > protocol.end_date
-        errors.add(:base, I18n.t(:errors)[:protocols][:date_range_invalid])
-      end
-    else
-      protocol
-    end
-  end
-
-  def validate_arms
-    if has_per_patient_per_visit_services? && protocol && protocol.arms.empty?
-      errors.add(:base, I18n.t(:errors)[:service_requests][:arms_missing])
-    end
-  end
-
-  def validate_service_calendar
-    vg = visit_groups.to_a.find { |vg| !vg.in_order? }
-    if vg
-      errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
-    end
-
-    if Setting.get_value("use_epic") && (arms = self.arms.joins(:visit_groups).where(visit_groups: { day: nil })).any?
-      arms.each{ |arm| errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name)) }
-    end
+  def service_details_valid?
+    self.errors.add(:arms, :invalid) unless self.arms.all?(&:visit_groups_valid?)
+    self.errors.none?
   end
 
   # Given a service, create a line item for that service and for all
@@ -133,42 +88,24 @@ class ServiceRequest < ApplicationRecord
   #
   #   optional:             whether the service is optional
   #
-  #   existing_service_ids: an array containing the ids of all the
-  #                         services that have already been added to the
-  #                         service request.  This array will be
-  #                         modified to contain the services for the
-  #                         newly created line items.
-  #
   def create_line_items_for_service(args)
-    service = args[:service]
-    optional = args[:optional]
-    existing_service_ids = args[:existing_service_ids]
-    allow_duplicates = args[:allow_duplicates]
-    recursive_call = args[:recursive_call]
+    service               = args[:service]
+    optional              = args[:optional]
+    allow_duplicates      = args[:allow_duplicates]
+    recursive_call        = args[:recursive_call]
 
     # If this service has already been added, then do nothing
-    unless allow_duplicates
-      return if existing_service_ids.include?(service.id)
-    end
+    return if !allow_duplicates && (self.line_items.incomplete.where(service_id: service.id).any? or self.line_items.unassigned.where(service_id: service.id).any?)
 
     line_items = []
 
     # add service to line items
-    line_items << create_line_item(
-        service_id: service.id,
-        optional: optional,
-        quantity: service.displayed_pricing_map.quantity_minimum)
-
-    existing_service_ids << service.id
+    line_items << create_line_item(service_id: service.id, optional: optional, quantity: service.displayed_pricing_map.quantity_minimum)
 
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
-      rs_line_items = create_line_items_for_service(
-        service: rs,
-        optional: false,
-        existing_service_ids: existing_service_ids,
-        recursive_call: true)
+      rs_line_items = create_line_items_for_service( service: rs, optional: false, recursive_call: true)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
@@ -177,11 +114,7 @@ class ServiceRequest < ApplicationRecord
     unless recursive_call
       service.optional_services.each do |rs|
         next unless rs.parents_available?
-        rs_line_items = create_line_items_for_service(
-          service: rs,
-          optional: true,
-          existing_service_ids: existing_service_ids,
-          recursive_call: true)
+        rs_line_items = create_line_items_for_service(service: rs, optional: true, recursive_call: true)
         rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
       end
     end
@@ -192,7 +125,6 @@ class ServiceRequest < ApplicationRecord
   def create_line_item(args)
     quantity = args.delete('quantity') || args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
-
       if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
@@ -203,14 +135,6 @@ class ServiceRequest < ApplicationRecord
     else
       return false
     end
-  end
-
-  def one_time_fee_line_items
-    line_items.joins(:service).where(services: { one_time_fee: true })
-  end
-
-  def per_patient_per_visit_line_items
-    line_items.joins(:service).where(services: { one_time_fee: false })
   end
 
   def set_visit_page page_passed, arm
@@ -310,17 +234,17 @@ class ServiceRequest < ApplicationRecord
   end
 
   def has_one_time_fee_services?
-    one_time_fee_line_items.count > 0
+    @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end
 
   def has_per_patient_per_visit_services?
-    per_patient_per_visit_line_items.count > 0
+    @has_clinical_services ||= per_patient_per_visit_line_items.count > 0
   end
 
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     arms.each do |arm|
-      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(:visits, line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
       total += arm.direct_costs_for_visit_based_service(livs)
     end
     total
@@ -422,13 +346,13 @@ class ServiceRequest < ApplicationRecord
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
-  def update_status(new_status)
+  def update_status(new_status, current_user)
     # Do not change the Service Request if it has been submitted
     update_attribute(:status, new_status) unless self.previously_submitted?
     update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
     self.sub_service_requests.map do |ssr|
-      ssr.update_status_and_notify(new_status)
+      ssr.update_status_and_notify(new_status, current_user)
     end.compact
   end
 
@@ -449,8 +373,16 @@ class ServiceRequest < ApplicationRecord
     end
   end
 
+  def submitted?
+    self.status == 'submitted'
+  end
+
   def previously_submitted?
     self.submitted_at.present?
+  end
+
+  def eligible_for_subsidy?
+    self.sub_service_requests.any?(&:eligible_for_subsidy?)
   end
 
   def should_push_to_epic?
@@ -465,10 +397,6 @@ class ServiceRequest < ApplicationRecord
     self.arms.each do |arm|
       arm.update_minimum_counts
     end
-  end
-
-  def arms_editable?
-    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
   def audit_report( identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc )

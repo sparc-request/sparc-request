@@ -19,25 +19,62 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
-  # Returns div.form-group for Authorized User forms.
-  # name - Sets label text from t(:authorized_users)[:form_fields][name.to_sym]
-  #        Also used in form helpers.
-  # classes - HTML classes to add to form-group.
-  # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil, required: false, link: nil)
-    form_group_classes = %w(row form-group) + [classes]
-    label_class = 'col-lg-3 control-label' + (required ? ' required' : '')
-    label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
-    label_text = link_to(label_text, link, target: :blank) if link
-    label = if form
-              form.label(name, label_text, class: label_class, data: data, title: title)
-            else
-              content_tag(:label, label_text, class: label_class)
-            end
-    input_container = content_tag(:div, class: 'col-lg-9') { yield }
-    content_tag(:div,
-                label + input_container,
-                class: form_group_classes)
+  def new_authorized_user_button(opts={})
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? new_dashboard_associated_user_path(protocol_id: opts[:protocol_id]) : new_associated_user_path(srid: opts[:srid])
+
+      link_to url, remote: true, class: 'btn btn-success' do
+        icon('fas', 'plus mr-2') + t('authorized_users.new')
+      end
+    end
+  end
+
+  def authorized_user_actions(pr, opts={})
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw([
+        edit_authorized_user_button(pr, opts),
+        delete_authorized_user_button(pr, opts)
+      ].join(''))
+    end
+  end
+
+  def edit_authorized_user_button(pr, opts={})
+    unless in_dashboard? && !opts[:permission]
+      url = in_dashboard? ? edit_dashboard_associated_user_path(pr) : edit_associated_user_path(pr, srid: opts[:srid])
+
+      link_to icon('far', 'edit'), url, remote: true, class: 'btn btn-warning mr-1 edit-authorized-user'
+    end
+  end
+
+  def delete_authorized_user_button(pr, opts={})
+    unless in_dashboard? && !opts[:permission]
+      data = { id: pr.id, toggle: 'tooltip', placement: 'right', boundary: 'window' }
+
+      if current_user.id == pr.identity_id
+        if (in_dashboard? && (current_user.catalog_overlord? || opts[:admin])) || (!in_dashboard? && current_user.catalog_overlord?)
+          # Warn of removing current user but won't redirect if
+          # - in dashboard and current user is an overlord/admin or
+          # - not in dashboard and current user is an overlord
+          data[:batch_select] = {
+            checkConfirm: 'true',
+            checkConfirmSwalText: t('authorized_users.delete.self_remove_warning')
+          }
+        else
+          # User will be redirected because they will no longer have
+          # permission on this protocol
+          data[:batch_select] = {
+            checkConfirm: 'true',
+            checkConfirmSwalText: t('authorized_users.delete.self_remove_redirect_warning')
+          }
+        end
+      end
+
+      button_tag(icon('fas', 'trash-alt'), type: 'button',
+        title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
+        class: ["btn btn-danger actions-button delete-authorized-user", pr.primary_pi? ? 'disabled' : ''],
+        data: data
+      )
+    end
   end
 
   # Generates state for portion of Authorized User form concerned with their
@@ -66,8 +103,7 @@ module AssociatedUsersHelper
   #   should be a collection of ProfessionalOrganizations to be presented as
   #   options.
   def professional_organization_dropdown(form: nil, choices_from:)
-    select_class = 'form-control selectpicker'
-    prompt = t(:constants)[:prompts][:select_one]
+    select_class = 'selectpicker'
     if choices_from.kind_of?(ProfessionalOrganization)
       options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"
@@ -79,13 +115,13 @@ module AssociatedUsersHelper
     if form
       form.select(:professional_organization_id,
                   options,
-                  { include_blank: prompt },
+                  { include_blank: true },
                   class: select_class,
                   id: select_id)
     else
       select_tag(nil,
                  options,
-                 include_blank: prompt,
+                 include_blank: true,
                  class: select_class,
                  id: select_id)
     end
@@ -94,52 +130,6 @@ module AssociatedUsersHelper
   # Convert ProfessionalOrganization's org_type to a label for Authorized Users
   # form.
   def org_type_label(professional_organization)
-    professional_organization.org_type.capitalize + ":"
-  end
-
-  def authorized_users_edit_button(project_role)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-sm btn-warning actions-button edit-associated-user-button"
-    )
-  end
-
-  def authorized_users_delete_button(pr, current_user)
-    data  = { id: pr.id, toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }
-
-    if current_user.id == pr.identity_id
-      data[:batch_select] = {
-        checkConfirm: 'true',
-        checkConfirmSwalText: t(:authorized_users)[:delete][:self_remove_warning]
-      }
-    end
-
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ), type: 'button',
-      title: pr.primary_pi? ? t(:authorized_users)[:delete][:pi_tooltip] : t(:authorized_users)[:delete][:tooltip],
-      class: ["btn btn-danger actions-button delete-associated-user-button", pr.primary_pi? ? 'disabled' : ''],
-      data: data
-    )
-  end
-
-  def determine_entity(dashboard, project_role)
-    if dashboard
-      [:dashboard, project_role]
-    else
-      project_role
-    end
-  end
-
-  def determine_url(dashboard, project_role)
-    if dashboard
-      project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role)
-    else
-      project_role.new_record? ? associated_users_path : associated_user_path(project_role)
-    end
+    professional_organization.org_type.capitalize
   end
 end

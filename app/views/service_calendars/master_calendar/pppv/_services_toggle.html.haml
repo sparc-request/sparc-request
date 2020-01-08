@@ -18,7 +18,4 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.toggle-services-btn-group.btn-group.custom-pull-right{"data-toggle" => "buttons", style: portal ? cookies['admin-ss-tab'] == 'calendar_tab' ? "display: inline-block;" : "display: none;" : "display: none;"}
-  = link_to t(:calendars)[:show_chosen_services], '#consolidated-request-calendar', id: 'chosen-services', data: { url: merged_calendar_service_calendars_path(srid: srid, sub_service_request_id: sub_service_request_id, tab: tab, review: review, portal: portal) }, class: display_all_services ? "btn btn-custom-green services-toggle" : "btn btn-success services-toggle active"
-
-  = link_to t(:calendars)[:show_all_services], '#consolidated-request-calendar', id: 'all-services', data: { url: merged_calendar_service_calendars_path(srid: srid, sub_service_request_id: sub_service_request_id, tab: tab, review: review, portal: portal) }, class: display_all_services ? "btn btn-success services-toggle active" : "btn btn-custom-green services-toggle"
+= check_box_tag :show_unchecked, nil, @show_unchecked, id: 'servicesToggle', data: { toggle: 'toggle', on: t(:calendars)[:show_all_services], off: t(:calendars)[:show_chosen_services], style: 'invisible btn-lg', onstyle: 'light btn-lg', offstyle: 'secondary btn-lg' }

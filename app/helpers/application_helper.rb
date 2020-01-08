@@ -19,34 +19,67 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
-
-  def show_welcome_message(current_user, bootstrap = false)
-    returning_html = ""
-    if current_user
-      logged_in_as = current_user.email ? current_user.email : current_user.full_name
-      returning_html +=
-        content_tag(:span,
-          t(:dashboard)[:navbar][:logged_in_as] +
-          logged_in_as + " ") +
-        link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-warning" : "")
-    else
-      # could be used to provide a login link
-      returning_html += content_tag(:span, "Not Logged In")
+  def format_date(date, opts={})
+    if date.present?
+      if opts[:html]
+        content_tag :span do
+          raw date.strftime('%m/%d/%Y')
+        end
+      else
+        date.strftime('%m/%d/%Y')
+      end
     end
-
-    raw(returning_html)
   end
 
-  def format_date(date)
-    date.try(:strftime, '%D') || ""
+  def format_datetime(datetime, opts={})
+    if datetime.present?
+      if opts[:html]
+        content_tag :span do
+          raw datetime.strftime('%m/%d/%Y %l:%M') + content_tag(:span, datetime.strftime(':%S'), class: 'd-none') + datetime.strftime(' %p')
+        end
+      else
+        datetime.strftime('%m/%d/%Y %l:%M')
+      end
+    end
+  end
+
+  def format_phone(phone)
+    if phone.present?
+      phone.gsub!(/[^0-9#]/, '')
+
+      formatted = ""
+      begin
+        formatted += "(#{phone.first(3)})"
+        formatted += " #{phone.from(3).to(2)}"
+        formatted += "-#{phone.from(6).to(3)}"
+        formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
+      rescue
+      end
+
+      return formatted
+    else
+      return phone
+    end
+  end
+
+  def format_currency(amount)
+    "%.2f" % amount rescue ""
+  end
+
+  def format_count(value, digits=1)
+    if value >= 10.pow(digits)
+      "#{value - (value - (10.pow(digits) - 1))}+"
+    else
+      value
+    end
   end
 
   def css_class(organization)
     case organization.type
     when 'Institution'
-      organization.css_class.empty? ? 'light-blue-provider' : organization.css_class
+      organization.css_class.blank? ? 'light-blue-provider' : organization.css_class
     when 'Provider'
-      organization.css_class.empty? ? 'light-blue-provider' : organization.css_class
+      organization.css_class.blank? ? 'light-blue-provider' : organization.css_class
     when 'Program'
       css_class(organization.provider)
     when 'Core'
@@ -115,11 +148,6 @@ module ApplicationHelper
     devise_mapping.to
   end
 
-  def current_translations
-    @translations ||= I18n.backend.send(:translations)
-    @translations[I18n.locale].with_indifferent_access
-  end
-
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
   end
@@ -133,7 +161,9 @@ module ApplicationHelper
   end
 
   def inactive_tag
-    content_tag(:span, t(:calendars)[:inactive], class: 'inactive-text')
+    content_tag(:small, class: 'text-danger ml-1') do
+      content_tag(:em, t('calendars.inactive'))
+    end
   end
 
   ##Sets css bootstrap classes for rails flash message types##
@@ -154,42 +184,56 @@ module ApplicationHelper
 
   def navbar_link(identifier, details, highlighted_link)
     name, path = details
-    highlighted = identifier == highlighted_link
+    active = identifier == highlighted_link
 
     accessible = false
 
     if current_user
       accessible = case identifier
-      when 'sparc_fulfillment'
-        current_user.clinical_providers.any? || current_user.is_super_user?
-      when 'sparc_catalog'
-        current_user.catalog_managers.any?
-      when 'sparc_report'
-        current_user.is_super_user?
-      when 'sparc_funding'
-        current_user.is_funding_admin?
-      when 'sparc_forms'
-        current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
-      else
-        true
-      end
+        when 'sparc_fulfillment'
+          current_user.clinical_providers.any? || current_user.is_super_user?
+        when 'sparc_catalog'
+          current_user.catalog_managers.any?
+        when 'sparc_report'
+          current_user.is_super_user?
+        when 'sparc_funding'
+          current_user.is_funding_admin?
+        when 'sparc_forms'
+          current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider?
+        else
+          true
+        end
     else ## show base module when logged out
-      accessible = true if ['sparc_dashboard', 'sparc_request', 'sparc_info'].include? identifier
+      accessible = true if ['sparc_dashboard', 'sparc_request', 'sparc_info'].include?(identifier)
     end
 
-    render_navbar_link(name, path, highlighted) if accessible
+    if accessible
+      content_tag :li, class: 'nav-item' do
+        link_to name, path, target: :_blank, class: ['nav-link', active ? 'active' : '']
+      end
+    end
   end
 
-  def render_navbar_link(name, path, highlighted)
-    content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
+  def in_dashboard?
+    ##Rescue because request.referrer can be unrecognizable. If it's not recognizable by rails, it also can't be a dashboard path.
+    dashboard_path = Rails.application.routes.recognize_path(request.referrer)[:controller].starts_with?('dashboard/') rescue false
+
+    @in_dashboard ||= (request.format.html? && request.path.start_with?('/dashboard')) || dashboard_path
   end
 
-  def calculate_step_params(service_request)
-    has_subsidy           = service_request.sub_service_requests.any?(&:has_subsidy?)
-    eligible_for_subsidy  = service_request.sub_service_requests.any?(&:eligible_for_subsidy?)
-    subsidy               = has_subsidy || eligible_for_subsidy
-    classes               = subsidy ? 'step-with-subsidy' : 'step-no-subsidy'
+  def in_admin?
+    @in_admin ||= in_dashboard? && (params[:ssrid].present? || (controller_name == 'sub_service_requests' && !['index', 'show'].include?(action_name)) || (controller_name == 'sub_service_requests' && action_name == 'show' && request.format.html?))
+  end
 
-    return subsidy, classes
+  def in_review?
+    @in_review ||= action_name == 'review' || (request_referrer_action == 'review' && !request.format.html?)
+  end
+
+  def request_referrer_action
+    Rails.application.routes.recognize_path(request.referrer)[:action] rescue nil
+  end
+
+  def request_referrer_controller
+    Rails.application.routes.recognize_path(request.referrer)[:controller] rescue nil
   end
 end

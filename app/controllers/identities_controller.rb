@@ -19,20 +19,40 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class IdentitiesController < ApplicationController
+  before_action :authenticate_identity!
+  before_action :find_identity
 
   def approve_account
-    @identity = Identity.find params[:id]
-    unless @identity.try(:approved)
+    respond_to :html
+
+    if !@identity.try(:approved)
       @identity.update_attribute(:approved, true)
       Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
+      flash[:success] = t('devise.approvals.approved', login: @identity.email)
+    else
+      flash[:alert] = t('devise.approvals.already_approved')
     end
+
+    redirect_to root_path
   end
 
   def disapprove_account
-    @identity = Identity.find params[:id]
-    unless @identity.try(:approved) == false
+    respond_to :html
+
+    if @identity.try(:approved) != false
       @identity.update_attribute(:approved, false)
       Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
+      flash[:success] = t('devise.approvals.disapproved')
+    else
+      flash[:alert] = t('devise.approvals.already_disapproved', login: @identity.email)
     end
+
+    redirect_to root_path
+  end
+
+  private
+
+  def find_identity
+    @identity = Identity.find(params[:id])
   end
 end

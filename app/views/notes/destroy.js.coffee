@@ -17,10 +17,12 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#notes-table').bootstrapTable('refresh')
-<% if @notes.count > 0 %>
-$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").addClass('blue-badge').siblings().removeClass("black-note").addClass("blue-note")
-<% else %>
-$("span#<%= @note.unique_selector %>_notes").html("<%= @notes.count %>").removeClass('blue-badge').siblings().removeClass("blue-note").addClass("black-note")
+
+$("[id=<%= @selector %>Notes]:visible").find('span.badge').html("<%= @count %>")
+
+<% if @count == 0 %>
+$("[id=<%= @selector %>Notes]:visible").find('span.badge').removeClass('badge-warning').addClass('badge-secondary')
 <% end %>
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+
+$("#modalContainer").html("<%= j render 'index', notes: @notes, note: @note, notable_id: @notable_id, notable_type: @notable_type, notable: @notable, disabled: false %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

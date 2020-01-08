@@ -18,390 +18,346 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(exports ? this).updateRmidFields = () ->
-  rmId = $('.research-master-field').val()
-  if rmId
-    $.ajax
-      url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
-      type: 'GET'
-      headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
-      success: (data) ->
-        $('#protocol_short_title').val(data.short_title)
-        $('#protocol_title').val(data.long_title)
-        if data.eirb_validated
-          $('#protocol_human_subjects_info_attributes_pro_number').val(data.eirb_pro_number)
-          $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val(data.date_initially_approved)
-          $('#protocol_human_subjects_info_attributes_irb_approval_date').val(data.date_approved)
-          $('#protocol_human_subjects_info_attributes_irb_expiration_date').val(data.date_expiration)
-          toggleFields('.rm-locked-fields', true)
-        else
-          toggleFields('.rm-locked-fields:not(.hr-field)', true)
-      error: ->
-        swal("Error", "Research Master Record not found", "error")
-        resetRmIdFields('.rm-id-dependent', '')
-        toggleFields('.rm-locked-fields', false)
-
-toggleFields = (fields, state) ->
-  $(fields).prop('disabled', state)
-
-resetRmIdFields = (fields, value) ->
-  $(fields).val(value)
-
-study_type_form = '.selected_for_epic_dependent'
-study_selected_for_epic_button = '#selected_for_epic_button'
-certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
-higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
-epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
-research_active_dropdown = '#study_type_answer_research_active_answer'
-restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
-certificate_of_confidence_no_epic = '#study_type_answer_certificate_of_conf_no_epic_answer'
-higher_level_of_privacy_no_epic = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
-
 $(document).ready ->
 
-  # Guarantor Fields required toggle, removed for now.
+  $('body').scrollspy({ target: '#protocolNavigation' })
 
-  # if $('#protocol_selected_for_epic').val() == "true"
-  #   $('.guarantor_toggle').addClass('required')
-
-  # $(document).on 'click', '#study_selected_for_epic_true_button', ->
-  #   $('.guarantor_toggle').addClass('required')
-
-  # $(document).on 'click', '#study_selected_for_epic_false_button', ->
-  #   $('.guarantor_toggle').removeClass('required')
-
-  # Human Subjects required toggles
-
-  if $('.human-subjects:checkbox:checked').length > 0
-    $('.rm-id').addClass('required')
-
-  $(document).on 'click', '.human-subjects', ->
-    if $('.rm-id').hasClass('required')
-      $('.rm-id').removeClass('required')
-    else
-      $('.rm-id').addClass('required')
+  rmidTimer = null
 
   updateRmidFields()
 
-  $(document).on 'blur', '.research-master-field', ->
-    updateRmidFields()
+  $(document).on('keyup', '#protocol_research_master_id:not([readonly=readonly])', ->
+    clearTimeout(rmidTimer)
+    if $(this).val()
+      rmidTimer = setTimeout( (->
+        updateRmidFields()
+      ), 750)
+    else
+      resetRmidFields()
+  ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
+    clearTimeout(rmidTimer)
+  )
 
-  $(document).on 'change', '.research-master-field', ->
-    if $(this).val() == ''
-      resetRmIdFields('.rm-id-dependent', '')
-      toggleFields('.rm-locked-fields', false)
-
-  $(document).on 'click', '.edit-rmid', ->
-    $('#protocol_research_master_id').prop('readonly', false)
-
-  $('#protocol-form-display form').bind 'submit', ->
-    $(this).find(':input').prop('disabled', false)
-
-  # Protocol Edit Begin
-  $(document).on 'click', '#protocol-type-button', ->
-    protocol_id = $(this).data('protocol-id')
-    srid        = $(this).data('srid')
-    in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
-    data =
-      type : $("#protocol_type").val()
-      srid : srid
-    if confirm(I18n['protocols']['change_type']['warning'])
-      $.ajax
-        type: 'PUT'
-        url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"
-        data: data
-  # Protocol Edit End
-
-  epic_box_alert_message = () ->
-    options = {
-      resizable: false,
-      height: 220,
-      modal: true,
-      autoOpen: false,
-      buttons:
-        "OK": ->
-          $(this).dialog("close")
-    }
-    $('#epic_box_alert').dialog(options).dialog("open")
-
-  #########################
-  ### FORM FIELDS LOGIC ###
-  #######################################################################################
-  ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
-  setup_epic_question_config()
-
-  ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
-    $('.funding_status_dependent').hide()
-    status_value = $(this).val()
-    source_value = ''
+    toggleFundingSource($(this).val())
 
-    if status_value == 'funded'
-      $('.funded').show()
-      source_value = $('#protocol_funding_source').val()
-    else if status_value == 'pending_funding'
-      $('.pending_funding').show()
-      source_value = $('#protocol_potential_funding_source').val()
+  $(document).on 'change', '#protocol_funding_source, #protocol_potential_funding_source', ->
+    toggleFederalFields($(this).val())
+    toggleFundingSourceOther($(this).val())
 
-    if source_value == 'federal'
-      $(".federal").show()
+    if $(this).val() == ''
+      $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
     else
-      $(".federal").hide()
-  ###END FUNDING STATUS FIELDS DISPLAY###
+      $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', false)
 
-  
+  $(document).on 'change', '#protocol_federal_phs_sponsor', ->
+    if $('#protocol_federal_non_phs_sponsor').val()
+      $('#protocol_federal_non_phs_sponsor').selectpicker('val', '')
 
-  ###FUNDING SOURCE FIELDS DISPLAY###
-  $(document).on 'change', '#protocol_potential_funding_source', ->
-    if $(this).val() == 'federal'
-      $('.federal').show()
+  $(document).on 'change', '#protocol_federal_non_phs_sponsor', ->
+    if $('#protocol_federal_phs_sponsor').val()
+      $('#protocol_federal_phs_sponsor').selectpicker('val', '')
+
+  $(document).on 'change', '.research-involving', ->
+    target = $(this).data('target')
+
+    $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
+    $(target).find('.form-error').remove()
+
+    if $(this).prop('checked')
+      $(target).removeClass('d-none')
     else
-      $('.federal').hide()
+      $(target).addClass('d-none')
 
-  $(document).on 'change', '#protocol_funding_source', ->
-    $('.funding_source_dependent').hide()
-    switch $(this).val()
-      when 'federal' then $('.federal').show()
-      when 'internal' then $('.internal').show()
-  ###END FUNDING SOURCE FIELDS DISPLAY###
-
-
-
-  ###HUMAN SUBJECTS FIELDS DISPLAY###
-  $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
-    switch $(this).attr('checked')
-      when 'checked' then $('.human_subjects_dependent').show()
-      else $('.human_subjects_dependent').hide()
-  ###END HUMAN SUBJECTS FIELDS DISPLAY###
-
-
-
-  ###VERTEBRATE ANIMALS FIELDS DISPLAY###
-  $(document).on 'change', '#protocol_research_types_info_attributes_vertebrate_animals', ->
-    switch $(this).attr('checked')
-      when 'checked' then $('.vertebrate_animals_dependent').show()
-      else $('.vertebrate_animals_dependent').hide()
-  ###END VERTEBRATE ANIMALS FIELDS DISPLAY###
-
-
-
-  ###INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
-  $(document).on 'change', '#protocol_research_types_info_attributes_investigational_products', ->
-    switch $(this).attr('checked')
-      when 'checked' then $('.investigational_products_dependent').show()
-      else $('.investigational_products_dependent').hide()
-
-  $(document).on 'change', '#protocol_investigational_products_info_attributes_ind_number', ->
-    if !!$(this).val().replace(/^\s+/g, "")
-      $('#ind-on-hold-group').show()
+  $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
+    if $(this).prop('checked')
+      $('#protocol_research_master_id').siblings('label').addClass('required')
+      $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
+      $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
     else
-      $('#ind-on-hold-group').hide()
-      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
+      $('#protocol_research_master_id').siblings('label').removeClass('required')
+      $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
+      $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', true)
+    setRequiredFields()
 
-  $(document).on 'change', 'input[name="protocol[investigational_products_info_attributes][exemption_type]"]', ->
-    $('.inv-device-number-field').appendTo($(this).closest('.row'))
-    $('#protocol_investigational_products_info_attributes_inv_device_number').removeClass('hidden')
+  $(document).on 'keyup', '#protocol_investigational_products_info_attributes_ind_number', ->
+    if $(this).val().length > 0
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').bootstrapToggle('enable')
+      $('[name="protocol[investigational_products_info_attributes][ind_on_hold]"]').attr('disabled', false)
+    else
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').bootstrapToggle('off').bootstrapToggle('disable')
+      $('[name="protocol[investigational_products_info_attributes][ind_on_hold]"]').attr('disabled', true)
 
-  $(document).on 'click', '.clear-inv-device-number-button', (event) ->
-    # prevent form submit?
-    event.preventDefault()
-    $('#protocol_investigational_products_info_attributes_exemption_type_').prop('checked', true)
-    $('#protocol_investigational_products_info_attributes_inv_device_number').addClass('hidden').val('')
-  ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
+  $(document).on 'change', '#protocol_investigational_products_info_attributes_exemption_type', ->
+    exemption = $(this).val()
 
+    $('.device-container').addClass('d-none')
+    $('.device-container input').val('').attr('disabled', true)
+    $(".device-container##{exemption}DeviceContainer").removeClass('d-none').children('input').attr('disabled', false)
 
+  $(document).on 'change', '.impact-area', ->
+    $specifyField = $('#' + $(this).prop('id').replace('__destroy', '_other_text'))
 
-  ###IP/PATENTS FIELDS DISPLAY###
-  $(document).on 'change', '#protocol_research_types_info_attributes_ip_patents', ->
-    switch $(this).attr('checked')
-      when 'checked' then $('.ip_patents_dependent').show()
-      else $('.ip_patents_dependent').hide()
-  ###END IP/PATENTS FIELDS DISPLAY###
+    if $specifyField.length > 0
+      if $(this).prop('checked')
+        $specifyField.parents('.form-group').removeClass('d-none')
+      else
+        $specifyField.parents('.form-group').addClass('d-none')
 
+  ############################
+  ### Primary PI Typeahead ###
+  ############################
 
-
-  ###IMPACT AREAS OTHER FIELD DISPLAY###
-  $(document).on 'change', '#protocol_impact_areas_attributes_7__destroy', ->
-    # Impact Areas Other - Checkbox
-    switch $(this).attr('checked')
-      when 'checked' then $('.impact_area_dependent').show()
-      else $('.impact_area_dependent').hide()
-  ###END IMPACT AREAS OTHER FIELD DISPLAY###
-
-
-
-  ###########################################
-  ### Primary PI TypeAhead Input Handling ###
-  #######################################################################################
-  if $('#protocol_project_roles_attributes_0_identity_id[type="text"]').length > 0
-    identities_bloodhound = new Bloodhound(
-      datumTokenizer: (datum) ->
-        Bloodhound.tokenizers.whitespace datum.value
-      queryTokenizer: Bloodhound.tokenizers.whitespace
-      remote:
-        url: '/dashboard/associated_users/search_identities?term=%QUERY',
-        wildcard: '%QUERY'
-    )
-    identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
-    $('#protocol_project_roles_attributes_0_identity_id[type="text"]').typeahead(
-      # Instantiate the Typeahead UI
-      {
-        minLength: 3
-        hint: false
-        highlight: true
+  identitiesBloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.whitespace
+    queryTokenizer: Bloodhound.tokenizers.whitespace
+    remote:
+      url: '/search/identities?term=%TERM',
+      wildcard: '%TERM'
+  )
+  identitiesBloodhound.initialize() # Initialize the Bloodhound suggestion engine
+  $('#primary_pi:not([readonly=readonly])').typeahead(
+    {
+      minLength: 3
+      hint: false
+      highlight: true
+    }, {
+      displayKey: 'label'
+      source: identitiesBloodhound.ttAdapter()
+      limit: 100,
+      templates: {
+        notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
+        pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>"
       }
-      {
-        displayKey: 'label'
-        source: identities_bloodhound.ttAdapter()
-        limit: 100000
-      }
+    }
+  ).on 'typeahead:select', (event, suggestion) ->
+    $('#protocol_primary_pi_role_attributes_identity_id').val(suggestion.value)
+    $('#primary_pi').prop('placeholder', suggestion.label)
+    $('#primary_pi').parents('.form-group').addClass('is-valid')
+
+  ##################################
+  ### Study Type Questions Logic ###
+  ##################################
+
+  $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
+    $('[for=protocol_selected_for_epic]').addClass('required')
+
+    if $('#studyTypeQuestionsContainer').hasClass('d-none')
+      $('#studyTypeQuestionsContainer').removeClass('d-none')
+
+    if $(this).val() == 'true'
+      $('label[for=protocol_study_type_questions]').addClass('required')
+      setRequiredFields()
+      hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+      showStudyTypeQuestion($(certificateOfConfidence))
+    else
+      $('label[for=protocol_study_type_questions]').removeClass('required')
+      setRequiredFields()
+      hideStudyTypeQuestion($(certificateOfConfidence))
+      showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+
+  $(document).on 'change', certificateOfConfidence, (e) ->
+    if $(this).val() == 'true'
+      hideStudyTypeQuestion($(higherLevelOfPrivacy))
+      determineStudyType()
+    else if $(this).val() == 'false'
+      showStudyTypeQuestion($(higherLevelOfPrivacy))
+      $('#studyTypeNote').hide()
+    else
+      hideStudyTypeQuestion($(higherLevelOfPrivacy))
+      $('#studyTypeNote').hide()
+
+  $(document).on 'change', higherLevelOfPrivacy, (e) ->
+    if $(this).val() == ''
+      hideStudyTypeQuestion($(epicInBasket))
+      $('#studyTypeNote').hide()
+    else
+      if $('[name="protocol[selected_for_epic]"]:checked').val() == 'true'
+        showStudyTypeQuestion($(epicInBasket))
+      determineStudyType()
+
+  $(document).on 'change', epicInBasket, (e) ->
+    if $(this).val() == ''
+      hideStudyTypeQuestion($(researchActive))
+      $('#studyTypeNote').hide()
+    else
+      showStudyTypeQuestion($(researchActive))
+      determineStudyType()
+
+  $(document).on 'change', researchActive, (e) ->
+    if $(this).val() == ''
+      hideStudyTypeQuestion($(restrictSending))
+      $('#studyTypeNote').hide()
+    else
+      determineStudyType()
+      showStudyTypeQuestion($(restrictSending))
+
+  $(document).on 'change', restrictSending, (e) ->
+    if $(this).val() == ''
+      $('#studyTypeNote').hide()
+    else
+      determineStudyType()
+
+  $(document).on 'change', certificateOfConfidenceNoEpic, (e) ->
+    if $(this).val() == 'false'
+      showStudyTypeQuestion($(higherLevelOfPrivacyNoEpic))
+    else
+      hideStudyTypeQuestion($(higherLevelOfPrivacyNoEpic))
+
+############################
+### Function Definitions ###
+############################
+
+rmidAjax = null
+
+updateRmidFields = () ->
+  if rmid = $('#protocol_research_master_id:not([readonly=readonly])').val()
+    if rmidAjax
+      rmidAjax.abort()
+
+    rmidAjax = $.ajax(
+      method: 'get'
+      dataType: 'script'
+      url: '/protocols/validate_rmid'
+      data:
+        protocol_id: $('#protocol_id').val()
+        protocol:
+          research_master_id: rmid
     )
-    .on 'typeahead:select', (event, suggestion) ->
-      $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val(suggestion.value)
-      $("#protocol_project_roles_attributes_0_identity_id[type='text']").hide()
-      $("#primary_pi_name").text("#{suggestion.label}").removeClass('hidden')
-      $("#user-select-clear-icon").show()
 
-    $('#user-select-clear-icon').live 'click', ->
-      $("#primary_pi_name").text("").addClass('hidden')
-      $('#user-select-clear-icon').hide()
-      $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val('')
-      $("#protocol_project_roles_attributes_0_identity_id[type='text']").val('').show()
+resetRmidFields = () ->
+  $('#protocol_research_master_id').parents('.form-group').removeClass('is-valid is-invalid')
+  $('#protocol_short_title').val('').prop('readonly', false)
+  $('#protocol_title').val('').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)
+  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').prop('readonly', false).datetimepicker('clear')
+  $('#protocol_human_subjects_info_attributes_irb_approval_date').prop('readonly', false).datetimepicker('clear')
+  $('#protocol_human_subjects_info_attributes_irb_expiration_date').prop('readonly', false).datetimepicker('clear')
 
-$.prototype.hide_elt = () ->
-    this[0].selectedIndex = 0
-    this.selectpicker('refresh')
-    this.closest('.row').hide()
-    return this
+fundingSource             = ""
+potentialFundingSource    = ""
+fundingStartDate          = ""
+potentialFundingStartDate = ""
 
-$.prototype.show_elt = () ->
-  this.closest('.row').show()
-  return this
+toggleFundingSource = (val) ->
+  if val == ''
+    $('#fundingSourceContainer').removeClass('d-none')
+    $('#potentialFundingSourceContainer').addClass('d-none')
+    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', true).selectpicker('val', '').selectpicker('refresh')
+    $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
+  else
+    if val == 'pending_funding'
+      fundingSource     = $('#protocol_funding_source').val()
+      fundingStartDate  = $('#protocol_funding_start_date').val()
 
-determine_study_type = (answers) ->
-  array_values = new Array()
-  for k,v of answers
-    array_values.push(v)
-  nil_value = $.inArray('', array_values) < 5
-  if array_values[0] == 'true' || !nil_value
+      $('#fundingSourceContainer').addClass('d-none')
+      $('#potentialFundingSourceContainer').removeClass('d-none')
+      $('#protocol_funding_source').selectpicker('val', '')
+      $('#protocol_potential_funding_source').selectpicker('val', potentialFundingSource)
+      $('#fundingStartDateContainer').addClass('d-none')
+      $('#potentialFundingStartDateContainer').removeClass('d-none')
+      $('#protocol_funding_start_date').datetimepicker('clear')
+      $('#protocol_potential_funding_start_date').val(potentialFundingStartDate)
+      $('#fundingRfaContainer').removeClass('d-none')
+
+      toggleFederalFields(potentialFundingSource)
+      toggleFundingSourceOther(potentialFundingSource)
+    else
+      potentialFundingSource    = $('#protocol_potential_funding_source').val()
+      potentialFundingStartDate = $('#protocol_potential_funding_start_date').val()
+
+      $('#fundingSourceContainer').removeClass('d-none')
+      $('#potentialFundingSourceContainer').addClass('d-none')
+      $('#protocol_funding_source').selectpicker('val', fundingSource)
+      $('#protocol_potential_funding_source').selectpicker('val', '')
+      $('#fundingStartDateContainer').removeClass('d-none')
+      $('#potentialFundingStartDateContainer').addClass('d-none')
+      $('#protocol_funding_start_date').val(fundingStartDate)
+      $('#protocol_potential_funding_start_date').datetimepicker('clear')
+      $('#fundingRfaContainer').addClass('d-none')
+
+      toggleFederalFields(fundingSource)
+      toggleFundingSourceOther(fundingSource)
+
+    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
+
+
+federalGrantCode          = ""
+federalGrantSerialNumber  = ""
+federalGrantTitle         = ""
+federalGrantPhsSponsor    = ""
+federalGrantNonPhsSponsor = ""
+
+toggleFederalFields = (val) ->
+  if val == 'federal'
+    $('#federalGrantInformation').removeClass('d-none')
+    $('#protocol_federal_grant_code_id').selectpicker('val', federalGrantCode)
+    $('#protocol_federal_grant_serial_number').val(federalGrantSerialNumber)
+    $('#protocol_federal_grant_title').val(federalGrantTitle)
+    $('#protocol_federal_phs_sponsor').selectpicker('val', federalGrantPhsSponsor)
+    $('#protocol_federal_non_phs_sponsor').selectpicker('val', federalGrantNonPhsSponsor)
+  else
+    federalGrantCode          = $('#protocol_federal_grant_code_id').val()
+    federalGrantSerialNumber  = $('#protocol_federal_grant_serial_number').val()
+    federalGrantTitle         = $('#protocol_federal_grant_title').val()
+    federalGrantPhsSponsor    = $('#protocol_federal_phs_sponsor').val()
+    federalGrantNonPhsSponsor = $('#protocol_federal_non_phs_sponsor').val()
+
+    $('#federalGrantInformation').addClass('d-none')
+    $('#protocol_federal_grant_code_id').selectpicker('val', '')
+    $('#protocol_federal_grant_serial_number').val('')
+    $('#protocol_federal_grant_title').val('')
+    $('#protocol_federal_phs_sponsor').selectpicker('val', '')
+    $('#protocol_federal_non_phs_sponsor').selectpicker('val', '')
+
+fundingSourceOther = ""
+
+toggleFundingSourceOther = (val) ->
+  if val == 'internal'
+    $('#fundingSourceOtherContainer').removeClass('d-none')
+    $('#protocol_funding_source_other').val(fundingSourceOther)
+  else
+    fundingSourceOther = $('#protocol_funding_source_other').val()
+
+    $('#fundingSourceOtherContainer').addClass('d-none')
+    $('#protocol_funding_source_other').val('')
+
+certificateOfConfidence       = '#study_type_answer_certificate_of_conf_answer'
+higherLevelOfPrivacy          = '#study_type_answer_higher_level_of_privacy_answer'
+epicInBasket                  = '#study_type_answer_epic_inbasket_answer'
+researchActive                = '#study_type_answer_research_active_answer'
+restrictSending               = '#study_type_answer_restrict_sending_answer'
+
+certificateOfConfidenceNoEpic = '#study_type_answer_certificate_of_conf_no_epic_answer'
+higherLevelOfPrivacyNoEpic    = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
+
+hideStudyTypeQuestion = ($select) ->
+  $select.selectpicker('val', '')
+  $select.trigger('change')
+  $select.closest('.form-row').addClass('d-none')
+
+showStudyTypeQuestion = ($select) ->
+  $select.trigger('change')
+  $select.closest('.form-row').removeClass('d-none')
+
+determineStudyType = () ->
+  answers = {
+    ans1: $(certificateOfConfidence).val(),
+    ans2: $(higherLevelOfPrivacy).val(),
+    ans3: $(epicInBasket).val(),
+    ans4: $(researchActive).val(),
+    ans5: $(restrictSending).val(),
+    ans6: "",
+    ans7: ""
+  }
+
+  answersArray  = Object.values(answers)
+  hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
+
+  if answersArray[0] == 'true' || !hasNilValue
     $.ajax
-      type: 'POST'
-      data: answers
-      url: "/study_type/determine_study_type_note"
-      success: ->
-        $('#study_type_note').show()
-      errors: ->
-        sweetAlert("Oops...", "Something went wrong!", "error")
-
-(exports ? this).setup_epic_question_config = () ->
-  if $('#study_selected_for_epic_true_button').hasClass('active')
-    $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
-    $('#study_type_answer_certificate_of_conf_answer').show_elt()
-    $('#study_type_note').show()
-
-  else if $('#study_selected_for_epic_false_button').hasClass('active') || $('input#epic_config').val() == 'false'
-    $(study_type_form).show()
-    $(certificate_of_confidence_no_epic).show_elt()
-
-  ###PUBLISH IN EPIC BUTTON STATES###
-  $(document).on 'click', '#selected_for_epic_button label', ->
-    $(this).addClass('active')
-    $(this).children('input').prop('checked')
-    $(this).siblings('.active').removeClass('active')
-
-  ###END PUBLISH IN EPIC BUTTON STATES###
-
-  if $("input[name='protocol[selected_for_epic]'][val='true']").prop('checked')
-    $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
-
-  ###EPIC BUTTON FIELDS DISPLAY###
-  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
-    # Publish Study in Epic - Radio
-    switch $('#selected_for_epic_button .btn input:radio:checked').val()
-      when 'true'
-        $('.question-label').addClass('required')
-        $(certificate_of_confidence_no_epic).hide_elt().trigger 'change'
-        $(certificate_of_confidence_dropdown).show_elt()
-      when 'false'
-        $('.question-label').removeClass('required')
-        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
-        $(certificate_of_confidence_no_epic).show_elt()
-    $(study_type_form).hide()
-    $(study_type_form).show()
-
-
-  $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(higher_level_of_privacy_dropdown).show_elt()
-      $('#study_type_note').hide()
-    else if new_value == 'true'
-      $(higher_level_of_privacy_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-    else
-      $(higher_level_of_privacy_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    return
-
-  $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-      if $('#selected_for_epic_button .btn input:radio:checked').val() == 'true'
-        $(epic_inbasket_dropdown).show_elt()
-    return
-
-  $(document).on 'change', epic_inbasket_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-      $(research_active_dropdown).show_elt()
-    return
-
-  $(document).on 'change', research_active_dropdown, (e) ->
-    if $(e.target).val() == ''
-      $(restrict_sending_dropdown).hide_elt()
-      $('#study_type_note').hide()
-    else
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""   }
-      determine_study_type(data)
-      $(restrict_sending_dropdown).show_elt()
-    return
-
-  $(document).on 'change', restrict_sending_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value != ''
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val(), ans6: "", ans7: ""  }
-      determine_study_type(data)
-    else
-      $('#study_type_note').hide()
-    return
-
-  $(document).on 'change', certificate_of_confidence_no_epic, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(higher_level_of_privacy_no_epic).show_elt()
-    else
-      $(higher_level_of_privacy_no_epic).hide_elt()
-    return
-
-  ###END EPIC BUTTON FIELDS DISPLAY###
-
+      method: 'get'
+      dataType: 'script'
+      url: "/protocol/get_study_type_note"
+      data:
+        answers: answers

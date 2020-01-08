@@ -17,26 +17,26 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-default#calendar-structure-panel
-  .panel-heading
-    %h4.panel-title
+
+.card.w-100#calendarStructureCard
+  .card-header.text-white{ class: protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: '#calendarStructure' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      - if protocol.locked?
+        = icon('fas', 'lock mr-2')
       = t(:calendar_structure)[:header]
-  .panel-body
-    .bootstrap-table-dropdown-overflow
-      #calendar-structure-custom-toolbar
-        %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' }, title: t(:calendar_structure)[:tooltips][:lock_calendar] }
-          - if @user.catalog_overlord
-            %button.btn.btn-success#calendar-lock-button{ class: "calendar-lock", data: { protocol_id: protocol.id, locked: protocol.locked.to_s } }
-              -if protocol.locked
-                = t(:calendar_structure)[:unlock_calendar]
-              -else
-                = t(:calendar_structure)[:lock_calendar]
-      %table#calendar-structure-table{ data: { toggle: 'table', 'show-columns' => 'true', 'show-toggle' => 'true', url: dashboard_arms_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#calendar-structure-custom-toolbar' } }
-        %thead.primary-header
-          %tr
-            %th{ data: { field: 'name', align: 'left'} }
-              = t(:calendar_structure)[:table_fields][:arm_name]
-            %th{ data: { field: 'subject_count', align: 'left'} }
-              = t(:calendar_structure)[:table_fields][:subject_count]
-            %th{ data: { field: 'visit_count', align: 'left'} }
-              = t(:calendar_structure)[:table_fields][:visit_count]
+  .collapse.show#calendarStructure
+    #calendarStructureTableToolbar
+      - if current_user.catalog_overlord?
+        = link_to dashboard_protocol_path(protocol, locked: true), method: :put, remote: true, class: ['btn', protocol.locked? ? 'btn-success' : 'btn-danger'], title: t(:calendar_structure)[:tooltips][:lock_calendar], data: { toggle: 'tooltip' } do
+          = succeed t(:calendar_structure)[protocol.locked? ? :unlock_calendar : :lock_calendar] do
+            = protocol.locked? ? icon('fas', 'unlock-alt mr-2') : icon('fas', 'lock mr-2')
+    %table#calendarStructureTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: arms_path(format: :json, protocol_id: protocol.id), toolbar: '#calendarStructureTableToolbar' } }
+      %thead.bg-light
+        %tr
+          %th{ data: { field: 'name', align: 'left'} }
+            = Arm.human_attribute_name(:name)
+          %th{ data: { field: 'subject_count', align: 'left'} }
+            = Arm.human_attribute_name(:subject_count)
+          %th{ data: { field: 'visit_count', align: 'left'} }
+            = Arm.human_attribute_name(:visit_count)

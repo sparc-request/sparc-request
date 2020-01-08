@@ -36,8 +36,16 @@
 
     - if !su.nil?
       .form_row
-      = label_tag :access_empty_protocols, t(:catalog_manager)[:organization_form][:user_rights][:access_empty_protocols], class: 'non_bold_label'
-      = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
+      .row
+        .col-sm-6
+          = label_tag :access_empty_protocols, t(:catalog_manager)[:organization_form][:user_rights][:access_empty_protocols], class: 'non_bold_label'
+        .col-sm-6
+          = label_tag :billing_manager, t(:catalog_manager)[:organization_form][:user_rights][:billing_manager], class: 'non_bold_label'
+      .row
+        .col-sm-6
+          = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
+        .col-sm-6
+          = check_box_tag :billing_manager, true, su.try(:billing_manager), { id: "su-billing-manager-#{user.id}", class: "su-billing-manager", data: { identity_id: user.id, organization_id: organization.id } }
 
   .col-sm-2.text-center
     - if cm_disabled
@@ -47,14 +55,18 @@
 
     - if !cm.nil?
       .form_row
-      = label_tag :edit_historic_data, t(:catalog_manager)[:organization_form][:user_rights][:edit_historic_data], class: 'non_bold_label'
-      = check_box_tag :edit_historic_data, true, cm.try(:edit_historic_data), { id: "cm-edit-historic-data-#{user.id}", class: "cm-edit-historic-data", data: { identity_id: user.id, organization_id: organization.id } }
+      .row
+        .col-sm-12
+          = label_tag :edit_historic_data, t(:catalog_manager)[:organization_form][:user_rights][:edit_historic_data], class: 'non_bold_label'
+      .row
+        .col-sm-12
+          = check_box_tag :edit_historic_data, true, cm.try(:edit_historic_data), { id: "cm-edit-historic-data-#{user.id}", class: "cm-edit-historic-data", data: { identity_id: user.id, organization_id: organization.id } }
   - unless organization.type == "Institution" or !organization.process_ssrs
     .col-sm-3.text-center
       = check_box_tag :service_provider, true, !cp.nil?, { class: "service-provider-checkbox", data: { identity_id: user.id, organization_id: organization.id } }
       - if !cp.nil?
         .form_row
-        = label_tag :primary_contact, t(:catalog_manager)[:organization_form][:user_rights][:primary_contact], class: 'non_bold_label', title: t(:catalog_manager)[:organization_form][:user_rights][:tooltips][:primary_contact], data: { toggle: 'tooltip', placement: 'left', delay: '{"show":"500"}'}
+        = label_tag :primary_contact, t(:catalog_manager)[:organization_form][:user_rights][:primary_contact], class: 'non_bold_label', title: t(:catalog_manager)[:organization_form][:user_rights][:tooltips][:primary_contact], data: { toggle: 'tooltip', placement: 'left' }
         = check_box_tag :is_primary_contact, true, cp.try(:is_primary_contact), { id: "sp-is-primary-contact-#{user.id}", class: "sp-is-primary-contact", data: { identity_id: user.id, organization_id: organization.id } }
 
         = label_tag :hold_emails, t(:catalog_manager)[:organization_form][:user_rights][:hold_emails], class: 'non_bold_label'

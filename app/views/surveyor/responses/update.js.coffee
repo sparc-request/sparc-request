@@ -17,22 +17,23 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<% if @response.valid? %>
-if $('#modal_place:visible').length > 0
-  $('#modal_place').modal('hide')
+
+<% if @errors %>
+$("[name^='response[question_responses_attributes]']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @response.question_responses.each_with_index do |qr, index| %>
+<% qr.errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name^='response[question_responses_attributes][<%= index %>][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% end %>
+
+<% else %>
+
+if $('#modalContainer:visible').length > 0
+  $('#modalContainer').modal('hide')
 else
   window.location = "<%= surveyor_response_complete_path(@response) %>"
-<% else %>
-<% @response.question_responses.each do |qr| %>
-<% if qr.valid? %>
-$(".question-<%=qr.question_id%> .question-label").removeClass('has-error')
-$(".question-<%=qr.question_id%> .question-label .help-block").remove()
-<% else %>
-if !$(".question-<%=qr.question_id%> .question-label").hasClass('has-error')
-  $(".question-<%=qr.question_id%> .question-label").addClass('has-error')
-  <% qr.errors.full_messages.each do |message| %>
-  $(".question-<%=qr.question_id%> .question-label").append("<span class='help-block'><%= message %></span>")
-  <% end %>
-<% end %>
-<% end %>
 <% end %>

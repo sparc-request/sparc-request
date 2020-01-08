@@ -18,12 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-default
-  .panel-heading
-    = t(:dashboard)[:protocol_filters][:saved_filters][:header]
-  .panel-body
-    %ul
-      - @protocol_filters.each do |pf|
-        %li
-          = link_to pf.search_name, pf.href, class: "saved_search_link"
-          = link_to "", dashboard_protocol_filter_path(pf.id), class: "glyphicon glyphicon-remove text-danger pull-right delete-filter", method: :delete, remote: true
+.card.mt-3#savedFilters{ class: protocol_filters.any? ? '' : 'd-none' }
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t('dashboard.protocol_filters.saved_filters.header')
+  .card-body.p-0
+    %ul.list-group.list-group-flush.border-0
+      - protocol_filters.each do |pf|
+        %li.list-group-item.d-flex.align-items-center
+          = link_to pf.search_name, pf.href, remote: true, class: "saved-search-link mr-auto"
+          = link_to dashboard_protocol_filter_path(pf.id), method: :delete, remote: true, class: "text-danger delete-filter" do
+            = icon('fas', 'trash-alt')

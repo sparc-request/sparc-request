@@ -1,0 +1,5 @@
+wb = xlsx_package.workbook
+
+generator = ::CostAnalysis::Generator.new
+generator.protocol = @protocol
+generator.to_workbook(wb)

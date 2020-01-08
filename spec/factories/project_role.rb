@@ -22,9 +22,7 @@
 # because of validations on protocol
 FactoryBot.define do
   factory :project_role do
-    protocol {nil}
-    identity {nil}
-    project_rights { Faker::Lorem.sentence(2) }
+    project_rights { Faker::Lorem.sentence(word_count: 2) }
     role {'primary-pi'}
 
     trait :without_validations do
@@ -46,5 +44,6 @@ FactoryBot.define do
     factory :project_role_with_identity, traits: [:with_identity]
     factory :project_role_with_identity_and_protocol, traits: [:with_identity, :with_protocol]
     factory :project_role_approve, traits: [:approve]
+    factory :project_role_without_validations, traits: [:without_validations]
   end
 end

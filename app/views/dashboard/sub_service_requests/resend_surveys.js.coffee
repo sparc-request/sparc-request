@@ -17,9 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
-$('#resend-surveys-button').prop('disabled', false)
 
-<% if @refresh %>
-$("#details").html("<%= j render 'dashboard/sub_service_requests/request_details', protocol: @sub_service_request.protocol, service_request: @sub_service_request.service_request, sub_service_request: @sub_service_request %>")
-<% end %>
+$("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

@@ -18,49 +18,45 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if current_user.is_site_admin?
-  .panel.panel-default
-    .panel-heading
-      %h4.panel-title{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
+  .card.w-100#surveysCard
+    .card-header.bg-primary.text-white{ title: t(:surveyor)[:systemsurveys][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
+      %h3.mb-0
         = t(:surveyor)[:systemsurveys][:header]
-    .panel-body
-      .bootstrap-table-dropdown-overflow
-        #surveys-custom-toolbar
-          = link_to t(:surveyor)[:systemsurveys][:new], new_surveyor_survey_path(type: 'SystemSurvey'), remote: true, class: "btn btn-success", id: "new-survey-button"
-        %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
-          %thead.primary-header
-            %tr
-              %th.col-sm-4{ data: { field: "title", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:title]
-              %th.col-sm-3{ data: { field: "access_code", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:access_code]
-              %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:version]
-              %th.col-sm-1{ data: { field: "active", align: "center" } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "actions", align: "center" } }
-                = t(:surveyor)[:systemsurveys][:table][:headers][:actions]
+    #surveysCustomToolbar
+      = link_to t(:surveyor)[:systemsurveys][:new], new_surveyor_survey_path(type: 'SystemSurvey'), remote: true, class: "btn btn-success", id: "new-survey-button"
+    %table.system-survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'SystemSurvey'), striped: 'true', toolbar: '#surveysCustomToolbar', pagination: 'true', page_size: '20' } }
+      %thead.primary-header
+        %tr
+          %th{ data: { field: "title", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:title]
+          %th{ data: { field: "access_code", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:access_code]
+          %th{ data: { field: "version", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:version]
+          %th{ data: { field: "active", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:active]
+          %th{ data: { field: "actions", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:actions]
 
 - if current_user.is_site_admin? || current_user.is_super_user? || current_user.is_service_provider? || current_user.is_catalog_manager?
-  .panel.panel-default
-    .panel-heading
-      %h4.panel-title{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', delay: '{"show":"500"}', placement: 'left' } }
+  .card.w-100#formsCard
+    .card-header.bg-primary.text-white{ title: t(:surveyor)[:forms][:tooltip], data: { toggle: 'tooltip', placement: 'left' } }
+      %h3.mb-0
         = t(:surveyor)[:forms][:header]
-    .panel-body
-      .bootstrap-table-dropdown-overflow
-        #forms-custom-toolbar
-          = link_to t(:surveyor)[:forms][:new], new_surveyor_survey_path(type: 'Form'), remote: true, class: "btn btn-success", id: "new-form-button"
-        %table.form-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'Form'), striped: 'true', toolbar: '#forms-custom-toolbar', pagination: 'true', page_size: '20' } }
-          %thead.primary-header
-            %tr
-              %th.col-sm-3{ data: { field: "surveyable", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:forms][:table][:headers][:surveyable]
-              %th.col-sm-2{ data: { field: "title", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:forms][:table][:headers][:title]
-              %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:forms][:table][:headers][:access_code]
-              %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
-                = t(:surveyor)[:forms][:table][:headers][:version]
-              %th.col-sm-1{ data: { field: "active", align: "center" } }
-                = t(:surveyor)[:forms][:table][:headers][:active]
-              %th.col-sm-3{ data: { field: "actions", align: "center" } }
-                = t(:surveyor)[:forms][:table][:headers][:actions]
+    #formsCustomToolbar
+      = link_to t(:surveyor)[:forms][:new], new_surveyor_survey_path(type: 'Form'), remote: true, class: "btn btn-success", id: "new-form-button"
+    %table.form-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path(type: 'Form'), striped: 'true', toolbar: '#formsCustomToolbar', pagination: 'true', page_size: '20' } }
+      %thead.primary-header
+        %tr
+          %th{ data: { field: "surveyable", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:forms][:table][:headers][:surveyable]
+          %th{ data: { field: "title", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:forms][:table][:headers][:title]
+          %th{ data: { field: "access_code", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:forms][:table][:headers][:access_code]
+          %th{ data: { field: "version", align: "left", sortable: 'true' } }
+            = t(:surveyor)[:forms][:table][:headers][:version]
+          %th{ data: { field: "active", align: "center" } }
+            = t(:surveyor)[:forms][:table][:headers][:active]
+          %th{ data: { field: "actions", align: "center" } }
+            = t(:surveyor)[:forms][:table][:headers][:actions]

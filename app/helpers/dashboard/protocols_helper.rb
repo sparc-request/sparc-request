@@ -30,34 +30,38 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def edit_protocol_button_display(protocol, permission_to_edit)
-    if permission_to_edit
-      content_tag( :button, I18n.t('protocols.edit', protocol_type: protocol.type), type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:protocols)[:summary][:tooltips][:edit])
-    end
+  def protocol_id_link(protocol)
+    link_to protocol.id, dashboard_protocol_path(protocol)
   end
 
-  def short_title_display(protocol)
-    truncate_string_length(protocol.short_title, 100)
+  def protocol_short_title_link(protocol)
+    content_tag(:div, (link_to protocol.short_title, dashboard_protocol_path(protocol)) ) + content_tag(:div, (display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))) )
   end
 
   def pis_display(protocol)
-    protocol.principal_investigators.map(&:full_name).join ", "
+    if protocol.primary_pi
+      content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
+        content_tag(:span) do
+          icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
+        end + '<br>'.html_safe
+      end
+    else
+      ""
+    end + raw(
+    protocol.principal_investigators.select{ |pi| pi != protocol.primary_pi }.map do |pi|
+      content_tag(:span) do
+        icon('fas', 'user mr-2') + pi.display_name
+      end
+    end.join('<br>'.html_safe))
   end
 
-  def display_requests_button(protocol, admin_protocols, current_user)
-    if protocol.sub_service_requests.any? && (protocol.project_roles.where(identity: current_user).any? || admin_protocols.try(:include?, protocol.id))
-      content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
-    end
-  end
-
-  def display_archive_button(protocol, permission_to_edit, current_user)
-    if permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol)
-      content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
-                    type: 'button', 
-                    class: 'protocol-archive-button btn btn-default btn-sm',
-                    data: { protocol_id: protocol.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
-                    title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive_study" : "archive_study"}")
-      )
+  def display_requests_button(protocol, access)
+    if protocol.sub_service_requests.any? && access
+      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary protocol-requests') do
+        content_tag :span, class: 'd-flex align-items-center' do
+          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests_count, class: 'badge badge-pill badge-c badge-light ml-2'))
+        end
+      end
     end
   end
 end

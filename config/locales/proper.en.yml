@@ -25,26 +25,11 @@ en:
     ##########
     header: "SPARCRequest"
 
-    ##########
-    # NAVBAR #
-    ##########
-    navbar:
-      logged_in: "Logged in as %{email}"
-      login: "Login / Sign Up"
-      logout: "Logout"
-
-    ##########
-    # FOOTER #
-    ##########
-    footer:
-      listserv: "Listserv"
-      listserv_subject: "SPARCRequest Listserv"
-      sparc_blog: "Blog"
-      sparc_blog_url: "https://sparcrequestblog.com/"
-      sctr: "SCTR"
-      sctr_url: "http://sctr.musc.edu"
-      about: "About"
-      about_alt: "About SPARCRequest"
+    #####################
+    # VALIDATION ERRORS #
+    #####################
+    errors:
+      header: "This request has errors"
 
     ###########
     # CATALOG #
@@ -52,43 +37,35 @@ en:
     catalog:
       accordion:
         header: "Browse Service Catalog"
-      back_to_top: "Back to Top"
       center:
-        search_placeholder: "Search by Service Name, CPT Code, or EAP ID"
-        welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
-        description: "Search for services above or browse the providers/services on the left sidebar"
-        notice: "** You may only select services applicable to ONE Study/Project at a time **"
-        news:
-          header: "News"
-          none: "There is no recent news. Please check back later."
-        calendar:
-          header: "Calendar"
-          all_day: "All Day"
-          none: "No events scheduled within a month from today."
+        search_placeholder: "Search for services by name, CPT code, or EAP ID"
+        header: "Welcome to SPARCRequest"
+        subheader: "Storefront of Research Services"
+        description: "<b>SPARCRequest</b> (<b>S</b>ervices, <b>P</b>ricing, & <b>A</b>pplication for <b>R</b>esearch <b>C</b>enters) is a web-based research transaction management system that provides a central portal to researchers and their study teams to browse for research services and resources as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. SPARCRequest is OSS (Open-Source Software) for which MUSC holds the copyright license. SPARCRequest is developed in a collaborative and public manner for easy adoptability and the source code is available to anyone."
+        text: "Browse our service catalog to start a new request<sup>*</sup> or"
+        notice: "* You may only select services applicable to ONE Study or Project at a time"
+        dashboard_link: "Visit Your Dashboard"
       new_request:
-        header: "New or Existing"
-        warning: "Would you like to enter a new study or project into SPARCRequest?"
-        yes_button: "<b>Yes</b> <br>(Continue with Shopping Cart)"
-        no_button: "<b>No</b> <br>(Go to SPARCDashboard to Choose)"
-      request_submitted:
-        header: "Remove Service Warning"
-        warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
+        header: "Is this a new request?"
+        warning: "Would you like to start a new Study or Project in SPARCRequest?"
+        yes_button: "<b>Yes</b> <br>Continue Shopping"
+        no_button: "<b>No</b> <br>Visit my Dashboard"
       locked_organization:
-        header: "Locked Organization"
-        warning: "%{organization} services are already present on request %{request} pertaining to this %{protocol_type}, %{title}.<br>Please contact %{contact_name} at %{contact_info} to edit existing request."
+        header: "%{ssr_id} - %{organization} is Locked"
+        text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."
+      services_missing:
+        header: "Add Services to Continue"
 
     ############
     # PROTOCOL #
     ############
     protocol:
-      review_services_notice: "Services"
-      review_services_instructions: "Please review the SPARCRequest Services you have selected"
-      create_protocol_notice: "Create Protocol"
-      create_protocol_instructions: "Create a Protocol and add all relevant information"
+      new:
+        text: "Which type of Protocol best suits your request?"
+        study_description: "A Research Study with defined aims and outcomes."
+        project_description: "Non-study-specific requests or anything that is not a Research Study."
       review_protocol_notice: "Protocol Information"
       review_protocol_instructions: "Review your Protocol and Authorized Users"
-      study_tooltip: "Choose 'New Research Study' for a Research Study with defined aims and outcomes."
-      project_tooltip: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a Research Study."
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
@@ -97,31 +74,6 @@ en:
     # SERVICE DETAILS #
     ###################
     service_details:
-      enter_dates_notice: "Milestones"
-      enter_dates_instructions: "Used for Study/Project metric tracking"
-      arm_information_notice: "Arm Information"
-      arm_information_instructions: "Used to build your Calendar Structure"
-      start_date: "Estimated Start Date"
-      end_date: "Estimated End Date"
-      recruitment_start: "Estimated Recruitment Start Date"
-      recruitment_end: "Estimated Recruitment End Date"
-      initial_budget_sponsor_received_date: "Initial Budget Sponsor Received Date"
-      budget_agreed_upon_date: 'Budget Agreed Upon Date'
-      initial_amount_clinical_services: 'Initial Amount Per Patient'
-      initial_amount_non_clinical_services: 'Initial Site Level Amount Offered'
-      negotiated_amount_clinical_services: 'Negotiated Amount Per Patient'
-      negotiated_amount_non_clinical_services: 'Negotiated Site Level Amount'
-      tooltips:
-        start_date: 'Study/Project estimated start date (used by service providers to prioritize)'
-        end_date: 'Study/Project estimated end date (used by service providers to prioritize)'
-        recruitment_start_date: 'When your study or project is estimated to start recruiting participants'
-        recruitment_end_date: 'When your study or project is estimated to stop recruiting participants'
-
-
-    ####################
-    # SERVICE CALENDAR #
-    ####################
-    service_calendar:
       move_visit:
         header: "Move Visit"
       legend:
@@ -148,28 +100,10 @@ en:
     # DOCUMENT MANAGEMENT #
     #######################
     document_management:
-      documents_notice: "Documents"
       notes_notice: "Notes"
       forms_notice: 'Forms'
       tooltips:
-        documents: "Visible to Authorized Users and selected Service Providers"
         notes: "Important notes for your Study/Project"
-
-    ##########
-    # REVIEW #
-    ##########
-    review:
-      instructions:
-        first: "Review your request"
-        second: "Make changes if necessary"
-        third: "Click 'Save as Draft', 'Get a Cost Estimate', or 'Submit Request'"
-      protocol_information_notice: "Protocol Information"
-      authorized_users_notice: "Authorized Users"
-      documents_notice: "Documents"
-      notes_notice: "Notes"
-      pppv_calendars_notice: "Clinical Services"
-      otf_calendar_notice: "Non-clinical Services"
-      totals_notice: "Total Costs"
 
     ##############################
     # SYSTEM SATISFACTION SURVEY #
@@ -182,10 +116,10 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
-      confirmation_warning: "Thank you for submitting your service request(s) through SPARCRequest. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
-      cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
+      confirmation_warning: "An email has been sent to each of your Service Providers and they should be contacting you soon.<br>If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
+      cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
-      download_request: "Download Service Request"
+      download_request: "Download Request"
       to_dashboard: "Go to Dashboard"
       table_fields:
         request_id: "Request ID"
@@ -195,107 +129,104 @@ en:
         contact: "Contact"
       push_to_epic:
         message: "Getting status of last push to Epic..."
+        failed: "Unable to get status of last push to Epic."
 
     ########
     # CART #
     ########
     cart:
       header: "My Services"
-      view_active: "View Active"
-      view_complete: "View Complete"
-      tab_headers:
-        open: "Open"
-        complete: "Completed"
-      no_active_services_message: "You do not have any active requested Services"
-      no_complete_services_message: "You do not have any requested Services in 'Complete' status"
-      to_catalog: "Return to Catalog"
-      service_exists:
-        header: "Service Already Present"
-        warning: "You have already added this service to your cart"
-      has_fulfillments:
-        header: "Remove Service"
-        warning: "This line item has one or more fulfillments associated with it and can not be deleted."
+      add_service: "Add to cart"
+      remove_service: "Remove from cart"
+      back_to_catalog: "Back to Catalog"
+      tabs:
+        active:
+          header: "Current"
+          message: "You do not have any requested services."
+        complete:
+          header: "Completed"
+          message: "You do not have any completed services."
+      duplicate_service:
+        header: "This service is already in your cart"
+      request_submitted:
+        header: "This request was previously submitted"
+        warning: "Deleting this service from your cart is irreversible and will cause it to be removed from this %{protocol_type}.<br><br>Are you sure you want to proceed?"
       submit_error:
         header: "Submission Error"
         warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
         service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
-      must_have_line_item_error:
-        header: "Remove Service"
-        warning: "You must have at least 1 Service in your \"My Services\" cart in order to complete a Service Request."
-        return_to_catalog: "If you wish to change your requested Services, please click 'Return to Catalog'."
+      last_service:
+        header: "Remove last service from cart?"
+        warning: "You will be returned to the service catalog and any unsaved changes may be lost.<br><br>Are you sure you want to proceed?"
+        confirm: "Yes<br/>Browse Service Catalog"
+        cancel: "No<br/>Don't Remove Service"
 
     ##############
     # NAVIGATION #
     ##############
     navigation:
       steps:
-        step1: "STEP 1:<br/>Add/Update<br/>Services"
-        step2: "STEP 2:<br/>Services &<br/>Protocol Information"
-        step3: "STEP 3:<br/>Milestones &<br/>Calendar Structure"
-        step4: "STEP 4:<br/>Service<br/>Calendar"
-        step4a: "STEP 4a:<br/>Subsidy<br/>Information"
-        step5: "STEP 5:<br/>Documents,<br/>Notes & Forms"
-        step6: "STEP 6:<br/>Review Your<br/>Request"
+        catalog:
+          step_text:
+            full: "Step 1<br/>Manage<br/>Services"
+            short: "Step 1<br/>Services"
+            xs: "Step 1"
+          header: "Step 1: Manage Services"
+          sub_header: "Select services to start a new request or modify an existing request"
+        protocol:
+          step_text:
+            full: "Step 2<br/>Protocol<br/>Information"
+            short: "Step 2<br/>Protocol"
+            xs: "Step 2"
+          header: "Step 2: Protocol Information"
+          sub_header: "Fill in relevant information about your Protocol"
+        service_details:
+          step_text:
+            full: "Step 3<br/>Service<br/>Details"
+            short: "Step 3<br/>Details"
+            xs: "Step 3"
+          header: "Step 3: Service Details"
+          sub_header: "Study timeline & service indications"
+        service_subsidy:
+          step_text:
+            full: "Step 3a<br/>Subsidy<br/>Information"
+            short: "Step 3a<br/>Subsidies"
+            xs: "Step 3a"
+          header: "Step 3a: Subsidy Information"
+          sub_header: "Request a subsidy for eligible services"
+        document_management:
+          step_text:
+            full: "Step 4<br/>Documents<br/>& Forms"
+            short: "Step 4<br/>Documents"
+            xs: "Step 4"
+          header: "Step 4: Documents & Forms"
+          sub_header: "Upload documents and complete forms"
+        review:
+          step_text:
+            full: "Step 5<br/>Review Your<br/>Request"
+            short: "Step 5<br/>Review"
+            xs: "Step 5"
+          header: "Step 5: Review Your Request"
+          sub_header: "Review your request and make changes if necessary"
+        obtain_research_pricing:
+          header: "Get a Cost Estimate"
+          sub_header: "You have successfully submitted a request to get a cost estimate"
+        confirmation:
+          header: "Submission Confirmation"
+          sub_header: "Thank you for submitting your request through SPARCRequest"
       bottom:
-        back: "← Go Back"
+        back:
+          full: "Go Back"
+          small: "Back"
         save_as_draft: "Save as Draft"
         get_cost_estimate: "Get a Cost Estimate"
-        save_and_continue: "Save and Continue →"
-        submit: "Submit Request →"
+        save_and_continue:
+          full: "Save and Continue"
+          small: "Continue"
+        submit: "Submit Request"
         saving: "Saving..."
         submitting: "Submitting..."
         getting_cost: "Getting Cost..."
       save_as_draft:
-        header: "Save as Draft"
-        body: "This study will be saved as a draft and no notifications or emails will be sent to Service Providers. Do you wish to proceed?"
-
-    ####################
-    # RIGHT NAVIGATION #
-    ####################
-    right_navigation:
-      faqs:
-        header: "Help/FAQs"
-        question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
-        answer_1: "No. Please browse and select services for only one research study/project at a time."
-        question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
-        answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
-        question_3: "How many Authorized Users can I add?"
-        answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-        question_4: "What is the difference  between a Research Study and a Project?"
-        answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
-        question_5: "How is SPARCRequest calculating my indirect costs?"
-        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
-        question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
-        answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
-      feedback:
-        header: "Feedback"
-        email: "Email:"
-        feedback: "Feedback:"
-        submitted: "Thank you for providing your feedback!"
-      redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
-      contact:
-        header: "Contact Us"
-        subject: "Subject:"
-        email: "Email:"
-        message: "Message:"
-        submitted: "Message sent successfully!"
-      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
-      #### short_interaction ####
-      short_interaction:
-        header: "Short Interaction"
-        subject: "Subject of Interaction:*"
-        subject_select: " - Select Category - "
-        type: "Type of Interaction:* "
-        type_select: "- Select Type -"
-        duration: "Duration (in minutes):*"
-        duration_placeholder: "Enter an integer"
-        institution: "Investigator Institution:*"
-        institution_select: " - Select Institution - "
-        investigator_email: "Email:*"
-        investigator_email_placeholder: "Investigator's Email"
-        investigator_name: "Name:*"
-        investigator_name_placeholder: "Investigator's Name"
-        note: "Note:"
-        subject: "Subject of Interaction:* "
-        title: "Short Interaction"
-        submitted: "Interaction saved successfully!"
+        title: "Save as Draft?"
+        text: "This Protocol will be saved as a draft and no notifications or emails will be sent to service providers.<br><br>Are you sure you want to proceed?"

@@ -110,7 +110,7 @@ class UniquePiReport < ReportingModule
     end
 
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
-      submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
+      submitted_at = DateTime.strptime(args[:service_requests_submitted_at_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:service_requests_submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
     end
 
     # default values if none are provided

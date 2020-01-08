@@ -1,0 +1,47 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%section.mt-3#federalGrantInformation{ class: protocol.federally_funded? ? '' : 'd-none' }
+  .form-group
+    %h4.pb-2.mb-2.border-bottom
+      = t('protocols.form.grant_information.header')
+
+  .form-row
+    .form-group.col-3
+      = f.label :federal_grant_code_id
+      = f.select :federal_grant_code_id, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_code'), protocol.federal_grant_code_id), { include_blank: true }, class: 'selectpicker form-control', data: { live_search: 'true' }
+    .form-group.col-3
+      = f.label :federal_grant_serial_number
+      = f.text_field :federal_grant_serial_number, class: 'form-control'
+    .form-group.col-6
+      = f.label :federal_grant_title
+      = f.text_field :federal_grant_title, class: 'form-control'
+
+  .form-row
+    .form-group.col-3
+      = f.label :federal_phs_sponsor
+      = f.select :federal_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_phs_sponsor'), protocol.federal_phs_sponsor), { include_blank: true }, class: 'selectpicker form-control', data: { live_search: 'true' }
+    .form-group.col-3.d-flex.align-items-end.justify-content-center
+      %label
+        %strong
+          = t('protocols.form.grant_information.sponsor_separator')
+    .form-group.col-3
+      = f.label :federal_non_phs_sponsor
+      = f.select :federal_non_phs_sponsor, options_for_select(PermissibleValue.get_inverted_hash('federal_grant_non_phs_sponsor'), protocol.federal_non_phs_sponsor), { include_blank: true }, class: 'selectpicker form-control', data: { live_search: 'true' }

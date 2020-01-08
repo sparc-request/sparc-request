@@ -40,6 +40,7 @@ SparcRails::Application.configure do
   config.active_support.deprecation = :log
 
   # Expands the lines which load the assets
+  config.assets.compile = true
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }

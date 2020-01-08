@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.form-group
-  %button.btn.btn-sm.btn-primary.add-option
-    = t(:surveyor)[:surveys][:form][:content][:option][:add]
+
+= link_to surveyor_options_path(question_id: question.id), method: :post, remote: true, class: 'add-option btn btn-sm btn-primary', data: { toggle: 'tooltip' } do
+  = icon('fas', 'plus')
+  = t(:surveyor)[:surveys][:form][:content][:option][:add]

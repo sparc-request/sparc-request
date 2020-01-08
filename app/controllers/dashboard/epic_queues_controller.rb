@@ -19,9 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::EpicQueuesController < Dashboard::BaseController
-
   before_action :get_epic_queue, only: [:destroy]
-  before_action :authorize_overlord
+  before_action :authorize_epic_queue_access
 
   def index
     respond_to do |format|
@@ -54,11 +53,9 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   private
 
   # Check to see if user has rights to view epic queues
-  def authorize_overlord
-    unless Setting.get_value("use_epic") && Setting.get_value("epic_queue_access").include?(@user.ldap_uid)
-      @epic_queues = nil
-      @epic_queue = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You do not have access to view the Epic Queues', in_dashboard: false }
+  def authorize_epic_queue_access
+    unless Setting.get_value("use_epic") && Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
+      authorization_error('You do not have access to view the Epic Queues')
     end
   end
 

@@ -41,16 +41,19 @@ class VisitGroup < ApplicationRecord
 
   after_create :build_visits, if: Proc.new { |vg| vg.arm.present? }
   after_create :increment_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count < vg.arm.visit_groups.count }
+  
+  before_save :move_consecutive_visit, if: Proc.new{ |vg| vg.moved_and_days_need_update? }
+
   before_destroy :decrement_visit_count, if: Proc.new { |vg| vg.arm.present? && vg.arm.visit_count >= vg.arm.visit_groups.count  }
 
-  validates :name, presence: true
-  validates :position, presence: true
-  validates :window_before,
-            :window_after,
-            presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :day, presence: true, numericality: { only_integer: true }
+  validates :name, :position, :day, :window_before, :window_after, presence: true
 
-  validate :day_must_be_in_order
+  validates :position, presence: true
+  validates :window_before, :window_after, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new{ |vg| vg.day.present? }
+
+  validates :day, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
+
+  validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
 
   default_scope { order(:position) }
 
@@ -59,12 +62,24 @@ class VisitGroup < ApplicationRecord
     self.day <=> other_vg.day
   end
 
-  def self.admin_day_multiplier
-    5
+  def position=(position)
+    if position.blank?
+      write_attribute(:position, nil)
+    elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
+      write_attribute(:position, position)
+    else
+      # Because we have to insert before using position - 1,
+      # increment position when changed
+      write_attribute(:position, position.to_i + 1)
+    end
+  end
+
+  def identifier
+    "#{self.name}" + (self.day.present? ? " (#{self.class.human_attribute_name(:day)} #{self.day})" : "")
   end
 
   def insertion_name
-    "Before #{name}" + (day.present? ? " (Day #{day})" : "")
+    I18n.t('visit_groups.before') + " " + self.identifier
   end
 
   ### audit reporting methods ###
@@ -79,13 +94,23 @@ class VisitGroup < ApplicationRecord
 
   ### end audit reporting methods ###
 
-  def any_visit_quantities_customized?(service_request)
-    visits.any? { |visit| ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id)) }
+  def moved_and_days_need_update?
+    # Three Cases:
+    # The Visit Group is new and is being inserted between two other consecutive-day visits
+    # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+    # The Visit Group has been moved and now we need to move consecutive visits
+    @moved_and_update ||= (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
+                          (self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) ||
+                          (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day))
   end
 
-  # TODO: remove after day_must_be_in_order validation is fixed.
   def in_order?
-    arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
+    self.arm.visit_groups.where.not(id: self.id, day: nil).where(
+      VisitGroup.arel_table[:position].lt(self.position).and(
+      VisitGroup.arel_table[:day].gteq(self.day)).or(
+      VisitGroup.arel_table[:position].gt(self.position).and(
+      VisitGroup.arel_table[:day].lteq(self.day)))
+    ).none?
   end
 
   def per_patient_subtotals
@@ -108,9 +133,21 @@ class VisitGroup < ApplicationRecord
     self.arm.decrement!(:visit_count)
   end
 
-  def day_must_be_in_order
-    unless in_order?
-      errors.add(:day, 'must be in order')
+  def move_consecutive_visit
+    # The Visit Group has been moved and now we need to move consecutive visits
+    if self.position_changed?
+      if vg = self.arm.visit_groups.find_by(position: self.position)
+        # This actually increments position when position= is called
+        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position)
+      end
+    else # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
+      if vg = self.lower_items.where.not(id: self.id, day: nil).first
+        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position - 1)
+      end
     end
+  end
+
+  def day_must_be_in_order
+    errors.add(:day, :out_of_order) unless moved_and_days_need_update? || in_order?
   end
 end

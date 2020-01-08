@@ -1,0 +1,42 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- tab = cookies["history-tab-ssr-#{sub_service_request.id}"] || 'status_history'
+
+.card.w-100
+  .card-body
+    .row
+      .col-2
+        %nav.nav.nav-pills.flex-column.list-group.list-group-flush{ role: 'tablist' }
+          .list-group-item.p-0
+            = link_to t(:dashboard)[:sub_service_requests][:history][:status_history][:header], '#statusHistoryTab', id: 'statusHistoryLink', class: ['nav-link text-center', tab == 'status_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'statusHistoryTab', selected: (tab == 'status_history').to_s }
+          - if sub_service_request.approvals.any?
+            .list-group-item.p-0
+              = link_to t(:dashboard)[:sub_service_requests][:history][:approval_history][:header], '#approvalHistoryTab', id: 'approvalHistoryLink', class: ['nav-link text-center', tab == 'approval_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'approvalHistoryTab', selected: (tab == 'approval_history').to_s }
+          - if sub_service_request.eligible_for_subsidy?
+            .list-group-item.p-0
+              = link_to t(:dashboard)[:sub_service_requests][:history][:subsidy_history][:header], '#subsidyHistoryTab', id: 'subsidyHistoryLink', class: ['nav-link text-center', tab == 'subsidy_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'subsidyHistoryTab', selected: (tab == 'subsidy_history').to_s }
+      .tab-content.col-10.pl-0
+        .tab-pane.fade#statusHistoryTab{ role: 'tabpanel', class: tab == 'status_history' ? 'show active' : '', aria: { labelledby: 'statusHistoryTabLink' } }
+          = render 'dashboard/sub_service_requests/history/status_history', sub_service_request: sub_service_request
+        .tab-pane.fade#approvalHistoryTab{ role: 'tabpanel', class: tab == 'approval_history' ? 'show active' : '', aria: { labelledby: 'approvalHistoryTabLink' } }
+          = render 'dashboard/sub_service_requests/history/approval_history', sub_service_request: sub_service_request
+        .tab-pane.fade#subsidyHistoryTab{ role: 'tabpanel', class: tab == 'subsidy_history' ? 'show active' : '', aria: { labelledby: 'subsidyHistoryTabLink' } }
+          = render 'dashboard/sub_service_requests/history/subsidy_history', sub_service_request: sub_service_request

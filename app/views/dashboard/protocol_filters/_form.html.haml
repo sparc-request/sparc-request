@@ -18,35 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog
+.modal-dialog{ role: 'document' }
   .modal-content
-    = form_for [:dashboard, protocol_filter], {remote: true, html: {role: "form"}} do |form|
+    = form_for [:dashboard, protocol_filter], remote: true do |f|
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center
-          = t(:dashboard)[:protocol_filters][:saved_filters][:modal][:header]
+        %h3.modal-title
+          = t('dashboard.protocol_filters.modal.header')
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        #modal_errors
-        .row
-          .col-md-12
-            = form.hidden_field :identity_id
-            = form.hidden_field :show_archived
-            = form.hidden_field :admin_filter
-            = form.hidden_field :search_query
-            - protocol_filter.with_organization.each do |core_id|
-              = form.hidden_field :with_organization, multiple: true, value: core_id
-            - protocol_filter.with_status.each do |status|
-              = form.hidden_field :with_status, multiple: true, value: status
-            - protocol_filter.with_owner.each do |owner|
-              = form.hidden_field :with_owner, multiple: true, value: owner
-            .form-group
-              = form.label :search_name, t(:dashboard)[:protocol_filters][:saved_filters][:modal][:name], class: "col-sm-4 control-label"
-              .col-sm-7
-                = form.text_field :search_name, {class: 'form-control'}
+        = f.hidden_field :show_archived
+        = f.hidden_field :admin_filter
+        = f.hidden_field :search_query
+        - protocol_filter.with_organization.each do |core_id|
+          = f.hidden_field :with_organization, multiple: true, value: core_id
+        - protocol_filter.with_status.each do |status|
+          = f.hidden_field :with_status, multiple: true, value: status
+        - protocol_filter.with_owner.each do |owner|
+          = f.hidden_field :with_owner, multiple: true, value: owner
+        .form-group
+          = f.label :search_name, class: 'required'
+          = f.text_field :search_name, class: 'form-control'
       .modal-footer
-        .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-            = t(:actions)[:close]
-          %input.btn.btn-primary{type: 'submit', value: 'Save'}
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

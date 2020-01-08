@@ -17,5 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+
 .line-item-visit-pricing{ class: (visit.research_billing_qty + visit.insurance_billing_qty).zero? ? 'zero-cell' : '' }
   = qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(visit.cost)) || "0 - $0.00"

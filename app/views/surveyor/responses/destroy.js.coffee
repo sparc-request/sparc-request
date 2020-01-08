@@ -17,14 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-if $("#protocol_show_information_panel").length > 0
+
+if window.location.pathname.startsWith('/dashboard')
   <% if @response.respondable.protocol.has_completed_forms? %>
-  $('#forms-table').bootstrapTable('refresh')
+  $('#formsTable').bootstrapTable('refresh')
   <% else %>
-  $('#forms-panel').hide()
+  $('#forms').addClass('d-none')
   <% end %>
-  $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: current_user, view_only: false, show_view_ssr_back: false)) %>")
-  $('.service-requests-table').bootstrapTable()
-  reset_service_requests_handlers()
+  $('.service-request-card:not(:eq(0))').remove()
+  $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
+  $(".service-requests-table").bootstrapTable()
 else
-  $('#forms-table').bootstrapTable('refresh')
+  $('#formsTable').bootstrapTable('refresh')

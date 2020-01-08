@@ -19,25 +19,26 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AddService
-
-  def initialize(service_request, service_id, current_user)
-    @service_request = service_request
-    @service_id = service_id
-    @current_user = current_user
-  end
-
-  def existing_service_ids
-    @service_request.line_items.reject{ |line_item| Setting.get_value("finished_statuses").include?(line_item.status) }.map(&:service_id)
+  def initialize(service_request, service_id, requester, new_request=false, confirmed=false)
+    @service_request  = service_request
+    @service          = Service.find(service_id)
+    @requester        = requester
+    @new_request      = new_request
+    @confirmed        = confirmed
   end
 
   def generate_new_service_request
-    service        = Service.find(@service_id)
-    new_line_items = @service_request.create_line_items_for_service(
-      service: service,
-      optional: true,
-      existing_service_ids: existing_service_ids,
-      recursive_call: false ) || []
+    @service_request.save
+    new_line_items = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false ) || []
     create_sub_service_requests(new_line_items)
+  end
+
+  def confirm_new_request?
+    !@confirmed && @new_request && @service_request.line_items.none?
+  end
+
+  def duplicate_service?
+    @service_request.line_items.incomplete.where(service: @service).any?
   end
 
   private
@@ -65,7 +66,7 @@ class AddService
       end
     end
     sub_service_request = service_request.sub_service_requests.create(
-      organization: organization, service_requester: @current_user
+      organization: organization, service_requester: @requester
     )
     service_request.ensure_ssr_ids
 
@@ -74,10 +75,8 @@ class AddService
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    unless sub_service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
-      return true
-    end
-    return false
+
+    sub_service_request.audit_report(@requester, previously_submitted_at, Time.now.utc)[:line_items].any?
   end
 end
 

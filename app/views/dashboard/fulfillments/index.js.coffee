@@ -18,6 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/study_level_activities/fulfillments_table', locals: {line_item: @line_item, header_text: 'Fulfillments List'})) %>");
-$("#fulfillments-table").bootstrapTable()
-$("#modal_place").modal('show')
+$("#modalContainer").html("<%= j render 'dashboard/fulfillments/fulfillments', line_item: @line_item, sub_service_request: @sub_service_request %>")
+$("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

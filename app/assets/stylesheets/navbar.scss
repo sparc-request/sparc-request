@@ -1,0 +1,238 @@
+// Copyright © 2011-2019 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+/////////////////////
+/// Header Navbar ///
+/////////////////////
+
+#loginLink {
+  height: 46px;
+}
+
+nav#siteNav {
+  .container-fluid {
+    align-items: stretch;
+
+    .profile {
+      .notification-badge {
+        top: 2px;
+        right: 10px;
+      }
+    }
+  }
+}
+
+////////////////////
+/// Steps Navbar ///
+////////////////////
+
+nav#stepsNav {
+  height: 7vw;
+  margin-top: -0.75rem;
+
+  &.has-subsidy {
+    height: 6vw;
+
+  }
+
+  .steps-container {
+    &.even {
+      .col:first-child .nav-link {
+        right: -0.9vw;
+      }
+
+      .col:nth-child(2) .nav-link {
+        right: -0.55vw;
+      }
+
+      .col:nth-child(3) .nav-link {
+        right: -0.2vw;
+      }
+
+      .col:nth-child(4) .nav-link {
+        left: -0.2vw;
+      }
+
+      .col:nth-child(5) .nav-link {
+        left: -0.55vw;
+      }
+
+      .col:nth-child(6) .nav-link {
+        left: -0.9vw;
+      }
+
+      .nav-link {
+        transform: scaleX(1.225);
+      }
+    }
+
+    &:not(.even) {
+      .nav-link {
+        transform: scale(1.25, .9);
+      }
+
+      .col:first-child .nav-link {
+        right: -1.05vw;
+      }
+
+      .col:nth-child(2) .nav-link {
+        right: -0.55vw;
+      }
+
+      .col:nth-child(4) .nav-link {
+        left: -0.55vw;
+      }
+
+      .col:nth-child(5) .nav-link {
+        left: -1.05vw;
+      }
+    }
+
+    .col:first-child .nav-link {
+      z-index: 6;
+    }
+
+    .col:nth-child(2) .nav-link {
+      z-index: 5;
+    }
+
+    .col:nth-child(3) .nav-link {
+      z-index: 4;
+    }
+
+    .col:nth-child(4) .nav-link {
+      z-index: 3;
+    }
+
+    .col:nth-child(5) .nav-link {
+      z-index: 2;
+    }
+
+    .col:nth-child(6) .nav-link {
+      z-index: 1;
+    }
+
+    .col:last-child .nav-link {
+    }
+
+    .nav-link {
+      position: absolute;
+      width: 100%;
+
+      .step {
+        width: 100%;
+      }
+    }
+
+    .step-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      z-index: 8;
+      line-height: 1.3;
+      pointer-events: none;
+    }
+  }
+}
+
+@each $color, $value in $theme-colors {
+  nav#stepsNav .nav-link.active.text-#{$color} {
+    color: darken($value, 10%) !important;
+  }
+}
+
+////////////////////////
+/// Dashboard Navbar ///
+////////////////////////
+
+nav#dashboardNav {
+  margin-top: -1rem;
+}
+
+/////////////////////////
+/// Responsive Styles ///
+/////////////////////////
+
+@include media-breakpoint-only(xs) {
+  nav#stepsNav {
+    .steps-container {
+      .col:first-child .nav-link {
+        right: -.5rem;
+      }
+
+      .col:last-child .nav-link {
+        left: -.5rem;
+      }
+
+      .nav-link {
+        transform: scale(1.15, 1.5);
+      }
+    }
+  }
+}
+
+@include media-breakpoint-between(sm, md) {
+  nav#stepsNav {
+    .steps-container {
+      .col:first-child .nav-link {
+        right: -.75rem;
+      }
+
+      .col:last-child .nav-link {
+        left: -.75rem;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-only(lg) {
+  nav#stepsNav {
+    .steps-container {
+      .col:first-child .nav-link {
+        right: -1rem;
+      }
+
+      .col:last-child .nav-link {
+        left: -1rem;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  nav#siteNav {
+    .navbar-nav#navbarUtilities {
+      flex-flow: row;
+      flex: 3;
+    }
+
+    .navbar-toggler {
+      flex: 1;
+    }
+  }
+
+  nav#dashboardNav {
+    .navbar-nav {
+      flex: 1 0;
+    }
+  }
+}

@@ -19,4 +19,4 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#service-relation-id-<%= @service_relation.id %>").fadeOut(1000, () -> $(this).remove())
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

@@ -21,57 +21,9 @@
 require 'rails_helper'
 
 RSpec.describe Fulfillment, type: :model do
-  describe '#formatted_date' do
-    context 'date present' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m/%d/%Y")) }
-      it 'should return date in format: m/%d/%Y' do
-        expect(fulfillment.date.strftime("%m/%d/%Y")).to eq '01/02/2001'
-      end
-    end
-
-    context 'date not present' do
-      it 'should return nil' do
-        fulfillment = build(:fulfillment, date: nil)
-        expect(fulfillment).not_to be_valid
-      end
-    end
-  end
-
-  describe '#within_date_range?' do
-    context 'start_date nil' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m/%d/%Y")) }
-      it 'should return false' do
-        expect(fulfillment.within_date_range?(nil, Date.new(2002, 1, 2))).to eq false
-      end
-    end
-
-    context 'end_date nil' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m/%d/%Y")) }
-      it 'should return false' do
-        expect(fulfillment.within_date_range?(Date.new(2000, 1, 2), nil)).to eq false
-      end
-    end
-
-    context 'date nil' do
-      let!(:fulfillment) { Fulfillment.create(date: nil) }
-      it 'should return false' do
-        expect(fulfillment.within_date_range?(Date.new(2000, 1, 2), Date.new(2001, 1, 2))).to eq false
-      end
-    end
-
-    context 'start_date, end_date, and date are not nil' do
-      let!(:fulfillment) { Fulfillment.create(date: nil) }
-      before(:each) { @dates = [Date.new(2000, 1, 2), Date.new(2001, 1, 2), Date.new(2002, 1, 2)] * 2 }
-
-      it 'should return true if Fulfillment date occurs on or after start date and occurs on or before end_date' do
-        @dates.combination(3) do |start_date, date, end_date|
-          fulfillment.update_attributes(date: date.strftime("%m/%d/%Y"))
-          expect(fulfillment.within_date_range?(start_date, end_date)).to eq(
-            (date >= start_date) && (date <= end_date))
-        end
-      end
-    end
-  end
+  it { is_expected.to validate_presence_of :date }
+  it { is_expected.to validate_presence_of :time }
+  it { is_expected.to validate_presence_of :timeframe }
 
   describe 'time validation' do
     it 'should validate the format of time' do

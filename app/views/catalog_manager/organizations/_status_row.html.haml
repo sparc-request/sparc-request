@@ -43,4 +43,4 @@
     .col-sm-3.text-center
       = check_box_tag :available_status, true, available_status.try(:selected), { class: "available-status-checkbox", disabled: mandatory_status, data: {organization_id: organization.id, status_key: status_key } }
     .col-sm-3.text-center
-      = check_box_tag :editable_status, true, editable_status.try(:selected), { class: "editable-status-checkbox", disabled: (!user.catalog_overlord? or mandatory_status or !available_status.try(:selected)), data: {organization_id: organization.id, status_key: status_key } }
+      = check_box_tag :editable_status, true, editable_status.try(:selected), { class: "editable-status-checkbox", disabled: (!current_user.catalog_overlord? or mandatory_status or !available_status.try(:selected)), data: {organization_id: organization.id, status_key: status_key } }

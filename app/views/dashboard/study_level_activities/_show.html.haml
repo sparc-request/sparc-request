@@ -1,0 +1,79 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = line_item.service.display_service_name
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      .card
+        %table.table.table-striped.mb-0
+          %tbody
+            %tr.d-flex
+              %td.d-inline-block.col-3.border-top-0
+                = Service.human_attribute_name(:charge_code)
+              %td.d-inline-block.col-9.border-top-0
+                = line_item.service.charge_code
+            %tr.d-flex
+              %td.d-inline-block.col-3 
+                = LineItem.human_attribute_name(:units_per_quantity)
+              %td.d-inline-block.col-9
+                = line_item.units_per_quantity
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:unit_type)
+              %td.d-inline-block.col-9
+                = line_item.service.current_effective_pricing_map.otf_unit_type
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:quantity)
+              %td.d-inline-block.col-9
+                = line_item.quantity
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:quantity_type)
+              %td.d-inline-block.col-9
+                = line_item.service.current_effective_pricing_map.quantity_type
+            %tr.d-flex
+              %td.d-inline-block.col-3 
+                = LineItem.human_attribute_name(:displayed_cost)
+              %td.d-inline-block.col-9
+                = sla_cost_display(line_item)
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:created_at)
+              %td.d-inline-block.col-9
+                = format_date(line_item.created_at)
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:in_process_date)
+              %td.d-inline-block.col-9
+                = format_date(line_item.in_process_date)
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = LineItem.human_attribute_name(:complete_date)
+              %td.d-inline-block.col-9
+                = format_date(line_item.complete_date)
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

@@ -17,173 +17,34 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- research_types_info = protocol.research_types_info
-- human_info          = protocol.human_subjects_info
-- vertebrate_info     = protocol.vertebrate_animals_info
-- products_info       = protocol.investigational_products_info
-- ip_patent_info      = protocol.ip_patents_info
-.panel.panel-primary
-  .panel-heading
-    %h5
-      %strong
-        = t(:protocols)[:studies][:research_involving][:header]
 
-  - if research_types_info.present? && research_types_info.has_children_types?
-    / Human Subjects
-    - if research_types_info.human_subjects
-      .panel-body
-        %table.table.table-bordered
-          %thead.default-header
-            %th
-              %h5.col-lg-12
-                %strong
-                  = t(:protocols)[:studies][:research_involving][:humans][:header]
-          %tbody
-            %tr
-              %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:nct_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-                  = t(:protocols)[:studies][:research_involving][:humans][:nct_number]
-                .col-lg-8
-                  = human_info.nct_number
-            %tr
-              %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:pro_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-                  = t(:protocols)[:studies][:research_involving][:humans][:pro_number]
-                .col-lg-8
-                  = human_info.pro_number
-                  = display_rmid_validated_protocol(human_info.protocol, 'Pro Number')
-
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:record_irb]
-                .col-lg-8
-                  = human_info.irb_of_record
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:submission_type]
-                .col-lg-8
-                  = PermissibleValue.get_value('submission_type', human_info.submission_type)
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:pending_approval]
-                .col-lg-8
-                  = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:initial_irb_approval_date]
-                .col-lg-8
-                  = format_date(human_info.initial_irb_approval_date)
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date]
-                .col-lg-8
-                  = format_date(human_info.irb_approval_date)
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date]
-                .col-lg-8
-                  = format_date(human_info.irb_expiration_date)
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:information][:phase]
-                .col-lg-8
-                  = Protocol.find(protocol.id).study_phases.map(&:phase).join(', ')
-
-    / Vertebrate Animals
-    - if research_types_info.vertebrate_animals
-      .panel-body
-        %table.table.table-bordered
-          %thead.default-header
-            %th
-              %h5.col-lg-12
-                %strong
-                  = t(:protocols)[:studies][:research_involving][:vertebrates][:header]
-          %tbody
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_number]
-                .col-lg-8
-                  = vertebrate_info.iacuc_number
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_name]
-                .col-lg-8
-                  = vertebrate_info.name_of_iacuc
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_approval_date]
-                .col-lg-8
-                  = format_date(vertebrate_info.iacuc_approval_date)
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
-                .col-lg-8
-                  = format_date(vertebrate_info.iacuc_expiration_date)
-
-    / Investigational Products
-    - if research_types_info.investigational_products
-      .panel-body
-        %table.table.table-bordered
-          %thead.default-header
-            %th
-              %h5.col-lg-12
-                %strong
-                  = t(:protocols)[:studies][:research_involving][:products][:header]
-          %tbody
-            %tr
-              %td
-                %label.col-lg-4{ title: t(:protocols)[:tooltips][:ind_number], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-                  = t(:protocols)[:studies][:research_involving][:products][:ind_number]
-                .col-lg-8
-                  = products_info.ind_number
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:products][:ind_on_hold]
-                .col-lg-8
-                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-            - if products_info.exemption_type.present?
-              %tr
-                %td
-                  %label.col-lg-4{ title: t(:protocols)[:tooltips][products_info.exemption_type.to_sym], data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' } }
-                    = t(:protocols)[:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
-                  .col-lg-8
-                    = products_info.inv_device_number
-
-    / IP/Patents
-    - if research_types_info.ip_patents
-      .panel-body
-        %table.table.table-bordered
-          %thead.default-header
-            %th
-              %h5.col-lg-12
-                %strong
-                  = t(:protocols)[:studies][:research_involving][:ip_patents][:header]
-          %tbody
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:ip_patents][:number]
-                .col-lg-8
-                  = ip_patent_info.patent_number
-            %tr
-              %td
-                %label.col-lg-4
-                  = t(:protocols)[:studies][:research_involving][:ip_patents][:inventors]
-                .col-lg-8
-                  = ip_patent_info.inventors
-  - else
-    .panel-body
-      = render partial: 'shared/alert',
-        locals: { message: t(:protocols)[:studies][:research_involving][:none] }
+%section.pt-3#researchInvolving
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('protocols.form.research_involving.header')
+    %table.table.mb-0
+      %tbody
+        %tr
+          %td{ colspan: 2 }
+            .row
+              .col-3<
+                = protocol.research_types_info.human_subjects? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                = label :research_types_info, :human_subjects, class: 'mb-0'
+              .col-3<
+                = protocol.research_types_info.vertebrate_animals? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                = label :research_types_info, :vertebrate_animals, class: 'mb-0'
+              .col-3<
+                = protocol.research_types_info.investigational_products? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                = label :research_types_info, :investigational_products, class: 'mb-0'
+              .col-3<
+                = protocol.research_types_info.ip_patents? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                = label :research_types_info, :ip_patents, class: 'mb-0'
+        - if protocol.research_types_info.human_subjects?
+          = render 'protocols/view_details/research_involving/human_subjects', protocol: protocol
+        - if protocol.research_types_info.vertebrate_animals?
+          = render 'protocols/view_details/research_involving/vertebrate_animals', protocol: protocol
+        - if protocol.research_types_info.investigational_products?
+          = render 'protocols/view_details/research_involving/investigational_products', protocol: protocol
+        - if protocol.research_types_info.ip_patents?
+          = render 'protocols/view_details/research_involving/ip_patents', protocol: protocol

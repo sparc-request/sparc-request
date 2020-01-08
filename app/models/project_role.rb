@@ -32,9 +32,11 @@ class ProjectRole < ApplicationRecord
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
   accepts_nested_attributes_for :identity
 
-  validates :identity_id, :presence => true
-  validates :role, :presence => true
-  validates :project_rights, :presence => true
+  validates :role,
+            :project_rights,
+            presence: true
+
+  validates_presence_of :role_other, if: Proc.new{ |pr| pr.role == 'other' }
 
   scope :primary_pis, -> { where(role: "primary-pi") }
 

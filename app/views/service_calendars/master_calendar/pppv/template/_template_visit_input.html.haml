@@ -17,7 +17,8 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+
 - checked = (visit.research_billing_qty + visit.insurance_billing_qty + visit.effort_billing_qty > 0)
 - unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
 
-= check_box_tag "", 1, checked, class: "visit-quantity", data: { visit_id: visit.id, quantity: checked ? 0 : unit_minimum, research_billing_qty: checked ? 0 : unit_minimum, insurance_billing_qty: checked ? 0 : visit.insurance_billing_qty, effort_billing_qty: checked ? 0 : visit.effort_billing_qty, admin: admin.to_s, tab: tab, page: page }, disabled: locked
+= check_box_tag "", 1, checked, class: "visit-quantity", data: { visit_id: visit.id, quantity: checked ? 0 : unit_minimum, research_billing_qty: checked ? 0 : unit_minimum, insurance_billing_qty: checked ? 0 : visit.insurance_billing_qty, effort_billing_qty: checked ? 0 : visit.effort_billing_qty }, disabled: !editable

@@ -1,0 +1,41 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+- state = professional_organization_state(professional_organization)
+
+.form-row#professionalOrganizationForm
+  = fields_for :project_role do |f|
+    = f.fields_for :identity_attributes do |ff_i|
+      - state[:dont_submit_selected].each do |prev_selected_pro_org|
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
+          = ff_i.label prev_selected_pro_org.org_type, org_type_label(prev_selected_pro_org)
+          = professional_organization_dropdown(choices_from: prev_selected_pro_org)
+
+      -# ProfessionalOrganization dropdown whose selected option is actually submitted with the Authorized User form.
+      - if state[:submit_selected]
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
+          = ff_i.label :professional_organization_id, org_type_label(state[:submit_selected])
+          = professional_organization_dropdown(choices_from: state[:submit_selected], form: ff_i)
+
+      -# ProfessionalOrganization dropdown for the children of the selected organization from prevous dropdown.
+      - if state[:dont_submit_unselected].any?
+        .form-group.col-4{ class: controller_name == 'registrations' ? 'mb-0' : '' }
+          = ff_i.label state[:dont_submit_unselected].first.org_type, org_type_label(state[:dont_submit_unselected].first)
+          = professional_organization_dropdown(choices_from: state[:dont_submit_unselected])

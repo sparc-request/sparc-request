@@ -28,8 +28,7 @@ class Notifier < ActionMailer::Base
     email = Setting.get_value("admin_mail_to")
     cc = Setting.get_value("new_user_cc")
 
-    subject = t(:mailer)[:email_title][:new_account_registration]
-    mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
+    mail(to: email, cc: cc, from: @identity.email, subject: t('devise.mailer.new_account.subject'))
   end
 
   def notify_user(project_role, service_request, approval, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)

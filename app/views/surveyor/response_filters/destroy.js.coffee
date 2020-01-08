@@ -17,5 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#saved-searches").html("<%= j render 'surveyor/response_filters/saved_searches' %>")
-$("#flashes_container").html("<%= j render 'shared/flash' %>")
+$("#savedSearches").replaceWith("<%= j render 'surveyor/response_filters/saved_searches' %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

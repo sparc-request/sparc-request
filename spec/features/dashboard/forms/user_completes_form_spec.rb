@@ -22,66 +22,34 @@ require 'rails_helper'
 
 RSpec.describe 'User completes a form', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    @service    = create(:service, name: "My Service", abbreviation: "My Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
-    @sr         = create(:service_request_without_validations, protocol: @protocol)
-    ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program)
-                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
-    @form       = create(:form, :with_question, surveyable: @service, active: true)
-  end
+    org       = create(:organization, name: "Program", process_ssrs: true)
+    @service  = create(:service, name: "My Service", abbreviation: "My Service", organization: org)
+    @protocol = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
+    @sr       = create(:service_request_without_validations, protocol: @protocol)
+    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org)
+                create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+    @form     = create(:form, :with_question, surveyable: @service, active: true)
 
-  context 'with no other completed forms' do
-    scenario 'and sees the forms panel appear' do
-      visit dashboard_protocol_path(@protocol)
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#forms-panel', visible: false)
-
-      bootstrap_select '.complete-forms', @service.name
-      wait_for_javascript_to_finish
-
-      click_button 'Submit'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('#forms-panel', visible: true)
-    end
-  end
-
-  context 'with no other forms to complete' do
-    scenario 'and sees the forms column on the service requests table disappear' do
-      visit dashboard_protocol_path(@protocol)
-      wait_for_javascript_to_finish
-
-      bootstrap_select '.complete-forms', @service.name
-      wait_for_javascript_to_finish
-
-      click_button 'Submit'
-      wait_for_javascript_to_finish
-
-      expect(page).to_not have_content('Complete Form')
-    end
-  end
-
-  scenario 'and sees the response in the forms panel' do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+  end
 
-    bootstrap_select '.complete-forms', @service.name
+  it 'should complete the form' do
+    find('.complete-forms').click
+    find('.complete-forms + .dropdown-menu .dropdown-item', text: @form.title).click
     wait_for_javascript_to_finish
 
-    fill_in "response_question_responses_attributes_0_content", with: 'response to a question'
-    click_button 'Submit'
+    fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
+
+    click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
 
-    expect(@form.responses.count).to eq(1)
-    expect(@form.responses.first.question_responses.first.content).to eq('response to a question')
+    expect(jug2.reload.responses.count).to eq(1)
+    expect(jug2.responses.first.question_responses.first.content).to eq('My answer is no')
+    expect(page).to have_selector('#formsTable tbody tr td', text: @form.title)
+    expect(page).to have_no_selector('.complete-forms')
   end
 end

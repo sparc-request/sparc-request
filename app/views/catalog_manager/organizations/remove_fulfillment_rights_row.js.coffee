@@ -20,4 +20,4 @@
 
 $("#fulfillment-rights-row-<%= escape_javascript(@identity_id) %>").fadeOut(1000, () -> $(this).remove())
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

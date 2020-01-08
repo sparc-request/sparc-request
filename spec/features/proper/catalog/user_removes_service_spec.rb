@@ -28,36 +28,61 @@ RSpec.describe 'User removes service from cart', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     @program    = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    @service    = create(:service, name: "Service", abbreviation: "Service", organization: @program)
+    @service    = create(:service, name: "A new Service", abbreviation: "New Service", organization: @program)
+    @sr         = create(:service_request_without_validations, status: 'first_draft')
+    @ssr        = create(:sub_service_request_without_validations, service_request: @sr, organization: @program, status: 'first_draft')
+                  create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service, optional: true)
   end
 
-  scenario 'and does not see it any longer' do
-    sr  = create(:service_request_without_validations, status: 'first_draft')
-    ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
-          create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
-
-    visit catalog_service_request_path(srid: sr.id)
+  it 'should remove the service' do
+    visit root_path(srid: @sr.id)
     wait_for_javascript_to_finish
 
     find('.line-item .remove-service').click
     wait_for_javascript_to_finish
 
-    expect(page).to have_no_selector('.line-item div', text: @service.abbreviation)
+    expect(@sr.reload.line_items.count).to eq(0)
+    expect(@sr.reload.sub_service_requests.count).to eq(0)
+    expect(page).to have_no_content(@service.abbreviation)
+    expect(page).to have_no_content(@program.name)
   end
 
-  context 'which is the last one in the ssr' do
-    scenario 'and does not see the ssr' do
-      sr  = create(:service_request_without_validations, status: 'first_draft')
-      ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
-            create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
+  context 'service request was previously submitted' do
+    it 'should remove the service after confirming' do
+      @sr.update_attribute(:submitted_at, Date.today)
+      @ssr.update_attribute(:submitted_at, Date.today)
 
-      visit catalog_service_request_path(srid: sr.id)
+      visit root_path(srid: @sr.id)
       wait_for_javascript_to_finish
 
       find('.line-item .remove-service').click
+      confirm_swal
       wait_for_javascript_to_finish
 
-      expect(page).to have_no_selector('.ssr-header span', text: @program.name)
+      expect(@sr.reload.line_items.count).to eq(0)
+      expect(@sr.reload.sub_service_requests.count).to eq(0)
+      expect(page).to have_no_content(@service.abbreviation)
+      expect(page).to have_no_content(@program.name)
+    end
+  end
+
+  context 'from a page other than the catalog' do
+    context 'and this is the last service' do
+      it 'should redirect to the catalog' do
+        visit protocol_service_request_path(srid: @sr.id)
+        wait_for_javascript_to_finish
+
+        find('.sub-service-request').click
+        find('.line-item .remove-service').click
+        confirm_swal
+        wait_for_javascript_to_finish
+
+        expect(page).to have_current_path(catalog_service_request_path(srid: @sr.id))
+        expect(@sr.reload.line_items.count).to eq(0)
+        expect(@sr.reload.sub_service_requests.count).to eq(0)
+        expect(page).to have_no_content(@service.abbreviation)
+        expect(page).to have_no_content(@program.name)
+      end
     end
   end
 end

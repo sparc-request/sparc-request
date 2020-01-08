@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+  # Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -17,41 +17,54 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-#= require likert
 
 $(document).ready ->
-  $(document).on 'load-success.bs.table', '#responses-table', ->
-    $('[data-toggle="tooltip"]').tooltip()
+  $('#responsesList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
+
+  $(document).on 'click', '#responsesList .export button', ->
+    url = new URL($('#responsesTable').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'xlsx')
+    window.location = url
+
+
+  $(document).on 'click', '.likert-group:not(.disabled) .likert-option', ->
+    $(this).find('input').prop('checked', true)
 
   $(document).on 'change', '.option input', ->
-    question_id = $(this).parents('.option').data('question-id')
-    option_id = $(this).parents('.option').data('option-id')
+    if $(this).prop('type') == 'checkbox' || $(this).prop('type') == 'radio'
+      question_id = $(this).parents('.option').data('question-id')
+      option_id = $(this).parents('.option').data('option-id')
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
+      if $(this).prop('type') == 'radio'
+        $(".dependent-for-question-#{question_id}").addClass('d-none')
 
-    if $(this).is(":checked")
-      $(".dependent-for-option-#{option_id}").removeClass('hidden')
-    else
-      $(".dependent-for-option-#{option_id}").addClass('hidden')
+      if $(this).is(":checked")
+        $(".dependent-for-option-#{option_id}").removeClass('d-none')
+      else
+        $(".dependent-for-option-#{option_id}").addClass('d-none')
 
   $(document).on 'change', '.question .selectpicker:not([multiple=multiple])', ->
     question_id = $(this).data('question-id')
     option_id = $(this).find('.option:checked').data('option-id')
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
-    $(".dependent-for-option-#{option_id}").removeClass('hidden')
+    $(".dependent-for-question-#{question_id}").addClass('d-none')
+    $(".dependent-for-option-#{option_id}").removeClass('d-none')
 
   $(document).on 'change', '.question .selectpicker[multiple=multiple]', ->
     question_id = $(this).data('question-id')
     option_ids = $(this).find('.option:checked').map( ->
       $(this).data('option-id')).get()
 
-    $(".dependent-for-question-#{question_id}").addClass('hidden')
+    $(".dependent-for-question-#{question_id}").addClass('d-none')
 
     for option_id in option_ids
-      $(".dependent-for-option-#{option_id}").removeClass('hidden')
+      $(".dependent-for-option-#{option_id}").removeClass('d-none')
 
-  $(document).on 'click', '#save-filters', ->
+#######################
+# Filterrific Filters #
+#######################
+
+  $(document).on 'click', '#saveResponseFilters', ->
     data = {} # Grab form values
 
     $.each $('form#filterrific_filter:visible').serializeArray(), (i, field) ->
@@ -61,7 +74,7 @@ $(document).ready ->
       data["filterrific[with_state][]"] = $("#filterrific_with_state").val()
 
     if data["filterrific[with_survey][]"].length
-      data["filterrific[with_survey][]"] = $(".form-group:not(.hidden) #filterrific_with_survey").val()
+      data["filterrific[with_survey][]"] = $(".form-group:not(.d-none) #filterrific_with_survey").val()
 
     $.ajax
       type: 'GET'
@@ -72,13 +85,13 @@ $(document).ready ->
     selected_value = $(this).find('option:selected').val()
 
     if selected_value == 'Form'
-      $("#for-SystemSurvey").addClass('hidden')
+      $("#for-SystemSurvey").addClass('d-none')
       $("#for-SystemSurvey .selectpicker").selectpicker('deselectAll')
-      $("#for-Form").removeClass('hidden')
+      $("#for-Form").removeClass('d-none')
     else
-      $("#for-Form").addClass('hidden')
+      $("#for-Form").addClass('d-none')
       $("#for-Form .selectpicker").selectpicker('deselectAll')
-      $("#for-SystemSurvey").removeClass('hidden')
+      $("#for-SystemSurvey").removeClass('d-none')
 
   $(document).on 'change', '#filterrific_with_state', ->
     selected = $(this).find('option:selected')
@@ -92,10 +105,28 @@ $(document).ready ->
       $('.survey-select option').prop('disabled', false)
       $('.survey-select').selectpicker('refresh')
 
-  $('#responses-panel .export button').removeClass('dropdown-toggle').removeAttr('data-toggle')
-  $('#responses-panel .export button .caret').remove()
-  $('#responses-panel .export .dropdown-menu').remove()
+  if $('#responseStartDatePicker').length && $('#responseEndDatePicker').length
+    startDate = $('#responseStartDatePicker').data().date
+    endDate   = $('#responseEndDatePicker').data().date
 
-  $(document).on 'click', '#responses-panel .export button', ->
-    $(this).parent().removeClass('open')
-    window.location = '/surveyor/responses.xlsx'
+    if startDate
+      $('#responseEndDatePicker').datetimepicker('minDate', startDate)
+      if !endDate
+        $('#filterrific_end_date').val('')
+
+    $('#responseStartDatePicker').on 'hide.datetimepicker', ->
+      startDate = $('#filterrific_start_date').val()
+      endDate   = $('#filterrific_end_date').val()
+
+      if startDate
+        $('#responseEndDatePicker').datetimepicker('minDate', startDate)
+        $('#filterrific_end_date').focus()
+        if !endDate
+          $('#filterrific_end_date').val(startDate).blur().focus()
+      else
+        $('#responseEndDatePicker').datetimepicker('minDate', false)
+
+    $(document).on 'click', '#filterrific_end_date', ->
+      if (startDate = $('#filterrific_start_date').val()) && !$(this).val()
+        $(this).val(startDate).blur().focus()
+

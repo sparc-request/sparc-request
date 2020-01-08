@@ -1,0 +1,122 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.card.w-100#protocolMilestonesCard
+  .card-header.bg-primary.text-white{ class: controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date ? 'collapsed' : '', data: { toggle: 'collapse', target: '#protocolMilestones' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('protocols.milestones.header')
+      %small.text-light
+        = t('protocols.milestones.sub_header')
+  .collapse#protocolMilestones{ class: controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date ? '' : 'show' }
+    .card-body
+      - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || request_referrer_action == 'protocol')
+      = fields_for protocol.becomes(Protocol) do |f|
+        .form-row
+          .form-group.col-6{ class: show_errors ? @errors.messages[:start_date].any? ? 'is-invalid' : 'is-valid' : '' }
+            = f.label :start_date, class: 'required', title: t('protocols.tooltips.start_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
+            .input-group.datetimepicker.date.milestone-field#protocolStartDatePicker{ data: { target_input: 'nearest' } }
+              = f.text_field :start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.start_date), data: { target: '#protocolStartDatePicker' }
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolStartDatePicker' } }
+                %span.input-group-text
+                  = icon('fas', 'calendar-alt')
+            - if show_errors
+              - @errors[:start_date].each do |message|
+                %small.form-text.form-error
+                  = message.capitalize
+          .form-group.col-6{ class: show_errors ? @errors.messages[:end_date].any? ? 'is-invalid' : 'is-valid' : '' }
+            = f.label :end_date, class: 'required', title: t('protocols.tooltips.end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
+            .input-group.datetimepicker.date.milestone-field#protocolEndDatePicker{ data: { target_input: 'nearest' } }
+              = f.text_field :end_date, class: 'datetimepicker-input form-control', value: format_date(protocol.end_date), data: { target: '#protocolEndDatePicker' }
+              .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolEndDatePicker' } }
+                %span.input-group-text.text-muted
+                  = icon('fas', 'calendar-alt')
+            - if show_errors
+              - @errors[:end_date].each do |message|
+                %small.form-text.form-error
+                  = message.capitalize
+
+        - if protocol.has_clinical_services?
+          .form-row
+            .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_start_date].any? ? 'is-invalid' : 'is-valid' : '' }
+              = f.label :recruitment_start_date, title: t('protocols.tooltips.recruitment_start_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
+              .input-group.datetimepicker.date.milestone-field#protocolRecruitmentStartDatePicker{ data: { target_input: 'nearest' } }
+                = f.text_field :recruitment_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.recruitment_start_date), data: { target: '#protocolRecruitmentStartDatePicker' }
+                .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolRecruitmentStartDatePicker' } }
+                  %span.input-group-text
+                    = icon('fas', 'calendar-alt')
+              - if show_errors
+                - @errors[:recruitment_start_date].each do |message|
+                  %small.form-text.form-error
+                    = message.capitalize
+            .form-group.col-6{ class: show_errors ? @errors.messages[:recruitment_end_date].any? ? 'is-invalid' : 'is-valid' : '' }
+              = f.label :recruitment_end_date, title: t('protocols.tooltips.recruitment_end_date', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip', placement: 'right' }
+              .input-group.datetimepicker.date.milestone-field#protocolRecruitmentEndDatePicker{ data: { target_input: 'nearest' } }
+                = f.text_field :recruitment_end_date, class: 'datetimepicker-input form-control', value: format_date(protocol.recruitment_end_date), data: { target: '#protocolRecruitmentEndDatePicker' }
+                .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolRecruitmentEndDatePicker' } }
+                  %span.input-group-text
+                    = icon('fas', 'calendar-alt')
+              - if show_errors
+                - @errors[:recruitment_end_date].each do |message|
+                  %small.form-text.form-error
+                    = message.capitalize
+        - if protocol.industry_funded?
+          .form-row
+            .form-group.col-6{ class: show_errors ? 'is-valid' : '' }
+              = f.label :initial_budget_sponsor_received_date
+              .input-group.datetimepicker.date.milestone-field#protocolInitialBudgetSponsorReceivedDatePicker{ data: { target_input: 'nearest' } }
+                = f.text_field :initial_budget_sponsor_received_date, class: 'datetimepicker-input form-control', value: format_date(protocol.initial_budget_sponsor_received_date), data: { target: '#protocolInitialBudgetSponsorReceivedDatePicker' }
+                .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolInitialBudgetSponsorReceivedDatePicker' } }
+                  %span.input-group-text
+                    = icon('fas', 'calendar-alt')
+            - if protocol.has_clinical_services?
+              .form-group.col-3.d-none#initialAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+                = f.label :initial_amount_clinical_services
+                .input-group.milestone-field
+                  .input-group-prepend
+                    = f.label :initial_amount_clinical_services, t('constants.currency'), class: 'input-group-text'
+                  = f.text_field :initial_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount_clinical_services)
+              .form-group.col-3.d-none#initialAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+                = f.label :initial_amount
+                .input-group.milestone-field
+                  .input-group-prepend
+                    = f.label :initial_amount, t('constants.currency'), class: 'input-group-text'
+                  = f.text_field :initial_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount)
+          .form-row
+            .form-group.col-6{ class: show_errors ? 'is-valid' : '' }
+              = f.label :budget_agreed_upon_date
+              .input-group.datetimepicker.date.milestone-field#protocolBudgetAgreedUponDatePicker{ data: { target_input: 'nearest' } }
+                = f.text_field :budget_agreed_upon_date, class: 'datetimepicker-input form-control', value: format_date(protocol.budget_agreed_upon_date), data: { target: '#protocolBudgetAgreedUponDatePicker' }
+                .input-group-append{ data: { toggle: 'datetimepicker', target: '#protocolBudgetAgreedUponDatePicker' } }
+                  %span.input-group-text
+                    = icon('fas', 'calendar-alt')
+            - if protocol.has_clinical_services?
+              .form-group.col-3.d-none#negotiatedAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+                = f.label :negotiated_amount_clinical_services
+                .input-group.milestone-field
+                  .input-group-prepend
+                    = f.label :negotiated_amount_clinical_services, t('constants.currency'), class: 'input-group-text'
+                  = f.text_field :negotiated_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.negotiated_amount_clinical_services)
+            .form-group.col-3.d-none#negotiatedAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+              = f.label :negotiated_amount
+              .input-group.milestone-field
+                .input-group-prepend
+                  = f.label :negotiated_amount, t('constants.currency'), class: 'input-group-text'
+                = f.text_field :negotiated_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.negotiated_amount)

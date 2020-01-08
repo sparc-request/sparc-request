@@ -17,20 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
-  %td{ colspan: 11, class: tab == 'template' ? "maximum-total-per-patient-width-template" : "max-total-per-patient-width" }
-    %strong
-      = t(:calendars)[:pppv][:totals][:maximum_per_patient]
+
+%tr.bg-light.max-total-per-patient
+  %th{ colspan: tab == 'template' ? 28 : 25 }
+    = t(:calendars)[:pppv][:totals][:maximum_per_patient]
   - visit_groups.each do |vg|
-    %td.text-center.visit-width{ class: "max-total-per-patient visit-#{vg.id}" }
-      %strong
-        - if Setting.get_value("use_indirect_cost")
-          = currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100))))
-        - else
-          = currency_converter(vg.per_patient_subtotals)
+    - cost = Setting.get_value("use_indirect_cost") ? currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100)))) : currency_converter(vg.per_patient_subtotals)
+    %th.text-center{ colspan: 3, title: cost, data: { toggle: 'tooltip' } }
+      = cost
   - (VisitGroup.per_page - visit_groups.length).times do
-    %td.visit-width
-  %td.text-center.total-width
-    %strong
-      = display_max_total_cost_per_patient(arm, line_items_visits)
-  %td.text-center.total-width
+    %td{ colspan: 3 }
+
+  - max_total_cost_pppv = display_max_total_cost_per_patient(arm, line_items_visits)
+
+  %th.text-center{ colspan: 4, title: max_total_cost_pppv, data: { toggle: 'tooltip' } }
+    = max_total_cost_pppv
+  %td.text-center{ colspan: 4 }

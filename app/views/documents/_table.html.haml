@@ -17,20 +17,30 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.bootstrap-table-dropdown-overflow
-  #documents-custom-toolbar
-    %button.btn.btn-success#document-new{ title: t(:proper)[:document_management][:tooltips][:documents], data: { protocol_id: protocol.id, toggle: 'tooltip', delay: '{"show":"500"}' } }
-      = t(:documents)[:add_document]
-  %table#documents-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: documents_path(format: :json, protocol_id: protocol.id, service_request_id: service_request.id), striped: "true", toolbar: "#documents-custom-toolbar" } }
-    %thead.primary-header
-      %tr
-        %th{ data: { class: 'col-sm-2 type', align: "left", sortable: "true", field: "type" } }
-          = t(:documents)[:table_fields][:type]
-        %th{ data: { class: 'col-sm-6 title', align: "left", sortable: "true", field: "title" } }
-          = t(:documents)[:table_fields][:title]
-        %th{ data: { class: 'col-sm-2 uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter" } }
-          = t(:documents)[:table_fields][:uploaded]
-        %th{ data: { class: 'col-sm-1 edit', align: "center", sortable: "false", field: "edit" } }
-          = t(:actions)[:edit]
-        %th{ data: { class: 'col-sm-1 delete', align: "center", sortable: "false", field: "delete" } }
-          = t(:actions)[:delete]
+
+.card.w-100#documentsCard
+  .card-header.bg-primary.text-white{ class: action_name == 'document_management' && service_request.previously_submitted? ? 'collapsed' : '', data: { toggle: 'collapse', target: '#documents' } }
+    %h3.mb-0
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('documents.header')
+  .collapse#documents{ class: action_name == 'document_management' && service_request.previously_submitted? ? '' : 'show' }
+    #documentsTableToolbar
+      - if in_dashboard?
+        = new_document_button(protocol_id: protocol.id, permission: permission_to_edit)
+      - elsif !in_review?
+        = new_document_button(srid: service_request.id)
+    - url = in_dashboard? ? dashboard_documents_path(format: :json, protocol_id: protocol.id) : documents_path(format: :json, srid: service_request.id)
+    %table#documentsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
+      %thead.bg-light
+        %tr
+          %th{ data: { field: 'document', align: "left", sortable: "true" } }
+            = Document.human_attribute_name(:document)
+          %th{ data: { field: 'type', align: "left", sortable: "true" } }
+            = Document.human_attribute_name(:doc_type)
+          %th{ data: { field: 'uploaded', align: "left", sortable: "true", sorter: "dateSorter" } }
+            = Document.human_attribute_name(:document_updated_at)
+          %th{ data: { field: 'shared_with', align: "left" } }
+            = Document.human_attribute_name(:org_ids)
+          - unless in_review?
+            %th{ data: { field: 'actions', align: "center" } }
+              = t('actions.actions')

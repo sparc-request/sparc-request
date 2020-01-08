@@ -48,11 +48,8 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         find(".edit_pricing_setup_link").click
         wait_for_javascript_to_finish
 
-        find('#pricing_setup_display_date').click
-        find('td.today').click
-
-        find('#pricing_setup_effective_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_setup_display_date')
+        bootstrap3_datepicker('#pricing_setup_effective_date')
 
         click_button 'Save'
         wait_for_javascript_to_finish
@@ -66,8 +63,7 @@ RSpec.describe 'User edits Organization Pricing', js: true do
         find(".edit_pricing_setup_link").click
         wait_for_javascript_to_finish
 
-        find('#pricing_setup_display_date').click
-        find('td.today').click
+        bootstrap3_datepicker('#pricing_setup_display_date')
 
         click_button 'Save'
         wait_for_javascript_to_finish

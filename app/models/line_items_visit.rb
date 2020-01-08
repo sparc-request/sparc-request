@@ -38,8 +38,7 @@ class LineItemsVisit < ApplicationRecord
   has_one :service, through: :line_item
 
   validate :subject_count_valid
-  validate :pppv_line_item
-  validates_numericality_of :subject_count
+  validates_numericality_of :subject_count, greater_than_or_equal_to: 0
 
   after_create :build_visits, if: Proc.new { |liv| liv.arm.present? }
 
@@ -47,15 +46,7 @@ class LineItemsVisit < ApplicationRecord
   after_destroy :release_parent
 
   def subject_count_valid
-    if subject_count && subject_count > arm.subject_count
-      errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
-    end
-  end
-
-  def pppv_line_item
-    if self.line_item.one_time_fee
-      errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
-    end
+    errors.add(:subject_count, :invalid) if subject_count && subject_count > arm.subject_count
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does
@@ -63,6 +54,10 @@ class LineItemsVisit < ApplicationRecord
   def self.for(arm, line_item)
     liv = LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id).first_or_create(subject_count: arm.subject_count)
     return liv
+  end
+
+  def friendly_notable_type
+    Service.model_name.human
   end
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
@@ -87,6 +82,24 @@ class LineItemsVisit < ApplicationRecord
 
   def quantity_total
     sum_visits_research_billing_qty * (self.subject_count || 0)
+  end
+
+  def sum_visits_research_billing_qty
+    @research_billing_total ||= 
+      if self.visits.loaded?
+        self.visits.to_a.sum(&:research_billing_qty)
+      else
+        self.visits.sum(:research_billing_qty) || 0
+      end
+  end
+
+  def sum_visits_research_billing_qty_gte_1
+    @research_billing_gte1_total ||=
+      if self.visits.loaded?
+        self.visits.select{ |v| v.research_billing_qty >= 1 }.sum(&:research_billing_qty)
+      else
+        self.visits.where(Visit.arel_table[:research_billing_qty].gteq(1)).sum(:research_billing_qty) || 0
+      end
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -175,10 +188,6 @@ class LineItemsVisit < ApplicationRecord
 
   ### end audit reporting methods ###
 
-  def any_visit_quantities_customized?
-    visits.any?(&:quantities_customized?)
-  end
-
   private
 
   def build_visits
@@ -192,18 +201,5 @@ class LineItemsVisit < ApplicationRecord
     if LineItemsVisit.where(arm_id: arm_id).none?
       Arm.find(arm_id).destroy
     end
-  end
-
-  def sum_visits_research_billing_qty
-    @research_billing_total ||= 
-      if self.visits.loaded?
-        self.visits.sum(&:research_billing_qty) || 0
-      else
-        self.visits.sum(:research_billing_qty) || 0
-      end
-  end
-
-  def sum_visits_research_billing_qty_gte_1
-    @research_billing_gte1_total ||= self.visits.where("research_billing_qty >= ?", 1).sum(:research_billing_qty) || 0
   end
 end

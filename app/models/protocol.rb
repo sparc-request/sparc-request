@@ -19,10 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ApplicationRecord
-
   include RemotelyNotifiable
-
   include SanitizedData
+
   sanitize_setter :short_title, :special_characters, :squish
   sanitize_setter :title, :special_characters, :squish
   sanitize_setter :brief_description, :special_characters, :squish
@@ -30,12 +29,16 @@ class Protocol < ApplicationRecord
   audited
 
   belongs_to :study_type_question_group
+
   has_one :research_types_info,           dependent: :destroy
   has_one :human_subjects_info,           dependent: :destroy
   has_one :vertebrate_animals_info,       dependent: :destroy
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
-  has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
+
+  has_one :primary_pi_role,               -> { where(role: 'primary-pi', project_rights: 'approve') }, class_name: "ProjectRole", dependent: :destroy
+  has_one :primary_pi,                    through: :primary_pi_role, source: :identity
+
   has_many :study_types,                  dependent: :destroy
   has_many :project_roles,                dependent: :destroy
   has_many :service_requests,             dependent: :destroy
@@ -46,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+
   has_and_belongs_to_many :study_phases
 
   has_many :identities,                   through: :project_roles
@@ -58,10 +62,12 @@ class Protocol < ApplicationRecord
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
 
-  has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
-    source: :identity, through: :project_roles
-  has_many :non_pi_authorized_users, -> { where.not(project_roles: { role: %w(pi primary-pi) }) },
-    source: :identity, through: :project_roles
+  has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
+  has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity
+
+  has_many :non_principal_investigator_roles, -> { where.not(project_roles: { role: ['pi', 'primary-pi'] }) }, class_name: "ProjectRole", dependent: :destroy
+  has_many :non_pi_authorized_users, through: :non_principal_investigator_roles, source: :identity
+
   has_many :billing_managers, -> { where(project_roles: { role: 'business-grants-manager' }) },
     source: :identity, through: :project_roles
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
@@ -73,15 +79,13 @@ class Protocol < ApplicationRecord
 
   has_many :fulfillment_protocols, class_name: 'Shard::Fulfillment::Protocol', foreign_key: :sparc_id
 
-  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: :rmid_requires_validation?
-
-  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
-
   attr_accessor :requester_id
   attr_accessor :validate_nct
   attr_accessor :study_type_questions
   attr_accessor :bypass_rmid_validation
+  attr_accessor :bypass_stq_validation
+
+  mattr_accessor :rmid_server_down
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -91,46 +95,24 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :study_types,                   allow_destroy: true
   accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
   accepts_nested_attributes_for :affiliations,                  allow_destroy: true
-  accepts_nested_attributes_for :project_roles,                 allow_destroy: true
+  accepts_nested_attributes_for :primary_pi_role,               allow_destroy: true
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
-  validation_group :protocol do
-    validates :short_title,                    presence: true
-    validates :title,                          presence: true
-    validates :funding_status,                 presence: true
-    validate  :validate_funding_source
-    validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
-  end
+  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+  validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validation_group :user_details do
-    validate :validate_proxy_rights
-    validate :primary_pi_exists
-  end
+  validate :validate_existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  validate :validate_unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
 
-  ##Removed for now, perhaps to be added later
-  # validation_group :guarantor_fields, if: :selected_for_epic do
-  #   validates :guarantor_contact,
-  #             :guarantor_phone,
-  #             :guarantor_address,
-  #             :guarantor_city,
-  #             :guarantor_state,
-  #             :guarantor_zip,
-  #             :guarantor_county,
-  #             :guarantor_country, presence: true
-  # end
-  # validates :guarantor_fax, numericality: {allow_blank: true, only_integer: true}
-  # validates :guarantor_fax, length: { maximum: 10 }
-  # validates :guarantor_address, length: { maximum: 500 }
-  # validates :guarantor_city, length: { maximum: 40 }
-  # validates :guarantor_state, length: { maximum: 2 }
-  # validates :guarantor_zip, length: { maximum: 9 }
+  validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
-  validates :guarantor_phone, numericality: {allow_blank: true, only_integer: true}
-  validates_format_of :guarantor_email, with: (/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/), allow_blank: true
-
-  validates :guarantor_contact, length: { maximum: 192 }
-  validates :guarantor_phone, length: { maximum: 10 }
+  validates_presence_of :short_title, 
+                        :title,
+                        :funding_status
+  validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
+  validates_presence_of :potential_funding_source,  if: :pending_funding?
+  validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -141,18 +123,24 @@ class Protocol < ApplicationRecord
     self.research_types_info.try(:human_subjects) || false
   end
 
-  validate :existing_rm_id,
-    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
-
-  validate :unique_rm_id_to_protocol,
-    if: -> record { Setting.get_value("research_master_enabled") && !record.research_master_id.nil? }
-
   def self.rmid_status
+    @@rmid_server_down = false
     begin
       HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
     rescue
+      @@rmid_server_down = true
       return false
+    end
+  end
+
+  def self.get_rmid(rmid)
+    @@rmid_server_down = false
+    begin
+      HTTParty.get("#{Setting.get_value('research_master_api')}research_masters/#{rmid}.json", headers: { "Content-Type" => "application/json", "Authorization" => "Token token=\"#{Setting.get_value('rmid_api_token')}\"" })
+    rescue
+      @@rmid_server_down = true
+      nil
     end
   end
 
@@ -167,29 +155,6 @@ class Protocol < ApplicationRecord
     end
   end
 
-  def existing_rm_id
-    begin
-      rm_ids = HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
-      ids = rm_ids.map{ |rm_id| rm_id['id'] }
-
-      if research_master_id.present? && !ids.include?(research_master_id)
-        errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
-      end
-    rescue
-      return false
-    end
-  end
-
-  def unique_rm_id_to_protocol
-    Protocol.all.each do |protocol|
-      if self.id != protocol.id
-        if self.research_master_id == protocol.research_master_id
-          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
-        end
-      end
-    end
-  end
-
   filterrific(
     default_filter_params: { show_archived: 0 },
     available_filters: [
@@ -198,10 +163,25 @@ class Protocol < ApplicationRecord
       :show_archived,
       :with_status,
       :with_organization,
-      :with_owner,
-      :sorted_by
+      :with_owner
     ]
   )
+
+  scope :sorted, -> (sort, order) {
+    sort  = 'id' if sort.blank?
+    order = 'desc' if order.blank?
+
+    case sort
+    when 'id'
+      order(id: order)
+    when 'short_title'
+      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}")
+    when 'pis'
+      joins(primary_pi_role: :identity).order("identities.first_name" => order)
+    when 'requests'
+      order("sub_service_requests_count" => order)
+    end
+  }
 
   scope :search_query, lambda { |search_attrs|
     # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
@@ -324,21 +304,28 @@ class Protocol < ApplicationRecord
       where.not(sub_service_requests: {status: 'first_draft'})
   }
 
-  scope :sorted_by, -> (key) {
-    arr         = key.split(' ')
-    sort_name   = arr[0]
-    sort_order  = arr[1]
-    case sort_name
-    when 'id'
-      order("protocols.id #{sort_order.upcase}")
-    when 'short_title'
-      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
-    when 'pis'
-      joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
-    when 'requests'
-      order("sub_service_requests_count #{sort_order.upcase}")
+  def validate_dates
+    is_valid = true
+    if self.start_date.blank?
+      self.errors.add(:start_date, :blank)
+      is_valid = false
     end
-  }
+    if self.end_date.blank?
+      self.errors.add(:end_date, :blank)
+      invalid = false
+    end
+    if self.start_date && self.end_date && self.start_date > self.end_date
+      self.errors.add(:start_date, :invalid)
+      self.errors.add(:end_date, :invalid)
+      is_valid = false
+    end
+    if self.recruitment_start_date && self.recruitment_end_date && self.recruitment_start_date > self.recruitment_end_date
+      self.errors.add(:recruitment_start_date, :invalid)
+      self.errors.add(:recruitment_end_date, :invalid)
+      is_valid = false
+    end
+    is_valid
+  end
 
   def initial_amount=(amount)
     write_attribute(:initial_amount, amount.to_f * 100)
@@ -384,16 +371,28 @@ class Protocol < ApplicationRecord
     self.type == 'Project'
   end
 
+  def funded?
+    self.funding_status == 'funded'
+  end
+
+  def pending_funding?
+    self.funding_status == 'pending_funding'
+  end
+
+  def federally_funded?
+    self.funding_source_based_on_status == 'federal'
+  end
+
+  def internally_funded?
+    self.funding_source_based_on_status == 'internal'
+  end
+
   def active?
     study_type_question_group.nil? ? false : study_type_question_group.active
   end
 
   def version_type
     study_type_question_group.nil? ? nil : study_type_question_group.version
-  end
-
-  def activate
-    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
   def email_about_change_in_authorized_user(modified_roles, action)
@@ -407,18 +406,6 @@ class Protocol < ApplicationRecord
 
       alert_users.each{ |u| UserMailer.delay.authorized_user_changed(self, u, modified_roles, action) }
     end
-  end
-
-  def validate_funding_source
-    if self.funding_status == "funded" && self.funding_source.blank?
-      errors.add(:funding_source, "You must select a funding source")
-    elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
-      errors.add(:potential_funding_source, "You must select a potential funding source")
-    end
-  end
-
-  def validate_proxy_rights
-    errors.add(:base, "All users must be assigned a proxy right") unless self.project_roles.map(&:project_rights).find_all(&:nil?).empty?
   end
 
   def primary_principal_investigator
@@ -435,11 +422,6 @@ class Protocol < ApplicationRecord
 
   def emailed_associated_users
     self.project_roles.where.not(project_rights: 'none')
-  end
-
-  def primary_pi_exists
-    errors.add(:base, "You must add a Primary PI to the study/project") unless project_roles.map(&:role).include? 'primary-pi'
-    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 
   def role_for(identity)
@@ -488,13 +470,13 @@ class Protocol < ApplicationRecord
   end
 
   def funding_source_based_on_status
-    funding_source = case self.funding_status
-      when 'pending_funding' then self.potential_funding_source
-      when 'funded' then self.funding_source
-      else raise ArgumentError, "Invalid funding status: #{self.funding_status.inspect}"
-      end
-
-    return funding_source
+    if self.funded?
+      self.funding_source
+    elsif self.pending_funding?
+      self.potential_funding_source
+    else
+      nil
+    end
   end
 
   # Note: this method is called inside a child thread by the service
@@ -553,9 +535,7 @@ class Protocol < ApplicationRecord
   end
 
   def populate_for_edit
-    project_roles.each do |pr|
-      pr.populate_for_edit
-    end
+    self.build_primary_pi_role unless self.primary_pi_role
   end
 
   def create_arm(args)
@@ -588,10 +568,6 @@ class Protocol < ApplicationRecord
 
   def has_clinical_services?
     service_requests.any?(&:has_per_patient_per_visit_services?)
-  end
-
-  def find_sub_service_request_with_ctrc(service_request)
-    service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
 
   def any_service_requests_to_display?
@@ -657,5 +633,19 @@ class Protocol < ApplicationRecord
 
   def remotely_notifiable_attributes_to_watch_for_change
     ["short_title"]
+  end
+
+  def validate_existing_rmid
+    rmid = Protocol.get_rmid(self.research_master_id)
+
+    if self.research_master_id.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty? 
+      self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
+    end
+  end
+
+  def validate_unique_rmid
+    if existing_protocol = Protocol.where(research_master_id: self.research_master_id).where.not(id: self.id).first
+      self.errors.add(:base, I18n.t('protocols.rmid.errors.taken', rmid: self.research_master_id, protocol_id: existing_protocol.id))
+    end
   end
 end

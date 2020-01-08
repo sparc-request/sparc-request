@@ -22,81 +22,11 @@ require 'rails_helper'
 RSpec.describe ContactFormsController, type: :controller do
   stub_controller
 
-  describe 'GET #create' do
-    it 'should assign @contact_form' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
+  describe '#create' do
+    it 'should send an email' do
+      expect(ContactMailer).to receive_message_chain(:contact_us_email, :deliver_now)
 
-      expect(assigns(:contact_form).class).to eq(ContactForm)
-    end
-
-    context 'contact form valid' do
-      it 'should send email' do
-        expect {
-          post :create, params: {
-            contact_form: {
-              subject: 'candy land',
-              email: 'not@fake.com',
-              message: 'illuminati'
-            }
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(1)
-      end
-    end
-
-    context 'contact form invalid' do
-      it 'should not send email' do
-        expect {
-          post :create, params: {
-            contact_form: {
-              subject: '',
-              email: '',
-              message: ''
-            }
-          }, xhr: true
-        }.to change(ActionMailer::Base.deliveries, :count).by(0)
-      end
-
-      it 'should assign @errors' do
-        post :create, params: {
-          contact_form: {
-            subject: '',
-            email: '',
-            message: ''
-          }
-        }, xhr: true
-
-        expect(assigns(:errors)).to be
-      end
-    end
-
-    it 'should render template' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
-
-      expect(controller).to render_template(:create)
-    end
-
-    it 'returns http success' do
-      post :create, params: {
-        contact_form: {
-          subject: 'candy land',
-          email: 'not@fake.com',
-          message: 'illuminati'
-        }
-      }, xhr: true
-
-      expect(controller).to respond_with(:ok)
+      post :create, params: { contact_form: build(:contact_form).attributes }, xhr: true
     end
   end
 end

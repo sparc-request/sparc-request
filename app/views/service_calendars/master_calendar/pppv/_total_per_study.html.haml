@@ -18,6 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%td.text-center.pppv-per-study-line-item-total.total-width
-  %strong
-    = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+%th.text-center.total-per-study{ colspan: 4, title: Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv), data: { toggle: 'tooltip' } }
+  = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)

@@ -22,4 +22,4 @@ $("#status-options .panel-body").html("<%= j render 'statuses_form', organizatio
 
 $("#use_default_statuses [data-toggle='toggle']").bootstrapToggle();
 
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")

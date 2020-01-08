@@ -24,7 +24,8 @@ class Message < ApplicationRecord
   belongs_to :notification
   belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
   belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-  validates_presence_of :to, :from, :body
+
+  validates_presence_of :body
 
   # Simple way to skip the after_save callback for the import process
   class << self

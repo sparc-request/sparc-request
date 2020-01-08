@@ -21,14 +21,15 @@
 module Surveyor::ResponsesHelper
 
   def complete_display(response)
-    klass = response.completed? ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-remove text-danger'
-
-    content_tag(:h4, content_tag(:span, '', class: klass))
+    if response.completed?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
   end
 
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
-
     view_permissions =
       if response.survey.is_a?(SystemSurvey) && response.survey.system_satisfaction?
         current_user.is_site_admin?
@@ -52,51 +53,55 @@ module Surveyor::ResponsesHelper
         current_user.is_site_admin? || accessible_surveys.include?(response.survey)
       end
 
-    [ view_response_button(response, view_permissions),
+    content_tag(:div,
+    raw([ view_response_button(response, view_permissions),
       edit_response_button(response, edit_permissions),
       resend_survey_button(response, resend_permissions)
-    ].join('')
+    ].join('')), class: 'd-flex')
   end
 
   def view_response_button(response, permissions=true)
     link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-search', aria: { hidden: 'true' }),
+      icon('fas', 'eye'),
       response.new_record? ? '' : surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-primary view-response', permissions && response.completed? ? '' : 'disabled'],
-      title: I18n.t('surveyor.responses.tooltips.view', klass: response.survey.class.yaml_klass),
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      class: ['btn btn-primary view-response mr-1', permissions && response.completed? ? '' : 'disabled'],
+      title: I18n.t('surveyor.responses.tooltips.view'),
+      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 
   def edit_response_button(response, permissions=true)
     link_to(
-      content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' }),
+      icon('far', 'edit'),
       response.new_record? ? '' : edit_surveyor_response_path(response),
       remote: true,
-      class: ['btn btn-warning edit-response', permissions && response.completed? ? '' : 'disabled'],
-      title: I18n.t('surveyor.responses.tooltips.edit', klass: response.survey.class.yaml_klass),
-      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      class: ['btn btn-warning edit-response mr-1', permissions && response.completed? ? '' : 'disabled'],
+      title: I18n.t('surveyor.responses.tooltips.edit'),
+      data: { toggle: 'tooltip', placement: 'top', container: 'body' }
     )
   end
 
   def delete_response_button(response)
-    content_tag(:button,
-      content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' }),
+    link_to(
+      icon('fas', 'trash-alt'),
+      surveyor_response_path(response),
+      method: :delete,
+      remote: true,
       class: 'btn btn-danger delete-response',
-      title: I18n.t('surveyor.responses.tooltips.delete', klass: response.survey.class.yaml_klass),
-      data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body' }
+      title: I18n.t('surveyor.responses.tooltips.delete'),
+      data: { toggle: 'tooltip', placement: 'top', container: 'body', confirm_swal: 'true' }
     )
   end
 
   def resend_survey_button(response, permissions=true)
     if @type == 'Survey'
       link_to(
-        content_tag(:span, '', class: 'glyphicon glyphicon-share-alt', aria: { hidden: 'true'}),
+        icon('fas', 'reply'),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
         class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
-        title: I18n.t('surveyor.responses.tooltips.resend', klass: response.survey.class.yaml_klass),
-        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}', container: 'body'}
+        title: I18n.t('surveyor.responses.tooltips.resend'),
+        data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body'}
       )
     end
   end
@@ -106,7 +111,7 @@ module Surveyor::ResponsesHelper
       [
         "dependent-for-option-#{question.depender_id}",
         "dependent-for-question-#{question.depender.question_id}",
-        (!question_response.new_record? && question_response.depender_selected? ? "" : "hidden")
+        (!question_response.new_record? && question_response.depender_selected? ? "" : "d-none")
       ].join(' ')
     end
   end
@@ -121,6 +126,6 @@ module Surveyor::ResponsesHelper
   end
 
   def multiple_select_formatter(content)
-    content.tr("[]\"", "").split(',').map(&:strip)
+    content.present? ? JSON.parse(content) : content
   end
 end

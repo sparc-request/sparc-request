@@ -28,52 +28,67 @@ RSpec.describe 'User adds service to cart', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
-    @service    = create(:service, name: "Service", abbreviation: "Service", organization: @program, pricing_map_count: 1)
+    @service    = create(:service, name: "A new Service", abbreviation: "New Service", organization: @program, pricing_map_count: 1)
   end
 
-  context 'which is the first service of a new request' do
-    scenario 'and sees the new request modal' do
+  context 'starting a new request' do
+    it 'should start a new request' do
       visit root_path
       wait_for_javascript_to_finish
 
-      find('.provider-header').click
+      find('.provider-link').click
       find('.program-link').click
-      click_button 'Add'
+      find('.add-service').click
+      wait_for_javascript_to_finish
 
-      expect(page).to have_selector('#modal-title', text: 'New or Existing', visible: true)
+      expect(page).to have_content(I18n.t('proper.catalog.new_request.header'))
+      confirm_swal
+      wait_for_javascript_to_finish
+
+      expect(ServiceRequest.count).to eq(1)
+      sr = ServiceRequest.first
+      expect(sr.line_items.count).to eq(1)
+      expect(page).to have_selector('#cart .line-item', text: @service.abbreviation)
+      expect(page).to have_current_path(root_path(srid: sr.id))
     end
   end
 
-  context 'which is not in their cart' do
-    scenario 'and sees the service in their cart' do
-      visit root_path
-      wait_for_javascript_to_finish
-
-      find('.provider-header').click
-      find('.program-link').click
-      click_button 'Add'
-      find('.yes-button').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_selector('.line-item .service', text: @service.abbreviation)
+  context 'request already started' do
+    before :each do
+      @sr       = create(:service_request_without_validations)
+      @service2 = create(:service, name: "Another new Service", abbreviation: "New Service 2", organization: @program, pricing_map_count: 1)
+      ssr       = create(:sub_service_request, service_request: @sr, organization: @program)
+                  create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service2)
     end
-  end
 
-  context 'which is already in their cart' do
-    scenario 'and sees a modal explanation' do
-      sr  = create(:service_request_without_validations, status: 'first_draft')
-      ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
-            create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+    context 'the service is not already in the cart' do
+      it 'should add the service to their cart' do
+        visit root_path(srid: @sr.id)
+        wait_for_javascript_to_finish
 
-      visit catalog_service_request_path(srid: sr.id)
-      wait_for_javascript_to_finish
+        find('.provider-link').click
+        find('.program-link').click
+        first('.add-service').click
+        wait_for_javascript_to_finish
 
-      find('.provider-header').click
-      find('.program-link').click
-      click_button 'Add'
-      wait_for_javascript_to_finish
+        expect(@sr.reload.line_items.count).to eq(2)
+        expect(page).to have_selector('#cart .line-item', text: @service2.abbreviation)
+      end
+    end
 
-      expect(page).to have_selector('#modal-title', text: 'Service Already Present', visible: true)
+    context 'the service is already in the cart' do
+      it 'should not add the service and show an error' do
+        visit root_path(srid: @sr.id)
+        wait_for_javascript_to_finish
+
+        find('.provider-link').click
+        find('.program-link').click
+        all('.add-service').last.click
+        wait_for_javascript_to_finish
+
+        expect(@sr.reload.line_items.count).to eq(1)
+        expect(page).to have_content(I18n.t('proper.cart.duplicate_service.header'))
+      end
     end
   end
 end

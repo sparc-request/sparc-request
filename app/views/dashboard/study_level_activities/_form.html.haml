@@ -1,0 +1,67 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- url = action_name == 'new' ? dashboard_study_level_activities_path : dashboard_study_level_activity_path(line_item)
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for [:dashboard, line_item], url: url, method: action_name == 'new' ? :post : :put, remote: true, html: { id: 'studyLevelActivitiesForm' } do |f|
+      = hidden_field_tag :ssrid, sub_service_request.id
+      = f.hidden_field :sub_service_request_id, value: sub_service_request.id
+      .modal-header
+        %h3.modal-title
+          = t("dashboard.sub_service_requests.study_level_activities.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group
+          = f.label :service_id, class: 'required'
+          = f.select :service_id, sub_service_request.candidate_services.one_time_fee.reorder(:name).map{ |service| [service.display_service_name + (service.is_available? ? '' : inactive_tag), service.id, { selected: service.id == line_item.service_id }] }, { include_blank: true }, class: 'selectpicker'
+        - if line_item.service && line_item.otf_unit_type != 'N/A'
+          .form-group
+            = f.label :units_per_quantity, class: 'required'
+            = f.text_field :units_per_quantity, class: 'form-control'
+        .form-group
+          - min = line_item.service.try(&:current_effective_pricing_map).try(:quantity_minimum)
+          - max = line_item.service.try(&:current_effective_pricing_map).try(:units_per_qty_max)
+          = f.label :quantity, class: 'required'
+          = f.number_field :quantity, class: 'form-control', min: min, max: max
+          - if line_item.service
+            %small.form-text.text-muted
+              = t('constants.min', min: min)
+              = t('constants.max', max: max)
+        .form-group
+          = f.label :in_process_date
+          .input-group.datetimepicker.date#inProcessDatePicker{ data: { target_input: 'nearest' } }
+            = f.text_field :in_process_date, class: 'datetimepicker-input form-control', value: format_date(line_item.in_process_date), data: { target: '#inProcessDatePicker' }
+            .input-group-append{ data: { toggle: 'datetimepicker', target: '#inProcessDatePicker' } }
+              %span.input-group-text
+                = icon('fas', 'calendar-alt')
+        .form-group
+          = f.label :complete_date
+          .input-group.datetimepicker.date#completeDatePicker{ data: { target_input: 'nearest' } }
+            = f.text_field :complete_date, class: 'datetimepicker-input form-control', value: format_date(line_item.complete_date), data: { target: '#completeDatePicker' }
+            .input-group-append{ data: { toggle: 'datetimepicker', target: '#completeDatePicker' } }
+              %span.input-group-text
+                = icon('fas', 'calendar-alt')
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

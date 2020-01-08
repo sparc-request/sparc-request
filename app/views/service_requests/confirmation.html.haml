@@ -17,21 +17,47 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag 'confirmation'
 
-= render '/service_requests/navigation/steps', service_request: @service_request, step_text: @step_text, css_class: @css_class
-.col-sm-12.body-container#confirmation-page
-  = form_tag navigate_service_request_path(srid: @service_request.id) do
-    = hidden_field_tag :location, ''
-    = hidden_field_tag :validates, ''
-    .form-group
-      %p.instructions.text-success
-        = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
-    .form-group
-      = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
-    - if Setting.get_value("use_epic") && !Setting.get_value("queue_epic")
-      .form-group
-        = render 'protocols/push_to_epic', protocol: @protocol
-    .form-group.text-center
-      = link_to t(:proper)[:confirmation][:download_request], service_request_path(srid: @service_request.id, format: :xlsx, report_type: 'request_report'), class: 'btn btn-lg btn-success'
-      = link_to t(:proper)[:confirmation][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'
+= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
+  = render '/service_requests/navigation/header'
+
+  .alert.d-none#pushToEpicStatus{ data: { protocol_id: @protocol.id } }
+
+  #confirmation-page
+    .card
+      .card-header.bg-primary.text-white
+        %h3.mb-0
+          = t(:proper)[:confirmation][:service_requests_notice]
+      .alert.alert-success.mb-0.rounded-0
+        - if action_name == 'obtain_research_pricing'
+          = t(:proper)[:confirmation][:cost_estimate_warning]
+        - else
+          = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+      %table.table.table-bordered.mb-0#request-ssrs-table
+        %thead.bg-light
+          %tr
+            %th
+              = t(:proper)[:confirmation][:table_fields][:request_id]
+            %th
+              = t(:proper)[:confirmation][:table_fields][:institution]
+            %th
+              = t(:proper)[:confirmation][:table_fields][:provider]
+            %th
+              = t(:proper)[:confirmation][:table_fields][:program_core]
+            %th
+              = t(:proper)[:confirmation][:table_fields][:contact]
+        %tbody
+          - @service_request.sub_service_requests.each do |ssr|
+            %tr{ data: { ssrid: ssr.id } }
+              %td
+                = "#{@service_request.protocol.id} - #{ssr.ssr_id}"
+              %td
+                = ssr_institution(ssr.organization)
+              %td
+                = ssr_provider(ssr.organization)
+              %td
+                = ssr_program_core(ssr.organization)
+              %td
+                = raw(ssr_primary_contacts(ssr.organization))
+
+  = render '/service_requests/navigation/footer'

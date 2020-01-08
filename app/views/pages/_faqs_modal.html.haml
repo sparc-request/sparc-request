@@ -1,0 +1,73 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = t('layout.footer.links.faqs.header')
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      .card.faq
+        .card-header.bg-light#faq1
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer1' }, aria: { expanded: 'true', controls: 'faqAnswer1' } }
+            = t('layout.footer.links.faqs.question_1')
+        .collapse#faqAnswer1{ aria: { labelledby: 'faq1' } }
+          .card-body
+            = t('layout.footer.links.faqs.answer_1')
+      .card.faq
+        .card-header.bg-light#faq2
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer2' }, aria: { expanded: 'true', controls: 'faqAnswer2' } }
+            = t('layout.footer.links.faqs.question_2')
+        .collapse#faqAnswer2{ aria: { labelledby: 'faq2' } }
+          .card-body
+            = t('layout.footer.links.faqs.answer_2')
+      .card.faq
+        .card-header.bg-light#faq3
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer3' }, aria: { expanded: 'true', controls: 'faqAnswer3' } }
+            = t('layout.footer.links.faqs.question_3')
+        .collapse#faqAnswer3{ aria: { labelledby: 'faq3' } }
+          .card-body
+            = t('layout.footer.links.faqs.answer_3')
+      .card.faq
+        .card-header.bg-light#faq4
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer4' }, aria: { expanded: 'true', controls: 'faqAnswer4' } }
+            = t('layout.footer.links.faqs.question_4')
+        .collapse#faqAnswer4{ aria: { labelledby: 'faq4' } }
+          .card-body
+            = t('layout.footer.links.faqs.answer_4')
+      .card.faq
+        .card-header.bg-light#faq5
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer5' }, aria: { expanded: 'true', controls: 'faqAnswer5' } }
+            = t('layout.footer.links.faqs.question_5')
+        .collapse#faqAnswer5{ aria: { labelledby: 'faq5' } }
+          .card-body
+            = t('layout.footer.links.faqs.answer_5')
+      .card.faq
+        .card-header.bg-light#faq6
+          %button.btn.btn-link.text-left.p-0{ data: { toggle: 'collapse', target: '#faqAnswer6' }, aria: { expanded: 'true', controls: 'faqAnswer6' } }
+            = t('layout.footer.links.faqs.question_6')
+        .collapse#faqAnswer6{ aria: { labelledby: 'faq6' } }
+          .card-body
+            = raw t('layout.footer.links.faqs.answer_6', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

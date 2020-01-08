@@ -35,23 +35,23 @@ RSpec.describe 'User saves a response filters', js: true do
     wait_for_javascript_to_finish
 
     bootstrap_multiselect '#filterrific_with_state', [I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active], I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]]
-    find('#filterrific_end_date').click
-    find('#filter-responses .panel-title').click
-    find('#filterrific_start_date').click
-    find('#filter-responses .panel-title').click
+    bootstrap_datepicker '#filterrific_start_date', (Time.now - 2.days).strftime("%m/%d/%Y")
+    bootstrap_datepicker '#filterrific_end_date', (Time.now + 2.days).strftime("%m/%d/%Y")
     find('#filterrific_include_incomplete').click
-
-    find('#save-filters').click
+    find('#filterResponses').click
+    find('#saveResponseFilters').click
     wait_for_javascript_to_finish
 
     fill_in 'response_filter_name', with: 'My Filters'
-    click_button I18n.t(:actions)[:save]
+    click_button I18n.t(:actions)[:submit]
     wait_for_javascript_to_finish
+
+    expect(ResponseFilter.count).to eq(1)
 
     filter = ResponseFilter.first
 
-    expect(page).to have_selector('.apply-filter', text: 'My Filters')
     expect(filter.with_state).to eq(['1','0'])
     expect(filter.include_incomplete).to eq(true)
+    expect(page).to have_selector('.apply-filter', text: 'My Filters', visible: false) ##visible false catches either case, to solve travis issue
   end
 end

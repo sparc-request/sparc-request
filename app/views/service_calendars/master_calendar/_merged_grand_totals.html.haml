@@ -17,33 +17,36 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.panel.panel-primary.grand-total-costs
-  .panel-heading
-    %h3.panel-title
-      = t(:calendars)[:merged_totals][:header]
-  %table.table.table-bordered
-    %tbody
-      - service_request.arms.eager_load(line_items_visits: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }).each do |arm|
-        %tr.total-cost-per-arm
+
+.card
+  .card-header.bg-primary.text-white{ data: { toggle: 'collapse', target: ".totals-collapse" } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('calendars.merged_totals.header')
+  .collapse.show.totals-collapse
+    %table.table.table-bordered.service-calendar-table.mb-0
+      %tbody
+        - service_request.arms.eager_load(line_items_visits: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] }).each do |arm|
+          %tr
+            %th{ colspan: 10 }
+              = t('calendars.pppv.totals.total_costs', arm_name: arm.name)
+            %td.text-center{ colspan: 2 }
+              = display_total_cost_per_arm(arm, arm.line_items_visits)
+        %tr
           %th{ colspan: 10 }
-            = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
+            = t('calendars.otf.totals.total_costs')
           %td.text-center{ colspan: 2 }
-            = display_total_cost_per_arm(arm, arm.line_items_visits)
-      %tr.total-cost-one-time-fees
-        %th{ colspan: 10 }
-          = t(:calendars)[:otf][:totals][:total_costs]
-        %td.text-center{ colspan: 2 }
-          = display_total_cost_per_study_otfs(service_request)
-      %tr.bg-primary
-        %td{ colspan: 13 }
-      - if Setting.get_value("use_indirect_cost")
-        %tr.total-direct-cost
+            = display_total_cost_per_study_otfs(service_request)
+        %tr.bg-light
+          %td{ colspan: 12 }
+        - if Setting.get_value("use_indirect_cost")
+          %tr
+            %th{ colspan: 10 }
+              = t('calendars.merged_totals.direct_cost')
+            %td.text-center{ colspan: 2 }
+              = display_study_grand_total_direct_costs(service_request.protocol, service_request)
+        %tr
           %th{ colspan: 10 }
-            = t(:calendar_page)[:labels][:direct_cost]
+            = t('calendars.merged_totals.grand_total')
           %td.text-center{ colspan: 2 }
-            = display_study_grand_total_direct_costs(service_request.protocol, service_request)
-      %tr.grand-total-cost
-        %th{ colspan: 10 }
-          = t(:calendars)[:merged_totals][:grand_total]
-        %td.text-center{ colspan: 2 }
-          = display_study_grand_total(service_request.protocol, service_request)
+            = display_study_grand_total(service_request.protocol, service_request)

@@ -1,0 +1,40 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+#appTableToolbar
+%table.table-no-bordered#app-table{ data: {pagination: 'true', 'page-size' => 25, 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', toggle: 'table', search: "true", url: documents_funding_service_path(id: @service.id, table: 'application', format: :json ), 'sort-name' => 'srid', 'sort-order' => 'asc', toolbar: "#appTableToolbar"}}
+  %thead.bg-light
+    %tr
+      %th{data: {class: 'srid', align: "left", sortable: "true", field: "srid"}}
+        = t(:funding)[:download][:table][:srid]
+      %th{data: {class: 'pi', align: "left", sortable: "true", field: "pi"}}
+        = t(:funding)[:download][:table][:pi]
+      %th{data: {class: 'institution', align: "left", sortable: "true", field: "institution"}}
+        = t(:funding)[:download][:table][:institution]
+      %th{data: {class: 'short_title', align: "left", sortable: "false", field: "short_title"}}
+        = t(:funding)[:download][:table][:short_title]
+      %th{data: {class: 'doc_title', align: "left", sortable: "false", field: "doc_title"}}
+        = t(:funding)[:download][:table][:doc_title]
+      %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter"}}
+        = t(:funding)[:download][:table][:uploaded]
+      %th{data: {class: 'status', align: "left", sortable: "true", field: "status"}}
+        = t(:funding)[:download][:table][:status]
+      %th{data: {class: 'actions', align: "center", sortable: "false", field: "actions"}}
+        = t(:funding)[:download][:table][:actions][:label]

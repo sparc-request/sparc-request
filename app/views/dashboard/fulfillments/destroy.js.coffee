@@ -18,9 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/study_level_activities/fulfillments_table', locals: {line_item: @line_item, header_text: 'Fulfillments List'})) %>");
-$("#fulfillments-table").bootstrapTable()
-<% end %>
+$("#modalContainer").html("<%= j render 'dashboard/fulfillments/fulfillments', line_item: @line_item, sub_service_request: @sub_service_request %>")
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

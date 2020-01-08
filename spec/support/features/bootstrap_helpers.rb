@@ -20,7 +20,78 @@
 
 module Features
   module BootstrapHelpers
+    def bootstrap_select(class_or_id, choice)
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select.click
+
+      expect(page).to have_selector('.dropdown-menu.show')
+      first('.dropdown-menu.show span.text', text: choice).click
+      wait_for_javascript_to_finish
+    end
+
     def bootstrap_multiselect(class_or_id, selections = ['all'])
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_multiselect.click
+
+      expect(page).to have_selector('.dropdown-menu.show')
+      if selections.first == 'all'
+        first('.dropdown-menu.show span.text', text: 'Select all').click
+      else
+        selections.each do |selection|
+          first('.dropdown-menu.show span.text', text: selection).click
+        end
+      end
+      find('body').click # Click away
+      wait_for_javascript_to_finish
+    end
+
+    def bootstrap_selected?(element, choice)
+      page.find("button.selectpicker[data-id='#{element}'][title='#{choice}']")
+    end
+
+    def bootstrap_dropdown(class_or_id, choice)
+      find(class_or_id).click
+      find("#{class_or_id} + .dropdown-menu.show .dropdown-item", text: choice).click
+    end
+
+    def bootstrap_datepicker(element, text)
+      e = page.find(element)
+      e.click
+      e.send_keys(:delete)
+      e.set(text)
+      find('body').click # Click away
+      wait_for_javascript_to_finish
+    end
+
+    def bootstrap_toggle(id)
+      # The input is inside the toggle, so get the parent using xpath
+      find("#{id}", visible: false).find(:xpath, '..').click
+    end
+
+    def bootstrap_typeahead(class_or_id, text)
+      find("#{class_or_id}").click
+      find("#{class_or_id}").fill_in with: text
+      wait_for_javascript_to_finish
+      expect(page).to have_selector("input#{class_or_id} ~ .tt-menu.tt-open")
+      first('.tt-menu.tt-open .tt-suggestion', text: text).click
+    end
+
+
+    # Bootstrap 3 Helpers for Catalog Manager
+
+    def bootstrap3_select(class_or_id, choice)
+      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      bootstrap_select.click
+
+      expect(page).to have_selector('.dropdown-menu.open')
+      first('.dropdown-menu.open span.text', text: choice).click
+      wait_for_javascript_to_finish
+    end
+
+    def bootstrap3_multiselect(class_or_id, selections = ['all'])
       expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_multiselect.click
@@ -37,25 +108,11 @@ module Features
       wait_for_javascript_to_finish
     end
 
-    def bootstrap_select(class_or_id, choice)
-      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_select.click
-
-      expect(page).to have_selector('.dropdown-menu.open')
-      first('.dropdown-menu.open span.text', text: choice).click
-      wait_for_javascript_to_finish
-    end
-
-    def bootstrap_selected?(element, choice)
-      page.find("button.selectpicker[data-id='#{element}'][title='#{choice}']")
-    end
-
-    def bootstrap_datepicker(element, text)
+    def bootstrap3_datepicker(element)
       e = page.find(element)
       e.click
-      e.send_keys(:delete)
-      e.set(text)
+      e.set(Date.today.strftime('%Y-%m-%d'))
+      find(".dropdown-menu td.today").click
     end
   end
 end

@@ -1,0 +1,85 @@
+// Copyright © 2011-2019 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+html {
+  position: relative;
+
+  &.ready {
+    body {
+      opacity: 1;
+    }
+  }
+
+  body {
+    min-height: 100vh;
+    opacity: 0;
+    transition: 0.5s opacity ease-in-out;
+  }
+}
+
+.event {
+  .event-date-display {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+#contentContainer {
+  position: relative;
+  width: 90%;
+  padding-bottom: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 0;
+}
+
+#backToTop {
+  position: fixed;
+  bottom: 5rem;
+  right: calc(5% + 1rem);
+  opacity: 1;
+  transition: $transition-base;
+  pointer-events: all;
+  z-index: 1039;
+
+  &.hide {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1679.98px) {
+  html {
+    font-size: 75%;
+  }
+}
+
+@media (min-width: 1680px) and (max-width: 1919.98px) {
+  html {
+    font-size: 87.5%;
+  }
+}
+
+@media (max-width: 3839.98px) {
+  #siteHeader .container-fluid, #siteNav .container-fluid, #dashboardNav .container-fluid, #contentContainer, #siteFooter .container-fluid {
+    max-width: 1920px;
+  }
+}

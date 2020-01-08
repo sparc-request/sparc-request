@@ -101,18 +101,4 @@ RSpec.describe Visit, type: :model do
       end
     end
   end
-
-  describe 'quantities customized' do
-
-    it 'should return false if the quantities are untouched, or set to the default checked state' do
-      expect(visit1.quantities_customized?).to eq(false)
-      visit1.update_attributes(research_billing_qty: 1)
-      expect(visit1.quantities_customized?).to eq(false)
-    end
-
-    it 'should return true if any of the quantities are set by the user' do
-      visit1.update_attributes(research_billing_qty: 2, insurance_billing_qty: 1, effort_billing_qty: 1)
-      expect(visit1.quantities_customized?).to eq(true)
-    end
-  end
 end

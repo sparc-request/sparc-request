@@ -22,53 +22,52 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
-    session[:breadcrumbs].
-      add_crumbs(notifications: true).
-      clear(:edit_protocol)
+    @table = params[:table] || 'inbox'
 
-    @table = params[:table]
-
-    @notifications =
-      if @table == 'inbox'
-        Notification.in_inbox_of(@user.id, params[:sub_service_request_id])
-      else
-        Notification.in_sent_of(@user.id, params[:sub_service_request_id])
-      end.uniq
+    respond_to do |format|
+      format.html{
+        session[:breadcrumbs].
+          add_crumbs(notifications: true).
+          clear(crumb: :edit_protocol)
+      }
+      format.js{
+        @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
+      }
+      format.json{
+        @notifications =
+          if @table == 'inbox'
+            Notification.in_inbox_of(current_user.id, params[:ssrid])
+          else
+            Notification.in_sent_of(current_user.id, params[:ssrid])
+          end.distinct
+      }
+    end
   end
 
   def new
-    @sub_service_request_id = params[:sub_service_request_id]
-
-    if params[:identity_id]
-      if @sub_service_request_id.present?
-        @sub_service_request = SubServiceRequest.find(@sub_service_request_id)
-        @notification = @sub_service_request.notifications.new
-      else
-        @notification = Notification.new
-      end
-
-      if params[:identity_id].try(:to_i) == current_user.id
-        @notification.errors.add(:notifications, "can't be sent to yourself.")
-        @errors = @notification.errors
-      end
-
-      @message = @notification.messages.new(to: params[:identity_id])
+    if params[:sub_service_request_id]
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @notification = @sub_service_request.notifications.new
+    else
+      @notification = Notification.new
     end
+
+    @message = @notification.messages.new(to: params[:identity_id])
   end
 
   def create
     if message_params[:to].present?
       @recipient = Identity.find(message_params[:to])
-      @notification = Notification.new(notification_params.merge(originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
-      @message = @notification.messages.new(message_params.merge(from: @user.id, email: @recipient.email))
+      @notification = Notification.new(notification_params.merge(originator_id: current_user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
+      @message = @notification.messages.new(message_params.merge(from: current_user.id, email: @recipient.email))
       if @message.valid?
         @notification.save
         @message.save
 
         ssr = @notification.sub_service_request
-        @notifications = Notification.belonging_to(@user.id, params[:sub_service_request_id])
+        @notifications = Notification.belonging_to(current_user.id, params[:sub_service_request_id])
 
-        UserMailer.notification_received(@recipient, ssr, @user).deliver unless @recipient.email.blank?
+        UserMailer.notification_received(@recipient, ssr, current_user).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
       else
         @errors = @message.errors
@@ -79,13 +78,13 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   def mark_as_read
     # handles marking notification messages as read or unread
     as_read = (params[:read] == 'true') #could be 'true'(read) or 'false'(unread)
-    Notification.where(id: params[:notification_ids]).each { |n| n.set_read_by(@user, as_read)}
+    Notification.where(id: params[:notification_ids]).each { |n| n.set_read_by(current_user, as_read)}
 
     if params[:sub_service_request_id]
-      @unread_notification_count_for_ssr = @user.unread_notification_count(params[:sub_service_request_id])
+      @unread_notification_count_for_ssr = current_user.unread_notification_count(params[:sub_service_request_id])
     end
 
-    @unread_notification_count = @user.unread_notification_count
+    @unread_notification_count = current_user.unread_notification_count
   end
 
   private

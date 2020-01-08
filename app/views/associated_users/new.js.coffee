@@ -24,7 +24,7 @@ $('.form-error').remove()
 
 <% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
-$('#user_search').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$('#user_search').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% end %>
 

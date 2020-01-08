@@ -23,7 +23,7 @@ $("[name^='line_item']:not([type='hidden'])").parents('.form-group').removeClass
 $('.form-error').remove()
 
 <% @errors.each do |message| %>
-$("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$("[name='line_item[id]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% else %>
 # Add the alert that there are no PPPV services

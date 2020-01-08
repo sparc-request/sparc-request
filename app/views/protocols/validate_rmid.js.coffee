@@ -18,18 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='fulfillment']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
+<% if @errors.any? %>
+$('#protocol_research_master_id').parents('.form-group').addClass('is-invalid')
 
-<% @errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='fulfillment[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
+<% if @protocol.rmid_server_down %>
+$('#protocol_research_master_id').val('').prop('disabled', true)
+$('#rmidContainer').append("<%= j render 'protocols/form/rmid_server_down' %>")
+<% else %>
+AlertSwal.fire(
+  type: 'error'
+  title: "<%= Protocol.human_attribute_name(:research_master_id) %>"
+  html: "<%= @errors.join('<br>').html_safe %>"
+)
 <% end %>
 <% else %>
-$("#modalContainer").html("<%= j render 'dashboard/fulfillments/fulfillments', line_item: @line_item, sub_service_request: @sub_service_request %>")
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$('#protocol_research_master_id').parents('.form-group').addClass('is-valid')
 
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+$('#protocol_short_title').val("<%= @rmid_record['short_title'] %>").prop('readonly', true)
+$('#protocol_title').val("<%= @rmid_record['long_title'] %>").prop('readonly', true)
+
+<% if @rmid_record['eirb_validated'] %>
+$('#protocol_human_subjects_info_attributes_pro_number').val("<%= @rmid_record['eirb_pro_number'] %>").prop('readonly', true)
+$('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val("<%= @rmid_record['date_initially_approved'] %>").prop('readonly', true)
+$('#protocol_human_subjects_info_attributes_irb_approval_date').val("<%= @rmid_record['date_approved'] %>").prop('readonly', true)
+$('#protocol_human_subjects_info_attributes_irb_expiration_date').val("<%= @rmid_record['date_expiration'] %>").prop('readonly', true)
+<% end %>
 <% end %>

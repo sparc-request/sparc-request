@@ -24,7 +24,7 @@ $('.form-error').remove()
 
 <% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
-$("[name='line_items_visit[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$("[name='line_items_visit[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% end %>
 <% else %>
@@ -32,7 +32,8 @@ $('#modalContainer').modal('hide')
 
 <% if @in_admin %>
 # Replace SSR Header
-$('#subServiceRequestSummary').replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+$('#effectiveCost').replaceWith("<%= j render 'dashboard/sub_service_requests/effective_cost', sub_service_request: @sub_service_request %>")
+$('#displayCost').replaceWith("<%= j render 'dashboard/sub_service_requests/displayed_cost', sub_service_request: @sub_service_request %>")
 <% end %>
 
 # Replace Field Cell

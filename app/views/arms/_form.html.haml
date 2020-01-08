@@ -22,9 +22,10 @@
   .modal-content
     = form_for arm, remote: true do |f|
       = hidden_field_tag :tab, tab
-      = hidden_field_tag :page, page
-      - pages.each do |arm_id, page|
-        = hidden_field_tag "pages[#{arm_id}]", page
+      - unless action_name == 'new'
+        = hidden_field_tag :page, page
+        - pages.each do |arm_id, page|
+          = hidden_field_tag "pages[#{arm_id}]", page
       - if in_dashboard?
         = hidden_field_tag :ssrid, sub_service_request.try(:id)
       - else

@@ -26,7 +26,7 @@
       %h5.m-0<
         = t('layout.navigation.news.header')
     .dropdown-divider
-    - if @news.empty?
+    - if @news.blank?
       .dropdown-item.bg-white
         = t('layout.navigation.news.none')
     - else

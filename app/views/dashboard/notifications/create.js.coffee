@@ -23,7 +23,7 @@ $("[name^='notification']:not([type='hidden'])").parents('.form-group').removeCl
 $('.form-error').remove()
 <% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
-$("[name='notification[<%= attr.to_s %>]'], [name='notification[message][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append('<small class="form-text form-error"><%= message.capitalize %></small>')
+$("[name='notification[<%= attr.to_s %>]'], [name='notification[message][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
 <% end %>
 <% end %>
 

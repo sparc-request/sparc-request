@@ -145,11 +145,6 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def set_rmid_api
-    gon.rmid_api_url    = Setting.get_value("research_master_api")
-    gon.rmid_api_token  = Setting.get_value("rmid_api_token")
-  end
-
   #####################
   ### Other Methods ###
   #####################
@@ -171,7 +166,8 @@ class ApplicationController < ActionController::Base
 
   def authorize_identity
     # If the request is in first_draft status
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (Rails.application.routes.recognize_path(request.referrer)[:action] == 'catalog' && (request.format.js? || request.format.json?)))
+
+    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && (request.format.js? || request.format.json?)))
       return true
     elsif current_user && current_user.can_edit_service_request?(@service_request)
       return true

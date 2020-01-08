@@ -23,6 +23,14 @@
 ///////////////////////
 
 #serviceCatalogForm {
+  #serviceQuery {
+    font-size: 1.15rem;
+
+    &~ .tt-menu {
+      width: 40vw;
+    }
+  }
+
   .accordion .btn[data-toggle=collapse], #organizationHeader {
     padding: 0.75rem 1.25rem !important; // Match list group item padding from cart
   }
@@ -36,16 +44,6 @@
   }
 
   #catalogCenter {
-    .input-group-icon i {
-      font-size: 1.75rem;
-    }
-
-    #serviceQuery {
-      height: 48px;
-      padding-left: 3.5rem;
-      font-size: 1.75rem;
-    }
-
     .service:not(:last-of-type) {
       padding-bottom: 0.5rem;
       margin-bottom: 0.5rem;

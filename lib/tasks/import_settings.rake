@@ -22,8 +22,8 @@ namespace :data do
   desc "Import any missing settings from config/settings into the Settings database table"
   task import_settings: :environment do
     if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        SettingsPopulator.new().populate
+      Octopus.using(ENV['DB']) do
+        SettingsPopulator.new().populate()
       end
     else
       puts "Please provide a database using \"DB=databasename\""

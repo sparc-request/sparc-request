@@ -20,10 +20,16 @@
 
 desc "Import permissible values from csv files and add them to the appropriate table"
 task import_permissible_values: :environment do
-  Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
-    puts("Importing CSV file: #{file.split('/').last}")
-    CSV.foreach(file, headers: true) do |row|
-      PermissibleValue.create(row.to_hash)
+  if ENV['DB'] && ENV['DB'].downcase != 'master'
+    Octopus.using(ENV['DB']) do
+      Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
+        puts("Importing CSV file: #{file.split('/').last}")
+        CSV.foreach(file, headers: true) do |row|
+          PermissibleValue.create(row.to_hash)
+        end
+      end
     end
+  else
+    puts "Please provide a database using \"DB=databasename\""
   end
 end

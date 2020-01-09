@@ -22,12 +22,12 @@ namespace :data do
   desc "Regenerate settings table from local application.yml"
   task regenerate_settings: :environment do
     if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
+      Octopus.using(ENV['DB']) do
         #Truncate settings table
         ActiveRecord::Base.connection.execute("TRUNCATE settings")
 
         #Rerun populator
-        SettingsPopulator.new().populate
+        SettingsPopulator.new().populate()
       end
     else
       puts "Please provide a database using \"DB=databasename\""

@@ -121,6 +121,8 @@ db_namespace = namespace :db do
     ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
       connected_to_db(db_config) do
         ActiveRecord::Base.connection.schema_migration.create_table
+        ActiveRecord::InternalMetadata.create_table
+        ActiveRecord::InternalMetadata[:environment] = ActiveRecord::Base.connection.migration_context.current_environment
       end
     end
 
@@ -518,8 +520,10 @@ db_namespace = namespace :db do
       should_reconnect = ActiveRecord::Base.connection_pool.active_connection?
       ActiveRecord::Schema.verbose = false
       ActiveRecord::Base.configurations.configs_for(env_name: "test").each do |db_config|
-        filename = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.spec_name, :ruby)
-        ActiveRecord::Tasks::DatabaseTasks.load_schema(db_config.config, :ruby, filename, "test")
+        connected_to_db(db_config) do
+          filename = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.spec_name, :ruby)
+          ActiveRecord::Tasks::DatabaseTasks.load_schema(db_config.config, :ruby, filename, "test")
+        end
       end
     ensure
       if should_reconnect
@@ -530,15 +534,19 @@ db_namespace = namespace :db do
     # desc "Recreate the test database from an existent structure.sql file"
     task load_structure: %w(db:test:purge) do
       ActiveRecord::Base.configurations.configs_for(env_name: "test").each do |db_config|
-        filename = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.spec_name, :sql)
-        ActiveRecord::Tasks::DatabaseTasks.load_schema(db_config.config, :sql, filename, "test")
+        connected_to_db(db_config) do
+          filename = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.spec_name, :sql)
+          ActiveRecord::Tasks::DatabaseTasks.load_schema(db_config.config, :sql, filename, "test")
+        end
       end
     end
 
     # desc "Empty the test database"
     task purge: %w(load_config check_protected_environments) do
       ActiveRecord::Base.configurations.configs_for(env_name: "test").each do |db_config|
-        ActiveRecord::Tasks::DatabaseTasks.purge(db_config.config)
+        connected_to_db(db_config) do
+          ActiveRecord::Tasks::DatabaseTasks.purge(db_config.config)
+        end
       end
     end
 

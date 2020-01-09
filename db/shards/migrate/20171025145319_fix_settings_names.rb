@@ -51,11 +51,11 @@ class FixSettingsNames < ActiveRecord::Migration[5.1]
     end
 
     #Update parent id's for settings not themselves having key name changed.
-    if (setting = Setting.find_by_key("research_master_link")).parent_key == "use_research_master"
+    if Setting.find_by_key("research_master_link") && Setting.find_by_key("research_master_link").parent_key == "use_research_master"
       setting.parent_key = "research_master_enabled"
       setting.save(validate: false)
     end
-    if (setting = Setting.find_by_key("system_satisfaction_survey_cc")).parent_key == "use_system_satisfaction_survey"
+    if Setting.find_by_key("system_satisfaction_survey_cc") && Setting.find_by_key("system_satisfaction_survey_cc").parent_key == "use_system_satisfaction_survey"
       setting.parent_key = "system_satisfaction_survey"
       setting.save(validate: false)
     end

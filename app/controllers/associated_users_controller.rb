@@ -41,7 +41,7 @@ class AssociatedUsersController < ApplicationController
         @epic_user = EpicUser.for_identity(@identity)
 
         if @epic_user.nil?
-          @protocol_role.errors.add(:base, :epic_api_error, message: 'Unable to reach EPIC server')
+          @protocol_role.errors.add(:base, :epic_api_down)
         end
       end
 

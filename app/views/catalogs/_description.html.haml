@@ -27,13 +27,15 @@
       %p.description
         = raw(organization.description)
     - if organization.type == "Program"
-      - if identity_signed_in? && @shard != current_user.shard_identifier && organization.primary_contacts.any?
-        .d-flex.flex-column.mb-3
-          %span.text-primary.w-100
+      - if organization.primary_contacts.any? && (!identity_signed_in? || (identity_signed_in? && @shard != current_user.shard_identifier))
+        .d-flex.flex-wrap.mb-3
+          %span.font-weight-bold.w-100
             = t('proper.catalog.service_provider_text')
-          - organization.primary_contacts.each do |pc|
-            %span.w-100
-              = identity_contact(pc.identity)
+          .w-100
+            .row
+              - organization.primary_contacts.each do |pc|
+                .col-6
+                  = identity_contact(pc.identity)
       - if organization.services.any?
         = render 'catalogs/accordion/services', organization: organization, service_request: service_request
 

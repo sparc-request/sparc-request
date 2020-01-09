@@ -35,13 +35,17 @@ class AssociatedUsersController < ApplicationController
     if params[:identity_id] # if user selected
       @identity = Identity.find_or_create(params[:identity_id])
 
-      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.selected_for_epic
-        @epic_user = EpicUser.for_identity(@identity)
-      end
-
       @protocol_role = @protocol.project_roles.new(identity_id: @identity.id)
 
-      unless @protocol_role.unique_to_protocol?
+      if Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.selected_for_epic
+        @epic_user = EpicUser.for_identity(@identity)
+
+        if @epic_user.nil?
+          @protocol_role.errors.add(:base, :epic_api_error, message: 'Unable to reach EPIC server')
+        end
+      end
+
+      unless @protocol_role.unique_to_protocol? && @protocol_role.errors.empty?
         @errors = @protocol_role.errors
       end
     end

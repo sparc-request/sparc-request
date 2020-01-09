@@ -30,7 +30,11 @@ class EpicUser < ActiveResource::Base
   end
 
   def self.for_identity(identity)
-    get(:viewuser, userid: identity.ldap_uid.split('@').first)
+    begin
+      get(:viewuser, userid: identity.ldap_uid.split('@').first)
+    rescue
+      nil
+    end
   end
 
   def self.is_active?(epic_user)

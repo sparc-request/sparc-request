@@ -149,7 +149,7 @@ GEM
     bootstrap3-datetimepicker-rails (4.17.47)
       momentjs-rails (>= 2.8.1)
     builder (3.2.4)
-    bullet (6.0.2)
+    bullet (6.1.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.0.1)
@@ -293,7 +293,7 @@ GEM
       multi_xml (>= 0.5.2)
     httpi (2.0.2)
       rack
-    i18n (1.7.0)
+    i18n (1.7.1)
       concurrent-ruby (~> 1.0)
     i18n-js (3.5.0)
       i18n (>= 0.6.6)
@@ -566,7 +566,7 @@ GEM
       actionpack (>= 3.1)
       jquery-rails
       railties (>= 3.1)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -574,7 +574,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode_utils (1.4.0)
-    uniform_notifier (1.12.1)
+    uniform_notifier (1.13.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)

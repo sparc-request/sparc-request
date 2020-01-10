@@ -19,8 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Send the user back to dashboard if theyre a member and not an admin
 
-<% if @current_user_destroyed && !current_user.catalog_overlord? %>
-
+<% if @permission_to_edit %>
+$("#authorizedUsersTable").bootstrapTable('refresh')
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% else %>
 <% if @admin %>
 # Refresh page contents to reflect updated rights for admins
 $("#protocolSummaryCard").replaceWith("<%= j render 'protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit, admin: @admin %>")
@@ -37,8 +39,4 @@ $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 # Redirect to Dashboard if deleting your user and you don't have admin/overlord access
 window.location = "<%= dashboard_root_path %>"
 <% end %>
-
-<% else %>
-$("#authorizedUsersTable").bootstrapTable('refresh')
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

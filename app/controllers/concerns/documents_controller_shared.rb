@@ -92,15 +92,14 @@ module DocumentsControllerShared
   end
 
   def find_protocol
-    if @document
-      @protocol = @document.protocol
-    elsif @service_request
-      @protocol = @service_request.protocol
-    elsif params[:protocol_id]
-      @protocol = Protocol.find(params[:protocol_id])
-    else
-      @protocol = Protocol.find(document_params[:protocol_id])
-    end
+    @protocol =
+      if @document
+        @document.protocol
+      elsif @service_request
+        @service_request.protocol
+      else
+        Protocol.find(params[:protocol_id] || document_params[:protocol_id])
+      end
   end
 
   def assign_organization_access

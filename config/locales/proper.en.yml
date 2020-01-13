@@ -120,7 +120,7 @@ en:
       cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
       download_request: "Download Request"
-      to_dashboard: "Go to Dashboard"
+      to_protocol: "Go to Protocol"
       table_fields:
         request_id: "Request ID"
         institution: "Institution"

@@ -61,7 +61,7 @@
   },
   {
     "key":            "contact_us_cc",
-    "value":          "sparcrequest@gmail.com",
+    "value":          "success@musc.edu",
     "friendly_name":  "Contact Us CC",
     "description":    "This is the email(s) that will be CCed in help messages.",
     "group":          "",
@@ -81,7 +81,7 @@
   },
   {
     "key":            "contact_us_mail_to",
-    "value":          "success@musc.edu",
+    "value":          "SPARCRequest@musc.edu",
     "friendly_name":  "Contact Us Mail-To",
     "description":    "This is the email that help messages will be sent to.",
     "group":          "",

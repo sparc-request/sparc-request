@@ -20,8 +20,9 @@
 
 .col-12.col-lg-3.pr-lg-0.mb-3.mb-lg-0#serviceCatalog
   .card
-    .card-header.bg-primary.text-white
-      %h3.mb-0<
-        = icon('fas', 'book-medical mr-2')
-        = t(:proper)[:catalog][:accordion][:header]
+    .card-header.bg-primary.p-2
+      .form-group.input-group.mb-0
+        %span.input-group-icon
+          = icon('fas', 'search fa-lg text-muted')
+        = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:accordion][:search_placeholder], class: "form-control form-control-lg"
     = render 'catalogs/accordion/institutions', service_request: service_request, locked_org_ids: locked_org_ids

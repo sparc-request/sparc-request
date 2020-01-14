@@ -50,6 +50,8 @@
   .form-group
     = f.label :ldap_uid, class: 'required'
     = f.text_field :ldap_uid, class: 'form-control'
+    %small.form-text.text-muted
+      = t('devise.login_requirements')
   .form-group
     = f.label :password, class: 'required'
     = f.password_field :password, autocomplete: 'off', class: 'form-control'

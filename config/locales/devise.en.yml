@@ -44,6 +44,7 @@ en:
 
   devise:
     back_to_catalog: "Return to Catalog"
+    login_requirements: "Login must be a .edu email"
     min_password_length: "Passwords must be at least %{min_length} characters."
 
     #########

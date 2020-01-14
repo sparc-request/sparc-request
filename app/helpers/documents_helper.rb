@@ -37,6 +37,18 @@ module DocumentsHelper
     end
   end
 
+  def display_document_providers(document)
+    organizations = document.organizations.uniq
+
+    if organizations.length > 3
+      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', boundary: 'window', html: 'true', content: organizations.map(&:name).join('<br>') } do
+        t('documents.providers', provider_count: organizations.length)
+      end
+    else
+      organizations.map(&:name).join('<br>')
+    end
+  end
+
   def document_actions(document, opts={})
     content_tag :div, class: 'd-flex justify-content-center' do
       raw([

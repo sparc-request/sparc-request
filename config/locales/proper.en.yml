@@ -48,8 +48,8 @@ en:
     catalog:
       accordion:
         header: "Browse Service Catalog"
+        search_placeholder: "Search by Name, CPT Code, or EAP ID"
       center:
-        search_placeholder: "Search for services by name, CPT code, or EAP ID"
         header: "Welcome to SPARCRequest"
         subheader: "Storefront of Research Services"
         description: "<b>SPARCRequest</b> (<b>S</b>ervices, <b>P</b>ricing, & <b>A</b>pplication for <b>R</b>esearch <b>C</b>enters) is a web-based research transaction management system that provides a central portal to researchers and their study teams to browse for research services and resources as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. SPARCRequest is OSS (Open-Source Software) for which MUSC holds the copyright license. SPARCRequest is developed in a collaborative and public manner for easy adoptability and the source code is available to anyone."

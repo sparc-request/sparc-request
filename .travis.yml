@@ -10,8 +10,6 @@ services:
   - mysql
 
 before_install:
-  - gem update --system
-  - gem install bundler
   - "export TZ=America/New_York"
   - nvm install node 12.10.0
 before_script:

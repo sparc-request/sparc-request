@@ -31,14 +31,14 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
   end
 
   def create
-    if line_item_params[:service_id].present?
+    line_item = @sub_service_request.line_items.new(service_request: @service_request, service_id: line_item_params[:service_id])
+
+    if line_item.valid?
       @service  = Service.find(line_item_params[:service_id])
       lis       = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false )
       @tab      = params[:tab]
 
       lis.each{ |li| li.update_attribute(:sub_service_request, @sub_service_request) }
-
-      setup_calendar_pages
 
       unless @service_request.arms.any?
         @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, new_with_draft: true)
@@ -46,10 +46,10 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
 
       flash[:success] = t('line_items.created')
     else
-      line_item = @service_request.line_items.new
-      line_item.valid?
       @errors = line_item.errors
     end
+
+    setup_calendar_pages
 
     respond_to :js
   end

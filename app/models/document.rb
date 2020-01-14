@@ -33,6 +33,7 @@ class Document < ApplicationRecord
   belongs_to :protocol
 
   has_and_belongs_to_many :sub_service_requests
+  has_many :organizations, through: :sub_service_requests
   
   has_attached_file :document #, :preserve_files => true
 

@@ -23,7 +23,10 @@ module IdentitiesHelper
     content_tag :div, class: 'w-100 d-flex flex-wrap' do
       contact   = content_tag(:span, icon('fas', 'user mr-1') + identity.full_name, class: 'w-100')
       contact  += content_tag(:span, icon('far', 'envelope mr-1') + link_to(identity.email, "mailto:#{identity.email}"))
-      contact  += content_tag(:span, icon('fas', 'phone mr-1') + format_phone(identity.phone), class: 'ml-3') if identity.phone.present?
+
+      if (phone = format_phone(identity.phone)).present?
+        contact += content_tag(:span, icon('fas', 'phone mr-1') + phone, class: 'ml-3')
+      end
 
       raw(contact)
     end

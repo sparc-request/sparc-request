@@ -80,7 +80,7 @@ module AssociatedUsersControllerShared
   def destroy
     respond_to :js
 
-    @permission_to_edit = @protocol_roles.any?{ |pr| pr.identity_id == current_user.id } || current_user.catalog_overlord?
+    @permission_to_edit = @protocol_roles.none?{ |pr| pr.identity_id == current_user.id } && !current_user.catalog_overlord?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")
@@ -90,40 +90,6 @@ module AssociatedUsersControllerShared
   end
 
   protected
-
-  def project_role_params
-    if params[:project_role][:identity_attributes]
-      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
-    end
-
-    params[:project_role][:project_rights] ||= ""
-
-    params.require(:project_role).permit(
-      :epic_access,
-      :identity_id,
-      :project_rights,
-      :protocol_id,
-      :role,
-      :role_other,
-      epic_rights_attributes: [
-        :new,
-        :position,
-        :right,
-        :_destroy
-      ],
-      identity_attributes: [
-        :credentials,
-        :credentials_other,
-        :email,
-        :era_commons_name,
-        :id,
-        :orcid,
-        :phone,
-        :professional_organization_id,
-        :subspecialty
-      ]
-    )
-  end
 
   def find_protocol_role
     if /^[0-9]+$/ =~ params[:id]
@@ -165,5 +131,39 @@ module AssociatedUsersControllerShared
 
   def is_epic?
     Setting.get_value("use_epic") && !Setting.get_value("queue_epic") && @protocol.selected_for_epic && @protocol_roles.any?(&:epic_access?)
+  end
+
+  def project_role_params
+    if params[:project_role][:identity_attributes]
+      params[:project_role][:identity_attributes][:phone] = sanitize_phone params[:project_role][:identity_attributes][:phone]
+    end
+
+    params[:project_role][:project_rights] ||= ""
+
+    params.require(:project_role).permit(
+      :epic_access,
+      :identity_id,
+      :project_rights,
+      :protocol_id,
+      :role,
+      :role_other,
+      epic_rights_attributes: [
+        :new,
+        :position,
+        :right,
+        :_destroy
+      ],
+      identity_attributes: [
+        :credentials,
+        :credentials_other,
+        :email,
+        :era_commons_name,
+        :id,
+        :orcid,
+        :phone,
+        :professional_organization_id,
+        :subspecialty
+      ]
+    )
   end
 end

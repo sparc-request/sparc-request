@@ -77,16 +77,6 @@ module DocumentsControllerShared
 
   protected
 
-  def document_params
-    params.require(:document).permit(
-      :document,
-      :doc_type,
-      :doc_type_other,
-      :sub_service_requests,
-      :protocol_id
-    )
-  end
-
   def find_document
     @document = Document.find(params[:id])
   end
@@ -104,5 +94,15 @@ module DocumentsControllerShared
 
   def assign_organization_access
     @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
+  end
+
+  def document_params
+    params.require(:document).permit(
+      :document,
+      :doc_type,
+      :doc_type_other,
+      :sub_service_requests,
+      :protocol_id
+    )
   end
 end

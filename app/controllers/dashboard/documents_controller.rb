@@ -21,16 +21,20 @@
 class Dashboard::DocumentsController < Dashboard::BaseController
   include DocumentsControllerShared
 
-  before_action :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_action :protocol_authorizer_view,        only: [:index]
-  before_action :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
-  before_action :authorize_admin_access_document
+  before_action :find_admin_for_protocol
+  before_action :find_admin_orgs
+  before_action :protocol_authorizer_view,        only:   [:index]
+  before_action :protocol_authorizer_edit,        only:   [:new, :create, :edit, :update, :destroy]
+  before_action :authorize_admin_access_document, except: [:index]
 
   private
 
-  def authorize_admin_access_document
+  def find_admin_orgs
     @admin_orgs = current_user.authorized_admin_organizations
-    @permission = current_user.catalog_overlord? || @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
+  end
+
+  def authorize_admin_access_document
+    @permission = current_user.catalog_overlord? || @permission_to_edit || (@admin_orgs & @document.all_organizations).any?
 
     unless @permission
       authorization_error('You are not allowed to edit this document.')

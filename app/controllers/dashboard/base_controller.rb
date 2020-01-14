@@ -47,7 +47,8 @@ class Dashboard::BaseController < ApplicationController
 
   def protocol_authorizer_view
     @authorization      = ProtocolAuthorizer.new(@protocol, current_user)
-    @permission_to_view = @authorization.can_view?
+    @permission_to_view = @permission_to_view.nil? ? @authorization.can_view? : @permission_to_view
+    @permission_to_edit = @permission_to_edit.nil? ? @authorization.can_edit? : @permission_to_edit
 
     # Admins should be able to view too
     unless @permission_to_view || @admin
@@ -57,7 +58,8 @@ class Dashboard::BaseController < ApplicationController
 
   def protocol_authorizer_edit
     @authorization      = ProtocolAuthorizer.new(@protocol, current_user)
-    @permission_to_edit = @authorization.can_edit?
+    @permission_to_view = @permission_to_view.nil? ? @authorization.can_view? : @permission_to_view
+    @permission_to_edit = @permission_to_edit.nil? ? @authorization.can_edit? : @permission_to_edit
 
     unless @permission_to_edit || @admin
       authorization_error('You are not allowed to edit this protocol.')

@@ -1051,7 +1051,7 @@
   },
   {
     "key":            "epic_user_api_error_slack_webhook",
-    "value":          "https://hooks.slack.com/services/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",
+    "value":          "",
     "friendly_name":  "Epic User API Error Slack Webhook.",
     "description":    "If this is set to a Slack webhook url, then a slack notification will be posted when a user encountered an error connecting to the Epic user interface.",
     "group":          "",

@@ -18,18 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card
-  .card-header#organizationHeader{ class: css_class(organization) }
-    %h6.mb-0.text-white
-      = organization.name
-  .card-body
-    - if organization.description.present?
-      %p.description
-        = raw(organization.description)
-    = render 'catalogs/primary_contacts', organization: organization
-    - if organization.type == "Program"
-      - if organization.services.any?
-        = render 'catalogs/accordion/services', organization: organization, service_request: service_request
-
-      - if organization.cores.any?
-        = render 'catalogs/accordion/cores', p: organization, service_request: service_request, locked_ids: locked_org_ids
+- if organization.primary_contacts.any? && (!identity_signed_in? || (identity_signed_in? && @shard != current_user.shard_identifier))
+  .d-flex.flex-wrap.mb-3
+    %span.font-weight-bold.w-100
+      = t('proper.catalog.service_provider_text')
+    .w-100
+      .row
+        - organization.primary_contacts.each do |pc|
+          .col-6
+            = identity_contact(pc.identity)

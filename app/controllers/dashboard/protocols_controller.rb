@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ProtocolsController < Dashboard::BaseController
+  include ProtocolsControllerShared
+
   before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
@@ -99,16 +101,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  def new
-    controller          = ::ProtocolsController.new
-    controller.request  = request
-    controller.response = response
-    controller.new
-    @protocol = controller.instance_variable_get(:@protocol)
-
-    respond_to :html
-  end
-
   def create
     @protocol = protocol_params[:type].capitalize.constantize.new(protocol_params)
 
@@ -135,24 +127,19 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
+    respond_to :html
+
     # admin is not able to activate study_type_question_group
     @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil?
 
-    controller          = ::ProtocolsController.new
-    controller.request  = request
-    controller.response = response
-    controller.instance_variable_set(:@protocol, @protocol)
-    controller.edit
-
-    @protocol = controller.instance_variable_get(:@protocol)
-    @errors   = controller.instance_variable_get(:@errors)
+    @protocol.populate_for_edit
+    @protocol.valid?
+    @errors = @protocol.errors
 
     # Re-Assign bypass
     @protocol.bypass_stq_validation = @protocol.selected_for_epic.nil?
 
     session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
-
-    respond_to :html
   end
 
   def update
@@ -211,10 +198,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   private
 
-  def find_protocol
-    @protocol = Protocol.find(params[:id])
-  end
-
   def build_with_owner_params
     service_providers = Identity.joins(:service_providers).where(service_providers: {
                                 organization: Organization.authorized_for_identity(current_user.id) })
@@ -234,94 +217,5 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       with_organization: [],
       with_status: [],
       with_owner: [])
-  end
-
-  def protocol_params
-    # Fix identity_id nil problem when lazy loading is enabled
-    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
-      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
-    end
-
-    # Sanitize date formats
-    params[:protocol][:funding_start_date]           = sanitize_date params[:protocol][:funding_start_date]
-    params[:protocol][:potential_funding_start_date] = sanitize_date params[:protocol][:potential_funding_start_date]
-    params[:protocol][:guarantor_phone]              = sanitize_phone params[:protocol][:guarantor_phone]
-
-    if params[:protocol][:human_subjects_info_attributes]
-      params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]
-    end
-
-    if params[:protocol][:vertebrate_animals_info_attributes]
-      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]
-      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date]
-    end
-
-    params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]                            if params[:protocol][:start_date]
-    params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]                              if params[:protocol][:end_date]
-    params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]                if params[:protocol][:recruitment_start_date]
-    params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]                  if params[:protocol][:recruitment_end_date]
-    params[:protocol][:initial_budget_sponsor_received_date]  = sanitize_date params[:protocol][:initial_budget_sponsor_received_date]  if params[:protocol][:initial_budget_sponsor_received_date]
-    params[:protocol][:budget_agreed_upon_date]               = sanitize_date params[:protocol][:budget_agreed_upon_date]               if params[:protocol][:budget_agreed_upon_date]
-
-    params.require(:protocol).permit(
-      :archived,
-      :arms_attributes,
-      :billing_business_manager_static_email,
-      :brief_description,
-      :budget_agreed_upon_date,
-      :end_date,
-      :federal_grant_code_id,
-      :federal_grant_serial_number,
-      :federal_grant_title,
-      :federal_non_phs_sponsor,
-      :federal_phs_sponsor,
-      :funding_rfa,
-      :funding_source,
-      :funding_source_other,
-      :funding_start_date,
-      :funding_status,
-      :guarantor_contact,
-      :guarantor_email,
-      :guarantor_phone,
-      :identity_id,
-      :indirect_cost_rate,
-      :initial_amount,
-      :initial_amount_clinical_services,
-      :initial_budget_sponsor_received_date,
-      :last_epic_push_status,
-      :last_epic_push_time,
-      :negotiated_amount,
-      :negotiated_amount_clinical_services,
-      :next_ssr_id,
-      :potential_funding_source,
-      :potential_funding_source_other,
-      :potential_funding_start_date,
-      :recruitment_end_date,
-      :recruitment_start_date,
-      :requester_id,
-      :research_master_id,
-      :selected_for_epic,
-      :short_title,
-      :sponsor_name,
-      :start_date,
-      :study_type_question_group_id,
-      :title,
-      :type,
-      :udak_project_number,
-      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-      investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
-      ip_patents_info_attributes: [:id, :patent_number, :inventors],
-      primary_pi_role_attributes: [:id, :identity_id, :_destroy],
-      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-      study_phase_ids: [],
-      study_types_attributes: [:id, :name, :new, :position, :_destroy],
-      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
-      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
-    )
   end
 end

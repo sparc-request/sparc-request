@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   def select_shard(&block)
     if identity_signed_in?
       Octopus.using(current_user.shard_identifier, &block)
-    elsif devise_controller? && resource_params && resource_params['ldap_uid'] && Octopus.config[Rails.env]['shards'].keys.include?(resource_params['ldap_uid'])
+    elsif devise_controller? && resource_params && resource_params['ldap_uid'] && Octopus.config[Rails.env]['shards'].keys.include?(Identity.shard_identifier(resource_params['ldap_uid']))
       Octopus.using(Identity.shard_identifier(resource_params['ldap_uid']), &block)
     else
       yield

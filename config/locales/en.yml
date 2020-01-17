@@ -267,6 +267,12 @@ en:
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
+        document:
+          attributes:
+            document:
+              spoofed_media_type: "File type does not match file content"
+            document_file_name:
+              invalid: "Invalid file type"
         form:
           attributes:
             active:

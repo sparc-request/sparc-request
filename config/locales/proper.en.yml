@@ -55,6 +55,7 @@ en:
         text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."
       services_missing:
         header: "Add Services to Continue"
+      service_provider_text: "To learn more about these Services, please contact one of the Service Providers listed below:"
 
     ############
     # PROTOCOL #

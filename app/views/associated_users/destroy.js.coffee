@@ -19,9 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Send the user back to dashboard if theyre a member and not an admin
 
-<% if @redirect %>
-window.location = "<%= dashboard_root_path %>"
-<% else %>
+<% if @permission_to_edit %>
 $("#authorizedUsersTable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+<% else %>
+window.location = "<%= dashboard_root_path %>"
 <% end %>

@@ -20,8 +20,7 @@
 
 class Study < Protocol
   validates_presence_of :sponsor_name
-  validates_inclusion_of :selected_for_epic, in: [true, false], unless: :bypass_stq_validation
-
+  validates_inclusion_of :selected_for_epic, in: [true, false], unless: Proc.new { |p| p.bypass_stq_validation || !Setting.get_value("use_epic") }
   ##Removed for now, perhaps to be added later
   # validation_group :guarantor_fields, if: :selected_for_epic do
   #   validates :guarantor_contact,

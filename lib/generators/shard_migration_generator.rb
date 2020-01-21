@@ -18,27 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+require 'rails/generators/active_record/migration/migration_generator'
 
-Octopus.using_group(:shards) do
-  Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
-    puts "Importing Settings"
-    SettingsPopulator.new().populate()
-
-    puts("Importing CSV file: #{file.split('/').last}")
-    CSV.foreach(file, headers: true) do |row|
-      PermissibleValue.create(row.to_hash)
-    end
+class ShardMigrationGenerator < ActiveRecord::Generators::MigrationGenerator
+  def create_migration_file
+    set_local_assigns!
+    validate_file_name!
+    migration_template 'shard_migration.rb', File.join(Rails.root, 'db', 'shards_migrate', "#{file_name}.rb")
   end
 end
-
-i = Identity.find_by_ldap_uid "jug2@musc.edu"
-i.password = "password"
-i.password_confirmation = "password"
-i.save

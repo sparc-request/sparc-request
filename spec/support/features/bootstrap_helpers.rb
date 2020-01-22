@@ -78,7 +78,7 @@ module Features
     end
 
     def bootstrap_typeahead(selector, text)
-      field = find("input#{selector}.typeahead")
+      field = find("input#{selector}.tt-input")
       field.send_keys(text)
       wait_for_javascript_to_finish
       expect(page).to have_selector('.tt-suggestion.tt-selectable', visible: false)

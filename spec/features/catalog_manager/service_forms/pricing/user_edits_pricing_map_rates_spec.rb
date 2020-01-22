@@ -68,8 +68,14 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_federal_rate', with: "250.00"
-        find('legend', text: 'Rates').click
-        accept_confirm
+
+        begin
+          accept_confirm
+        rescue
+          find('legend', text: 'Rates').click
+          accept_confirm
+        end
+        
         click_button 'Save'
         wait_for_javascript_to_finish
 
@@ -83,7 +89,14 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_corporate_rate', with: "350.00"
-        accept_confirm
+        
+        begin
+          accept_confirm
+        rescue
+          find('legend', text: 'Rates').click
+          accept_confirm
+        end
+
         click_button 'Save'
         wait_for_javascript_to_finish
 
@@ -97,7 +110,14 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_other_rate', with: "450.00"
-        accept_confirm
+        
+        begin
+          accept_confirm
+        rescue
+          find('legend', text: 'Rates').click
+          accept_confirm
+        end
+
         click_button 'Save'
         wait_for_javascript_to_finish
 
@@ -111,7 +131,14 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
         wait_for_javascript_to_finish
 
         fill_in 'pricing_map_member_rate', with: "550.00"
-        accept_confirm
+        
+        begin
+          accept_confirm
+        rescue
+          find('legend', text: 'Rates').click
+          accept_confirm
+        end
+
         click_button 'Save'
         wait_for_javascript_to_finish
 

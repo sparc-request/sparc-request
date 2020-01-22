@@ -20,6 +20,13 @@
 
 module Features
   module BootstrapHelpers
+    def fill_in(id, opts={})
+      e = page.find("##{id}")
+      e.click
+      e.send_keys(:delete)
+      e.set(opts[:with])
+    end
+
     def bootstrap_select(class_or_id, choice)
       expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
       bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
@@ -70,12 +77,14 @@ module Features
       find("#{id}", visible: false).find(:xpath, '..').click
     end
 
-    def bootstrap_typeahead(class_or_id, text)
-      find("#{class_or_id}").click
-      find("#{class_or_id}").fill_in with: text
+    def bootstrap_typeahead(selector, text)
+      field = find("input#{selector}.typeahead")
+      field.send_keys(text)
       wait_for_javascript_to_finish
-      expect(page).to have_selector("input#{class_or_id} ~ .tt-menu.tt-open")
-      first('.tt-menu.tt-open .tt-suggestion', text: text).click
+      expect(page).to have_selector('.tt-suggestion.tt-selectable', visible: false)
+      field.send_keys :down
+      find('.tt-menu.tt-open').first('.tt-suggestion').click
+      wait_for_javascript_to_finish
     end
 
 

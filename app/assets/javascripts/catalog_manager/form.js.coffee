@@ -91,7 +91,12 @@ $ ->
 
     $.ajax
       type: 'PUT'
-      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[allow_credit]=#{allow_credit}"
+      url: "/catalog_manager/super_user"
+      data:
+        super_user:
+          identity_id: identity_id
+          organization_id: organization_id
+          allow_credit: allow_credit
 
   $(document).on 'change', '.su-billing-manager', ->
     identity_id = $(this).data('identity-id')

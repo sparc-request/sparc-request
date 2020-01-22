@@ -37,4 +37,9 @@ loadServiceCalendar()
 
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+# Re-render Admin Edit SSR header to update costs
+if $("#subServiceRequestSummary").length
+  $("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+
 <% end %>

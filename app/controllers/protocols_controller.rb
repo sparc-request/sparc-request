@@ -21,9 +21,9 @@
 class ProtocolsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :find_protocol,               only:   [:edit, :update, :show]
+  before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :find_protocol,               only: [:show, :edit, :update]
 
   def show
     respond_to :js

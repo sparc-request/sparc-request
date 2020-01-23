@@ -177,9 +177,6 @@ RSpec.describe 'User edits survey fields', js: true do
       bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
       wait_for_javascript_to_finish
 
-      fill_in "survey-#{@form.id}-surveyable", with: "Helpful"
-      wait_for_javascript_to_finish
-
       bootstrap_typeahead("#survey-#{@form.id}-surveyable", service.name)
       wait_for_javascript_to_finish
 

@@ -275,6 +275,14 @@ namespace :octopus do
   end
 end
 
+Rake::Task['db:create'].enhance(['octopus:off']) do
+  Rake::Task['octopus:on'].invoke
+end
+
+Rake::Task['db:drop'].enhance(['octopus:off']) do
+  Rake::Task['octopus:on'].invoke
+end
+
 Rake::Task['shards:test:prepare'].enhance(['octopus:off']) do
   Rake::Task['octopus:on'].invoke
 end

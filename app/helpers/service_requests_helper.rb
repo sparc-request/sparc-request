@@ -19,6 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module ServiceRequestsHelper
+  def cart_sub_service_requests(service_request)
+    if identity_signed_in?
+      active    = service_request.sub_service_requests.select{ |ssr| !ssr.is_complete? }
+      complete  = service_request.sub_service_requests.select{ |ssr| ssr.is_complete? }
+    else
+      active = {}
+      complete = {}
+    end
+
+    { active: active, complete: complete }
+  end
+
   def organization_name_display(organization, locked, has_children)
     raw(if locked
       icon('fas', 'lock mr-3')

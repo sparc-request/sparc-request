@@ -1,0 +1,32 @@
+[
+  {
+    "key":            "about_sparc_url",
+    "value":          "http://academicdepartments.musc.edu/sctr/sparc_request",
+    "friendly_name":  "\"About SPARCRequest\" URL",
+    "description":    "This is the URL linked to by the \"About SPARCRequest\" button on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "listserv_mail_to",
+    "value":          "hewwe@musc.edu, hutsonk@musc.edu",
+    "friendly_name":  "Listserv Mail-To",
+    "description":    "This is the email(s) of users who are emailed by the Listserv link in the footer.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "navbar_links",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"] }",
+    "friendly_name":  "Navbar Links",
+    "description":    "This defines the links that appear in the header navbar. New links may be added by using the following syntax: \"key\": [\"Link Text\", \"Full URL\"].",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  }
+]

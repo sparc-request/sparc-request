@@ -31,8 +31,6 @@ class ApplicationController < ActionController::Base
 
   before_action :preload_database_values
   before_action :set_highlighted_link
-  # before_action :get_news_feed,               if: Proc.new{ request.format.html? }
-  # before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
   before_action :configure_permitted_params,  if: :devise_controller?
 
   protected
@@ -78,7 +76,10 @@ class ApplicationController < ActionController::Base
 
   def preload_database_values
     Setting.preload_values
-    PermissibleValue.preload_values
+
+    if identity_signed_in?
+      PermissibleValue.preload_values
+    end
   end
 
   def set_highlighted_link  # default value, override inside controllers
@@ -99,13 +100,13 @@ class ApplicationController < ActionController::Base
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])
-    else
+    elsif identity_signed_in?
       @service_request = ServiceRequest.new(status: 'first_draft')
     end
   end
 
   def authorize_identity
-    if @service_request.new_record? && action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && !request.format.html?)
+    if (@service_request.nil? || @service_request.new_record?) && action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && !request.format.html?)
       # The user is viewing the catalog without starting a request
       return true
     elsif identity_signed_in? && (@service_request.new_record? || current_user.can_edit_service_request?(@service_request))
@@ -200,6 +201,6 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+    @locked_org_ids = identity_signed_in? ? @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq : []
   end
 end

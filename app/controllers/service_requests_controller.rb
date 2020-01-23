@@ -266,8 +266,11 @@ class ServiceRequestsController < ApplicationController
       @step_header      = c[:header]
       @step_sub_header  = c[:sub_header]
       @css_class        = c[:css_class]
-      @back             = eval("#{c[:back]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:back]
-      @forward          = eval("#{c[:forward]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:forward]
+
+      if identity_signed_in?
+        @back     = eval("#{c[:back]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:back]
+        @forward  = eval("#{c[:forward]}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") if c[:forward]
+      end
     end
   end
 

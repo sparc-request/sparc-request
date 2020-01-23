@@ -21,12 +21,6 @@
 namespace :data do
   desc "Import any missing settings from config/settings into the Settings database table"
   task import_settings: :environment do
-    if ENV['DB']
-      Octopus.using(ENV['DB']) do
-        SettingsPopulator.new().populate()
-      end
-    else
-      puts "Please provide a database using \"DB=databasename\""
-    end
+    SettingsPopulator.new().populate()
   end
 end

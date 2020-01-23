@@ -27,6 +27,6 @@ class HumanSubjectsInfo < ApplicationRecord
   self.table_name = 'human_subjects_info'
 
   belongs_to :protocol
-  validates :nct_number, :numericality => {:allow_blank => true, :only_integer => true, :message => "must contain 8 numerical digits"}
-  validates :nct_number, :length => {:allow_blank => true, :is => 8, :message => "must contain 8 numerical digits"}
+  validates :nct_number, numericality: {allow_blank: true, only_integer: true, message: "must contain 8 numerical digits"}
+  validates :nct_number, length: {allow_blank: true, is: 8, message: "must contain 8 numerical digits"}
 end

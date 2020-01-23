@@ -31,7 +31,7 @@ RSpec.describe DocumentRemover do
     @sub_service_request1.documents << @document
     @sub_service_request2.documents << @document
 
-    DocumentRemover.new(@document.id)
+    DocumentRemover.new(@document)
   end
 
   it "should remove Document from the specified Protocol" do

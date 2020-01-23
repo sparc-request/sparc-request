@@ -20,7 +20,11 @@
 require 'rails_helper'
 
 RSpec.describe AssociatedUsersController, type: :controller do
-  stub_controller
+  let!(:logged_in_user) { build_stubbed(:identity) }
+
+  before :each do
+    log_in_dashboard_identity(obj: logged_in_user)
+  end
 
   describe '#destroy' do
     context 'use_epic is true and protocol.selected_for_epic is true and epic_access is true and queue_epic is false' do

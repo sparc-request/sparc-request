@@ -87,18 +87,18 @@
                   %span.input-group-text
                     = icon('fas', 'calendar-alt')
             - if protocol.has_clinical_services?
-              .form-group.col-3.d-none#initialAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+              .form-group.col.d-none#initialAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
                 = f.label :initial_amount_clinical_services
                 .input-group.milestone-field
                   .input-group-prepend
                     = f.label :initial_amount_clinical_services, t('constants.currency'), class: 'input-group-text'
                   = f.text_field :initial_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount_clinical_services)
-              .form-group.col-3.d-none#initialAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
-                = f.label :initial_amount
-                .input-group.milestone-field
-                  .input-group-prepend
-                    = f.label :initial_amount, t('constants.currency'), class: 'input-group-text'
-                  = f.text_field :initial_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount)
+            .form-group.col.d-none#initialAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+              = f.label :initial_amount
+              .input-group.milestone-field
+                .input-group-prepend
+                  = f.label :initial_amount, t('constants.currency'), class: 'input-group-text'
+                = f.text_field :initial_amount, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.initial_amount)
           .form-row
             .form-group.col-6{ class: show_errors ? 'is-valid' : '' }
               = f.label :budget_agreed_upon_date
@@ -108,13 +108,13 @@
                   %span.input-group-text
                     = icon('fas', 'calendar-alt')
             - if protocol.has_clinical_services?
-              .form-group.col-3.d-none#negotiatedAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+              .form-group.col.d-none#negotiatedAmountClinicalContainer{ class: show_errors ? 'is-valid' : '' }
                 = f.label :negotiated_amount_clinical_services
                 .input-group.milestone-field
                   .input-group-prepend
                     = f.label :negotiated_amount_clinical_services, t('constants.currency'), class: 'input-group-text'
                   = f.text_field :negotiated_amount_clinical_services, class: 'form-control', onkeydown: "validateMonetaryInput(event)", value: format_currency(protocol.negotiated_amount_clinical_services)
-            .form-group.col-3.d-none#negotiatedAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
+            .form-group.col.d-none#negotiatedAmountNonClinicalContainer{ class: show_errors ? 'is-valid' : '' }
               = f.label :negotiated_amount
               .input-group.milestone-field
                 .input-group-prepend

@@ -26,5 +26,7 @@ class StudyType < ApplicationRecord
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = PermissibleValue.get_hash('study_type')
+  def self.types
+    PermissibleValue.get_hash('study_type')
+  end
 end

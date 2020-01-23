@@ -25,5 +25,8 @@ class Affiliation < ApplicationRecord
   attr_accessor :position
 
   belongs_to :protocol
-  TYPES = PermissibleValue.get_hash('affiliation_type')
+  
+  def self.types
+    PermissibleValue.get_hash('affiliation_type')
+  end
 end

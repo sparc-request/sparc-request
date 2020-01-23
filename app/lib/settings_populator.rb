@@ -22,40 +22,60 @@ class SettingsPopulator
   include DataTypeValidator
 
   def initialize
-    load_data_and_config
+    load_defaults
+    load_stored_yaml
   end
 
   def populate
-    ActiveRecord::Base.transaction do
-      @defaults.each do |hash|
-        if Setting.exists?(key: hash['key'])
-          Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
-        else
-          setting = Setting.create(
-            key:            hash['key'],
-            value:          @stored[hash['key']].present? ? @stored[hash['key']] : hash['value'],
-            data_type:      get_type(hash['value']),
-            friendly_name:  hash['friendly_name'],
-            description:    hash['description'],
-            group:          hash['group'],
-            version:        hash['version'],
-          )
+    Setting.auditing_enabled = false
 
-          setting.parent_key    = hash['parent_key']
-          setting.parent_value  = hash['parent_value']
-          setting.save(validate: false)
+    ActiveRecord::Base.transaction do
+      @defaults.each do |db, defaults|
+        Octopus.using(db) do
+          defaults.each do |hash|
+            if Setting.exists?(key: hash['key'])
+              Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
+            else
+              setting = Setting.create(
+                key:            hash['key'],
+                value:          @stored[hash['key']].present? ? @stored[hash['key']] : hash['value'],
+                data_type:      get_type(hash['value']),
+                friendly_name:  hash['friendly_name'],
+                description:    hash['description'],
+                group:          hash['group'],
+                version:        hash['version'],
+              )
+
+              setting.parent_key    = hash['parent_key']
+              setting.parent_value  = hash['parent_value']
+              setting.save(validate: false)
+            end
+          end
+
+          Setting.where(key: deprecated_settings).destroy_all
         end
       end
-
-      Setting.where(key: deprecated_settings).destroy_all
     end
+
+    Setting.auditing_enabled = true
   end
 
   private
 
-  def load_data_and_config
-    @defaults = JSON.parse(File.read(Rails.root.join('config', 'defaults.json')))
-    @stored   = {}
+  def load_defaults
+    @defaults = {
+      master: JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'master.json'))),
+    }
+
+    shards_defaults = JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'shards.json')))
+
+    Octopus.config[Rails.env]['shards'].each do |shard, _|
+      @defaults[shard.to_sym] = shards_defaults
+    end
+  end
+
+  def load_stored_yaml
+    @stored = {}
 
     if File.exists? Rails.root.join('config', 'application.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env])

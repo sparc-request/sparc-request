@@ -20,7 +20,7 @@
 
 - programs.select{ |prog| prog.is_available != false }.each do |p|
   - locked  = locked_org_ids.include?(p.id)
-  - url     = locked ? locked_organization_catalog_path(p, shard: shard_param, srid: service_request.id) : update_description_catalog_path(p, shard: shard_param, srid: service_request.id)
+  - url     = locked ? locked_organization_catalog_path(p, shard: shard_param, srid: service_request.try(:id)) : update_description_catalog_path(p, shard: shard_param, srid: service_request.try(:id))
 
   %button.program-link.org-link.btn.btn-block.btn-link.border-top.rounded-0.m-0{ class: locked ? 'locked' : 'bg-white', type: 'button', data: { url: url } }
     %h6.d-flex.align-items-start.mb-0

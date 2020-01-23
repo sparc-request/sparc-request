@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, ORe
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- subsidy = @service_request.eligible_for_subsidy?
+- subsidy = identity_signed_in? ? @service_request.eligible_for_subsidy? : false
 
 - unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
   %nav.nav.w-100.mb-1#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
@@ -27,4 +27,4 @@
         - next if ['obtain_research_pricing', 'confirmation'].include?(step)
         - next if !subsidy && step == 'service_subsidy'
         - config = Step.get(step)
-        = render 'service_requests/navigation/step_arrow', text: config[:step_text], link: eval("#{step}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})"), color: config[:css_class], active: @current_page == step
+        = render 'service_requests/navigation/step_arrow', text: config[:step_text], link: identity_signed_in? ? eval("#{step}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})") : 'javascript:void(0)', color: config[:css_class], active: @current_page == step

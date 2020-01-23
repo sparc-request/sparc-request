@@ -409,13 +409,6 @@ class ServiceRequest < ApplicationRecord
     {:line_items => line_item_audits}
   end
 
-  def cart_sub_service_requests
-    active    = self.sub_service_requests.select{ |ssr| !ssr.is_complete? }
-    complete  = self.sub_service_requests.select{ |ssr| ssr.is_complete? }
-
-    { active: active, complete: complete }
-  end
-
   private
 
   def set_original_submitted_date

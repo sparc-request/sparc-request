@@ -25,7 +25,7 @@
       %br
       %small.text-muted
         = @step_sub_header
-    - if @service_request.protocol.present?
+    - if identity_signed_in? && @service_request.protocol.present?
       %h3.mb-0.ml-auto
         = "#{@service_request.protocol.model_name.human} ##{@service_request.protocol.id}"
         %br

@@ -21,16 +21,10 @@
 namespace :data do
   desc "Regenerate settings table from local application.yml"
   task regenerate_settings: :environment do
-    if ENV['DB']
-      ActiveRecord::Base.connected_to(database: ENV['DB'].to_sym) do
-        #Truncate settings table
-        ActiveRecord::Base.connection.execute("TRUNCATE settings")
-
-        #Rerun populator
-        SettingsPopulator.new().populate
+    ActiveRecord::Base.transaction do
+      Octopus.using_all do
+        Setting.destroy_all
       end
-    else
-      puts "Please provide a database using \"DB=databasename\""
     end
   end
 end

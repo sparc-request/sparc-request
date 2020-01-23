@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceCatalogForm', class: 'w-100' do
+= form_tag navigate_service_request_path(srid: identity_signed_in? ? @service_request.id : nil), id: 'serviceCatalogForm', class: 'w-100' do
   = render '/service_requests/navigation/steps'
   = render '/service_requests/navigation/header'
   .row

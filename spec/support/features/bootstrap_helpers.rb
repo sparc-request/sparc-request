@@ -22,6 +22,8 @@ module Features
   module BootstrapHelpers
     def fill_in(id, opts={})
       field = page.find("##{id}")
+      field.click
+      field.send_keys(:delete)
       field.set(opts[:with])
     end
 
@@ -63,6 +65,8 @@ module Features
 
     def bootstrap_datepicker(element, text)
       field = page.find(element)
+      field.click
+      field.send_keys(:delete)
       field.set(text)
       find('body').click # Click away
       wait_for_javascript_to_finish
@@ -75,6 +79,8 @@ module Features
 
     def bootstrap_typeahead(selector, text)
       field = find("input#{selector}.tt-input")
+      field.click
+      field.send_keys(:delete)
       field.set(text)
       wait_for_javascript_to_finish
       expect(page).to have_selector('.tt-suggestion.tt-selectable', visible: false)

@@ -54,6 +54,7 @@ en:
         user_rights: "User Rights"
         submission_emails: "Submission E-mails"
       user_rights:
+        allow_credit: "Allow Credit"
         name_email: "Name, Email"
         super_user: "Super User"
         access_empty_protocols: "Empty Protocols"

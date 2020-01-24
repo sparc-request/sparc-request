@@ -121,6 +121,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
+      if protocol_params[:primary_pi_role_attributes][:identity_id] == ""
+        @protocol.errors[:base] << "You must add a Primary PI to the study/project"
+      end
     end
 
     respond_to :js

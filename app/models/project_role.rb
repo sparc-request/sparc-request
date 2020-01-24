@@ -34,6 +34,7 @@ class ProjectRole < ApplicationRecord
 
   validates :role,
             :project_rights,
+            :identity_id,
             presence: true
 
   validates_presence_of :role_other, if: Proc.new{ |pr| pr.role == 'other' }

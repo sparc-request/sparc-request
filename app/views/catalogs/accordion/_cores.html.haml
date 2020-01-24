@@ -32,4 +32,5 @@
           - if c.description.present?
             %p
               = raw(c.description)
+          = render 'catalogs/primary_contacts', organization: c
           = render 'catalogs/accordion/services', organization: c, service_request: service_request

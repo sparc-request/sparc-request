@@ -56,7 +56,7 @@ class ProjectRole < ApplicationRecord
     duplicate_project_roles = ProjectRole.where(protocol_id: self.protocol.id).select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self
     if duplicate_project_roles.count > 1
-      errors.add(:this, "user is already associated with this protocol.")
+      errors.add(:base, :duplicate_role)
       return false
     end
 

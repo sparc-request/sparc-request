@@ -267,6 +267,12 @@ en:
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
+        document:
+          attributes:
+            document:
+              spoofed_media_type: "File type does not match file content"
+            document_file_name:
+              invalid: "Invalid file type"
         form:
           attributes:
             active:
@@ -282,6 +288,11 @@ en:
             quantity:
               min: "must be greater than or equal to #{min}"
               max: "must be less than or equal to #{max}"
+        project_role:
+          attributes:
+            base:
+              duplicate_role: "User is already associated with this protocol."
+              epic_api_down: "Epic user API server is down."
         protocol:
           attributes:
             end_date:
@@ -948,7 +959,7 @@ en:
     delete_intro: "An Authorized User has been deleted in"
     delete_intro_p: "Authorized Users have been deleted in"
     epic_access: "Epic Access"
-    issue_contact: "Please contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a> for assistance with this process or with any questions you may have."
+    issue_contact: "Please contact <a href='mailto:%{email}'>%{email}</a> or call %{phone} for technical assistance or contact the service provider directly for questions related to your service request."
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
@@ -978,6 +989,7 @@ en:
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
     epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
     link: "HERE"
     name: "User Name"
     non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"

@@ -39,7 +39,7 @@ gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_valida
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.17.1'
+gem 'httparty', '~> 0.17.3'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'

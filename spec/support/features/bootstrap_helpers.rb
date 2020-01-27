@@ -84,8 +84,13 @@ module Features
       field.set(text)
       wait_for_javascript_to_finish
       expect(page).to have_selector('.tt-suggestion.tt-selectable', visible: false)
-      field.send_keys :down
-      find('.tt-menu.tt-open').first('.tt-suggestion').click
+      begin
+        find('.tt-menu.tt-open').first('.tt-suggestion').click
+      rescue
+        field.send_keys :down
+        find('.tt-menu.tt-open').first('.tt-suggestion').click
+      end
+      
       wait_for_javascript_to_finish
     end
 

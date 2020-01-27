@@ -113,6 +113,7 @@ class Protocol < ApplicationRecord
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
   validates_presence_of :potential_funding_source,  if: :pending_funding?
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
+  validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]

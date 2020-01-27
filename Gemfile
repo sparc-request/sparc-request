@@ -72,7 +72,7 @@ gem 'rails', '5.2.4.1'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
-gem 'remotipart'
+gem 'remotipart', '1.4.2'
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'

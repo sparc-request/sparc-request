@@ -41,6 +41,15 @@ html {
   }
 }
 
+#flashContainer {
+  position: fixed;
+  width: 90%;
+  top: 1rem;
+  z-index: 1041;
+  left: 1rem;
+  right: 1rem;
+}
+
 #contentContainer {
   position: relative;
   width: 90%;
@@ -79,7 +88,7 @@ html {
 }
 
 @media (max-width: 3839.98px) {
-  #siteHeader .container-fluid, #siteNav .container-fluid, #dashboardNav .container-fluid, #contentContainer, #siteFooter .container-fluid {
+  #flashContainer, #siteHeader .container-fluid, #siteNav .container-fluid, #dashboardNav .container-fluid, #contentContainer, #siteFooter .container-fluid {
     max-width: 1920px;
   }
 }

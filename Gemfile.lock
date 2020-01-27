@@ -700,7 +700,7 @@ DEPENDENCIES
   rails-html-sanitizer
   rails-observers!
   redcarpet
-  remotipart (= 1.4.2)
+  remotipart
   request_store
   rest-client
   rspec-activemodel-mocks

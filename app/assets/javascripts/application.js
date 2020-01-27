@@ -42,6 +42,7 @@
 //= require custom/sweetalert-integration
 //= require jquery/dist/jquery.min
 //= require rails-ujs
+//= require jquery.remotipart
 
 //////////////////////////////////
 /// Require Remaining Packages ///

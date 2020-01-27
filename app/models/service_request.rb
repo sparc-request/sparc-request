@@ -24,7 +24,8 @@ class ServiceRequest < ApplicationRecord
 
   audited
 
-  belongs_to :protocol
+  belongs_to :protocol, optional: true
+
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"

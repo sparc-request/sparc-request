@@ -29,10 +29,10 @@ class SubServiceRequest < ApplicationRecord
   after_save :update_past_status
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
-  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
+  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
   belongs_to :service_request
   belongs_to :organization
-  belongs_to :protocol, counter_cache: true
+  belongs_to :protocol, counter_cache: true, optional: true
 
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy

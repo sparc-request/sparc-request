@@ -467,7 +467,6 @@ GEM
     rake (13.0.1)
     redcarpet (3.5.0)
     regexp_parser (1.6.0)
-    remotipart (1.4.3)
     request_store (1.4.1)
       rack (>= 1.4)
     responders (3.0.0)
@@ -708,7 +707,6 @@ DEPENDENCIES
   rails-html-sanitizer
   rails-observers!
   redcarpet
-  remotipart
   request_store
   rest-client
   rspec-activemodel-mocks

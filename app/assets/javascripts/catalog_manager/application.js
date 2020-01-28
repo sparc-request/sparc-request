@@ -32,7 +32,6 @@
 //= require catalog_manager/catalog
 //= require catalog_manager/form
 //= require jquery_ujs
-//= require jquery.remotipart
 //= require nprogress
 //= require nprogress-ajax
 //= require twitter/typeahead.min

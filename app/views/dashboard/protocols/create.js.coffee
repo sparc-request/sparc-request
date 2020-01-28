@@ -42,9 +42,11 @@ $('#primary_pi').parents('.form-group').removeClass('is-valid').addClass('is-inv
 <% end %>
 <% end %>
 
+<% if @protocol.type == "Study" %>
 <% @protocol.human_subjects_info.errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
 $("[name='protocol[human_subjects_info_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
 <% end %>
 <% end %>
 

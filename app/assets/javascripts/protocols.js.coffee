@@ -92,8 +92,11 @@ $(document).ready ->
 
   $('#protocolInitialBudgetSponsorReceivedDatePicker').on('hide.datetimepicker', ->
     if $('#protocol_initial_budget_sponsor_received_date').val()
-      $('#protocol_initial_amount_clinical_services').val(initialAmountClinical).parents('.form-group').removeClass('d-none')
-      $('#protocol_initial_amount').val(initialAmountNonClinical).parents('.form-group').removeClass('d-none')
+      $('#protocol_initial_amount_clinical_services').parents('.form-group').removeClass('d-none')
+      $('#protocol_initial_amount').parents('.form-group').removeClass('d-none')
+    if initialAmountClinical
+      $('#protocol_initial_amount_clinical_services').val(initialAmountClinical)
+      $('#protocol_initial_amount').val(initialAmountNonClinical)
   ).on('change.datetimepicker', ->
     if !$('#protocol_initial_budget_sponsor_received_date').val()
       initialAmountClinical    = $('#protocol_initial_amount_clinical_services').val()
@@ -115,8 +118,11 @@ $(document).ready ->
 
   $('#protocolBudgetAgreedUponDatePicker').on('hide.datetimepicker', ->
     if $('#protocol_budget_agreed_upon_date').val()
-      $('#protocol_negotiated_amount_clinical_services').val(negotiatedAmountClinical).parents('.form-group').removeClass('d-none')
-      $('#protocol_negotiated_amount').val(negotiatedAmountNonClinical).parents('.form-group').removeClass('d-none')
+      $('#protocol_negotiated_amount_clinical_services').parents('.form-group').removeClass('d-none')
+      $('#protocol_negotiated_amount').parents('.form-group').removeClass('d-none')
+    if negotiatedAmountNonClinical
+      $('#protocol_negotiated_amount_clinical_services').val(negotiatedAmountClinical)
+      $('#protocol_negotiated_amount').val(negotiatedAmountNonClinical)
   ).on('change.datetimepicker', ->
     if !$('#protocol_budget_agreed_upon_date').val()
       negotiatedAmountClinical    = $('#protocol_negotiated_amount_clinical_services').val()

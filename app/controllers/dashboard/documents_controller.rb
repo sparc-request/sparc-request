@@ -23,9 +23,9 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   before_action :find_admin_for_protocol
   before_action :find_admin_orgs
-  before_action :protocol_authorizer_view,        only:   [:index]
-  before_action :protocol_authorizer_edit,        only:   [:new, :create, :edit, :update, :destroy]
-  before_action :authorize_admin_access_document, except: [:index]
+  before_action :protocol_authorizer_view,        only: [:index]
+  before_action :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
+  before_action :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   private
 

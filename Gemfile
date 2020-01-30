@@ -33,13 +33,13 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.2.5'
+gem 'grape', '1.3.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.17.1'
+gem 'httparty', '~> 0.17.3'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -72,7 +72,6 @@ gem 'rails', '5.2.4.1'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
-gem 'remotipart'
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
@@ -123,7 +122,7 @@ group :test do
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
-  gem 'webdrivers', '~> 4.1'
+  gem 'webdrivers', '~> 4.2'
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'

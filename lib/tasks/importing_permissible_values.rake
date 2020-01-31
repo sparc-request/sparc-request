@@ -25,7 +25,11 @@ task import_permissible_values: :environment do
       Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
         puts("Importing CSV file: #{file.split('/').last}")
         CSV.foreach(file, headers: true) do |row|
-          PermissibleValue.create(row.to_hash)
+          p = PermissibleValue.create(row.to_hash)
+          if row['category'] == 'ontology_tag'
+            Rails.logger.info p
+            Rails.logger.info p.errors
+          end
         end
       end
     end

@@ -30,6 +30,6 @@ task import_permissible_values: :environment do
       end
     end
   else
-    puts "Please provide a database using \"DB=databasename\""
+    puts "Please provide a database using \"DB=databasename\". Available databases are #{SHARDS.keys.join(', ')}."
   end
 end

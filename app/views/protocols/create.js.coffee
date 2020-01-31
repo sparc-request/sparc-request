@@ -34,9 +34,19 @@ $("[name='protocol[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-
 <% end %>
 <% end %>
 
-<% @protocol.primary_pi_role.errors.messages.each do |attr, messages| %>
+<% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
-$("[name='protocol[primary_pi_role_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% if message == "You must add a Primary PI to the study/project"%>
+$('#primary_pi').parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% end %>
+
+<% if @protocol.type == "Study" %>
+<% @protocol.human_subjects_info.errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='protocol[human_subjects_info_attributes][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
 <% end %>
 <% end %>
 

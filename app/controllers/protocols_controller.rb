@@ -19,21 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolsController < ApplicationController
-  respond_to :html, :js, :json
+  include ProtocolsControllerShared
 
-  before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :find_protocol,               only:   [:edit, :update, :show]
+  before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :find_protocol,               only: [:show, :edit, :update]
 
   def show
     respond_to :js
-  end
-
-  def new
-    @protocol = params[:type].capitalize.constantize.new
-    @protocol.populate_for_edit
-
-    respond_to :html
   end
 
   def create
@@ -64,11 +57,11 @@ class ProtocolsController < ApplicationController
   end
 
   def edit
+    respond_to :html
+
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
-
-    respond_to :html
   end
 
   def update
@@ -170,82 +163,6 @@ class ProtocolsController < ApplicationController
   end
 
   private
-
-  def find_protocol
-    @protocol = Protocol.find(params[:id])
-  end
-
-  def protocol_params
-    # Fix identity_id nil problem when lazy loading is enabled
-    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
-      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
-    end
-
-    # Sanitize date formats
-    params[:protocol][:funding_start_date]           = sanitize_date params[:protocol][:funding_start_date]
-    params[:protocol][:potential_funding_start_date] = sanitize_date params[:protocol][:potential_funding_start_date]
-    params[:protocol][:guarantor_phone]              = sanitize_phone params[:protocol][:guarantor_phone]
-
-    if params[:protocol][:human_subjects_info_attributes]
-      params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]
-    end
-
-    if params[:protocol][:vertebrate_animals_info_attributes]
-      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]
-      params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date] = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_expiration_date]
-    end
-
-    params.require(:protocol).permit(
-      :archived,
-      :arms_attributes,
-      :billing_business_manager_static_email,
-      :brief_description,
-      :federal_grant_code_id,
-      :federal_grant_serial_number,
-      :federal_grant_title,
-      :federal_non_phs_sponsor,
-      :federal_phs_sponsor,
-      :funding_rfa,
-      :funding_source,
-      :funding_source_other,
-      :funding_start_date,
-      :funding_status,
-      :guarantor_contact,
-      :guarantor_email,
-      :guarantor_phone,
-      :identity_id,
-      :indirect_cost_rate,
-      :last_epic_push_status,
-      :last_epic_push_time,
-      :next_ssr_id,
-      :potential_funding_source,
-      :potential_funding_source_other,
-      :potential_funding_start_date,
-      :requester_id,
-      :research_master_id,
-      :selected_for_epic,
-      :short_title,
-      :sponsor_name,
-      :study_type_question_group_id,
-      :title,
-      :type,
-      :udak_project_number,
-      affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
-      impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
-      investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
-      ip_patents_info_attributes: [:id, :patent_number, :inventors],
-      primary_pi_role_attributes: [:id, :identity_id, :_destroy],
-      research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-      study_phase_ids: [],
-      study_types_attributes: [:id, :name, :new, :position, :_destroy],
-      study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
-      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
-    )
-  end
 
   def push_protocol_to_epic protocol
     # Run the push to epic call in a child thread, so that we can return

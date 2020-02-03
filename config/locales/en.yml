@@ -304,6 +304,8 @@ en:
             base:
               duplicate_role: "User is already associated with this protocol."
               epic_api_down: "Epic user API server is down."
+            identity:
+              required: "Please select a user"
         protocol:
           attributes:
             end_date:

@@ -34,10 +34,25 @@ RSpec.describe 'protocols/view_details/_protocol_information', type: :view do
   context 'viewing study' do
     let!(:protocol) { create(:study_without_validations, primary_pi: create(:identity), research_master_id: 1234) }
 
-    it 'should show the RMID column' do
-      render 'protocols/view_details/protocol_information', protocol: protocol
+    context  'RMID is enabled' do
+      stub_config('research_master_enabled', true)
 
-      expect(response).to have_content(1234)
+      it 'should show the RMID column' do
+        render 'protocols/view_details/protocol_information', protocol: protocol
+
+        expect(response).to have_content(1234)
+      end
     end
+    
+    context  'RMID is not enabled' do
+      stub_config('research_master_enabled', false)
+
+      it 'should not show the RMID column' do
+        render 'protocols/view_details/protocol_information', protocol: protocol
+
+        expect(response).to have_no_content(1234)
+      end
+    end
+
   end
 end

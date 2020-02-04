@@ -49,4 +49,9 @@ class Document < ApplicationRecord
   def all_organizations
     sub_service_requests.map(&:org_tree).flatten.uniq
   end
+
+  # Return an array because Octopus isn't smart enough to use multiple databases in a single query
+  def organizations
+    self.sub_service_requests.map(&:organization)
+  end
 end

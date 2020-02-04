@@ -62,6 +62,10 @@
       - elsif service.pricing_maps.empty?
         %span{style: "padding-left: 15px;"}
           = t(:catalog_manager)[:service_form][:no_pricing_maps]
+  .form-group.share-externally
+    = f.label :share_externally, class: 'col-sm-3 control-label'
+    .col-sm-9
+      = f.check_box :share_externally, { checked: service.share_externally, disabled: (!service.organization.is_available or service.pricing_maps.empty?), data: { toggle: 'toggle', on: 'Yes', off: 'No' } }
   - if (tags = Tag.for_services).any?
     .form-group
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'

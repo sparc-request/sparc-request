@@ -37,7 +37,7 @@
   -# SSR Header Row
   %tr.organization-header{ class: "alert-#{bg_context}" }
     %th{ colspan: 48 }
-      = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
+      = ssr_name_display(ssr, locked: locked, complete: complete, context: false)
 
   -# Line Items Visits
   - livs.each do |liv|

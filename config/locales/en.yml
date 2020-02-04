@@ -221,6 +221,7 @@ en:
       service:
         abbreviation: "Abbreviation"
         charge_code: "Charge Code"
+        share_externally: "Share With Outside Institutions"
       service_request:
         id: "SRID"
         organization: "Organization"

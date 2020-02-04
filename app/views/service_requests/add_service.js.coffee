@@ -33,7 +33,8 @@ ConfirmSwal.fire(
       url: '/service_request/add_service'
       data:
         service_id: "<%= params[:service_id] %>"
-        confirmed: "true"
+        shard:      "<%= params[:shard] %>"
+        confirmed:  "true"
   else if result.dismiss == 'cancel'
     window.location = "<%= dashboard_root_path %>"
 <% elsif @duplicate_service %>

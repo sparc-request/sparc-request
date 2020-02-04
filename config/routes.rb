@@ -134,11 +134,10 @@ Rails.application.routes.draw do
 
   resources :notes, only: [:index, :create, :edit, :update, :destroy]
 
-  resources :catalogs, param: :organization_id, only: [] do
-    member do
-      get :update_description
-      get :locked_organization
-    end
+  resource :catalogs, only: [] do
+    get :update_catalog
+    get :update_description
+    get :locked_organization
   end
 
   resources :search, only: [] do

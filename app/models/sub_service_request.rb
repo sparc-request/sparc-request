@@ -19,14 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
-
-  before_create :set_protocol_id
-  after_save :update_org_tree
-  after_save :update_past_status
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
@@ -70,6 +65,11 @@ class SubServiceRequest < ApplicationRecord
 
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
 
+  before_create :set_protocol_id
+
+  after_save :update_org_tree
+  after_save :update_past_status
+
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
   scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
 
@@ -86,6 +86,12 @@ class SubServiceRequest < ApplicationRecord
   def status= status
     @prev_status = self.status
     super(status)
+  end
+
+  # Overwrite the default `belongs_to :organization` association method
+  # to grab the organization from the correct shard
+  def organization
+    Octopus.using(self.organization_shard) { Organization.find(self.organization_id) }
   end
 
   def label

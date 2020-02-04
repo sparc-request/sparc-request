@@ -18,36 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogsController < ApplicationController
-  respond_to :js
+$('#serviceCatalog').replaceWith("<%= j render 'catalogs/service_accordion', service_request: @service_request, locked_org_ids: @locked_org_ids %>")
+$('#catalogCenter').replaceWith("<%= j render 'catalogs/catalog_center', organization: nil, service_request: @service_request, locked_org_ids: @locked_org_ids %>")
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_locked_org_ids, only: [:update_catalog, :update_description]
+# Add include_external to the URL
+url = new URL(window.location.href)
+url.searchParams.set('include_external', "<%= params[:include_external] %>")
+window.history.pushState({}, null, url.href)
+$('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id, include_external: params[:include_external]) %>")
+$('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id, include_external: params[:include_external]) %>")
 
-  around_action :determine_catalog_shard
+initializeServiceCatalogSearch()
 
-  def update_catalog
-  end
-
-  def update_description
-    @organization = Organization.find(params[:organization_id])
-  end
-
-  def locked_organization
-    @organization = Organization.find(params[:organization_id]).process_ssrs_parent
-    @identity = @organization.service_providers.where(is_primary_contact: true).first.try(&:identity)
-    @ssr      = @service_request.sub_service_requests.find_by(organization: @organization).first
-  end
-
-  private
-
-  def determine_catalog_shard(&block)
-    if params[:shard]
-      @shard = params[:shard]
-      Octopus.using(params[:shard], &block)
-    else
-      yield
-    end
-  end
-end
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

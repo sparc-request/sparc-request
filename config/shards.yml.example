@@ -34,8 +34,6 @@ octopus:
         timeout:    5000
         variables:
           sql_mode: TRADITIONAL
-        migrations_paths:
-          - db/shards/migrate
   test:
     shards:
       musc:
@@ -48,5 +46,3 @@ octopus:
         timeout:    5000
         variables:
           sql_mode: TRADITIONAL
-        migrations_paths:
-          - db/shards/migrate

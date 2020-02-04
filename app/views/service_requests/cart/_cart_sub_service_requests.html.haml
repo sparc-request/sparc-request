@@ -23,7 +23,7 @@
     .list-group-item.sub-service-request{ class: [ssr.is_complete? ? 'list-group-item-success' : ssr.is_locked? ? 'list-group-item-danger' : 'list-group-item-primary', @current_page == 'catalog' ? '' : 'collapsed'], data: { toggle: 'collapse', target: ".ssr-#{ssr.id}-collapse" } }<
       %h6.d-flex.align-items-start.mb-0<
         = icon('fas', 'caret-down mr-2')
-        = ssr_name_display(ssr)
+        = ssr_name_display(ssr, context: false)
     .collapse{ class: ["ssr-#{ssr.id}-collapse", @current_page == 'catalog' ? 'show' : ''] }
       - ssr.line_items.each do |li|
         .list-group-item.line-item

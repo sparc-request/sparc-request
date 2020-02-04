@@ -339,8 +339,10 @@ $ ->
 
   $(document).on 'change', '[name="service[is_available]"]', ->
     if $(this).prop('checked')
+      $('#service_share_externally').bootstrapToggle('enable').parents('.form-group').removeClass('hidden')
       $('.shareable-link').removeClass('hidden')
     else
+      $('#service_share_externally').bootstrapToggle('disable').parents('.form-group').addClass('hidden')
       $('.shareable-link').addClass('hidden')
 
   ##############################################

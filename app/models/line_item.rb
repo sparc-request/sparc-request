@@ -26,7 +26,7 @@ class LineItem < ApplicationRecord
 
   belongs_to :service_request
   belongs_to :service, counter_cache: true
-  belongs_to :sub_service_request
+  belongs_to :sub_service_request, optional: true
 
   has_many :fulfillments, dependent: :destroy
   has_many :line_items_visits, dependent: :destroy
@@ -70,6 +70,14 @@ class LineItem < ApplicationRecord
   scope :unassigned, -> {
     where(sub_service_request_id: nil)
   }
+
+  # Overwrite the default `belongs_to :service` association method
+  # to grab the service from the correct shard
+  def service
+    if self.sub_service_request
+      Octopus.using(self.sub_service_request.organization_shard) { Service.find(self.service_id) }
+    end
+  end
 
   def friendly_notable_type
     Service.model_name.human

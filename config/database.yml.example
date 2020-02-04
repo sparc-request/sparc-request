@@ -8,8 +8,6 @@ development:
     timeout: 5000
     variables:
       sql_mode: TRADITIONAL
-    migrations_paths:
-      - db/core/migrate
 
 profile:
   primary:
@@ -22,8 +20,6 @@ profile:
     timeout: 5000
     variables:
       sql_mode: TRADITIONAL
-    migrations_paths:
-      - db/core/migrate
 
 # configured for travis-ci
 test:
@@ -36,5 +32,3 @@ test:
     timeout: 5000
     variables:
       sql_mode: TRADITIONAL
-    migrations_paths:
-      - db/core/migrate

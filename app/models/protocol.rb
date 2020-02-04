@@ -58,7 +58,6 @@ class Protocol < ApplicationRecord
   has_many :line_items_visits,            through: :arms
   has_many :visit_groups,                 through: :arms
   has_many :visits,                       through: :arms
-  has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
 

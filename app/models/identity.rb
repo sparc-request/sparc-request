@@ -75,7 +75,7 @@ class Identity < ApplicationRecord
   validates :ldap_uid, presence: true
 
   # Validate uniqueness and ensure the ldap_uid matches <somthing>@<shard_name>.edu
-  validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{Octopus.config[Rails.env]['shards'].keys.join('|')})\.edu)\Z/, if: Proc.new{ |record| record.ldap_uid.present? }
+  validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{SHARDS.keys.join('|')})\.edu)\Z/, if: Proc.new{ |record| record.ldap_uid.present? }
 
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 

@@ -35,7 +35,7 @@ class Dashboard::ClinicalLineItemsController < Dashboard::BaseController
 
     if line_item.valid?
       @service  = Service.find(line_item_params[:service_id])
-      lis       = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false )
+      lis       = @service_request.create_line_items_for_service(service: @service, shard: current_user.shard_identifier, optional: true, recursive_call: false )
       @tab      = params[:tab]
 
       lis.each{ |li| li.update_attribute(:sub_service_request, @sub_service_request) }

@@ -32,7 +32,7 @@ class Service < ApplicationRecord
   }
 
   belongs_to :organization, -> { includes(:pricing_setups) }
-  belongs_to :revenue_code_range
+  belongs_to :revenue_code_range, optional: true
 
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy

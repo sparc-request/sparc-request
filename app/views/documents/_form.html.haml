@@ -44,8 +44,14 @@
           %small.form-text.text-muted
             = raw t('documents.supported_types', file_types: document_file_types_as_string)
         .form-group
-          = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
-          = select_tag :org_ids, document_org_access_collection(document), class: 'selectpicker', multiple: true, data: { actions_box: 'true', live_search: 'true' }
+          = f.label :organizations, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
+          %select.selectpicker#organizations{ name: 'organizations[]', multiple: 'true', data: { actions_box: 'true', live_search: 'true' } }
+            - selected = (action_name == 'new' ? document.protocol.sub_service_requests : document.sub_service_requests).map{ |ssr| "#{ssr.organization_shard}-#{ssr.organization_id}" }
+            - document.protocol.sub_service_requests.group_by(&:organization).each do |org, ssrs|
+              - breadcrumb = breadcrumb_text(org, context: false).html_safe
+              - value = "#{ssrs.first.organization_shard}-#{ssrs.first.organization_id}"
+              %option{ value: value, selected: selected.include?(value), data: { content: breadcrumb } }
+                = breadcrumb
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

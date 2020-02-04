@@ -29,8 +29,8 @@
           - else
             = service.display_service_name
       .col-2.text-right
-        - if identity_signed_in? && @shard == current_user.shard_identifier
-          %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id } }
+        - if identity_signed_in?
+          %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id, shard: @shard } }
             = icon('fas', 'plus')
     = cpt_code_text(service)
     = eap_id_text(service)

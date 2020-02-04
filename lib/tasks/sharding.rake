@@ -65,12 +65,8 @@ shards_namespace = namespace :shards do
   desc "Migrate the database (options: RAILS_ENV=x, VERSION=x, VERBOSE=false, SCOPE=blog)."
   task migrate: :load_config do
     original_config = ActiveRecord::Base.connection_config
-    Octopus.config[Rails.env]['shards'].each do |shard, _dump|
-      next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
-      puts "== Migrating shard #{shard}"
-      Octopus.using(shard) do
-        ActiveRecord::Tasks::DatabaseTasks.migrate
-      end
+    Octopus.using_group(:shards) do
+      ActiveRecord::Tasks::DatabaseTasks.migrate
     end
 
     shards_namespace["_dump"].invoke
@@ -185,12 +181,8 @@ shards_namespace = namespace :shards do
   desc "Rolls the schema back to the previous version (options: RAILS_ENV=x, STEP=x, SHARD=x)."
   task rollback: :load_config do
     step = ENV["STEP"] ? ENV["STEP"].to_i : 1
-    Octopus.config[Rails.env]['shards'].each do |shard, _|
-      next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
-      puts "== Rolling back shard #{shard}"
-      Octopus.using(shard) do
-        ActiveRecord::Base.connection.migration_context.rollback(step)
-      end
+    Octopus.using_group(:shards) do
+      ActiveRecord::Base.connection.migration_context.rollback(step)
     end
 
     shards_namespace["_dump"].invoke

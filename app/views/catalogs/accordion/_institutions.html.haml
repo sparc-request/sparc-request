@@ -23,7 +23,7 @@
 .accordion#institutionAccordion
   - if identity_signed_in?
     .card-body.pb-0
-      = check_box_tag :include_external, true, include_external, data: { toggle: 'toggle', on: "Show Services from Outside Institutions", off: "Only Show Internal Services", style: 'btn-block' }
+      = check_box_tag :include_external, true, include_external, data: { toggle: 'toggle', on: t('proper.catalog.accordion.toggle.include_external'), off: t('proper.catalog.accordion.toggle.internal_only'), style: 'btn-block' }
 
     -# Get all shards BUT put the user's hub first and sort the rest by hub name
     - shards_ordered = SHARDS.slice(current_user.shard_identifier).to_a

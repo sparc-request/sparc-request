@@ -49,6 +49,9 @@ en:
       accordion:
         header: "Browse Service Catalog"
         search_placeholder: "Search by Name, CPT Code, or EAP ID"
+        toggle:
+          include_external: "Show Services from Outside Institutions"
+          internal_only: "Only Show Internal Services"
       center:
         header: "Welcome to SPARCRequest"
         subheader: "Storefront of Research Services"

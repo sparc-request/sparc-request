@@ -49,19 +49,30 @@ class SearchController < ApplicationController
   end
 
   def services
-    term              = params[:term].strip
-    locked_child_ids  = Organization.authorized_child_organization_ids(@locked_org_ids)
+    term    = params[:term].strip
+    results = []
 
-    results = Service.
-                eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
-                where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
-                where.not(organization_id: @locked_org_ids + locked_child_ids).
-                reject { |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
-                sort_by{ |s| s.organization_hierarchy(true, false, false, true).map{ |o| [o.order, o.abbreviation] }.flatten }
+    locked_child_ids = Organization.authorized_child_organization_ids(@locked_org_ids)
 
-    results.map! { |s|
+    SHARDS.map do |shard, _|
+      next if params[:include_external] != 'true' && shard != current_user.shard_identifier # Skip external institutions unless the user toggles themYep
+
+      results +=
+        Octopus.using(shard) do
+          Service.
+            eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
+            where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
+            where.not(organization_id: @locked_org_ids + locked_child_ids).
+            reject{ |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
+            map{ |s| [shard, s] }
+        end
+    end
+
+    results.sort_by!{ |_, s| [s.name, s.abbreviation, s.cpt_code, s.eap_id] }
+    results.map! { |shard, s|
       {
         service_id:     s.id,
+        shard:          shard,
         name:           s.display_service_name,
         description:    s.description,
         breadcrumb:     helpers.breadcrumb_text(s),

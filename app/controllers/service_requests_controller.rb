@@ -141,7 +141,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
-    add_service = AddService.new(@service_request, params[:service_id], current_user, params[:srid].blank?, params[:confirmed] == 'true')
+    add_service = AddService.new(@service_request, params[:service_id], params[:shard], current_user, params[:srid].blank?, params[:confirmed] == 'true')
 
     if add_service.confirm_new_request?
       @confirm_new_request = true
@@ -158,7 +158,7 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     @page           = helpers.request_referrer_action
-    @remove_service  = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
+    @remove_service = RemoveService.new(@service_request, params[:line_item_id], current_user, @page, params[:confirmed] == 'true')
 
     if @remove_service.confirm_previously_submitted?
       @confirm_previously_submitted = true

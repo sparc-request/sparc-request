@@ -29,7 +29,7 @@ module DocumentsControllerShared
   def index
     respond_to :json
 
-    @documents = @protocol.documents.eager_load(:organizations)
+    @documents = @protocol.documents
   end
 
   def new
@@ -93,7 +93,9 @@ module DocumentsControllerShared
   end
 
   def assign_organization_access
-    @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
+    params[:organizations].map{ |identifier| identifier.split('-') }.each do |shard, id|
+      @document.sub_service_requests += @protocol.sub_service_requests.where(organization_shard: shard, organization_id: id)
+    end
   end
 
   def document_params

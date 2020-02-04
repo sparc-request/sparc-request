@@ -18,36 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogsController < ApplicationController
-  respond_to :js
 
-  before_action :initialize_service_request
-  before_action :authorize_identity
-  before_action :find_locked_org_ids, only: [:update_catalog, :update_description]
-
-  around_action :determine_catalog_shard
-
-  def update_catalog
-  end
-
-  def update_description
-    @organization = Organization.find(params[:organization_id])
-  end
-
-  def locked_organization
-    @organization = Organization.find(params[:organization_id]).process_ssrs_parent
-    @identity = @organization.service_providers.where(is_primary_contact: true).first.try(&:identity)
-    @ssr      = @service_request.sub_service_requests.find_by(organization: @organization).first
-  end
-
-  private
-
-  def determine_catalog_shard(&block)
-    if params[:shard]
-      @shard = params[:shard]
-      Octopus.using(params[:shard], &block)
-    else
-      yield
-    end
-  end
+ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
+  html_tag.html_safe
 end

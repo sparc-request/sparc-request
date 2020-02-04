@@ -36,28 +36,18 @@ $(document).ready ->
           url: '/service_request/save_and_exit'
           data: $('.milestone-field input').serialize() + "&srid=#{getSRId()}"
 
-  ###################
-  ### Add Service ###
-  ###################
-
-  $(document).on 'click', '.add-service', ->
-    $(this).prop('disabled', true)
-    $this = $(this)
-    service_id = $(this).data('service-id')
-
-    $.ajax
-      method: 'POST'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid: getSRId()
-        service_id: service_id
-      complete: ->
-        $this.prop('disabled', false)
-
   ###############
   ### Catalog ###
   ###############
+
+  $(document).on 'change', '#institutionAccordion #include_external', ->
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: '/catalogs/update_catalog'
+      data:
+        srid:             getSRId()
+        include_external: $(this).prop('checked')
 
   $(document).on 'click', '#institutionAccordion .org-link', ->
     $.ajax
@@ -86,11 +76,29 @@ $(document).ready ->
       $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
   )
 
+  $(document).on 'click', '.add-service', ->
+    $(this).prop('disabled', true)
+    $this = $(this)
+
+    $.ajax
+      method: 'POST'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        srid: getSRId()
+        service_id: $(this).data('service-id')
+        shard:      $(this).data('shard')
+      complete: ->
+        $this.prop('disabled', false)
+
+  initializeServiceCatalogSearch()
+
+(exports ? this).initializeServiceCatalogSearch = () ->
   servicesBloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.whitespace
     queryTokenizer: Bloodhound.tokenizers.whitespace
     remote:
-      url: "/search/services?term=%TERM&srid=#{getSRId()}",
+      url: "/search/services?term=%TERM&srid=#{getSRId()}&include_external=#{$('#include_external').prop('checked')}",
       wildcard: '%TERM'
   )
 
@@ -102,6 +110,7 @@ $(document).ready ->
       hint: false,
     }, {
       displayKey: 'term',
+      hightlight: true,
       source: servicesBloodhound.ttAdapter(),
       limit: 100,
       templates: {
@@ -134,4 +143,5 @@ $(document).ready ->
         data:
           srid:       getSRId()
           service_id: suggestion.service_id
+          shard:      suggestion.shard
   )

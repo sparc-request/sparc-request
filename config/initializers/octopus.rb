@@ -21,7 +21,7 @@
 # See https://github.com/thiagopradi/octopus/issues/426
 
 module Octopus
-   class << self
+  class << self
     def disable!
       @@enabled = false
     end
@@ -38,3 +38,5 @@ module Octopus
   end
 end
 Octopus.enable!
+
+SHARDS = Octopus.config[Rails.env]['shards']

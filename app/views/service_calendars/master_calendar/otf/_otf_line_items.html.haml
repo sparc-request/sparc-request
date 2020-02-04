@@ -35,7 +35,7 @@
   -# SSR Header Row
   %tr{ class: "alert-#{bg_context}" }
     %th{ colspan: 11 }
-      = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked, complete)
+      = ssr_name_display(ssr, locked: locked, complete: complete, context: false)
 
   -# Line Items
   - line_items.each do |line_item|

@@ -18,42 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module ServiceRequestsHelper
-  def cart_sub_service_requests(service_request)
-    if identity_signed_in?
-      active    = service_request.sub_service_requests.select{ |ssr| !ssr.is_complete? }
-      complete  = service_request.sub_service_requests.select{ |ssr| ssr.is_complete? }
-    else
-      active = {}
-      complete = {}
+module SubServiceRequestsHelper
+  # Available Options:
+  # locked    - An optional condition to specify when to show a lock icon.
+  #             Defaults to sub_service_request.is_locked?.
+  # complete  - An optional condition to specify when to show a check icon.
+  #             Defaults to sub_service_request.is_complete?.
+  # context   - An optional condition to specify when to add contextual classes to the breadcrumbs.
+  #             Defaults to nil (contextual classes are added, see ServicesHelper#breadcrumb_text)
+  def ssr_name_display(sub_service_request, opts={})
+    locked    = opts[:locked].nil?    ? sub_service_request.is_locked?    : opts[:locked]
+    complete  = opts[:complete].nil?  ? sub_service_request.is_complete?  : opts[:complete]
+
+    header  = content_tag(:strong, "(#{sub_service_request.ssr_id})", class: 'mr-1') +
+                breadcrumb_text(sub_service_request.organization, context: opts[:context]).html_safe
+
+    if complete
+      header += icon('fas', 'check fa-lg mr-2')
+    elsif locked
+      header += icon('fas', 'lock fa-lg mr-2')
     end
 
-    { active: active, complete: complete }
-  end
-
-  def organization_name_display(organization, locked, has_children)
-    raw(if locked
-      icon('fas', 'lock mr-3')
-    elsif has_children
-      icon('fas', 'caret-down mr-3')
-    else
-      ""
-    end + content_tag(:span, organization.name, class: 'flex-fill text-left'))
-  end
-
-  def service_name_display(line_item)
-    ssr = line_item.sub_service_request
-    service = line_item.service
-    display_name = service.display_service_name + (ssr.ssr_id ? " (#{ssr.ssr_id})" : "")
-
-    if ssr.can_be_edited?
-      link_to(display_name, "javascript:void(0)", class: "service service-#{service.id} btn btn-default", data: { id: service.id })
-    else
-      link_to "<i class='glyphicon glyphicon-lock text-danger'></i> #{display_name}".html_safe, "javascript:void(0)", class: "text-danger list-group-item-danger service service-#{service.id} btn btn-default list-group-item", data: { id: service.id }
-    end
-  end
-
-  def save_as_draft_button(service_request)
-    content_tag :button, t('proper.navigation.bottom.save_as_draft'), type: 'button', id: 'saveAsDraft', class: 'btn btn-lg btn-outline-warning'
+    content_tag :div, header, class: 'd-flex'
   end
 end

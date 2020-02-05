@@ -103,11 +103,24 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
+  gem 'email_spec' # Check usage
   gem 'factory_bot_rails'
   gem 'parallel_tests' # Check usage
+  gem 'pdf-inspector', require: false
   gem 'pry'
+  gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
   gem 'rails-erd' # Check usage
+  gem 'rspec-activemodel-mocks' # Check usage
+  gem 'rspec-collection_matchers'
+  gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
   gem 'rspec-rails', '~> 3.9'
+  gem 'shoulda-callback-matchers'
+  gem 'shoulda-matchers', require: false
+  gem 'simplecov', require: false # Check usage
+  gem 'site_prism'
+  gem 'webdrivers', '~> 4.2'
+  gem 'webmock'
 end
 
 group :development do
@@ -116,24 +129,6 @@ group :development do
   gem 'spring'
   gem 'sqlite3' # Check usage
   gem 'traceroute' # Check usage
-end
-
-group :test do
-  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
-  gem 'email_spec' # Check usage
-  # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
-  gem 'webdrivers', '~> 4.2'
-  gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
-  gem 'rspec-activemodel-mocks' # Check usage
-  gem 'rspec-collection_matchers'
-  gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  # gem 'selenium-webdriver'
-  gem 'shoulda-callback-matchers'
-  gem 'shoulda-matchers', require: false
-  gem 'simplecov', require: false # Check usage
-  gem 'site_prism'
-  gem 'webmock'
-  gem 'pdf-inspector', require: false
 end
 
 group :assets do

@@ -196,8 +196,10 @@ en:
         study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
+        protocol_merge: "Historical Protocol Merges"
       protocol_filter:
         search_name: "Name"
+
       question:
         content: "Question"
       question_response:

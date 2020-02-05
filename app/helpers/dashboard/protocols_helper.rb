@@ -64,4 +64,14 @@ module Dashboard::ProtocolsHelper
       end
     end
   end
+
+  def display_merges(protocol)
+    merges = ProtocolMerge.where(master_protocol_id: protocol.id)
+    protocol_ids = []
+    merges.each do |merge|
+      protocol_ids << merge.merged_protocol_id
+    end
+
+    protocol_ids
+  end
 end

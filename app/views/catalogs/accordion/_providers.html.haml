@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - providers.select{ |prov| prov.is_available != false }.each do |p|
-  - locked  = locked_org_ids.include?(p.id)
+  - locked  = locked_ids.include?(p.id)
   - url     = locked ? locked_organization_catalogs_path(organization_id: p.id, shard: shard_param, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: p.id, shard: shard_param, srid: service_request.try(:id))
 
   .card.provider{ id: "provider#{shard_name}#{p.id}" }
@@ -29,4 +29,4 @@
           = organization_name_display(p, locked, p.programs.any?)
     .collapse{ id: "provider#{shard_name}#{p.id}Collapse", data: { parent: "#institution#{shard_name}#{i.id}Collapse" }, aria: { labelledby: "provider#{shard_name}#{p.id}Header" } }
       .card-body.p-0
-        = render 'catalogs/accordion/programs', service_request: service_request, programs: p.programs, locked_org_ids: locked_org_ids, shard_param: shard_param
+        = render 'catalogs/accordion/programs', service_request: service_request, programs: p.programs, locked_ids: locked_ids, shard_param: shard_param

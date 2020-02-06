@@ -32,4 +32,4 @@
         = render 'catalogs/accordion/services', organization: organization, service_request: service_request
 
       - if organization.cores.any?
-        = render 'catalogs/accordion/cores', p: organization, service_request: service_request, locked_ids: locked_org_ids
+        = render 'catalogs/accordion/cores', p: organization, service_request: service_request, locked_ids: locked_org_ids[@shard] || []

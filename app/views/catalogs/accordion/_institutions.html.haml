@@ -40,13 +40,14 @@
         -# Only keep track of shard when not logged in
         - shard_name  = shard.capitalize
         - shard_param = shard
+        - locked_ids  = locked_org_ids[shard] || []
 
         - institutions = Institution.all.includes(providers: :programs).select{ |inst| inst.is_available != false }
         - if institutions.any?
           %h5
             = data['name']
           - institutions.each_with_index do |i, index|
-            - locked  = locked_org_ids.include?(i.id)
+            - locked  = locked_ids.include?(i.id)
             - url     = locked ? locked_organization_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id))
             - expand_institution = identity_signed_in? && !include_external && index == 0 && shard == current_user.shard_identifier
 
@@ -59,4 +60,4 @@
               -# Expand the first institution if the user is signed in
               .collapse{ class: expand_institution ? 'show' : '', id: "institution#{shard_name}#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{shard_name}#{i.id}Header" } }
                 .card-body
-                  = render 'catalogs/accordion/providers', service_request: service_request, providers: i.providers, locked_org_ids: locked_org_ids, i: i, shard_name: shard_name, shard_param: shard_param
+                  = render 'catalogs/accordion/providers', service_request: service_request, providers: i.providers, locked_ids: locked_ids, i: i, shard_name: shard_name, shard_param: shard_param

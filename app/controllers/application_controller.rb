@@ -206,9 +206,10 @@ class ApplicationController < ActionController::Base
         @service_request.sub_service_requests.
           eager_load(organization: { org_children: :org_children }).
           select(&:is_locked?).reject(&:is_complete?).
-          map{ |ssr| [ssr.organization_shard, [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)].flatten] }.flatten.uniq
+          group_by(&:organization_shard).
+          map{ |shard, ssrs| [shard, ssrs.map(&:organization_id)] }.to_h
       else
-        []
+        {}
       end
   end
 end

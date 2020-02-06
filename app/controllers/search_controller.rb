@@ -20,8 +20,8 @@
 
 class SearchController < ApplicationController
 
-  before_action :initialize_service_request,  only: [:services]
-  before_action :authorize_identity,          only: [:services]
+  before_action :initialize_service_request,  only: [:services], if: :identity_signed_in?
+  before_action :authorize_identity,          only: [:services], if: :identity_signed_in?
   before_action :find_locked_org_ids,         only: [:services]
 
   def services_search
@@ -52,17 +52,20 @@ class SearchController < ApplicationController
     term    = params[:term].strip
     results = []
 
-    locked_child_ids = Organization.authorized_child_organization_ids(@locked_org_ids)
-
     SHARDS.map do |shard, _|
-      next if params[:include_external] != 'true' && shard != current_user.shard_identifier # Skip external institutions unless the user toggles themYep
+      next if params[:include_external] != 'true' && identity_signed_in? && shard != current_user.shard_identifier # Skip external institutions unless the user toggles themYep
+
+      share_external_str = !identity_signed_in? || shard == current_user.shard_identifier ? '' : 'AND services.share_externally = 1'
 
       results +=
         Octopus.using(shard) do
+          locked_org_ids    = @locked_org_ids[shard] || []
+          locked_child_ids  = Organization.authorized_child_organization_ids(locked_org_ids)
+
           Service.
             eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).
-            where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
-            where.not(organization_id: @locked_org_ids + locked_child_ids).
+            where("(services.name LIKE ? OR services.abbreviation LIKE ? OR services.cpt_code LIKE ? OR services.eap_id LIKE ?) AND services.is_available = 1 #{share_external_str}", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%").
+            where.not(organization_id: locked_org_ids + locked_child_ids).
             reject{ |s| (s.current_pricing_map rescue false) == false }. # Why is this here? ##Agreed, why????
             map{ |s| [shard, s] }
         end

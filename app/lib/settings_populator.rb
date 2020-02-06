@@ -31,6 +31,7 @@ class SettingsPopulator
 
     ActiveRecord::Base.transaction do
       @defaults.each do |db, defaults|
+        puts("[#{db}] Importing Settings")
         Octopus.using(db) do
           defaults.each do |hash|
             if Setting.exists?(key: hash['key'])
@@ -69,7 +70,7 @@ class SettingsPopulator
 
     shards_defaults = JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'shards.json')))
 
-    Octopus.config[Rails.env]['shards'].each do |shard, _|
+    SHARDS.keys.each do |shard|
       @defaults[shard.to_sym] = shards_defaults
     end
   end

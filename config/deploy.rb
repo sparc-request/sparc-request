@@ -35,17 +35,33 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/assets', 'public/images')
 
-namespace :survey do
-  desc "load/update a survey"
-  task :parse do
-    if ENV['FILE']
-      transaction do
-        run "cd #{current_path} && rake surveyor FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
+namespace :deploy do
+  desc 'Runs rake db:migrate if migrations are set'
+  task :migrate_shards => [:set_rails_env] do
+    on fetch(:migration_servers) do
+      conditionally_migrate = fetch(:conditionally_migrate)
+      info '[deploy:migrate_shards] Checking changes in db' if conditionally_migrate
+      if conditionally_migrate && test(:diff, "-qr #{release_path}/db #{current_path}/db")
+        info '[deploy:migrate_shards] Skip `deploy:migrate_shards` (nothing changed in db)'
+      else
+        info '[deploy:migrate_shards] Run `rake shards:migrate`'
+        # NOTE: We access instance variable since the accessor was only added recently. Once capistrano-rails depends on rake 11+, we can revert the following line
+        invoke :'deploy:migrating_shards' unless Rake::Task[:'deploy:migrating_shards'].instance_variable_get(:@already_invoked)
       end
-    else
-      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)"
+    end
+  end
+
+  desc 'Runs rake shards:migrate'
+  task migrating_shards: [:set_rails_env] do
+    on fetch(:migration_servers) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'shards:migrate'
+        end
+      end
     end
   end
 end
 
+after 'deploy:updated', 'deploy:migrate_shards'
 after "deploy:restart", "delayed_job:restart"

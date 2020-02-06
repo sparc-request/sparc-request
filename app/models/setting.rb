@@ -39,6 +39,11 @@ class Setting < ApplicationRecord
 
   def self.get_value(key)
     key = key.to_s
+
+    unless RequestStore.store[:settings_map]
+      self.preload_values
+    end
+
     if RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard].try(:[], key)
       converted_value(RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key][:value], RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key][:data_type])
     else

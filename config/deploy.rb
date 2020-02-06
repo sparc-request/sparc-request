@@ -61,7 +61,19 @@ namespace :deploy do
       end
     end
   end
+
+  desc 'Runs rake data:import_settings'
+  task import_settings: [:set_rails_env] do
+    on fetch(:migration_servers) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'data:import_settings'
+        end
+      end
+    end
+  end
 end
 
 after 'deploy:updated', 'deploy:migrate_shards'
 after "deploy:restart", "delayed_job:restart"
+after 'deploy', 'deploy:import_settings'

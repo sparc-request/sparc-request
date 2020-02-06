@@ -50,6 +50,7 @@ class LineItem < ApplicationRecord
   delegate :one_time_fee, to: :service
   delegate :name, to: :service
   delegate :status, to: :sub_service_request
+  delegate :external_request?, to: :sub_service_request
 
   validates :service_id, :service_request_id, presence: true
   validates :service_id, uniqueness: { scope: :sub_service_request_id }
@@ -74,8 +75,10 @@ class LineItem < ApplicationRecord
   # Overwrite the default `belongs_to :service` association method
   # to grab the service from the correct shard
   def service
-    if self.sub_service_request
-      Octopus.using(self.sub_service_request.organization_shard) { Service.find(self.service_id) }
+    if self.sub_service_request.organization_shard != ActiveRecord::Base.connection.current_shard
+      Octopus.using(self.sub_service_request.organization_shard) { super }
+    else
+      super
     end
   end
 
@@ -134,6 +137,12 @@ class LineItem < ApplicationRecord
     end
   end
 
+  def external_charge_rate
+    if self.sub_service_request.external_request?
+      1 + Octopus.using(self.sub_service_request.organization_shard) { Setting.get_value('external_service_charge_rate') }
+    end
+  end
+
   def applicable_rate
     rate = nil
 
@@ -149,6 +158,7 @@ class LineItem < ApplicationRecord
       rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     end
 
+    rate *= self.external_charge_rate if self.sub_service_request.external_request?
     rate
   end
 

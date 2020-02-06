@@ -492,6 +492,7 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
       modified_rate: "Modified Rate<br>%{cost}"
+      external_charge: "This service has an additional external charge rate of %{charge_percent}%"
 
   calendar_structure:
     header: "Calendar Structure"

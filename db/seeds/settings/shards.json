@@ -220,6 +220,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "external_service_charge_rate",
+    "value":          "0.0",
+    "friendly_name":  "External Service Charge Rate",
+    "description":    "This is an added charge rate for services requested by external institutions.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "faq_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
     "friendly_name":  "FAQs URL",

@@ -94,6 +94,10 @@ class SubServiceRequest < ApplicationRecord
     Octopus.using(self.organization_shard) { Organization.find(self.organization_id) }
   end
 
+  def external_request?
+    ActiveRecord::Base.connection.current_shard != self.organization_shard
+  end
+
   def label
     "(#{self.ssr_id}) #{self.organization.label}"
   end

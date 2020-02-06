@@ -20,7 +20,8 @@
 
 - your_cost = currency_converter(line_item.applicable_rate)
 - modified  = line_item.admin_rates.present?
-- external  = line_item.external_request? && !line_item.external_charge_rate.zero?
+- external  = line_item.external_request? && !line_item.applicable_rate.zero? && !line_item.external_charge_rate.zero?
+
 - if modified
   - title = t('calendars.tooltips.modified_rate', cost: your_cost)
 - elsif external

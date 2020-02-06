@@ -43,7 +43,7 @@ class ServiceRequest < ApplicationRecord
   has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
-  after_save :set_ssr_protocol_id
+  after_save :set_ssr_protocol_id, if: :saved_change_to_protocol_id?
 
   attr_accessor :previous_submitted_at
 
@@ -107,6 +107,8 @@ class ServiceRequest < ApplicationRecord
     # add service to line items
     line_items << create_line_item(service: service, sub_service_request: ssr, optional: optional, quantity: service.displayed_pricing_map.quantity_minimum)
 
+    self.reload
+
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
@@ -117,9 +119,9 @@ class ServiceRequest < ApplicationRecord
     # add optional services to line items
     # if were in a recursive call, we don't want to add optional services
     unless recursive_call
-      service.optional_services.each do |rs|
-        next unless rs.parents_available?
-        os_line_items = create_line_items_for_service(service: rs, shard: shard, optional: true, recursive_call: true)
+      service.optional_services.each do |os|
+        next unless os.parents_available?
+        os_line_items = create_line_items_for_service(service: os, shard: shard, optional: true, recursive_call: true)
         line_items   += os_line_items if os_line_items
       end
     end
@@ -140,7 +142,7 @@ class ServiceRequest < ApplicationRecord
 
   def find_or_create_ssr(organization, shard, requester)
     if (ssr = self.sub_service_requests.find_by(organization_id: organization.id, organization_shard: shard)) && !ssr.is_complete?
-      if ssr.can_be_edited? && ssr_has_changed?(ssr, requester)
+      if !ssr.first_draft? && ssr.can_be_edited? && ssr_has_changed?(ssr, requester)
         ssr.update_attribute(:status, 'draft') 
       end
     else
@@ -148,6 +150,7 @@ class ServiceRequest < ApplicationRecord
         organization_id:    organization.id,
         organization_shard: shard,
         service_requester:  requester,
+        protocol_id:        self.protocol_id,
         status:             self.status == 'first_draft' ? 'first_draft' : 'draft',
         ssr_id:             self.next_ssr_id
       )
@@ -391,23 +394,6 @@ class ServiceRequest < ApplicationRecord
       end
   end
 
-  # Make sure that all the sub service requests have an ssr id
-  def ensure_ssr_ids
-    next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
-
-    self.sub_service_requests.each do |ssr|
-      unless ssr.ssr_id && self.protocol
-        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
-      end
-    end
-
-    if protocol
-      protocol.next_ssr_id = next_ssr_id
-      protocol.save(validate: false)
-    end
-  end
-
   def submitted?
     self.status == 'submitted'
   end
@@ -454,10 +440,6 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    if saved_change_to_protocol_id?
-      sub_service_requests.each do |ssr|
-        ssr.update_attributes(protocol_id: protocol_id)
-      end
-    end
+    self.sub_service_requests.update_all(protocol_id: self.protocol_id)
   end
 end

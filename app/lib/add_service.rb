@@ -31,7 +31,6 @@ class AddService
   def generate_new_service_request
     @service_request.save
     @service_request.create_line_items_for_service(service: @service, shard: @shard, requester: @requester) || []
-    # create_sub_service_requests(new_line_items)
   end
 
   def confirm_new_request?

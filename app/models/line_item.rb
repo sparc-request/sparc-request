@@ -26,7 +26,7 @@ class LineItem < ApplicationRecord
 
   belongs_to :service_request
   belongs_to :service, counter_cache: true
-  belongs_to :sub_service_request, optional: true
+  belongs_to :sub_service_request
 
   has_many :fulfillments, dependent: :destroy
   has_many :line_items_visits, dependent: :destroy
@@ -75,7 +75,7 @@ class LineItem < ApplicationRecord
   # Overwrite the default `belongs_to :service` association method
   # to grab the service from the correct shard
   def service
-    if self.sub_service_request.organization_shard != ActiveRecord::Base.connection.current_shard
+    if self.sub_service_request && self.sub_service_request.organization_shard != ActiveRecord::Base.connection.current_shard
       Octopus.using(self.sub_service_request.organization_shard) { super }
     else
       super

@@ -20,7 +20,7 @@
 
 - hide_calendar = !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
 
-.col-12.my-3#serviceCalendarHeader
+.col-12.mb-3#serviceCalendarHeader
   - if in_dashboard?
     = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab)
     - unless hide_calendar

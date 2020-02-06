@@ -65,7 +65,7 @@ class SubServiceRequest < ApplicationRecord
 
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
 
-  before_create :set_protocol_id
+  after_create :set_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
 
   after_save :update_org_tree
   after_save :update_past_status
@@ -321,6 +321,10 @@ class SubServiceRequest < ApplicationRecord
     self.organization.tag_list.include? "ctrc"
   end
 
+  def first_draft?
+    self.status == 'first_draft'
+  end
+
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
@@ -552,6 +556,10 @@ class SubServiceRequest < ApplicationRecord
 
   def set_protocol_id
     self.protocol_id = service_request.try(:protocol_id)
+  end
+
+  def set_next_ssr_id
+    self.protocol.increment!(:next_ssr_id)
   end
 
   def notify_remote_around_update?

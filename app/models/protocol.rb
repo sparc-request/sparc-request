@@ -28,7 +28,9 @@ class Protocol < ApplicationRecord
 
   audited
 
-  belongs_to :study_type_question_group
+  # TODO: Can we move study type question associations and code to
+  #       the Study model?
+  belongs_to :study_type_question_group, optional: true
 
   has_one :research_types_info,           dependent: :destroy
   has_one :human_subjects_info,           dependent: :destroy

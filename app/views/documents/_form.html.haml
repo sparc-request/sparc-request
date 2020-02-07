@@ -45,7 +45,7 @@
             = raw t('documents.supported_types', file_types: document_file_types_as_string)
         .form-group
           = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
-          = select_tag :org_ids, document_org_access_collection(document), class: 'selectpicker', multiple: true, data: { actions_box: 'true', live_search: 'true' }
+          = select_tag :org_ids, document_org_access_collection(document), class: 'selectpicker', multiple: true, data: { actions_box: 'true' }
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

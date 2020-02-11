@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_23_180844) do
+ActiveRecord::Schema.define(version: 2020_02_11_154638) do
 
   create_table "identities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "ldap_uid"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 2020_01_23_180844) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
+    t.string "orcid", limit: 19
     t.index ["email"], name: "index_identities_on_email"
     t.index ["last_name"], name: "index_identities_on_last_name"
     t.index ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true

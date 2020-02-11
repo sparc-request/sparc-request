@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true do |f|
+= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, html: { autocomplete: 'off' } do |f|
   .form-row
     .form-group.col-12.col-xl-6
       = f.label :first_name, class: 'required'

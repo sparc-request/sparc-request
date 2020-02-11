@@ -18,12 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 class Notifier < ActionMailer::Base
   helper ApplicationHelper
 
-  def new_identity_waiting_for_approval identity
+  def new_identity_waiting_for_approval(identity)
     @identity = identity
+    @shard    = identity.current_shard
 
     email = Setting.get_value("admin_mail_to")
     cc = Setting.get_value("new_user_cc")

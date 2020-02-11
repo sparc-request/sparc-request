@@ -20,17 +20,20 @@
 
 class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
-  before_action :find_identity
 
   def approve_account
     respond_to :html
 
-    if !@identity.try(:approved)
-      @identity.update_attribute(:approved, true)
-      Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
-      flash[:success] = t('devise.approvals.approved', login: @identity.email)
-    else
-      flash[:alert] = t('devise.approvals.already_approved')
+    Octopus.using(params[:shard]) do
+      @identity = Identity.find(params[:id])
+
+      if !@identity.try(:approved)
+        @identity.update_attribute(:approved, true)
+        Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
+        flash[:success] = t('devise.approvals.approved', login: @identity.email)
+      else
+        flash[:alert] = t('devise.approvals.already_approved')
+      end
     end
 
     redirect_to root_path
@@ -39,20 +42,18 @@ class IdentitiesController < ApplicationController
   def disapprove_account
     respond_to :html
 
-    if @identity.try(:approved) != false
-      @identity.update_attribute(:approved, false)
-      Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
-      flash[:success] = t('devise.approvals.disapproved')
-    else
-      flash[:alert] = t('devise.approvals.already_disapproved', login: @identity.email)
+    Octopus.using(params[:shard]) do
+      @identity = Identity.find(params[:id])
+
+      if @identity.try(:approved) != false
+        @identity.update_attribute(:approved, false)
+        Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
+        flash[:success] = t('devise.approvals.disapproved')
+      else
+        flash[:alert] = t('devise.approvals.already_disapproved', login: @identity.email)
+      end
     end
 
     redirect_to root_path
-  end
-
-  private
-
-  def find_identity
-    @identity = Identity.find(params[:id])
   end
 end

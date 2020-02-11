@@ -60,10 +60,10 @@
         %td
           = @identity.reason
 
-    = link_to t('devise.mailer.new_account.approve'), approve_account_identity_url(@identity)
+    = link_to t('devise.mailer.new_account.approve'), approve_account_identity_url(@identity, shard: @shard)
 
     %br
     \- OR - 
     %br
 
-    = link_to t('devise.mailer.new_account.disapprove'), disapprove_account_identity_url(@identity)
+    = link_to t('devise.mailer.new_account.disapprove'), disapprove_account_identity_url(@identity, shard: @shard)

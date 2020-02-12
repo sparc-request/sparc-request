@@ -75,7 +75,8 @@ class Identity < ApplicationRecord
   validates :ldap_uid, presence: true
 
   # Validate uniqueness and ensure the ldap_uid matches <somthing>@<shard_name>.edu
-  # validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{Octopus.shards.keys.join('|')})\.edu)\Z/, if: Proc.new{ |record| record.ldap_uid.present? }
+  validates :ldap_uid, uniqueness: { case_sensitive: false }, if: Proc.new{ |record| record.ldap_uid.present? }
+  validate :ldap_uid_valid, if: Proc.new{ |record| record.ldap_uid.present? }
 
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
@@ -396,5 +397,13 @@ class Identity < ApplicationRecord
 
   def unread_notification_count(sub_service_request_id=nil)
     Notification.of_ssr(sub_service_request_id).unread_by(id).count
+  end
+
+  private
+
+  def ldap_uid_valid
+    unless self.ldap_uid.match(/\A([^\s\@]+@(#{Octopus.shards.keys.join('|')})\.edu)\Z/)
+      self.errors.add(:ldap_uid, :invalid)
+    end
   end
 end

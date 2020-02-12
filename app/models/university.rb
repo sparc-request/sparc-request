@@ -18,18 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace :data do
-  desc "Import permissible values from csv files and add them to the appropriate table"
-  task import_permissible_values: :environment do
-    Octopus.shards.keys.each do |shard|
-      Octopus.using(shard) do
-        puts "[#{shard}] Importing Permissible Values"
-        Dir.glob(Rails.root + 'db/seeds/permissible_values/2.0.5/*.csv') do |file|
-          CSV.foreach(file, headers: true) do |row|
-            PermissibleValue.create(row.to_hash)
-          end
-        end
-      end
-    end
-  end
+class University < ApplicationRecord
+  has_one :database
+
+  validates :key, uniqueness: true, presence: true
+  validates :name, uniqueness: true, presence: true
 end

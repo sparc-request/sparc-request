@@ -35,8 +35,19 @@ module Octopus
     end
     alias_method :enabled_without_additional_check?, :enabled?
     alias_method :enabled?, :enabled_with_additional_check?
+
+    def shards
+      config[Rails.env]['shards']
+    end
+
+    def load_universities!
+      University.eager_load(:database).all.each{ |u| Databases::ConnectionService.new(u).call if u.database }
+    end
   end
 end
+
 Octopus.enable!
 
-SHARDS = Octopus.config[Rails.env]['shards']
+if ActiveRecord::Base.connection.table_exists?('universities')
+  Octopus.load_universities!
+end

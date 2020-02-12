@@ -49,6 +49,7 @@ gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.9'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
+gem 'lockbox'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
 gem 'mysql2', '0.5.2'
 gem 'nested_form' # Check usage

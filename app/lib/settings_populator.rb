@@ -70,7 +70,7 @@ class SettingsPopulator
 
     shards_defaults = JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'shards.json')))
 
-    SHARDS.keys.each do |shard|
+    Octopus.shards.keys.each do |shard|
       @defaults[shard.to_sym] = shards_defaults
     end
   end

@@ -18,31 +18,55 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-octopus:
-  environments:
-    - development
-    - test
-  development:
-    shards:
-      musc:
-        name:       Medical University of South Carolina
-        username:   root
-        adapter:    mysql2
-        encoding:   utf8
-        database:   sparc-request-musc_development
-        pool:       5
-        timeout:    5000
-        variables:
-          sql_mode: TRADITIONAL
-  test:
-    shards:
-      musc:
-        name:       Medical University of South Carolina
-        username:   root
-        adapter:    mysql2
-        encoding:   utf8
-        database:   sparc-request-musc_test
-        pool:       5
-        timeout:    5000
-        variables:
-          sql_mode: TRADITIONAL
+#frozen_string_literal: true
+
+module Databases
+  class ConnectionService
+    attr_accessor :database, :university_key
+
+    def initialize(university)
+      @university_key = university.key
+      @database       = university.database
+    end
+
+    def call
+      setup_database_connection unless shard_setup?
+    end
+
+    private
+
+    def shard_setup?
+      environment_config = Octopus.config[Rails.env.to_sym]
+      environment_config.present? && environment_config.key?(university_key)
+    end
+
+    def setup_database_connection
+      shards = Octopus.config[Rails.env].try(:[], 'shards') || {}
+
+      Octopus.setup do |config|
+        config.environments = [Rails.env.to_sym]
+        config.shards = {
+          'shards' => shards.merge({
+            university_key.downcase.to_sym => university_database_configs
+          })
+        }
+      end
+    rescue StandardError => exception
+      exception.message
+    end
+
+    def university_database_configs
+      {
+        adapter:  'mysql2',
+        database: database.name,
+        username: database.username,
+        password: database.password,
+        host:     database.host,
+        encoding: 'utf8',
+        variables: {
+          sql_mode: "TRADITIONAL"
+        }
+      }
+    end
+  end
+end

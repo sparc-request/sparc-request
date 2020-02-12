@@ -75,7 +75,7 @@ class Identity < ApplicationRecord
   validates :ldap_uid, presence: true
 
   # Validate uniqueness and ensure the ldap_uid matches <somthing>@<shard_name>.edu
-  validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{SHARDS.keys.join('|')})\.edu)\Z/, if: Proc.new{ |record| record.ldap_uid.present? }
+  # validates :ldap_uid, uniqueness: { case_sensitive: false }, format: /\A([^\s\@]+@(#{Octopus.shards.keys.join('|')})\.edu)\Z/, if: Proc.new{ |record| record.ldap_uid.present? }
 
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
@@ -89,6 +89,10 @@ class Identity < ApplicationRecord
 
   def self.shard_identifier(ldap_uid)
     ldap_uid.split('@')[1].try(:gsub, '.edu', '')
+  end
+
+  def university
+    University.using('master').find_by_key(Identity.shard_identifier(self.ldap_uid))
   end
 
   def suggestion_value

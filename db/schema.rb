@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_11_155120) do
+ActiveRecord::Schema.define(version: 2020_02_12_152129) do
+
+  create_table "databases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "university_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name_cyphertext"
+    t.string "host_cyphertext"
+    t.string "username_cyphertext"
+    t.string "password_cyphertext"
+    t.index ["university_id"], name: "index_databases_on_university_id"
+  end
 
   create_table "identities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "ldap_uid"
@@ -62,6 +73,12 @@ ActiveRecord::Schema.define(version: 2020_02_11_155120) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["key"], name: "index_settings_on_key", unique: true
+  end
+
+  create_table "universities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "key"
+    t.string "name"
+    t.index ["key"], name: "index_universities_on_key"
   end
 
 end

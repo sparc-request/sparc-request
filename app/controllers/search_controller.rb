@@ -52,7 +52,7 @@ class SearchController < ApplicationController
     term    = params[:term].strip
     results = []
 
-    SHARDS.map do |shard, _|
+    Octopus.shards.map do |shard, _|
       next if params[:include_external] != 'true' && identity_signed_in? && shard != current_user.shard_identifier # Skip external institutions unless the user toggles themYep
 
       share_external_str = !identity_signed_in? || shard == current_user.shard_identifier ? '' : 'AND services.share_externally = 1'

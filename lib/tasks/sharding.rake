@@ -33,7 +33,7 @@ shards_namespace = namespace :shards do
   # (defined in ActiveRecord::Base.protected_environments)
   desc "Checks if the environment is not protected and if the shards match the current environment (options: RAILS_ENV=x SHARD=x)"
   task check_protected_environments: :load_config do
-    Octopus.config[Rails.env]['shards'].each do |shard, _|
+    Octopus.shards.each do |shard, _|
       next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
       Octopus.using(shard) do
         ActiveRecord::Tasks::DatabaseTasks.check_protected_environments!
@@ -47,7 +47,7 @@ shards_namespace = namespace :shards do
 
   desc "Creates database shards (options: RAILS_ENV=x SHARD=x)"
   task create: [:load_config] do
-    Octopus.config[Rails.env]['shards'].each do |shard, configuration|
+    Octopus.shards.each do |shard, configuration|
       puts "== Creating shard #{shard}"
       ActiveRecord::Tasks::DatabaseTasks.create(configuration)
     end
@@ -55,7 +55,7 @@ shards_namespace = namespace :shards do
 
   desc "Drops database shards (options: RAILS_ENV=x SHARD=x)"
   task drop: [:load_config, :check_protected_environments] do
-    Octopus.config[Rails.env]['shards'].each do |shard, configuration|
+    Octopus.shards.each do |shard, configuration|
       puts "== Dropping shard #{shard}"
 
       ActiveRecord::Tasks::DatabaseTasks.drop(configuration)
@@ -114,7 +114,7 @@ shards_namespace = namespace :shards do
 
       ActiveRecord::Tasks::DatabaseTasks.check_target_version
 
-      Octopus.config[Rails.env]['shards'].each do |shard, _|
+      Octopus.shards.each do |shard, _|
         next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
         puts "== Migrating up shard #{shard}"
         Octopus.using(shard) do
@@ -132,7 +132,7 @@ shards_namespace = namespace :shards do
     task down: :load_config do
       raise "VERSION is required" if !ENV["VERSION"] || ENV["VERSION"].empty?
 
-      Octopus.config[Rails.env]['shards'].each do |shard, _|
+      Octopus.shards.each do |shard, _|
         next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
         puts "== Migrating down shard #{shard}"
         Octopus.using(shard) do
@@ -150,7 +150,7 @@ shards_namespace = namespace :shards do
   namespace :schema do
     desc "Creates a schema.rb for each shard that is portable against any DB supported by Active Record (options: RAILS_ENV=x, SHARD=x)"
     task dump: :load_config do
-      Octopus.config[Rails.env]['shards'].each do |shard, configuration|
+      Octopus.shards.each do |shard, configuration|
         puts "== Dumping schema of #{shard}"
 
         Octopus.using(shard) do
@@ -163,7 +163,7 @@ shards_namespace = namespace :shards do
 
     desc "Loads schema.rb file into the shards (options: RAILS_ENV=x, SHARD=x)"
     task load: [:load_config, :check_protected_environments] do
-      Octopus.config[Rails.env]['shards'].each do |shard, configuration|
+      Octopus.shards.each do |shard, configuration|
         next if ENV["SHARD"] && ENV["SHARD"] != shard.to_s
         puts "== Loading schema of #{shard}"
 
@@ -190,7 +190,7 @@ shards_namespace = namespace :shards do
 
   desc "Retrieves the current schema version number"
   task version: :load_config do
-    Octopus.config[Rails.env]['shards'].each do |shard, _|
+    Octopus.shards.each do |shard, _|
       Octopus.using(shard) do
         puts "Shard #{shard} version: #{ActiveRecord::Base.connection.migration_context.current_version}"
       end

@@ -33,7 +33,7 @@ class Setting < ApplicationRecord
 
   def self.preload_values
     # Cache settings for the current request thread for the current request
-    RequestStore.store[:settings_map] ||= SHARDS.keys.append('master').map{ |shard| [shard, {}] }.to_h
+    RequestStore.store[:settings_map] ||= Octopus.shards.keys.append('master').map{ |shard| [shard, {}] }.to_h
     RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard] = Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
   end
 

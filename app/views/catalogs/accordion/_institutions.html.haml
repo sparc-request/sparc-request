@@ -26,15 +26,17 @@
       = check_box_tag :include_external, true, include_external, data: { toggle: 'toggle', on: t('proper.catalog.accordion.toggle.include_external'), off: t('proper.catalog.accordion.toggle.internal_only'), style: 'btn-block' }
 
     -# Get all shards BUT put the user's hub first and sort the rest by hub name
-    - shards_ordered = SHARDS.slice(current_user.shard_identifier).to_a
+    - universities = [current_user.university]
 
     - if include_external
-      - shards_ordered += SHARDS.reject{ |shard| shard == current_user.shard_identifier }.sort_by{ |shard, data| data['name'] }
+      - University.using('master').where.not(id: current_user.university).order(:name).each{ |u| universities.append(u) }
   - else
     -# Get all shards sorted by hub name
-    - shards_ordered = SHARDS.sort_by{ |shard, data| data['name'] }
+    - universities = University.using('master').all.order(:name)
 
-  - shards_ordered.each do |shard, data|
+  - universities.each do |university|
+    - shard = university.key
+
     .card-body
       - Octopus.using(shard) do
         -# Only keep track of shard when not logged in
@@ -43,9 +45,10 @@
         - locked_ids  = locked_org_ids[shard] || []
 
         - institutions = Institution.all.includes(providers: :programs).select{ |inst| inst.is_available != false }
+
         - if institutions.any?
           %h5
-            = data['name']
+            = university.name
           - institutions.each_with_index do |i, index|
             - locked  = locked_ids.include?(i.id)
             - url     = locked ? locked_organization_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id))

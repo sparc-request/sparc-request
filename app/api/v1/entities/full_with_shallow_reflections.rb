@@ -66,6 +66,12 @@ module V1
     root 'protocols', 'protocol'
   end
 
+  class OrganizationFullWithShallowReflection < OrganizationFull
+    root 'organizations', 'organization'
+
+    expose :services, using: V1::ServiceShallow
+  end
+
   class LineItemFullWithShallowReflection < LineItemFull
     root 'line_items', 'line_item'
 

@@ -29,7 +29,7 @@ class ServiceRequestsController < ApplicationController
   before_action :authorize_identity,              except: [:approve_changes, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
-  before_action :find_service,                    only:   [:catalog]
+  before_action :find_linked_entity,              only:   [:catalog]
   before_action :current_page
 
   def show
@@ -293,7 +293,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def find_service
+  def find_linked_entity
     if params[:service_id]
       @service  = Service.find(params[:service_id])
       @provider = @service.provider
@@ -301,6 +301,14 @@ class ServiceRequestsController < ApplicationController
       @core     = @service.core
 
       redirect_to catalog_service_request_path(srid: @service_request.id) unless @service.is_available?
+    elsif params[:organization_id]
+      @organization = Organization.find(params[:organization_id])
+      @institution  = @organization.institution unless @organization.is_a?(Institution)
+      @provider     = @organization.provider    unless [Institution, Provider].include?(@organization.class)
+      @program      = @organization.program     unless [Institution, Provider, Program].include?(@organization.class)
+      @core         = @organization             if @organization.is_a?(Core)
+
+      redirect_to catalog_service_request_path(srid: @service_request.id) unless @organization.is_available?
     end
   end
 end

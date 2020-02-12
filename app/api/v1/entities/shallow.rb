@@ -51,6 +51,10 @@ module V1
     root 'line_items_visits', 'line_items_visit'
   end
 
+  class OrganizationShallow < Shallow
+    root 'organizations', 'organization'
+  end
+
   class ProcessSsrsOrganizationShallow < Shallow
     root 'process_ssrs_organizations', 'process_ssrs_organization'
   end

@@ -80,7 +80,7 @@ en:
     sessions:
       header: "Sign In"
       submit: "Sign In"
-      institution_users: "%{institution} User Login"
+      institution_users: "Institution Login"
       other_users: "Outside User Login"
       return: "Return to Catalog"
       signed_in: 'Signed in successfully.'

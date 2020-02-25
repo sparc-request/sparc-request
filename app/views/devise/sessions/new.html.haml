@@ -23,7 +23,7 @@
 = render 'layouts/flash'
 .form-row
   .form-group.col
-    = button_to t('devise.sessions.institution_users', institution: ENV['institution']), identity_shibboleth_omniauth_authorize_path, class: 'btn btn-lg btn-block btn-outline-primary'
+    = button_to t('devise.sessions.institution_users'), identity_shibboleth_omniauth_authorize_path, class: 'btn btn-lg btn-block btn-outline-primary'
   .form-group.col
     %button.btn.btn-lg.btn-block.btn-outline-primary#outsideUserLogin
       = t('devise.sessions.other_users')

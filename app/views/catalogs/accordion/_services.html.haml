@@ -34,4 +34,5 @@
             = icon('fas', 'plus')
     = cpt_code_text(service)
     = eap_id_text(service)
-    = raw service_pricing_text(service)
+    - if @shard == current_user.shard_identifier || service.share_externally?
+      = raw service_pricing_text(service)

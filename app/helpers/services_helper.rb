@@ -63,10 +63,10 @@ module ServicesHelper
   end
 
   def breadcrumb_text(item, opts={})
-    if (orgs = (item.is_a?(Service) ? item.parents : item.organization_hierarchy(true, true, false, true))).any?
+    if (orgs = item.organization_hierarchy(true, true, false, true)).any?
       content_tag :div, class: 'd-inline-flex flex-wrap align-items-center' do
         breadcrumb = []
-        orgs.reverse.each do |parent|
+        orgs.each do |parent|
           breadcrumb << content_tag(:span, "#{parent.abbreviation}", class: opts[:context] == false ? "" : "text-#{parent.type.downcase}")
           breadcrumb << icon('fas', 'caret-right mx-1')
         end

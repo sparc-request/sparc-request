@@ -167,7 +167,7 @@ class Organization < ApplicationRecord
     end
 
     if use_array
-      [self] + parent_orgs[0..root]
+      parent_orgs[0..root] + (include_self ? [self] : [])
     elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else

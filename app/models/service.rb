@@ -83,6 +83,10 @@ class Service < ApplicationRecord
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 
+  def self.external_charge_rate
+    1 + Setting.get_value('external_service_charge_rate')
+  end
+
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end

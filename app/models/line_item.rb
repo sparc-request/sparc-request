@@ -139,7 +139,7 @@ class LineItem < ApplicationRecord
 
   def external_charge_rate
     if self.sub_service_request.external_request?
-      1 + Octopus.using(self.sub_service_request.organization_shard) { Setting.get_value('external_service_charge_rate') }
+      Octopus.using(self.sub_service_request.organization_shard) { Service.external_charge_rate }
     end
   end
 

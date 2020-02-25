@@ -42,6 +42,10 @@ module ServicesHelper
     if current_user.present?
       rates = service.displayed_pricing_map.true_rate_hash
 
+      if @shard != current_user.shard_identifier
+        rates.each { |type, rate| rates[type] = rate * Service.external_charge_rate }
+      end
+
       content_tag(:div, class: 'w-100 d-flex flex-wrap') do
         content_tag(:div, class: 'w-100') do
           content_tag(:span, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"

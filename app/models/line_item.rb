@@ -75,8 +75,8 @@ class LineItem < ApplicationRecord
   # Overwrite the default `belongs_to :service` association method
   # to grab the service from the correct shard
   def service
-    if self.sub_service_request && self.sub_service_request.organization_shard != ActiveRecord::Base.connection.current_shard
-      Octopus.using(self.sub_service_request.organization_shard) { super }
+    if self.sub_service_request.external_request?
+      @service ||= Service.using(self.sub_service_request.organization_shard).find(self.service_id)
     else
       super
     end

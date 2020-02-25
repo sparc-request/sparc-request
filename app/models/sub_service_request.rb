@@ -91,7 +91,11 @@ class SubServiceRequest < ApplicationRecord
   # Overwrite the default `belongs_to :organization` association method
   # to grab the organization from the correct shard
   def organization
-    Octopus.using(self.organization_shard) { Organization.find(self.organization_id) }
+    if self.external_request?
+      @organization ||= Organization.using(self.organization_shard).find(self.organization_id)
+    else
+      super
+    end
   end
 
   def external_request?

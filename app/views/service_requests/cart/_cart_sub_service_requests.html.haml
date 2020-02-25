@@ -34,7 +34,7 @@
                 - if li.service.cpt_code.present?
                   %strong
                     = "(#{li.service.cpt_code})"
-                - unless li.service.is_available
+                - unless li.service.is_available?
                   = inactive_tag
             - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
               .col-2.pl-0.text-right

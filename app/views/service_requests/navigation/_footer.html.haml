@@ -27,9 +27,9 @@
             = succeed t(:proper)[:confirmation][:download_request] do
               = icon('fas', 'download mr-2')
         .col-3
-          = link_to dashboard_root_path, class: 'btn btn-lg btn-block btn-success' do
-            - succeed t(:proper)[:confirmation][:to_dashboard] do
-              = icon('fas', 'home mr-2')
+          = link_to dashboard_protocol_path(@service_request.protocol), class: 'btn btn-lg btn-block btn-success' do
+            - succeed t(:proper)[:confirmation][:to_protocol] do
+              = icon('fas', 'hand-point-right mr-2')
       - else
         .col.text-left
           = link_to @back, class: ['btn btn-lg btn-link d-none d-sm-inline-block px-0', @current_page == 'catalog' ? 'invisible' : ''] do

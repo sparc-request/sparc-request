@@ -150,7 +150,7 @@ class ServiceRequest < ApplicationRecord
         organization_id:    organization.id,
         organization_shard: shard,
         service_requester:  requester,
-        protocol_id:        self.protocol_id,
+        protocol:           self.protocol,
         status:             self.status == 'first_draft' ? 'first_draft' : 'draft',
         ssr_id:             self.next_ssr_id
       )
@@ -440,6 +440,6 @@ class ServiceRequest < ApplicationRecord
   end
 
   def set_ssr_protocol_id
-    self.sub_service_requests.update_all(protocol_id: self.protocol_id)
+    self.sub_service_requests.each{ |ssr| ssr.update_attribute(:protocol, self.protocol) }
   end
 end

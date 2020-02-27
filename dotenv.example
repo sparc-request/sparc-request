@@ -1,7 +1,7 @@
 sparc_version=v3.6.0
 institution=University
 institution_logo=logos/musc_header.jpg
-org_logo=logos/sctr_hader_sized.jpg
+org_logo=logos/sctr_header_sized.jpg
 time_zone=Eastern Time (US & Canada)
 sender_address=no-reply@sample.org
 content_security_report_only=true

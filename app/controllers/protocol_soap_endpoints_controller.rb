@@ -23,98 +23,90 @@ class ProtocolSoapEndpointsController < ApplicationController
   soap_service namespace: 'urn:WashOut'
 
   soap_action "RetrieveProtocolDefResponse",
-              :args   => :string,
-              :return => nil,
-              :to     => :retrieve_protocol_def
+    :args => {
+      :protocolDef => {
+        :plannedStudy => {
+          :id => { :@extension => :string, :@root => :string },
+          :title => :string,
+          :text => :string,
+
+          :subjectOf => [{
+            :studyCharacteristic => {
+              :code => { :@code => :string },
+              :value => { :@value => :string, :@code => :string, :@codeSystem => :string }
+            }
+          }],
+
+          :component4 => [{
+            :timePointEventDefinition => {
+              :id => { :@extension => :string, :@root => :string },
+              :title => :string,
+              :code => { :@code => :string, :@codeSystem => :string },
+
+              :component1 => [{
+                :sequenceNumber => { :@value => :string },
+                :timePointEventDefinition => {
+                  :id => { :@extension => :string, :@root => :string },
+                  :title => :string,
+                  :code => { :@code => :string, :@codeSystem => :string },
+
+                  :component1 => [{
+                    :sequenceNumber => { :@value => :string },
+                    :timePointEventDefinition => {
+                      :id => { :@extension => :string, :@root => :string },
+                      :title => :string
+                    },
+                  }],
+
+                  :component2 => {
+                    :procedure => {
+                      :code => { :@code => :string, :@codeSystem => :string }
+                    }
+                  },
+
+                  :effectiveTime => {
+                    :low => { :@value => :string },
+                    :high => { :@value => :string }
+                  }
+                }
+              }],
+
+              :component2 => {
+                :encounter => {
+                  :effectiveTime => {
+                    :low => { :@value => :string },
+                    :high => { :@value => :string }
+                  },
+                  :activityTime => { :@value => :string }
+                }
+              }
+
+            }
+          }],
+
+          :component2 => [{
+            :arm => {
+              :id => { :@extension => :string },
+              :title => :string
+            }
+          }]
+
+        }
+      }
+    },
+
+    :return => nil,
+    :to     => :retrieve_protocol_def
   def retrieve_protocol_def
-    Rails.logger.info "\n\n\n\n***************\n\n\n\n\n#{params.inspect}\n\n\n\n***************\n\n\n\n\n"
+    # Pretty print the params:
+    puts JSON.pretty_generate(protocol_soap_endpoint_params.to_h)
+    # binding.pry
     render :soap => nil
   end
 
+  private
+
   def protocol_soap_endpoint_params
-    params.require(:protocol_soap_endpoint).permit!
+    params.require(:protocolDef).permit!
   end
-
-  # example message:
-
-# <query root="1.2.5.2.3.4" extension="STUDY13481"/>
-# <protocolDef>
-#   <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-#     <id root="1.2.5.2.3.4" extension="STUDY13481"/>
-#     <title>Test Epic Error Handling - Test Epic Error Handling</title>
-#     <text/>
-#     <subjectOf typeCode="SUBJ">
-#       <studyCharacteristic classCode="OBS" moodCode="EVN">
-#         <code code="PI"/>
-#         <value code="WEH6" codeSystem="netid"/>
-#       </studyCharacteristic>
-#     </subjectOf>
-#     <subjectOf typeCode="SUBJ">
-#       <studyCharacteristic classCode="OBS" moodCode="EVN">
-#         <code code="NCT"/>
-#         <value value="12345679"/>
-#       </studyCharacteristic>
-#     </subjectOf>
-#     <subjectOf typeCode="SUBJ">
-#       <studyCharacteristic classCode="OBS" moodCode="EVN">
-#         <code code="RGCL1"/>
-#         <value value="GOV"/>
-#       </studyCharacteristic>
-#     </subjectOf>
-#     <subjectOf typeCode="SUBJ">
-#       <studyCharacteristic classCode="OBS" moodCode="EVN">
-#         <code code="STUDYTYPE"/>
-#         <value value="1"/>
-#       </studyCharacteristic>
-#     </subjectOf>
-#     <subjectOf typeCode="SUBJ">
-#       <studyCharacteristic classCode="OBS" moodCode="EVN">
-#         <code code="RGCL3"/>
-#         <value value="YES_COFC"/>
-#       </studyCharacteristic>
-#     </subjectOf>
-#     <component4 typeCode="COMP">
-#       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-#         <id root="1.2.5.2.3.4" extension="STUDY13481.ARM19648"/>
-#         <title>Screening Phase</title>
-#         <code code="CELL" codeSystem="n/a"/>
-#         <component1 typeCode="COMP">
-#           <sequenceNumber value="1"/>
-#           <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-#             <id root="1.2.5.2.3.4" extension="STUDY13481.ARM19648.CYCLE1"/>
-#             <title>Cycle 1</title>
-#             <code code="CYCLE" codeSystem="n/a"/>
-#             <effectiveTime>
-#               <low value="20200108"/>
-#               <high value="20200108"/>
-#             </effectiveTime>
-#             <component1 typeCode="COMP">
-#               <sequenceNumber value="1"/>
-#               <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-#                 <id root="1.2.5.2.3.4" extension="STUDY13481.ARM19648.CYCLE1.DAY1"/>
-#                 <title>Visit 1</title>
-#               </timePointEventDefinition>
-#             </component1>
-#           </timePointEventDefinition>
-#         </component1>
-#       </timePointEventDefinition>
-#     </component4>
-#     <component4 typeCode="COMP">
-#       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-#         <id root="1.2.5.2.3.4" extension="STUDY13481.ARM19648.CYCLE1.DAY1"/>
-#         <title>Visit 1</title>
-#         <code code="VISIT" codeSystem="n/a"/>
-#         <component2 typeCode="COMP">
-#           <encounter classCode="ENC" moodCode="DEF">
-#             <effectiveTime>
-#               <low value="20200108"/>
-#               <high value="20200108"/>
-#             </effectiveTime>
-#             <activityTime value="20200108"/>
-#           </encounter>
-#         </component2>
-#       </timePointEventDefinition>
-#     </component4>
-#   </plannedStudy>
-# </protocolDef>
 end

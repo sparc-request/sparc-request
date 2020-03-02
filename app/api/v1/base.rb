@@ -56,6 +56,7 @@ module SPARCCWF
         :human_subjects_infos,
         :line_items,
         :line_items_visits,
+        :organizations,
         :protocols,
         :studies,
         :projects,

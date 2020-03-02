@@ -333,7 +333,7 @@ class Service < ApplicationRecord
   end
 
   def direct_link
-    "#{Setting.get_value('root_url')}/services/#{id}"
+    "#{ENV.fetch('ROOT_URL')}/services/#{id}"
   end
 
   private

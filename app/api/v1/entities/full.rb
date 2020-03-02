@@ -91,6 +91,22 @@ module V1
             :subject_count
   end
 
+  class OrganizationFull < OrganizationShallow
+    root 'organizations', 'organization'
+
+    expose  :name,
+            :abbreviation,
+            :order,
+            :description,
+            :type,
+            :is_available,
+            :process_ssrs,
+            :tag_list,
+            :direct_link
+
+    expose  :parent, using: V1::OrganizationFull
+  end
+
   class ProcessSsrsOrganizationFull < ProcessSsrsOrganizationShallow
     root 'process_ssrs_organizations', 'process_ssrs_organization'
 

@@ -30,7 +30,7 @@ module RemotelyNotifiable
 
   def remote_service_callback_url
     if self.persisted?
-      "#{Setting.get_value("remote_service_notifier_protocol")}://#{Setting.get_value("host")}/#{Setting.get_value("current_api_version")}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
+      "#{ENV.fetch('root_url')}/#{ENV.fetch('api_version')}/#{self.current_shard}/#{self.model_name.plural}/#{self.id}.json"
     end
   end
 
@@ -57,7 +57,7 @@ module RemotelyNotifiable
   end
 
   def notify_remote_after_create
-    RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'create')
+    RemoteServiceNotifierJob.enqueue(self.id, self.current_shard, self.class.name, 'create')
   end
 
   def qualifying_changes_detected?
@@ -66,13 +66,13 @@ module RemotelyNotifiable
 
   def notify_remote_around_update
     if qualifying_changes_detected?
-      RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'update')
+      RemoteServiceNotifierJob.enqueue(self.id, self.current_shard, self.class.name, 'update')
     end
 
     yield
   end
 
   def notify_remote_after_destroy
-    RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'destroy')
+    RemoteServiceNotifierJob.enqueue(self.id, self.current_shard, self.class.name, 'destroy')
   end
 end

@@ -32,8 +32,8 @@ module APIV1
 
     http_basic do |username, password|
       begin
-        username == Setting.get_value("remote_service_notifier_username") &&
-          password == Setting.get_value("remote_service_notifier_password")
+        username == ENV.fetch('api_username') &&
+          password == ENV.fetch('api_password')
       rescue
         false
       end
@@ -62,43 +62,43 @@ module APIV1
     ]
 
     published_resources.each do |published_resource|
+      published_resource_to_s = published_resource.to_s
 
-      resource published_resource do
-
-        published_resource_to_s = published_resource.to_s
-
-        desc 'GET /v1/:resources.json'
-
-        params do
-          use :with_depth
-          use :custom_query
-          optional :ids, type: Array, default: Array.new
-        end
-
-        get do
-          Setting.preload_values
-
-          find_objects(published_resource_to_s, params)
-          if @objects
-            present @objects, with: presenter(published_resource_to_s, params[:depth])
-          # for queries with where and a limit of 1
-          elsif @object
-            present @object, with: presenter(published_resource_to_s, params[:depth])
-          end
-        end
-
-        route_param :id do
-
-          desc 'GET /v1/:resource/:id.json'
-
+      route_param :shard do
+        resource published_resource do
+          desc 'GET /v1/:shard/:resources.json'
           params do
             use :with_depth
+            use :custom_query
+            requires :shard, type: String
+            optional :ids, type: Array, default: Array.new
           end
 
           get do
-            find_object(published_resource_to_s, params[:id])
+            Octopus.load_universities!
+            Setting.preload_values
 
-            present @object, with: presenter(published_resource_to_s, params[:depth])
+            find_objects(published_resource_to_s, params)
+            if @objects
+              present @objects, with: presenter(published_resource_to_s, params[:depth])
+            # for queries with where and a limit of 1
+            elsif @object
+              present @object, with: presenter(published_resource_to_s, params[:depth])
+            end
+          end
+
+          desc 'GET /v1/:shard/:resource/:id.json'
+          params do
+            use :with_depth
+            requires :id, type: Integer
+          end
+
+          route_param :id do
+            get do
+              find_object(published_resource_to_s, params[:id])
+
+              present @object, with: presenter(published_resource_to_s, params[:depth])
+            end
           end
         end
       end

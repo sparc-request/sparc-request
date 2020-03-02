@@ -11,35 +11,6 @@ Rails.application.routes.draw do
     passwords: 'identities/passwords'
   }
 
-  # begin
-  #   if Setting.get_value("use_shibboleth_only")
-  #     devise_for :identities,
-  #                controllers: {
-  #                  omniauth_callbacks: 'identities/omniauth_callbacks',
-  #                }, path_names: { sign_in: 'auth/shibboleth' }
-
-  #   elsif Setting.get_value("use_cas_only")
-  #     devise_for :identities,
-  #                controllers: {
-  #                  omniauth_callbacks: 'identities/omniauth_callbacks',
-  #                }, path_names: { sign_in: 'auth/cas' }
-  #   else
-  #     devise_for :identities,
-  #                controllers: {
-  #                  omniauth_callbacks: 'identities/omniauth_callbacks',
-  #                  registrations: 'identities/registrations',
-  #                  passwords: 'identities/passwords'
-  #                }
-  #   end
-  # rescue
-  #   devise_for :identities,
-  #              controllers: {
-  #                omniauth_callbacks: 'identities/omniauth_callbacks',
-  #                registrations: 'identities/registrations',
-  #                passwords: 'identities/passwords'
-  #              }
-  # end
-
   resources :identities, only: [] do
     member do
       get 'approve_account'

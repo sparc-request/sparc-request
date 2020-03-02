@@ -33,31 +33,31 @@ module APIV1
     end
 
     def presenter(klass, depth)
-      ['API', 'V1', 'Entities', depth.classify, klass.classify].join('::').constantize
+      ['APIV1', 'Entities', depth.classify, klass.classify].join('::').constantize
     end
 
-    def find_object(klass, id)
+    def find_object(klass, shard, id)
       klass = klass.classify
-      error!("#{klass} not found for id=#{id}", 404) unless @object = klass.constantize.where(id: id).first
+      error!("#{klass} not found for id=#{id}", 404) unless @object = klass.constantize.using(shard).find(id)
     end
 
     def find_objects(klass, params)
       klass = klass.classify
 
       if params[:ids].any?
-        @objects = klass.constantize.where(id: params[:ids])
+        @objects = klass.constantize.using(params[:shard]).where(id: params[:ids])
       elsif params[:query].present?
         # identify invalid parameters (not found in the object)
-        invalid_query_parameters = params[:query].select {|key, value| !klass.constantize.column_names.include? key }
+        invalid_query_parameters = params[:query].select {|key, value| !klass.constantize.using(params[:shard]).column_names.include? key }
         if invalid_query_parameters.present?
           error!("#{klass} query #{params[:query]} has the following invalid parameters: #{invalid_query_parameters.keys}", 400)
         elsif params[:limit] == 1 # return only one object, the first that meets the query criteria
-          error!("#{klass} not found for query #{params[:query]}", 404) unless @object = klass.constantize.where(params[:query]).first
+          error!("#{klass} not found for query #{params[:query]}", 404) unless @object = klass.constantize.using(params[:shard]).where(params[:query]).first
         else # return all objects that meet the query criteria
-          @objects = klass.constantize.where(params[:query]).limit(params[:limit]) # a nil limit is ignored by ActiveRecord
+          @objects = klass.constantize.using(params[:shard]).where(params[:query]).limit(params[:limit]) # a nil limit is ignored by ActiveRecord
         end
       else # only apply params[:limit] if params[:query] exists
-        @objects = klass.constantize.all
+        @objects = klass.constantize.using(params[:shard]).all
       end
     end
 

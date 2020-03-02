@@ -53,7 +53,7 @@ class SettingsPopulator
             end
           end
 
-          Setting.where(key: deprecated_settings).destroy_all
+          Setting.where(key: deprecated_settings[db]).destroy_all
         end
       end
     end
@@ -92,11 +92,27 @@ class SettingsPopulator
   end
 
   def deprecated_settings
-    [
-      'header_link_2_proper',
-      'header_link_2_dashboard',
-      'header_link_2_catalog',
-      'dashboard_link'
-    ]
+    @deprecated = {
+      master: []
+    }
+
+    Octopus.shards.keys.each do |shard|
+      @deprecated[shard.to_sym] = [
+        'current_api_version',
+        'dashboard_link',
+        'header_link_2_catalog',
+        'header_link_2_catalog',
+        'header_link_2_proper',
+        'host',
+        'remote_service_notifier_host',
+        'remote_service_notifier_password',
+        'remote_service_notifier_path',
+        'remote_service_notifier_protocol',
+        'remote_service_notifier_username',
+        'root_url'
+      ]
+    end
+
+    @deprecated
   end
 end

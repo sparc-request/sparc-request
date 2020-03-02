@@ -23,8 +23,8 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
   class RemoteServiceNotifierError < StandardError
   end
 
-  def self.enqueue(object_id, object_class, action)
-    job = new(object_id, object_class, action)
+  def self.enqueue(object_id, object_shard, object_class, action)
+    job = new(object_id, object_shard, object_class, action)
 
     Delayed::Job.enqueue job, queue: 'remote_service_notifier'
   end
@@ -40,30 +40,23 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
   private
 
   def url
-    [
-      Setting.get_value("remote_service_notifier_protocol"),
-      '://',
-      Setting.get_value("remote_service_notifier_username"),
-      ':',
-      Setting.get_value("remote_service_notifier_password"),
-      '@',
-      Setting.get_value("remote_service_notifier_host"),
-      Setting.get_value("remote_service_notifier_path")
-    ].join
+    protocol, host = ENV.fetch('root_url').split('://')
+    "#{protocol}://#{ENV.fetch('api_username')}:#{ENV.fetch('api_password')}@#{host}/#{ENV.fetch('api_version')}/#{object_shard}/notifications.json"
   end
 
   def params
     {
       notification: {
-        sparc_id: object.id,
-        kind: object.class.to_s,
-        action: action,
+        sparc_id:     object.id,
+        shard:        object.current_shard,
+        kind:         object.class.to_s,
+        action:       action,
         callback_url: object.remote_service_callback_url
       }
     }
   end
 
   def object
-    @object ||= object_class.constantize.find object_id
+    @object ||= object_class.using(object_shard).constantize.find(object_id)
   end
 end

@@ -347,5 +347,4 @@ class Service < ApplicationRecord
       errors[:base] << "You must choose either One Time Fee, or Clinical Service."
     end
   end
-
 end

@@ -24,7 +24,7 @@ module APIV1
       def validate_param!(attr_name, params)
         klass = @option.classify.constantize
 
-        unless klass.where(id: params[attr_name]).exists?
+        unless klass.using(params[:shard]).where(id: params[attr_name]).exists?
           raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)], message: "is an invalid record"
         end
       end

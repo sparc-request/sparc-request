@@ -23,7 +23,7 @@
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
       - if identity_signed_in?
         = link_to Setting.get_value("header_link_1"), target: :_blank do
-          = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'
+          = image_tag 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'
     .logo-container.col-12.col-lg-6.d-flex.justify-content-center
       - if location == 'proper'
         - link = root_path
@@ -36,4 +36,4 @@
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
       - if identity_signed_in?
         = link_to Setting.get_value("header_link_3"), target: :_blank do
-          = image_tag ENV['institution_logo'] || 'logos/musc_header.jpg', alt: t('layout.header.institution_logo_alt'), id: 'institutionLogo', class: 'header-logo'
+          = image_tag 'logos/musc_header.jpg', alt: t('layout.header.institution_logo_alt'), id: 'institutionLogo', class: 'header-logo'

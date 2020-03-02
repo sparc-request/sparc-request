@@ -28,5 +28,35 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_password",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Password",
+    "description":    "This is the authentication password of the SPARCRequest API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_path",
+    "value":          "/v1/notifications.json",
+    "friendly_name":  "Remote Service Notifier Path",
+    "description":    "This is the URL path of the SPARCRequest API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_username",
+    "value":          "",
+    "friendly_name":  "Remote Service Notifier Username",
+    "description":    "This is the authentication username of the SPARCRequest API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
 ]

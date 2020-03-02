@@ -244,39 +244,6 @@ Devise.setup do |config|
     }, extra_fields: [:schacHomeOrganization]
   }
 
-  # begin
-  #   if Setting.get_value('use_shibboleth') && !(Setting.get_value('use_cas_only') && !Setting.get_value('use_shibboleth_only'))
-  #     config.omniauth :shibboleth, {
-  #       uid_field: 'eppn', request_type: request_type,
-  #       info_fields: {
-  #         email: 'mail', name: 'cn', last_name: 'sn', first_name: 'givenName'
-  #       }, extra_fields: [:schacHomeOrganization]
-  #     }
-  #   end
-
-  #   if Setting.get_value('use_cas') && !(Setting.get_value('use_shibboleth') && Setting.get_value('use_shibboleth_only'))
-  #     cas_config_file_path = Rails.root.join('config', 'cas.yml')
-  #     if File.exist?(cas_config_file_path) && cas_config = YAML.load_file(cas_config_file_path)[Rails.env]
-  #       config.omniauth :cas, {
-  #         url: cas_config['url'], login_url: cas_config['login_url'],
-  #         service_validate_url: cas_config['service_validate_url'],
-  #         callback_url: cas_config['callback_url'], debug: cas_config['debug']
-  #       }
-  #     end
-  #   end
-  # rescue
-  #   #Do nothing, just continue
-  # end
-
-  # ==> Warden configuration
-  # If you want to use other strategies, that are not supported by Devise, or
-  # change the failure app, you can configure them inside the config.warden block.
-  #
-  # config.warden do |manager|
-  #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
-  # end
-
   config.warden do |manager|
     manager.serialize_into_session(:identity) do |identity|
       [identity.id, identity.shard_identifier]

@@ -49,18 +49,19 @@
         - if institutions.any?
           %h5
             = university.name
+
           - institutions.each_with_index do |i, index|
             - locked  = locked_ids.include?(i.id)
             - url     = locked ? locked_organization_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: i.id, shard: shard_param, srid: service_request.try(:id))
-            - expand_institution = identity_signed_in? && !include_external && index == 0 && shard == current_user.shard_identifier
+            - expand = (@institution.present? && @institution == i) || identity_signed_in? && !include_external && index == 0 && shard == current_user.shard_identifier
 
             .card.institution{ id: "institution#{shard_name}#{i.id}" }
               .card-header.p-0{ id: "institution#{shard_name}#{i.id}Header" }
                 -# Expand the first institution if the user is signed in
-                %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), expand_institution ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{shard_name}#{i.id}Collapse", url: url }, aria: { expanded: 'true', controls: "institution#{shard_name}#{i.id}Collapse" } }
+                %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), expand ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{shard_name}#{i.id}Collapse", url: url }, aria: { expanded: expand.to_s, controls: "institution#{shard_name}#{i.id}Collapse" } }
                   %h6.d-flex.align-items-start.mb-0
                     = organization_name_display(i, locked, i.providers.any?)
               -# Expand the first institution if the user is signed in
-              .collapse{ class: expand_institution ? 'show' : '', id: "institution#{shard_name}#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{shard_name}#{i.id}Header" } }
+              .collapse{ class: expand ? 'show' : '', id: "institution#{shard_name}#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{shard_name}#{i.id}Header" } }
                 .card-body
                   = render 'catalogs/accordion/providers', service_request: service_request, providers: i.providers, locked_ids: locked_ids, i: i, shard_name: shard_name, shard_param: shard_param

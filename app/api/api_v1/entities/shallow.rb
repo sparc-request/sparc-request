@@ -28,6 +28,7 @@ module APIV1
     require_relative 'shallow/identity'
     require_relative 'shallow/line_item'
     require_relative 'shallow/line_items_visit'
+    require_relative 'shallow/organization'
     require_relative 'shallow/process_ssrs_organization'
     require_relative 'shallow/project_role'
 

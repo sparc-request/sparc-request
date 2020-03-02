@@ -26,6 +26,7 @@ module APIV1
     require_relative 'full/identity'
     require_relative 'full/line_item'
     require_relative 'full/line_items_visit'
+    require_relative 'full/organization'
     require_relative 'full/process_ssrs_organization'
     require_relative 'full/project_role'
 

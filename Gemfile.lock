@@ -46,9 +46,9 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: d3172df74d8db87a2ef63e2b27e4cb3258fc7697
+  revision: a8a755cc13545b92252a234245480813c79519cb
   specs:
-    acts_as_list (1.0.0)
+    acts_as_list (1.0.1)
       activerecord (>= 4.2)
 
 GEM
@@ -340,8 +340,8 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery_datepicker (0.4)
     json (2.3.0)
-    launchy (2.4.3)
-      addressable (~> 2.3)
+    launchy (2.5.0)
+      addressable (~> 2.7)
     letter_opener (1.7.0)
       launchy (~> 2.2)
     listen (3.2.0)
@@ -441,7 +441,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.3)
-    puma (4.3.1)
+    puma (4.3.3)
       nio4r (~> 2.0)
     rack (2.1.2)
     rack-accept (0.4.5)

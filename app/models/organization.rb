@@ -175,6 +175,19 @@ class Organization < ApplicationRecord
     end
   end
 
+  def program
+    return self.parent  if self.type == 'Core'
+    return self         if self.type == 'Program'
+  end
+
+  def provider
+    self.type == 'Provider' ? self : self.program.parent
+  end
+
+  def institution
+    self.type == 'Institution' ? self : self.provider.parent
+  end
+
   def update_ssr_org_name
     SubServiceRequest.where( organization: self.all_child_organizations_with_self ).each(&:update_org_tree)
   end
@@ -450,6 +463,9 @@ class Organization < ApplicationRecord
     end
   end
 
+  def direct_link
+    "#{ENV.fetch('root_url')}/organizations/#{id}"
+  end
 
   private
 

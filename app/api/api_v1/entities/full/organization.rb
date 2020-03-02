@@ -20,23 +20,22 @@
 
 module APIV1
   module Entities
-    require_relative 'full_with_reflections/arm'
-    require_relative 'full_with_reflections/clinical_provider'
-    require_relative 'full_with_reflections/human_subjects_info'
-    require_relative 'full_with_reflections/identity'
-    require_relative 'full_with_reflections/line_item'
-    require_relative 'full_with_reflections/line_items_visit'
-    require_relative 'full_with_reflections/organization'
-    require_relative 'full_with_reflections/project_role'
+    module Full
+      class Organization < APIV1::Entities::Shallow::Organization
+        root 'organizations', 'organization'
 
-    require_relative 'full_with_reflections/protocol'
-    require_relative 'full_with_reflections/project'
-    require_relative 'full_with_reflections/study'
+        expose  :name,
+                :abbreviation,
+                :order,
+                :description,
+                :type,
+                :is_available,
+                :process_ssrs,
+                :tag_list,
+                :direct_link
 
-    require_relative 'full_with_reflections/service'
-    require_relative 'full_with_reflections/service_request'
-    require_relative 'full_with_reflections/sub_service_request'
-    require_relative 'full_with_reflections/visit'
-    require_relative 'full_with_reflections/visit_group'
+        expose  :parent, using: APIV1::Entities::Full::Organization
+      end
+    end
   end
 end

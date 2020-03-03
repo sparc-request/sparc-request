@@ -24,7 +24,6 @@ class ArmsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_admin,             if: :in_dashboard?, except: [:index]
-  before_action :authorize_overlord,          only: [:index]
   before_action :find_arm,                    only: [:edit, :update, :destroy]
 
   def index

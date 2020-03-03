@@ -29,3 +29,4 @@
         %h6.d-flex.align-items-start.mb-0
           = organization_name_display(p, locked, p.programs.any?)
     .collapse{ class: expand ? 'show' : '', id: "provider#{shard_name}#{p.id}Collapse", data: { parent: "#institution#{shard_name}#{i.id}Collapse" }, aria: { labelledby: "provider#{shard_name}#{p.id}Header" } }
+      = render 'catalogs/accordion/programs', service_request: service_request, programs: p.programs, locked_ids: locked_ids, shard_param: shard_param

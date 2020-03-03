@@ -18,78 +18,123 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ProtocolSoapEndpointsController < ApplicationController
-  # SOAP Endpoint for OnCore RPE messages
-  soap_service namespace: 'urn:WashOut'
+class OncoreEndpointController < ApplicationController
+  # All of the following nested classes are used in order to avoid a duplicate key error from WashOut.
+  # If args contains an element with the same element name nested under it, there will be an error when generating the wsdl.
+  # For example:
+  # This one gives a dupicate error              |   This one DOES NOT result in a duplicate error
+  # :args => {                                   |   :args => {
+  #   :element => {                              |     :element => {
+  #     :thing => :string,                       |       :thing => :string,
+  #     :element => { :@attribute => :string }   |       :element => Element #Element is a custom WashOut::Type class
+  #   }                                          |     }
+  # }                                            |   }
+  class Id < WashOut::Type
+    map :@extension => :string, :@root => :string
+  end
+
+  class Code < WashOut::Type
+    map :@code => :string, :@codeSystem => :string
+  end
+
+  class EffectiveTime < WashOut::Type
+    map :low => { :@value => :string },
+        :high => { :@value => :string }
+  end
+
+  class SequenceNumber < WashOut::Type
+    map :@value => :string
+  end
+
+  class TPED < WashOut::Type
+    #TPED = TimePointEventDefinition
+    map :id => Id,
+        :title => :string
+  end
+
+  class Component1 < WashOut::Type
+    # Base component1 element, no other components nested inside
+    map :sequenceNumber => SequenceNumber,
+        :timePointEventDefinition => TPED
+  end
+
+  class Component2Procedure < WashOut::Type
+    # component2 elements with nested procedure element
+    map :procedure => {
+          :code => Code
+        }
+  end
+
+  class Component2Encounter < WashOut::Type
+    # component2 elements with nested encounter element
+    map :encounter => {
+          :effectiveTime => EffectiveTime,
+          :activityTime => { :@value => :string }
+        }
+  end
+
+  class Component2Arm < WashOut::Type
+    # component2 elements with nested arm element
+    map :arm => {
+          :id => { :@extension => :string },
+          :title => :string
+        }
+  end
+
+  class TPEDComponent1 < WashOut::Type
+    # Complex type structure for TPED with a component1 nested inside
+    map :id => Id,
+        :title => :string,
+        :code => Code,
+
+        :component1 => [Component1],
+
+        :component2 => Component2Procedure,
+
+        :effectiveTime => EffectiveTime
+
+  end
+
+  #############################################
+  #   SOAP Endpoint for OnCore RPE messages   #
+  #############################################
+
+  soap_service namespace: 'urn:ihe:qrph:rpe:2009'
+               #,camelize_wsdl: true
+               # might need to camelize wsdl for OnCore since I'm pretty sure they use Java and camelcase
 
   soap_action "RetrieveProtocolDefResponse",
     :args => {
       :protocolDef => {
         :plannedStudy => {
-          :id => { :@extension => :string, :@root => :string },
+          :id => Id,
           :title => :string,
           :text => :string,
 
           :subjectOf => [{
             :studyCharacteristic => {
-              :code => { :@code => :string },
+              :code => Code,
               :value => { :@value => :string, :@code => :string, :@codeSystem => :string }
             }
           }],
 
           :component4 => [{
             :timePointEventDefinition => {
-              :id => { :@extension => :string, :@root => :string },
+              :id => Id,
               :title => :string,
-              :code => { :@code => :string, :@codeSystem => :string },
+              :code => Code,
 
               :component1 => [{
-                :sequenceNumber => { :@value => :string },
-                :timePointEventDefinition => {
-                  :id => { :@extension => :string, :@root => :string },
-                  :title => :string,
-                  :code => { :@code => :string, :@codeSystem => :string },
-
-                  :component1 => [{
-                    :sequenceNumber => { :@value => :string },
-                    :timePointEventDefinition => {
-                      :id => { :@extension => :string, :@root => :string },
-                      :title => :string
-                    },
-                  }],
-
-                  :component2 => {
-                    :procedure => {
-                      :code => { :@code => :string, :@codeSystem => :string }
-                    }
-                  },
-
-                  :effectiveTime => {
-                    :low => { :@value => :string },
-                    :high => { :@value => :string }
-                  }
-                }
+                :sequenceNumber => SequenceNumber,
+                :timePointEventDefinition => TPEDComponent1
               }],
 
-              :component2 => {
-                :encounter => {
-                  :effectiveTime => {
-                    :low => { :@value => :string },
-                    :high => { :@value => :string }
-                  },
-                  :activityTime => { :@value => :string }
-                }
-              }
+              :component2 => Component2Encounter
 
             }
           }],
 
-          :component2 => [{
-            :arm => {
-              :id => { :@extension => :string },
-              :title => :string
-            }
-          }]
+          :component2 => [Component2Arm]
 
         }
       }
@@ -99,14 +144,14 @@ class ProtocolSoapEndpointsController < ApplicationController
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
     # Pretty print the params:
-    puts JSON.pretty_generate(protocol_soap_endpoint_params.to_h)
+    puts JSON.pretty_generate(oncore_endpoint_params.to_h)
     # binding.pry
     render :soap => nil
   end
 
   private
 
-  def protocol_soap_endpoint_params
+  def oncore_endpoint_params
     params.require(:protocolDef).permit!
   end
 end

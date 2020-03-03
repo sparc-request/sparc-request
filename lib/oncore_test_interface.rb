@@ -82,7 +82,7 @@ class OnCoreTestInterface
 
     @errors = {}
 
-    @namespace = 'urn:WashOut'
+    @namespace = 'urn:ihe:qrph:rpe:2009'
     @study_root = '1.2.5.2.3.4'
 
     # TODO: I'm not really convinced that Savon is buying us very much
@@ -101,8 +101,8 @@ class OnCoreTestInterface
         convert_request_keys_to: :none,
         namespace_identifier: nil,
         namespace: @namespace,
-        endpoint: 'http://localhost:3000/protocol_soap_endpoints/action',
-        wsdl: nil,
+        endpoint: nil,
+        wsdl: 'http://localhost:3000/oncore_endpoint/wsdl',
         headers: {
         },
         soap_header: {
@@ -129,7 +129,7 @@ class OnCoreTestInterface
     # Wasabi (Savon's WSDL parser) turns CamelCase actions into
     # snake_case.
     #if @config['epic_wsdl'] then
-    #  action = action.snakecase.to_sym
+    action = action.snakecase.to_sym
     #end
 
     begin

@@ -166,7 +166,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  wash_out :protocol_soap_endpoints # SOAP Endpoint for OnCore RPE messages
+  wash_out :oncore_endpoint # SOAP Endpoint for OnCore RPE messages
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
 

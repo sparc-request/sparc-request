@@ -29,6 +29,7 @@ module SubServiceRequestsHelper
   def ssr_name_display(sub_service_request, opts={})
     locked    = opts[:locked].nil?    ? sub_service_request.is_locked?    : opts[:locked]
     complete  = opts[:complete].nil?  ? sub_service_request.is_complete?  : opts[:complete]
+    external  = sub_service_request.external_request?
 
     header  = content_tag(:strong, "(#{sub_service_request.ssr_id})", class: 'mr-1') +
                 breadcrumb_text(sub_service_request.organization, context: opts[:context]).html_safe
@@ -39,6 +40,6 @@ module SubServiceRequestsHelper
       header += icon('fas', 'lock fa-lg mr-2')
     end
 
-    content_tag :div, header, class: 'd-flex'
+    content_tag :div, header, class: ['d-inline-flex', external ? 'text-warning' : ''], title: external ? "This request is from an external Provider" : "", data: { toggle: external ? 'tooltip' : '' }
   end
 end

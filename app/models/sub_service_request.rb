@@ -99,7 +99,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def external_request?
-    ActiveRecord::Base.connection.current_shard != self.organization_shard
+    @external_request ||= self.current_shard != self.organization_shard
   end
 
   def label

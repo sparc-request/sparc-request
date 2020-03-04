@@ -20,7 +20,7 @@
 
 .modal-dialog{ role: 'document' }
   .modal-content
-    = form_for in_dashboard? ? [:dashboard, document] : document, remote: true, multipart: true, authenticity_token: form_authenticity_token do |f|
+    = form_for in_dashboard? ? [:dashboard, document] : document, remote: true do |f|
       = f.hidden_field :protocol_id
       - unless in_dashboard?
         = hidden_field_tag :srid, service_request.id
@@ -43,9 +43,11 @@
             = f.label :document, document.document_file_name, class: 'custom-file-label text-truncate'
           %small.form-text.text-muted
             = raw t('documents.supported_types', file_types: document_file_types_as_string)
-        .form-group
-          = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
-          = select_tag :org_ids, document_org_access_collection(document), class: 'selectpicker', multiple: true, data: { actions_box: 'true', live_search: 'true' }
+        - document_orgs = document_org_access_collection(document)
+        - unless document_orgs.empty?
+          .form-group
+            = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
+            = select_tag :org_ids, document_orgs, class: 'selectpicker', multiple: true, data: { actions_box: 'true' }
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

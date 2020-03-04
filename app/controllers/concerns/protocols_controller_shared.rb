@@ -45,9 +45,17 @@ module ProtocolsControllerShared
     end
 
     # Sanitize date formats
-    params[:protocol][:funding_start_date]           = sanitize_date params[:protocol][:funding_start_date]
-    params[:protocol][:potential_funding_start_date] = sanitize_date params[:protocol][:potential_funding_start_date]
-    params[:protocol][:guarantor_phone]              = sanitize_phone params[:protocol][:guarantor_phone]
+    params[:protocol][:start_date]                            = sanitize_date params[:protocol][:start_date]                            if params[:protocol][:start_date]
+    params[:protocol][:end_date]                              = sanitize_date params[:protocol][:end_date]                              if params[:protocol][:end_date]
+    params[:protocol][:initial_budget_sponsor_received_date]  = sanitize_date params[:protocol][:initial_budget_sponsor_received_date]  if params[:protocol][:initial_budget_sponsor_received_date]
+    params[:protocol][:budget_agreed_upon_date]               = sanitize_date params[:protocol][:budget_agreed_upon_date]               if params[:protocol][:budget_agreed_upon_date]
+    params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]                if params[:protocol][:recruitment_start_date]
+    params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]                  if params[:protocol][:recruitment_end_date]
+    params[:protocol][:funding_start_date]                    = sanitize_date params[:protocol][:funding_start_date]                    if params[:protocol][:funding_start_date]
+    params[:protocol][:potential_funding_start_date]          = sanitize_date params[:protocol][:potential_funding_start_date]          if params[:protocol][:potential_funding_start_date]
+
+    # Sanitize phone formats
+    params[:protocol][:guarantor_phone] = sanitize_phone params[:protocol][:guarantor_phone] if params[:protocol][:guarantor_phone]
 
     if params[:protocol][:human_subjects_info_attributes]
       params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
@@ -65,6 +73,8 @@ module ProtocolsControllerShared
       :arms_attributes,
       :billing_business_manager_static_email,
       :brief_description,
+      :budget_agreed_upon_date,
+      :end_date,
       :federal_grant_code_id,
       :federal_grant_serial_number,
       :federal_grant_title,
@@ -80,8 +90,13 @@ module ProtocolsControllerShared
       :guarantor_phone,
       :identity_id,
       :indirect_cost_rate,
+      :initial_amount,
+      :initial_amount_clinical_services,
+      :initial_budget_sponsor_received_date,
       :last_epic_push_status,
       :last_epic_push_time,
+      :negotiated_amount,
+      :negotiated_amount_clinical_services,
       :next_ssr_id,
       :potential_funding_source,
       :potential_funding_source_other,
@@ -91,6 +106,7 @@ module ProtocolsControllerShared
       :selected_for_epic,
       :short_title,
       :sponsor_name,
+      :start_date,
       :study_type_question_group_id,
       :title,
       :type,

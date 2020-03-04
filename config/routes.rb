@@ -169,6 +169,7 @@ SparcRails::Application.routes.draw do
   wash_out :oncore_endpoint # SOAP Endpoint for OnCore RPE messages
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
+  match 'organizations/:organization_id' => 'service_requests#catalog', via: [:get]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do

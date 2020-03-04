@@ -21,15 +21,17 @@
 .accordion{ id: "program#{p.id}Accordion" }
   - p.cores.eager_load(services: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]).select{ |core| @core ? core == @core : true && core.is_available != false && core.services.any?(&:is_available) && core.services.any?(&:current_pricing_map) }.each do |c|
     - locked = locked_ids.include?(c.id)
+    - expand = (@core.present? && @core == c) || @service
 
     .card.core{ id: "core#{c.id}" }
       .card-header.p-0{ id: "core#{c.id}Header" }
-        %button.core-link.btn.btn-block.d-flex.justify-content-between{ class: [css_class(p), locked ? 'locked' : '', @service ? '' : 'collapsed'], type: 'button', data: { toggle: 'collapse', target: "#core#{c.id}Collapse" }, aria: { expanded: 'true', controls: "core#{c.id}Collapse" } }
+        %button.core-link.btn.btn-block.d-flex.justify-content-between{ class: [css_class(p), expand ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#core#{c.id}Collapse" }, aria: { expanded: 'true', controls: "core#{c.id}Collapse" } }
           %h6.mb-0
             = organization_name_display(c, locked, c.services.any?)
-      .collapse{ class: @service ? 'show' : '', id: "core#{c.id}Collapse", data: { parent: "#program#{p.id}Accordion" }, aria: { labelledby: "core#{c.id}Header" } }
+      .collapse{ class: expand ? 'show' : '', id: "core#{c.id}Collapse", data: { parent: "#program#{p.id}Accordion" }, aria: { labelledby: "core#{c.id}Header" } }
         .card-body
           - if c.description.present?
             %p
               = raw(c.description)
+          = render 'catalogs/primary_contacts', organization: c
           = render 'catalogs/accordion/services', organization: c, service_request: service_request

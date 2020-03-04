@@ -20,7 +20,7 @@
 
 class OncoreEndpointController < ApplicationController
   # All of the following nested classes are used in order to avoid a duplicate key error from WashOut.
-  # If args contains an element with the same element name nested under it, there will be an error when generating the wsdl.
+  # If args contains an element within the same element, there will be an error when generating the WSDL.
   # For example:
   # This one gives a dupicate error              |   This one DOES NOT result in a duplicate error
   # :args => {                                   |   :args => {
@@ -145,11 +145,24 @@ class OncoreEndpointController < ApplicationController
   def retrieve_protocol_def
     # Pretty print the params:
     puts JSON.pretty_generate(oncore_endpoint_params.to_h)
+    # Print the params to a specific OnCore log
+    print_params_to_log
     # binding.pry
+    # oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string (atm)
     render :soap => nil
   end
 
   private
+
+  def print_params_to_log
+    logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")
+    logger = ActiveSupport::Logger.new(logfile)
+    logger.info "\n----------------------------------------------------------------------------------"
+    logger.info "RetrieveProtocolDefResponse request - #{DateTime.now}"
+    logger.info "Params received by OncoreEndpointController:"
+    logger.info JSON.pretty_generate(oncore_endpoint_params.to_h)
+    logger.info "----------------------------------------------------------------------------------\n"
+  end
 
   def oncore_endpoint_params
     params.require(:protocolDef).permit!

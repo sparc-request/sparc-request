@@ -464,7 +464,7 @@ class Organization < ApplicationRecord
   end
 
   def direct_link
-    "#{ENV.fetch('root_url')}/organizations/#{id}"
+    "#{ENV.fetch('root_url')}/#{self.current_shard}/organizations/#{id}"
   end
 
   private

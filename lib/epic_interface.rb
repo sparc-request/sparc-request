@@ -67,7 +67,7 @@ class EpicInterface
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
-    logger = ActiveSupport::Logger.new(logfile)
+    @logger = ActiveSupport::Logger.new(logfile)
 
     @config = config
     @errors = {}
@@ -85,7 +85,7 @@ class EpicInterface
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
-        logger: logger,
+        logger: @logger,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
@@ -122,6 +122,7 @@ class EpicInterface
       action = action.snakecase.to_sym
     end
 
+    @logger.info "\nSOAP Action: #{action} ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     begin
       return @client.call(
           action,

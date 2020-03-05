@@ -75,7 +75,6 @@ module APIV1
           end
 
           get do
-            Octopus.load_universities!
             Setting.preload_values
 
             find_objects(published_resource_to_s, params)

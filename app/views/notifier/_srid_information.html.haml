@@ -33,7 +33,7 @@
       %tr.skinny-black-border
         - if @role == 'none'
           %td.center
-            %a.link{ href: dashboard_sub_service_request_path(ssr) }=ssr.display_id
+            %a.link{ href: dashboard_sub_service_request_url(ssr) }=ssr.display_id
         - else
           %td.skinny-black-border.center= ssr.display_id
         %td.skinny-black-border.center= ssr.org_tree_display

@@ -40,8 +40,26 @@ module Octopus
       config[Rails.env]['shards']
     end
 
-    def load_universities!
+    def load_shards!
       University.eager_load(:database).all.each{ |u| Databases::ConnectionService.new(u).call if u.database }
+    end
+  end
+
+  module Model
+    module InstanceMethods
+      alias_method :init_with_base, :init_with
+
+      # This method has to be patched in order to load sharded objects during
+      # delayed jobs
+      def init_with(coder)
+        obj = super
+
+        if obj.current_shard
+          return obj
+        else
+          return init_with_base
+        end
+      end
     end
   end
 end
@@ -49,5 +67,5 @@ end
 Octopus.enable!
 
 if ActiveRecord::Base.connection.table_exists?('universities')
-  Octopus.load_universities!
+  Octopus.load_shards!
 end

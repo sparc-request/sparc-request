@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class University < ApplicationRecord
+  octopus_establish_connection(Rails.env.to_sym)
+
   has_one :database
 
   validates :key, uniqueness: true, presence: true

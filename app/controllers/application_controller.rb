@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def select_shard(&block)
-    Octopus.load_universities!
+    Octopus.load_shards!
 
     if identity_signed_in?
       Octopus.using(current_user.shard_identifier, &block)

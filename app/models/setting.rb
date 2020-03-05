@@ -32,9 +32,17 @@ class Setting < ApplicationRecord
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
   def self.preload_values
+    Octopus.load_shards!
+
     # Cache settings for the current request thread for the current request
-    RequestStore.store[:settings_map] ||= Octopus.shards.keys.append('master').map{ |shard| [shard, {}] }.to_h
-    RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard] = Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+    RequestStore.store[:settings_map] ||= Octopus.shards.keys.append('master').map do |shard|
+      Octopus.using(shard) do
+        [
+          shard,
+          Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+        ]
+      end
+    end.to_h
   end
 
   def self.get_value(key)
@@ -44,11 +52,11 @@ class Setting < ApplicationRecord
       self.preload_values
     end
 
-    if RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard].try(:[], key)
-      converted_value(RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key][:value], RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key][:data_type])
+    if RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s].try(:[], key)
+      converted_value(RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:value], RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:data_type])
     else
       if s = Setting.find_by_key(key)
-        RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key] = { value: s.read_attribute(:value), data_type: s.data_type }
+        RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key] = { value: s.read_attribute(:value), data_type: s.data_type }
         s.value
       else
         nil
@@ -57,7 +65,7 @@ class Setting < ApplicationRecord
   end
 
   def value=(val)
-    RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
+    RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
     
     # Needed to correctly write boolean true and false as value in specs
     if [TrueClass, FalseClass].include?(val.class)

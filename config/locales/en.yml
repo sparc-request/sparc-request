@@ -847,6 +847,13 @@ en:
     duration_placeholder: "Enter an integer"
     institution_prompt: "- Select Institution -"
 
+  ########################
+  # SUB SERVICE REQUESTS #
+  ########################
+  sub_service_requests:
+    external:
+      tooltip: "This request is from an external Provider"
+
   #############
   # SUBSIDIES #
   #############
@@ -1010,6 +1017,10 @@ en:
     epic_access: "Epic Access"
     epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
     epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
+    external_requests:
+      general_user_subject: " - Contains External Requests"
+      service_provider_subject: " - External Request"
+      external_request: "(External Request)"
     link: "HERE"
     name: "User Name"
     non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
@@ -1055,8 +1066,10 @@ en:
     p_title: "Project Title"
     triggered_by: "Current Identity:"
     u_info: "User Information"
+    u_info_external: "User Information (External)"
     welcome_obtain_research_pricing: "A request has been made for a budget review (Get Cost Estimate)"
-    welcome_submit: "A request has been submitted to start services"
+    welcome_submit: "A Request has been submitted to start services"
+    welcome_submit_external: "An <span class='red-text'>External Request</span> has been submitted to start services"
 
   # Service Request approve epic rights
   approve_epic_rights:

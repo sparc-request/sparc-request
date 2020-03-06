@@ -40,6 +40,6 @@ module SubServiceRequestsHelper
       header += icon('fas', 'lock fa-lg mr-2')
     end
 
-    content_tag :div, header, class: ['d-inline-flex', external ? 'text-warning' : ''], title: external ? "This request is from an external Provider" : "", data: { toggle: external ? 'tooltip' : '' }
+    content_tag :div, header, class: ['d-inline-flex', external ? 'text-warning' : ''], title: external ? t('sub_service_requests.external.tooltip') : "", data: { toggle: external ? 'tooltip' : '' }
   end
 end

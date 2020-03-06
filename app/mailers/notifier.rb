@@ -44,7 +44,9 @@ class Notifier < ActionMailer::Base
     xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
-    @status = status(admin_delete_ssr, audit_report.present?, @service_request)
+    @status   = status(admin_delete_ssr, audit_report.present?, @service_request)
+    @external = service_request.sub_service_requests.any?(&:external_request?)
+
     @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
     @role = project_role.role
@@ -63,8 +65,9 @@ class Notifier < ActionMailer::Base
     end
 
     # only send these to the correct person in the production env
-    email = @identity.email
-    subject = email_title(@status, @protocol, @deleted_ssrs)
+    email     = @identity.email
+    subject   = email_title(@status, @protocol, @deleted_ssrs)
+    subject  += t('notifier.external_requests.general_user_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
@@ -98,7 +101,7 @@ class Notifier < ActionMailer::Base
       attachments["service_request_#{@protocol.id}.xlsx"] = xls
     end
 
-    email =  submission_email_address
+    email   = submission_email_address
     subject = email_title(@status, @protocol, ssr)
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
@@ -109,7 +112,8 @@ class Notifier < ActionMailer::Base
     @service_request = service_request
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, request_amendment, @service_request)
+    @status   = status(ssr_destroyed, request_amendment, @service_request)
+    @external = ssr.external_request?
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
@@ -150,8 +154,9 @@ class Notifier < ActionMailer::Base
     end
 
     # only send these to the correct person in the production env
-    email = service_provider.identity.email
-    subject = email_title(@status, @protocol, ssr)
+    email     = service_provider.identity.email
+    subject   = email_title(@status, @protocol, ssr)
+    subject  += t('notifier.external_requests.service_provider_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end

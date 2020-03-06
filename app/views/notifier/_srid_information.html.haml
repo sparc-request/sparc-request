@@ -30,14 +30,21 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      %tr.skinny-black-border
+      - external = action_name == 'notify_user' && ssr.external_request?
+      %tr.skinny-black-border{ class: external ? 'red-text' : '' }
         - if @role == 'none'
-          %td.center
-            %a.link{ href: dashboard_sub_service_request_url(ssr) }=ssr.display_id
+          %td.center<
+            = link_to dashboard_sub_service_request_url(ssr), ssr.display_id, class: 'link'
         - else
-          %td.skinny-black-border.center= ssr.display_id
-        %td.skinny-black-border.center= ssr.org_tree_display
-        %td.skinny-black-border.center= PermissibleValue.get_value('status', ssr.reload.status)
-        %td.skinny-black-border.center= ssr.service_requester.try(&:full_name) || 'N/A'
+          %td.skinny-black-border.center<
+            = ssr.display_id
+        %td.skinny-black-border.center
+          - if external
+            = t('notifier.external_requests.external_request')
+          = ssr.organization.organization_hierarchy(true, true, false, false)
+        %td.skinny-black-border.center<
+          = PermissibleValue.get_value('status', ssr.reload.status)
+        %td.skinny-black-border.center<
+          = ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

@@ -28,15 +28,9 @@
           - else
             = service.display_service_name
       .col-2.text-right
-        -# if identity_signed_in? && (@shard == current_user.shard_identifier || service.share_externally?)
-        - if identity_signed_in? && (@shard == current_user.shard_identifier || service.share_externally?)
-          - tooltip   = t('proper.cart.add_service')
-          - disabled  = false
-        - else
-          - tooltip   = "Sign in to start a new request"
-          - disabled  = true
-        %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: tooltip, disabled: disabled, data: { toggle: 'tooltip', service_id: service.id, shard: @shard } }
-          = icon('fas', 'plus')
+        - if identity_signed_in?
+          %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id, shard: @shard } }
+            = icon('fas', 'plus')
     = cpt_code_text(service)
     = eap_id_text(service)
     - if !external || service.share_externally?

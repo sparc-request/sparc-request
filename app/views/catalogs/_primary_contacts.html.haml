@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if organization.primary_contacts.any? && (!identity_signed_in? || (identity_signed_in? && @shard != current_user.shard_identifier))
+- if organization.process_ssrs_parent && organization.process_ssrs_parent.primary_contacts.any? && (!identity_signed_in? || external)
   .d-flex.flex-wrap.mb-3
     %span.font-weight-bold.w-100
       = t('proper.catalog.service_provider_text')
     .w-100
       .row
-        - organization.primary_contacts.each do |pc|
+        - organization.process_ssrs_parent.primary_contacts.each do |pc|
           .col-6
             = identity_contact(pc.identity)

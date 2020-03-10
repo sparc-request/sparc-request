@@ -18,15 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- providers.select{ |prov| prov.is_available != false }.each do |p|
-  - locked  = locked_ids.include?(p.id)
-  - url     = locked ? locked_organization_catalogs_path(organization_id: p.id, shard: shard_param, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: p.id, shard: shard_param, srid: service_request.try(:id))
-  - expand  = (@provider.present? && @provider == p)
+- catalog_providers(inst, shard, external).each do |prov|
+  - locked  = locked_ids.include?(prov.id)
+  - url     = locked ? locked_organization_catalogs_path(organization_id: prov.id, shard: shard, srid: service_request.try(:id)) : update_description_catalogs_path(organization_id: prov.id, shard: shard, srid: service_request.try(:id))
+  - expand  = (@provider.present? && @provider == prov)
 
-  .card.provider{ id: "provider#{shard_name}#{p.id}" }
-    .card-header.p-0{ id: "provider#{shard_name}#{p.id}Header" }
-      %button.provider-link.org-link.btn.btn-block.collapsed{ class: [css_class(p), expand ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{shard_name}#{p.id}Collapse", url: url }, aria: { expanded: expand.to_s, controls: "provider#{shard_name}#{p.id}Collapse" } }
+  .card.provider{ id: "provider#{shard_name}#{prov.id}" }
+    .card-header.p-0{ id: "provider#{shard_name}#{prov.id}Header" }
+      %button.provider-link.org-link.btn.btn-block.collapsed{ class: [css_class(prov), expand ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#provider#{shard_name}#{prov.id}Collapse", url: url }, aria: { expanded: expand.to_s, controls: "provider#{shard_name}#{prov.id}Collapse" } }
         %h6.d-flex.align-items-start.mb-0
-          = organization_name_display(p, locked, p.programs.any?)
-    .collapse{ class: expand ? 'show' : '', id: "provider#{shard_name}#{p.id}Collapse", data: { parent: "#institution#{shard_name}#{i.id}Collapse" }, aria: { labelledby: "provider#{shard_name}#{p.id}Header" } }
-      = render 'catalogs/accordion/programs', service_request: service_request, programs: p.programs, locked_ids: locked_ids, shard_param: shard_param
+          = organization_name_display(prov, locked, prov.org_children.any?)
+    .collapse{ class: expand ? 'show' : '', id: "provider#{shard_name}#{prov.id}Collapse", data: { parent: "#institution#{shard_name}#{inst.id}Collapse" }, aria: { labelledby: "provider#{shard_name}#{prov.id}Header" } }
+      = render 'catalogs/accordion/programs', service_request: service_request, prov: prov, locked_ids: locked_ids, shard: shard, external: external

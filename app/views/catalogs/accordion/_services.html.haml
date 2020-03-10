@@ -18,8 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- organization.services.eager_load(:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]).select{ |serv| @service ? serv == @service : true && serv.is_available != false && serv.current_pricing_map }.each do |service|
-
+- catalog_services(organization, @shard, external).each do |service|
   .w-100.service
     .row
       .col-10.d-flex.align-items-center
@@ -29,10 +28,16 @@
           - else
             = service.display_service_name
       .col-2.text-right
+        -# if identity_signed_in? && (@shard == current_user.shard_identifier || service.share_externally?)
         - if identity_signed_in? && (@shard == current_user.shard_identifier || service.share_externally?)
-          %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: t('proper.cart.add_service'), data: { toggle: 'tooltip', service_id: service.id, shard: @shard } }
-            = icon('fas', 'plus')
+          - tooltip   = t('proper.cart.add_service')
+          - disabled  = false
+        - else
+          - tooltip   = "Sign in to start a new request"
+          - disabled  = true
+        %button.btn.btn-sm.btn-sq.btn-success.add-service{ type: 'button', title: tooltip, disabled: disabled, data: { toggle: 'tooltip', service_id: service.id, shard: @shard } }
+          = icon('fas', 'plus')
     = cpt_code_text(service)
     = eap_id_text(service)
-    - if @shard == current_user.shard_identifier || service.share_externally?
+    - if !external || service.share_externally?
       = raw service_pricing_text(service)

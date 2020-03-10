@@ -244,9 +244,31 @@ class Organization < ApplicationRecord
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services(include_self=true)
-    org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
-    Service.where(organization_id: org_ids)
+  def all_child_services(include_self=true, eager_loaded=false)
+     all_services = lambda do
+      if eager_loaded
+        # Assuming we have eager loading, use the loaded associations
+        # to return an array of services
+        if include_self
+          services = self.services
+        else
+          services = []
+        end
+
+        unless self.org_children.length == 0
+          self.org_children.each do |org|
+            services += org.all_child_services(true, true)
+          end
+        end
+        
+        return services
+      else
+        org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
+        Service.where(organization_id: org_ids)
+      end
+    end
+
+    @child_services ||= all_services.call()
   end
 
   def has_one_time_fee_services?(opts={})

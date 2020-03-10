@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .accordion{ id: "program#{p.id}Accordion" }
-  - p.cores.eager_load(services: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]).select{ |core| @core ? core == @core : true && core.is_available != false && core.services.any?(&:is_available) && core.services.any?(&:current_pricing_map) }.each do |c|
+  - catalog_cores(p, @shard, external).each do |c|
     - locked = locked_ids.include?(c.id)
     - expand = (@core.present? && @core == c) || @service
 
@@ -33,5 +33,6 @@
           - if c.description.present?
             %p
               = raw(c.description)
-          = render 'catalogs/primary_contacts', organization: c
-          = render 'catalogs/accordion/services', organization: c, service_request: service_request
+          - if c.process_ssrs?
+            = render 'catalogs/primary_contacts', organization: c, external: external
+          = render 'catalogs/accordion/services', organization: c, service_request: service_request, external: external

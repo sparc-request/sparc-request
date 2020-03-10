@@ -165,7 +165,7 @@ class Notifier < ActionMailer::Base
     @approved = approved
 
     ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
+    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : ENV.fetch('default_mail_to')
     email_to = identity.email
     subject = "#{t(:mailer)[:application_title]} account request - status change"
 
@@ -180,7 +180,7 @@ class Notifier < ActionMailer::Base
     @feedback = feedback
 
     email_to = Setting.get_value("feedback_mail_to")
-    email_from = @feedback.email.blank? ? Setting.get_value("default_mail_to") : @feedback.email
+    email_from = @feedback.email
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end

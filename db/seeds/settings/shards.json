@@ -100,26 +100,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "dashboard_link",
-    "value":          "/dashboard",
-    "friendly_name":  "Dashboard URL",
-    "description":    "This is the URL of SPARCDashboard for use in emails.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "default_mail_to",
-    "value":          "sparcrequest@gmail.com",
-    "friendly_name":  "Default Mail-To",
-    "description":    "This field will overwrite the mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "epic_endpoint",
     "value":          "http://TODO/",
     "friendly_name":  "Epic Endpoint",
@@ -704,16 +684,6 @@
     "value":          "true",
     "friendly_name":  "Send Authorized User Emails",
     "description":    "This determines whether the application will send emails to all authorized users with \"View\" or greater rights.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "send_emails_to_real_users",
-    "value":          "false",
-    "friendly_name":  "Send Emails to Real Users",
-    "description":    "This tells the application whether or not to send emails to users. When turned off, emails will be generated in the browser but not sent. This should be turned off in development environments.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

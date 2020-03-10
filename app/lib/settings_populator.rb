@@ -100,6 +100,7 @@ class SettingsPopulator
       @deprecated[shard.to_sym] = [
         'current_api_version',
         'dashboard_link',
+        'default_mail_to',
         'header_link_2_catalog',
         'header_link_2_catalog',
         'header_link_2_proper',
@@ -109,7 +110,8 @@ class SettingsPopulator
         'remote_service_notifier_path',
         'remote_service_notifier_protocol',
         'remote_service_notifier_username',
-        'root_url'
+        'root_url',
+        'send_emails_to_real_users'
       ]
     end
 

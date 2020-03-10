@@ -19,8 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class UserMailer < ActionMailer::Base
-  default :from => Setting.get_value("no_reply_from")
-
   def authorized_user_changed(protocol, recipient, modified_roles, action)
     @protocol         = protocol
     @modified_roles   = modified_roles
@@ -50,6 +48,6 @@ class UserMailer < ActionMailer::Base
   def send_email(recipient, subject)
     @send_to = recipient
 
-    mail(to: recipient.email, subject: subject)
+    mail(to: recipient.email, from: Setting.get_value('no_reply_from'), subject: subject)
   end
 end

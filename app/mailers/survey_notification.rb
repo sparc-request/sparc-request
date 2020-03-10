@@ -39,7 +39,6 @@ class SurveyNotification < ActionMailer::Base
     email       = @identity.email
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
 
-    mail(to: email, from: Setting.get_value("no_reply_from"), subject: subject)
+    mail(to: email, from: Setting.get_value('no_reply_from'), subject: subject)
   end
-
 end

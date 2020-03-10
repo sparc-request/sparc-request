@@ -1,14 +1,36 @@
+##################
+# General Config #
+##################
+
 sparc_version=v3.6.0
 root_url=https://sparc.musc.edu
 api_version=v1
 api_username=''
 api_password=''
 time_zone=Eastern Time (US & Canada)
-sender_address=no-reply@sample.org
 
-# Content Security
+##########
+# Emails #
+##########
+
+# The default sender of Devise-related emails
+devise_from = no-reply@musc.edu
+
+# The default recipient when send_emails_to_real_users is false
+default_mail_to = sparcrequest@gmail.com
+
+# Determines whether or not real emails will be sent to users
+send_emails_to_real_users = false
+
+####################
+# Content Security #
+####################
+
 content_security_report_only=true
 script_src_domain=*.musc.edu
 
-# Secrets
+###########
+# Secrets #
+###########
+
 LOCKBOX_MASTER_KEY=0000000000000000000000000000000000000000000000000000000000000000

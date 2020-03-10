@@ -107,14 +107,5 @@ SparcRails::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  config.action_mailer.default_url_options = { :host => 'sparc-s.obis.musc.edu' }
-
-  config.after_initialize do
-    # Need to do this after initialization so that obis_setup has run and our config is loaded
-    begin
-      config.action_mailer.default_url_options = { :host => Setting.get_value("root_url") }
-    rescue
-      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
-    end
-  end
+  config.action_mailer.default_url_options = { host: ENV.fetch('root_url') }
 end

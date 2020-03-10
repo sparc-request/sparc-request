@@ -22,8 +22,6 @@ class ProtocolMailer < ActionMailer::Base
   helper ApplicationHelper
   helper NotifierHelper
 
-  default from: Setting.get_value("no_reply_from")
-
   # https://www.pivotaltracker.com/story/show/161483270
   def archive_email
     @recipient            = params[:recipient]
@@ -40,6 +38,6 @@ class ProtocolMailer < ActionMailer::Base
   def send_email(recipient, subject)
     @send_to = recipient
 
-    mail(to: recipient.email, subject: subject)
+    mail(to: recipient.email, from: Setting.get_value('no_reply_from'), subject: subject)
   end
 end

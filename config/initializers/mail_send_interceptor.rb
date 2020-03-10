@@ -24,13 +24,13 @@ class MailSendInterceptor
     def delivering_email(mail)
       cc_to = " AND CC TO #{mail.cc}" if mail.cc.present?
 
-      mail.subject = "[#{ENV.fetch('root_url')} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
-      mail.to = ENV.fetch('default_mail_to')
+      mail.subject = "[#{ENV['root_url']} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
+      mail.to = ENV['default_mail_to']
       mail.cc = nil
     end
   end
 end
 
-unless ENV.fetch('send_emails_to_real_users') == 'true'
+unless ENV['send_emails_to_real_users'] == 'true'
   ActionMailer::Base.register_interceptor(MailSendInterceptor)
 end

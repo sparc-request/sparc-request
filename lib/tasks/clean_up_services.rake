@@ -64,28 +64,24 @@ namespace :data do
         # If li shouldn't belong to ssr.
         if process_ssrs_parent.id != ssr.organization_id
           # Create/find SubServiceRequest for li.
-          dest_ssr = ssr.service_request.sub_service_requests.
-            where(status: ssr.status).
-            find_or_create_by(organization_id: process_ssrs_parent.id)
+          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization: process_ssrs_parent, status: ssr.status)
+            dest_ssr = ssr.service_request.sub_service_requests.create(
+              organization: process_ssrs_parent,
+              status:       ssr.status
+            )
 
-          # Is this probably a newly created SSR?
-          if !dest_ssr.ssr_id && !dest_ssr.service_requester_id && !dest_ssr.owner_id
             # Move over old SSR attributes.
             old_attributes = ssr.attributes
             # ! needed, since only it will return the _other_ attributes.
             copy_over_attributes = old_attributes.
               slice!(*%w(id ssr_id organization_id org_tree_display status))
-            dest_ssr.assign_attributes(copy_over_attributes)
-            dest_ssr.assign_attributes(ssr_id: (sprintf '%04d', Protocol.find(dest_ssr.protocol_id).next_ssr_id))
-            protocol_to_update = Protocol.find(dest_ssr.protocol_id)
-            protocol_to_update.update_attribute(:next_ssr_id, protocol_to_update.next_ssr_id + 1)
+            dest_ssr.assign_attributes(copy_over_attributes, without_protection: true)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
-            ssr.service_request.ensure_ssr_ids
           end
 
           # Move li.
-          li.update!(sub_service_request_id: dest_ssr.id)
+          li.update!(sub_service_request: dest_ssr)
         end
       end # ssr.line_items.each
     end

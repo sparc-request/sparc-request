@@ -24,12 +24,8 @@ class SubServiceRequest < ApplicationRecord
 
   audited
 
-  before_create :set_protocol_id
-  after_save :update_org_tree
-  after_save :update_past_status
-
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
-  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
+  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
   belongs_to :service_request
   belongs_to :organization
   belongs_to :protocol, counter_cache: true
@@ -69,6 +65,13 @@ class SubServiceRequest < ApplicationRecord
   accepts_nested_attributes_for :payments, allow_destroy: true
 
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+
+  before_create :set_protocol_id_and_ssr_id
+
+  after_create :increment_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
+
+  after_save :update_org_tree
+  after_save :update_past_status
 
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
   scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
@@ -540,8 +543,13 @@ class SubServiceRequest < ApplicationRecord
 
   private
 
-  def set_protocol_id
-    self.protocol_id = service_request.try(:protocol_id)
+  def set_protocol_id_and_ssr_id
+    self.protocol = self.service_request.try(:protocol)
+    self.ssr_id   = self.service_request.next_ssr_id
+  end
+
+  def increment_next_ssr_id
+    self.protocol.increment!(:next_ssr_id)
   end
 
   def notify_remote_around_update?

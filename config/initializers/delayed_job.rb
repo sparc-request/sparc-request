@@ -23,11 +23,10 @@ require 'delayed/command'
 module Delayed
   class Command
     alias_method :run_process_base, :run_process
-    alias_method :run_base, :run
 
     # Force Delayed::Command to fork separate processes for each Shard
     def run_process(process_name, options = {})
-      Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'dj.log'))
+      Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
       @worker_count = Octopus.shards.length
 
       Octopus.shards.keys.each do |shard|
@@ -35,12 +34,6 @@ module Delayed
           run_process_base("#{process_name}.#{shard}", options)
         end
       end
-    end
-
-    # Connect to the shard prior to starting the worker in order to access the Database
-    def run(process_name = nil, options = {})
-      ::ActiveRecord::Base.connection.connect
-      run_base(process_name, options)
     end
   end
 end

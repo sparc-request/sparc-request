@@ -62,6 +62,33 @@ module Octopus
       end
     end
   end
+
+  class Proxy
+    alias_method :safe_connection_base, :safe_connection
+
+    # See https://github.com/thiagopradi/octopus/pull/545
+    # Modified a bit to work with Delayed Job
+    def safe_connection(connection_pool)
+      connection_pool.automatic_reconnect ||= true
+
+      if connection_pool.connected?
+        con = connection_pool.connection
+      else
+        con = connection_pool.connection
+        con.enable_query_cache!
+      end
+
+      # we need to verify! the connection before use.   Rails does this by default but octopus bypasses this mechanism.
+      # the primary connection works fine but if you use using(x) it doesn't checkout the connection from the pool correctly
+      # now we verify each pool once per request
+      if RequestStore.store["octopus.verify_pool_#{connection_pool.object_id}"].blank?
+        RequestStore.store["octopus.verify_pool_#{connection_pool.object_id}"] = 1
+        con.verify!
+      end
+
+      con
+    end
+  end
 end
 
 Octopus.enable!

@@ -86,7 +86,8 @@ class Notifier < ActionMailer::Base
     @ssr_deleted = false
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, audit_report.present?, @service_request)
+    @status   = status(ssr_destroyed, audit_report.present?, @service_request)
+    @external = ssr.external_request?
 
     @role = 'none'
     @full_name = submission_email_address
@@ -101,8 +102,9 @@ class Notifier < ActionMailer::Base
       attachments["service_request_#{@protocol.id}.xlsx"] = xls
     end
 
-    email   = submission_email_address
-    subject = email_title(@status, @protocol, ssr)
+    email     = submission_email_address
+    subject   = email_title(@status, @protocol, ssr)
+    subject  += t('notifier.external_requests.service_provider_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end

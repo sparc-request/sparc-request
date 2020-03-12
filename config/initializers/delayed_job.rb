@@ -23,6 +23,7 @@ require 'delayed/command'
 module Delayed
   class Command
     alias_method :run_process_base, :run_process
+    alias_method :run_base, :run
 
     # Force Delayed::Command to fork separate processes for each Shard
     def run_process(process_name, options = {})
@@ -30,9 +31,16 @@ module Delayed
       @worker_count = Octopus.shards.length
 
       Octopus.shards.keys.each do |shard|
-        Octopus.using(shard) do
-          run_process_base("#{process_name}.#{shard}", options)
-        end
+        run_process_base("#{process_name}.#{shard}", options)
+      end
+    end
+
+    def run(process_name, options = {})
+      Octopus.load_shards!
+      shard = process_name.split('.')[1]
+
+      Octopus.using(shard) do
+        run_base(process_name, options)
       end
     end
   end

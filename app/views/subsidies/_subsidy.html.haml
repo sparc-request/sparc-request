@@ -29,7 +29,7 @@
       - if in_dashboard?
         = t('subsidies.header')
       - else
-        = ssr_name_display(sub_service_request)
+        = ssr_name_display(sub_service_request, context: false)
     - if sub_service_request.approved_subsidy
       = notes_button(sub_service_request.approved_subsidy, ssrid: sub_service_request.id, model: sub_service_request.approved_subsidy.friendly_notable_type)
   .collapse.show{ class: "subsidy-#{sub_service_request.id}-collapse" }

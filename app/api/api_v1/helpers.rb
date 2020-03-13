@@ -36,7 +36,9 @@ module APIV1
       ['APIV1', 'Entities', depth.classify, klass.classify].join('::').constantize
     end
 
-    def find_object(klass, shard, id)
+    def find_object(klass, params)
+      shard = params[:shard]
+      id    = params[:id]
       klass = klass.classify
       error!("#{klass} not found for id=#{id}", 404) unless @object = klass.constantize.using(shard).find(id)
     end

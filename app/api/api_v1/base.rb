@@ -66,7 +66,7 @@ module APIV1
 
       route_param :shard do
         resource published_resource do
-          desc 'GET /v1/:shard/:resources.json'
+          desc 'GET /:version/:shard/:resources.json'
           params do
             use :with_depth
             use :custom_query
@@ -86,7 +86,7 @@ module APIV1
             end
           end
 
-          desc 'GET /v1/:shard/:resource/:id.json'
+          desc 'GET /:version/:shard/:resource/:id.json'
           params do
             use :with_depth
             requires :id, type: Integer
@@ -94,7 +94,7 @@ module APIV1
 
           route_param :id do
             get do
-              find_object(published_resource_to_s, params[:id])
+              find_object(published_resource_to_s, params)
 
               present @object, with: presenter(published_resource_to_s, params[:depth])
             end

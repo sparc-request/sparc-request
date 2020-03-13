@@ -37,7 +37,7 @@ module ServiceCalendarHelper
   end
 
   def display_unit_type(liv)
-    liv.line_item.service.displayed_pricing_map.unit_type.gsub("/", "/ ")
+    liv.line_item.service.displayed_pricing_map.unit_type.gsub("/", "/ ") rescue ""
   end
 
   def display_your_cost line_item

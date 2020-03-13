@@ -51,14 +51,27 @@ module Octopus
 
       # This method has to be patched in order to load sharded objects during
       # delayed jobs
-      def init_with(coder)
-        obj = super
 
-        if obj.current_shard
-          return obj
+      def init_with(coder)
+        obj                 = super
+        current_shard_value = nil
+
+        return obj unless Octopus.enabled?
+        return obj if obj.class.connection_proxy.current_model_replicated?
+
+        if coder.is_a?(Psych::Coder)
+          if (attr = coder['concise_attributes'].detect{ |a| a.name == 'current_shard' })
+            current_shard_value = attr.value_before_type_cast
+          end
         else
-          return init_with_base
+          current_shard_value = coder['attributes']['current_shard'].value if coder['attributes']['current_shard'].present? && coder['attributes']['current_shard'].value.present?
+
+          coder['attributes'].send(:attributes).send(:values).delete('current_shard')
+          coder['attributes'].send(:attributes).send(:delegate_hash).delete('current_shard')
         end
+
+        obj.current_shard = current_shard_value if current_shard_value.present?
+        obj
       end
     end
   end

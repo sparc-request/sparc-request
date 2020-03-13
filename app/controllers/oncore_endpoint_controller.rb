@@ -99,8 +99,7 @@ class OncoreEndpointController < ApplicationController
   #   SOAP Endpoint for OnCore RPE messages   #
   #############################################
 
-  soap_service namespace: 'urn:ihe:qrph:rpe:2009'
-               #,camelize_wsdl: true
+  soap_service namespace: 'urn:ihe:qrph:rpe:2009', camelize_wsdl: :lower
                # might need to camelize wsdl for OnCore since I'm pretty sure they use Java and camelcase
 
   soap_action "RetrieveProtocolDefResponse",
@@ -140,19 +139,27 @@ class OncoreEndpointController < ApplicationController
       }
     },
 
-    :return => nil,
+    :return => { 'responseCode' => :string },
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
+    # === Logging and testing info =============================
     # Pretty print the params:
     puts JSON.pretty_generate(oncore_endpoint_params.to_h)
     # Print the params to a specific OnCore log
     print_params_to_log
-    # binding.pry
-    # oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string (atm)
-    render :soap => nil
+    # ==========================================================
+
+    # return proper SOAP response
+    # PROTOCOL_RECEIVED might be different if an error occurs
+    render :soap => { 'responseCode' => 'PROTOCOL_RECEIVED' }
   end
 
   private
+
+  def find_protocol_by_rmid
+    rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
+    return Protocol.find_by(research_master_id: rmid)
+  end
 
   def print_params_to_log
     logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")

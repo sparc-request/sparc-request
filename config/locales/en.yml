@@ -483,14 +483,15 @@ en:
 
   calendar_structure:
     header: "Calendar Structure"
-    lock_calendar: "Lock Calendar"
-    unlock_calendar: "Unlock Calendar"
+    lock_calendar: "Lock Calendar & Funding"
+    unlock_calendar: "Unlock Calendar & Funding"
+    funding_locked: "Funding for this %{protocol_type} has been locked by an administrator. No funding changes may be made at this time."
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     tooltips:
-      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      lock_calendar: 'Prevent users from making changes to arm, subject, visit, and funding information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   ##############################

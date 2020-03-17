@@ -99,7 +99,7 @@ class OncoreEndpointController < ApplicationController
   #   SOAP Endpoint for OnCore RPE messages   #
   #############################################
 
-  soap_service namespace: 'urn:ihe:qrph:rpe:2009', camelize_wsdl: :lower
+  soap_service namespace: 'urn:ihe:qrph:rpe:2009', camelize_wsdl: :lower, parser: :nokogiri
                # might need to camelize wsdl for OnCore since I'm pretty sure they use Java and camelcase
 
   soap_action "RetrieveProtocolDefResponse",
@@ -139,7 +139,8 @@ class OncoreEndpointController < ApplicationController
       }
     },
 
-    :return => { 'responseCode' => :string },
+    :return => { 'tns:responseCode' => :string },
+    :header_return => :string,
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
     # === Logging and testing info =============================
@@ -151,7 +152,8 @@ class OncoreEndpointController < ApplicationController
 
     # return proper SOAP response
     # PROTOCOL_RECEIVED might be different if an error occurs
-    render :soap => { 'responseCode' => 'PROTOCOL_RECEIVED' }
+    render :soap => { 'tns:responseCode' => 'PROTOCOL_RECEIVED' },
+           :header => SecureRandom.uuid
   end
 
   private

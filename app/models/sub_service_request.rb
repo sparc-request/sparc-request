@@ -168,25 +168,6 @@ class SubServiceRequest < ApplicationRecord
     pending_subsidy.present? or approved_subsidy.present?
   end
 
-  def create_line_item(args)
-    result = self.transaction do
-      new_args = {
-        sub_service_request_id: self.service_request_id
-      }
-      new_args.update(args)
-      li = service_request.create_line_item(new_args)
-
-      li
-    end
-
-    if result
-      return result
-    else
-      self.reload
-      return false
-    end
-  end
-
   def has_one_time_fee_services?
     @has_non_clinical_services ||= one_time_fee_line_items.count > 0
   end

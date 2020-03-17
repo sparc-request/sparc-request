@@ -140,7 +140,7 @@ class ServiceRequest < ApplicationRecord
 
   def find_or_create_ssr(organization, requester)
     if (ssr = self.sub_service_requests.find_by(organization_id: organization.id)) && !ssr.is_complete?
-      if !ssr.first_draft? && ssr.can_be_edited? && ssr_has_changed?(ssr, requester)
+      if !ssr.first_draft? && ssr.can_be_edited?
         ssr.update_attribute(:status, 'draft') 
       end
     else

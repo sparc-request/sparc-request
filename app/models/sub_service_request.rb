@@ -314,6 +314,10 @@ class SubServiceRequest < ApplicationRecord
     self.organization.tag_list.include? "ctrc"
   end
 
+  def first_draft?
+    self.status == 'first_draft'
+  end
+
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)

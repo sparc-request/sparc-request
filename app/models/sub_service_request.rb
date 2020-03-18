@@ -301,16 +301,16 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
+    self.status != 'first_draft' && !organization.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    self.status == 'first_draft' || (process_ssrs_organization.has_editable_status?(self.status) && !self.is_complete?)
+    self.status == 'first_draft' || (organization.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
+    Status.complete?(self.status) && organization.has_editable_status?(self.status)
   end
 
   def is_in_draft?

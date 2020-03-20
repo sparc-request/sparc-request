@@ -66,7 +66,7 @@ class SubServiceRequest < ApplicationRecord
 
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
 
-  before_create :set_protocol_id_and_ssr_id
+  before_validation :set_protocol_id_and_ssr_id, on: :create
 
   after_create :increment_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
 

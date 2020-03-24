@@ -20,7 +20,7 @@
 
 desc 'Merge an old service into a new service (example only).'
 
-task :merge_services, [:services_list] => :environment do |t, args|
+task merge_services: :environment do
 
   def prompt(*args)
     print(*args)
@@ -34,7 +34,7 @@ task :merge_services, [:services_list] => :environment do |t, args|
 
     puts "You have entered #{old_service_id} for the old service and #{new_service_id}"
     puts "for the new service."
-    continue = "Is this correct and is it ok to continue? (y/n): "
+    continue = prompt("Is this correct and is it ok to continue? (y/n): ")
     if continue == 'y'
       puts "Merging service"
       merge_service(old_service_id, new_service_id)
@@ -50,10 +50,9 @@ def merge_service(old_service_id, new_service_id)
   dest_org_process_ssrs = new_service.organization.process_ssrs_parent
   puts "Merging Service #{old_service.id} into #{new_service.id} belonging to Org ##{dest_org_process_ssrs.id}"
 
-  [LineItem, ServiceProvider].each do |model|
-    model.where(service_id: old_service_id).each do |obj|
-      obj.update!(service_id: new_service_id)
-    end
+  old_service.line_items.each do |line_item|
+    line_item.service_id = new_service.id
+    line_item.save(validate: false)
   end
 
   old_service.destroy

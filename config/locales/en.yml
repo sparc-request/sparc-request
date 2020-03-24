@@ -27,6 +27,7 @@ en:
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
+    apply_all: "Apply to all"
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -45,6 +46,7 @@ en:
     edit: "Edit"
     export: "Export"
     filter: "Filter"
+    max: "Max"
     preview: "Preview"
     print: "Print"
     remove: "Remove"
@@ -74,7 +76,7 @@ en:
     attributes:
       arm:
         name: "Arm Name"
-        subject_count: "Subject Count"
+        subject_count: "Max Subject Count"
         visit_count: "Visit Count"
       document:
         doc_type: "Document Type"

@@ -41,7 +41,13 @@
           = f.text_field :name, class: 'form-control'
         .form-group
           = f.label :subject_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
-          = f.number_field :subject_count, class: 'form-control', min: 0
+          .input-group
+            = f.number_field :subject_count, class: 'form-control', min: 0
+            .input-group-append
+              %button.btn.btn-secondary#applyMaxSubjectCount{ type: 'button', onclick: "$('#apply_max_subject_count').prop('checked', !$('#apply_max_subject_count').prop('checked'))" }
+                %span.mr-2
+                  = t('actions.apply_all')
+                = check_box_tag :apply_max_subject_count, 'true', false, class: 'pointer-none'
         .form-group
           = f.label :visit_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
           = f.number_field :visit_count, class: 'form-control', min: 0

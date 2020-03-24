@@ -34,7 +34,11 @@
       .modal-body
         .form-group
           = f.label params[:field], class: 'required'
-          = f.number_field params[:field], class: 'form-control', min: 0, max: line_items_visit.arm.subject_count
+          .input-group
+            .input-group-prepend
+              %button.btn.btn-secondary#subjectCountMax{ type: 'button', onclick: "$('#line_items_visit_subject_count').val(#{line_items_visit.arm.subject_count})" }
+                = t('actions.max')
+            = f.number_field params[:field], class: 'form-control', min: 0, max: line_items_visit.arm.subject_count
           %small.form-text.text-muted
             = t('constants.min', min: 0)
             = t('constants.max', max: line_items_visit.arm.subject_count)

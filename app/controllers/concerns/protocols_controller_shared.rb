@@ -39,9 +39,9 @@ module ProtocolsControllerShared
 
   def protocol_params
     # Fix identity_id nil problem when lazy loading is enabled
-    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
-      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
+    # when lazy loading is enabled, the identity may not exist in database yet, so we create it using lazy_identity_id if necessary here
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:lazy_identity_id].present?
+      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:lazy_identity_id]).id
     end
 
     # Sanitize date formats

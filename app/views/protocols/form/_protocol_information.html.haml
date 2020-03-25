@@ -47,6 +47,7 @@
               = f.label :primary_pi, icon('fas', 'search'), class: 'input-group-text'
             = text_field_tag :primary_pi, ff_ppi.object.identity.try(&:display_name), class: 'form-control typeahead', placeholder: t('constants.prompts.search_for_user'), readonly: !protocol.new_record?
           = ff_ppi.hidden_field :identity_id
+          = hidden_field_tag :lazy_identity_id, ff_ppi.object.identity.try(&:ldap_uid)
           %span.form-text.text-muted
             = t('protocols.form.information.primary_pi.note')
 

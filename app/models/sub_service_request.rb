@@ -64,7 +64,7 @@ class SubServiceRequest < ApplicationRecord
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
-  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }, if: Proc.new{ |ssr| ssr.service_request_id.present? }
 
   before_validation :set_next_ssr_id, on: :create
 

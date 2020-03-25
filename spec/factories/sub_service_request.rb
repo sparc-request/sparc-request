@@ -21,7 +21,6 @@
 FactoryBot.define do
   factory :sub_service_request do
     service_requester_id { Random.rand(1000) }
-    sequence(:ssr_id) { |n| "000#{n}" }
     status {"draft"}
     imported_to_fulfillment {true}
 

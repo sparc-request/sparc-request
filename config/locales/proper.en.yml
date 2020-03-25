@@ -118,6 +118,8 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
+      ssr_resubmission:
+        header: "Select Requests to Resubmit"
       confirmation_warning: "An email has been sent to each of your Service Providers and they should be contacting you soon.<br>If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
       cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"

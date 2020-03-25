@@ -18,40 +18,44 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-lg#newResponseModal{ role: 'document' }
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
-    = form_for response, url: surveyor_responses_path(response), method: 'post', remote: true do |f|
+    = form_for service_request, url: confirmation_service_request_path(srid: service_request.id), method: :get, html: { id: 'submitSSRsForm' } do |f|
       .modal-header
         %h3.modal-title
-          = survey.title
+          = "Select Requests to Resubmit"
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
-      .modal-body#survey-response
-        = f.hidden_field :identity_id, value: current_user.id
-        = f.hidden_field :survey_id, value: survey.id
-        = f.hidden_field :respondable_id, value: respondable.id
-        = f.hidden_field :respondable_type, value: respondable.class.name
-        - unless survey.description.blank?
-          .form-group
-            %p.survey-description
-              = raw(survey.description)
-        .row
-          .list-group.list-group-flush.survey-sections.w-100
-            - survey.sections.eager_load(questions: :options).each do |section|
-              %section.list-group-item
-                %h4.mb-2
-                  = section.title
-                - unless section.description.blank?
-                  .form-group
-                    %p.section-description
-                      = raw(section.description)
-                - unless section.questions.none?
-                  = render 'layouts/required_fields'
-
-                - section.questions.each_with_index do |question, index|
-                  = f.fields_for :question_responses do |qr|
-                    = render 'surveyor/responses/form/response_question', qr: qr, question_response: qr.object, section: section, question: question, index: index
+      .modal-body
+        - ssrs = service_request.sub_service_requests.select{ |ssr| ['draft', 'awaiting_pi_approval'].include?(ssr.status) }
+        %table#ssrsSubmissionTable{ data: { toggle: 'table', click_to_select: 'true' } }
+          %thead.bg-light
+            %th.d-none
+            %th{ data: { checkbox: 'true', checked: 'true' } }
+            %th
+              = ServiceRequest.human_attribute_name(:id)
+            %th
+              = ServiceRequest.human_attribute_name(:organization)
+            %th
+              = ServiceRequest.human_attribute_name(:status)
+            %th.text-center
+              = ServiceRequest.human_attribute_name(:previously_submitted)
+          %body
+            - ssrs.each do |ssr|
+              %tr
+                %td.d-none
+                  = ssr.id
+                %td
+                %td
+                  = ssr.display_id
+                %td
+                  = ssr.org_tree_display
+                %td
+                  = PermissibleValue.get_value('status', ssr.status)
+                %td.text-center
+                  - klass = ssr.previously_submitted? ? 'check fa-lg text-success' : 'times fa-lg text-danger'
+                  = icon('fas', klass)
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
-        = f.submit t(:actions)[:submit], class: 'btn btn-primary'
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

@@ -218,6 +218,7 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+        previously_submitted: "Previously Submitted"
       sub_service_request:
         srid: "SRID"
       short_interaction:

@@ -18,44 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='response[question_responses_attributes]']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
-
-<% @response.question_responses.each_with_index do |qr, index| %>
-<% qr.errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name^='response[question_responses_attributes][<%= index %>][<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
-<% end %>
-<% end %>
-
-<% else %>
-
-<% if @response.survey.is_a?(Form) %>
-$('#forms').removeClass('d-none')
-$('#formsTable').bootstrapTable('refresh')
-$('#modalContainer').modal('hide')
-
-if window.location.pathname.startsWith('/dashboard')
-  $('.service-request-card:not(:eq(0))').remove()
-  $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
-  $(".service-requests-table").bootstrapTable()
+$('#modalContainer').html("<%= j render 'service_requests/ssr_resubmission_form', service_request: @service_request %>")
+$("#modalContainer").modal('show')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 
-<% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>
-<% if @response.respondable.previously_submitted? %>
-$.ajax
-  method: 'GET'
-  dataType: 'script'
-  url: '/service_request/confirmation'
-  data:
-    srid: getSRId()
-<% else %>
-$('#modalContainer').modal('hide')
-<% end %>
-<% else %>
-window.location = "/surveyor/responses/<%=@response.id%>/complete"
-<% end %>
-<% end %>
+$('[name=btSelectAll]').trigger('click')

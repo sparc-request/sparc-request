@@ -59,7 +59,6 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
           end
-
           # Move LineItems.
           ssr.line_items.where(service: service).each do |li|
             li.update!(sub_service_request: dest_ssr)

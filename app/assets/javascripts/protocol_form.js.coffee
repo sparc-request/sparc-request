@@ -132,6 +132,7 @@ $(document).ready ->
     }
   ).on 'typeahead:select', (event, suggestion) ->
     $('#protocol_primary_pi_role_attributes_identity_id').val(suggestion.value)
+    $('#lazy_identity_id').val(suggestion.lazy_id)
     $('#primary_pi').prop('placeholder', suggestion.label)
     $('#primary_pi').parents('.form-group').addClass('is-valid')
 

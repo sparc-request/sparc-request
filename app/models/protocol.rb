@@ -305,6 +305,12 @@ class Protocol < ApplicationRecord
       where.not(sub_service_requests: {status: 'first_draft'})
   }
 
+  def research_master_id=(rmid)
+    self.rmid_validated = false if rmid.blank?
+
+    super(rmid)
+  end
+
   def validate_dates
     is_valid = true
     if self.start_date.blank?

@@ -113,7 +113,8 @@ class SearchController < ApplicationController
     results = Identity.search(term).map{ |i|
       {
         label: i.display_name,
-        value: i.suggestion_value
+        value: i.suggestion_value,
+        lazy_id: i.ldap_uid
       }
     }
     render json: results.to_json

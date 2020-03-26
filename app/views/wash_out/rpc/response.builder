@@ -18,91 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ArmsController < ApplicationController
-  respond_to :html, :js, :json
-
-  before_action :initialize_service_request,  unless: :in_dashboard?
-  before_action :authorize_identity,          unless: :in_dashboard?
-  before_action :authorize_admin,             if: :in_dashboard?, except: [:index]
-  before_action :find_arm,                    only: [:edit, :update, :destroy]
-
-  def index
-    protocol = Protocol.find(params[:protocol_id])
-    @arms = protocol.arms
-
-    respond_to :json
-  end
-
-  def new
-    @arm = @service_request.protocol.arms.new
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    respond_to :js
-  end
-
-  def create
-    @arm = @service_request.protocol.arms.new(arm_params)
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    if @arm.save
-      @service_request.reload
-      flash[:success] = t('arms.created')
-    else
-      @errors = @arm.errors
+# This view was taken from WashOut directly (https://github.com/inossidabile/wash_out/blob/master/app/views/wash_out/rpc/response.builder)
+# then modified to fit the specific RPC SOAP response OnCore requires to work with SPARC.
+# There was no way to include a MessageId element with an xmlns element and a value within the element,
+# so the proper format was forced in this view.
+xml.instruct!
+xml.tag! "soap:Envelope", "xmlns:soap" => 'http://schemas.xmlsoap.org/soap/envelope/',
+                          "xmlns:xsd" => 'http://www.w3.org/2001/XMLSchema',
+                          "xmlns:xsi" => 'http://www.w3.org/2001/XMLSchema-instance',
+                          "xmlns:tns" => @namespace do
+  if !header.nil?
+    xml.tag! "soap:Header" do
+      xml.tag! "MessageID", header.first.value, { "xmlns" => "http://www.w3.org/2005/08/addressing" }
     end
-
-    respond_to :js
   end
-
-  def edit
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    respond_to :js
-  end
-
-  def update
-    @tab = params[:tab]
-
-    setup_calendar_pages
-
-    if @arm.update_attributes(arm_params)
-      flash[:success] = t('arms.updated')
-    else
-      @errors = @arm.errors
+  xml.tag! "soap:Body" do
+    xml.tag! "tns:#{@action_spec[:response_tag]}" do
+      wsdl_data xml, result
     end
-
-    respond_to :js
-  end
-
-  def destroy
-    @arm.destroy
-    @service_request.reload
-
-    setup_calendar_pages
-
-    flash[:alert] = t('arms.destroyed')
-
-    respond_to :js
-  end
-
-  private
-
-  def arm_params
-    params.require(:arm).permit(
-      :name,
-      :visit_count,
-      :subject_count,
-      :protocol_id
-    )
-  end
-
-  def find_arm
-    @arm = Arm.find(params[:id])
   end
 end

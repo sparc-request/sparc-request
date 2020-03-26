@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_and_belongs_to_many :study_phases
 

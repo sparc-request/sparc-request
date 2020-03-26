@@ -72,6 +72,6 @@ module Dashboard::ProtocolsHelper
       protocol_ids << merge.merged_protocol_id
     end
 
-    protocol_ids
+    content_tag(:div, protocol_ids.join(" "))
   end
 end

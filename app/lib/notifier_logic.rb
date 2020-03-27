@@ -27,7 +27,7 @@ class NotifierLogic
     NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email
   end
 
-  def initialize(service_request, current_user, ssrids=nil)
+  def initialize(service_request, current_user, ssrids=[])
     @service_request = service_request
     @current_user = current_user
     @destroyed_ssrs_needing_notification = destroyed_ssr_that_needs_a_request_amendment_email
@@ -244,6 +244,6 @@ class NotifierLogic
   end
 
   def find_draft_ssrs(ssrids)
-    @service_request.sub_service_requests.select{ |ssr| ssrids.present? && ssrids.include?(ssr.id.to_s) && ssr.status == "draft" }
+    @service_request.sub_service_requests.select{ |ssr| (ssrids.blank? || ssrids.include?(ssr.id.to_s)) && ssr.status == "draft" }
   end
 end

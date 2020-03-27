@@ -145,7 +145,8 @@ class ServiceRequest < ApplicationRecord
       end
     else
       ssr = self.sub_service_requests.create(
-        organization_id:    organization.id,
+        protocol:           self.protocol,
+        organization:    organization,
         service_requester:  requester,
         status:             self.status == 'first_draft' ? 'first_draft' : 'draft'
       )

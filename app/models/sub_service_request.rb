@@ -24,7 +24,7 @@ class SubServiceRequest < ApplicationRecord
 
   audited
 
-  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
+  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id", optional: true
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
   belongs_to :service_request
   belongs_to :organization

@@ -2,11 +2,12 @@ module CostAnalysis
   module Generators
     class PDF
 
-      attr_accessor :study_information, :visit_tables
+      attr_accessor :study_information, :visit_tables, :otf_tables
 
       def initialize(doc)
         @doc = doc
         @visit_tables = []
+        @otf_tables = []
       end
 
       def update
@@ -16,6 +17,7 @@ module CostAnalysis
         primary_investigators = study_information.primary_investigators.map{ |p| ["Primary Investigator", p.name, p.email] }
         additional_contacts = study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] }
         visit_tables = @visit_tables
+        otf_tables = @otf_tables
 
         @doc.instance_eval do
           bounding_box([0,y], :width => 700, :height => 50) do
@@ -109,6 +111,33 @@ module CostAnalysis
                 move_down 5
             end
             move_down 5
+          end
+
+          move_down 20
+
+          otf_table_style = {
+            :border_width => 1,
+            :border_color => '4c4c4c',
+            :overflow => :shrink_to_fit,
+            :size => 8
+          }
+
+          otf_tables.each do |otf_table|
+            summary_table = otf_table.summarized_table
+
+            summary_table = make_table(
+              summary_table.table_rows,
+              :cell_style => visit_table_style, :header => true) do
+                cells.columns(0..-1).rows(0..1).style({
+                  :background_color => "91c6d8",
+                })
+              end
+
+            unless summary_table.cells.fits_on_current_page?(cursor, bounds)
+              start_new_page
+            end
+
+            summary_table.draw
           end
 
           move_down 20

@@ -34,7 +34,7 @@ module CostAnalysis
     def build_otf_table(service_request)
       sub_srv_reqs = service_request.otf_line_items()
 
-      tbl = CostAnalysis::OftTable.new
+      tbl = CostAnalysis::OtfTable.new
 
       tbl.program_or_core = sub_srv_reqs.first[1][0].service.organization_hierarchy
 

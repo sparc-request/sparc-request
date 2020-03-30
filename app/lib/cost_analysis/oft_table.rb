@@ -1,10 +1,10 @@
 module CostAnalysis
 
-    class OftLineItem
+    class OtfLineItem
         attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate, :quantity_type, :quantity, :total_dollars_per_study, :unit_type
     end
 
-    class OftTable
+    class OtfTable
         attr_accessor :line_items, :program_or_core
 
         include ActionView::Helpers::NumberHelper
@@ -15,7 +15,7 @@ module CostAnalysis
         end
 
         def add_otf_line_item line_item
-            otf_item = CostAnalysis::OftLineItem.new
+            otf_item = CostAnalysis::OtfLineItem.new
             otf_item.service_name = line_item.service.display_service_name
             otf_item.status = line_item.status
             otf_item.applicable_rate = Service.cents_to_dollars(line_item.applicable_rate)

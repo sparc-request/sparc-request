@@ -1,7 +1,7 @@
 module CostAnalysis
 
     class OftLineItem
-        attr_accessor :service_name, :status, :service_rate_dollars, :quantity_type, :quantity, :total_dollars_per_study, :unit_type
+        attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate, :quantity_type, :quantity, :total_dollars_per_study, :unit_type
     end
 
     class OftTable
@@ -18,6 +18,7 @@ module CostAnalysis
             otf_item = CostAnalysis::OftLineItem.new
             otf_item.service_name = line_item.service.display_service_name
             otf_item.status = line_item.status
+            otf_item.applicable_rate = Service.cents_to_dollars(line_item.applicable_rate)
             otf_item.service_rate_dollars = Service.cents_to_dollars(line_item.service.displayed_pricing_map.full_rate)
             otf_item.quantity = line_item.quantity
             otf_item.quantity_type = line_item.quantity_type
@@ -49,7 +50,7 @@ module CostAnalysis
                     li.service_name,
                     li.status,
                     {:content => to_money(li.service_rate_dollars), :align => :right},
-                    {:content => "?", :align => :right},
+                    {:content => to_money(li.applicable_rate), :align => :right},
                     {:content => li.unit_type, :align => :right},
                     {:content => li.quantity_type, :align => :right},
                     to_money(li.total_dollars_per_study)

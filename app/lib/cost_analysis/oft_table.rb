@@ -1,20 +1,19 @@
 module CostAnalysis
 
     class OtfLineItem
-        attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate, :quantity_type, :quantity, :total_dollars_per_study, :unit_type
+        attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate, :quantity_type, :quantity, :total_dollars_per_study, :unit_type, :program_or_core
     end
 
     class OtfTable
-        attr_accessor :line_items, :program_or_core
+        attr_accessor :line_items
 
         include ActionView::Helpers::NumberHelper
 
         def initialize
-            @program_or_core = "PROGRAM OR CORE NOT SET"
-            @line_items = []
+            @line_items = {}
         end
 
-        def add_otf_line_item line_item
+        def add_otf_line_item(line_item)
             otf_item = CostAnalysis::OtfLineItem.new
             otf_item.service_name = line_item.service.display_service_name
             otf_item.status = line_item.status
@@ -24,12 +23,16 @@ module CostAnalysis
             otf_item.quantity_type = line_item.quantity_type
             otf_item.unit_type = line_item.otf_unit_type
             otf_item.total_dollars_per_study = Service.cents_to_dollars(line_item.service.displayed_pricing_map.full_rate * line_item.quantity)
+            otf_item.program_or_core = line_item.service.organization_hierarchy
 
-            line_items << otf_item
+            ssr_id = line_item.sub_service_request.ssr_id
+
+            @line_items[ssr_id] = [] unless @line_items.has_key?(ssr_id)
+            @line_items[ssr_id] << otf_item
         end
 
-        def summarized_table
-            col_labels = [
+        def get_col_labels
+            [
                 "Service Name",
                 "Status",
                 "Service Rate",
@@ -38,32 +41,39 @@ module CostAnalysis
                 "Qty Type #",
                 "Total Per Study"
             ]
+        end
+
+        def summarized_table
+            col_labels = get_col_labels
             
             table = TableWithGroupHeaders.new
             table.add_column_labels(title_row("One Time Fees", col_labels.length))
             table.add_column_labels(col_labels)
 
-            table.add_header(build_program_core_row(@program_or_core, col_labels.length))
+            ssr_ids.each do |ssr_id|
+                table.add_header(build_ssr_header_row(@line_items[ssr_id][0].program_or_core, ssr_id, col_labels.length))
 
-            @line_items.each do |li|
-                table.add_data([
-                    li.service_name,
-                    li.status,
-                    {:content => to_money(li.service_rate_dollars), :align => :right},
-                    {:content => to_money(li.applicable_rate), :align => :right},
-                    {:content => li.unit_type, :align => :right},
-                    {:content => li.quantity_type, :align => :right},
-                    {:content => to_money(li.total_dollars_per_study), :align => :right}
-                ])
+                @line_items[ssr_id].sort_by() { |li| li.service_name }.each do |li|
+                    table.add_data([
+                        li.service_name,
+                        li.status,
+                        {:content => to_money(li.service_rate_dollars), :align => :right},
+                        {:content => to_money(li.applicable_rate), :align => :right},
+                        {:content => li.unit_type, :align => :right},
+                        {:content => li.quantity_type, :align => :right},
+                        {:content => to_money(li.total_dollars_per_study), :align => :right}
+                    ])
+                end
+
             end
 
-            # Total row
-            table.add_data([
-                {:colspan => 6, :content => ''},
-                {:content => to_money(total), :align => :right, :font_style => :bold}
-            ])
+            table.add_data(total_row)
 
             table
+        end
+
+        def ssr_header_text(org_name, ssr_id)
+            "#{org_name} (#{ssr_id})"
         end
 
         def title_row(text, colspan)
@@ -78,16 +88,24 @@ module CostAnalysis
             }]
         end
 
-        def build_program_core_row(program_or_core, colspan)
-        [{
-            :colspan => colspan,
-            :content => program_or_core,
-            :align => :left,
-            :valign => :middle,
-            :background_color => 'E8E8E8',
-            :size => 10,
-            :font_style => :bold
-        }]
+        def total_row
+            [
+                {:colspan => get_col_labels.length - 1, :content => ''},
+                {:content => to_money(total), :align => :right, :font_style => :bold}
+            ]
+        end
+
+        def build_ssr_header_row(program_or_core, ssr_id, colspan)
+            ssr_header_text = "#{program_or_core} (#{ssr_id})"
+            [{
+                :colspan => colspan,
+                :content => ssr_header_text,
+                :align => :left,
+                :valign => :middle,
+                :background_color => 'E8E8E8',
+                :size => 10,
+                :font_style => :bold
+            }]
         end
 
         def to_money(v)
@@ -95,7 +113,15 @@ module CostAnalysis
         end
 
         def total
-            @line_items.sum { |li| li.total_dollars_per_study }
+            @line_items.sum { |g| total_by_ssr_id(g[0]) }
+        end
+
+        def total_by_ssr_id(ssr_id)
+            @line_items[ssr_id].sum { |li| li.total_dollars_per_study }
+        end
+
+        def ssr_ids
+            @line_items.keys.sort
         end
 
     end

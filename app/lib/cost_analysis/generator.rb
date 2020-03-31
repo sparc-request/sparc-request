@@ -36,8 +36,6 @@ module CostAnalysis
 
       tbl = CostAnalysis::OtfTable.new
 
-      tbl.program_or_core = sub_srv_reqs.first[1][0].service.organization_hierarchy
-
       sub_srv_reqs.each do |ssr_with_lis|
           ssr = ssr_with_lis[0]
           lis = ssr_with_lis[1]

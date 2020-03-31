@@ -53,9 +53,15 @@ module CostAnalysis
                     {:content => to_money(li.applicable_rate), :align => :right},
                     {:content => li.unit_type, :align => :right},
                     {:content => li.quantity_type, :align => :right},
-                    to_money(li.total_dollars_per_study)
+                    {:content => to_money(li.total_dollars_per_study), :align => :right}
                 ])
             end
+
+            # Total row
+            table.add_data([
+                {:colspan => 6, :content => ''},
+                {:content => to_money(total), :align => :right, :font_style => :bold}
+            ])
 
             table
         end
@@ -86,6 +92,10 @@ module CostAnalysis
 
         def to_money(v)
             number_with_precision(v, :precision => 2, :delimiter => ",")
+        end
+
+        def total
+            @line_items.sum { |li| li.total_dollars_per_study }
         end
 
     end

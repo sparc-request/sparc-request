@@ -230,10 +230,13 @@ class Protocol < ApplicationRecord
 
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
+
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity(id)
+    elsif filter == 'for_all'
+      return
     end
   }
 

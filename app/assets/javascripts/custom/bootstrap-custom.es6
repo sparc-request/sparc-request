@@ -43,9 +43,9 @@
     $(document).on('click', 'table.table-interactive tbody tr', event => {
       el = event.target
 
-      if (el.tagName == 'tr') {
+      if (el.tagName == 'tr' && $(el).find('a').length) {
         window.location = $(el).find('a').first().attr('href');
-      } else if (el.tagName != 'a') {
+      } else if (el.tagName != 'a' && $(el).parents('tr').find('a').length) {
         window.location = $(el).parents('tr').find('a').first().attr('href');
       }
     })

@@ -75,6 +75,8 @@ RSpec.describe 'User takes system satisfaction survey after reviewing their requ
 
       it 'should offer a survey' do
         confirm_swal
+        wait_for_javascript_to_finish
+
         fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
         click_button I18n.t('actions.submit')
         wait_for_javascript_to_finish
@@ -102,6 +104,8 @@ RSpec.describe 'User takes system satisfaction survey after reviewing their requ
 
       it 'should offer a survey' do
         confirm_swal
+        wait_for_javascript_to_finish
+
         fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
         click_button I18n.t('actions.submit')
         wait_for_javascript_to_finish

@@ -20,7 +20,7 @@
 
 $ ->
   if $('#use_system_satisfaction').val() == 'true'
-    $(document).one 'click', '#getCostEstimate, #submitRequest', (event) ->
+    $(document).one 'click ajax:beforeSend', '#getCostEstimate, #submitRequest', (event) ->
       event.preventDefault()
       $this = $(this)
       $this.addClass('disabled')
@@ -32,3 +32,9 @@ $ ->
         data:
           srid: getSRId()
           forward: $this.prop('href')
+
+  $(document).on 'submit', '#submitSSRsForm', ->
+    event.preventDefault()
+    data = $('#ssrsSubmissionTable').bootstrapTable('getSelections').map (e, index) -> e[0]
+
+    window.location = "#{$(this).prop('action')}&#{$.param({ ssrids: data })}"

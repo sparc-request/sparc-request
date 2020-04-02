@@ -485,7 +485,6 @@ class Protocol < ApplicationRecord
   # thread-safe.
   def push_to_epic(epic_interface, origin, identity_id=nil, withhold_calendar=false)
     begin
-      binding.pry
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
       save(validate: false)

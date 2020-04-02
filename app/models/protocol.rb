@@ -230,10 +230,13 @@ class Protocol < ApplicationRecord
 
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
+
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity(id)
+    elsif filter == 'for_all'
+      return
     end
   }
 
@@ -304,6 +307,12 @@ class Protocol < ApplicationRecord
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
   }
+
+  def research_master_id=(rmid)
+    self.rmid_validated = false if rmid.blank?
+
+    super(rmid)
+  end
 
   def validate_dates
     is_valid = true

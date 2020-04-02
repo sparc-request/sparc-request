@@ -108,24 +108,28 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    @protocol = @service_request.protocol
-    @service_request.previous_submitted_at = @service_request.submitted_at
+    respond_to do |format|
+      format.js # Nothing needed but rendering a modal
+      format.html {
+        @protocol = @service_request.protocol
+        @service_request.previous_submitted_at = @service_request.submitted_at
 
-    if Setting.get_value("use_epic") && @service_request.should_push_to_epic? && @protocol.selected_for_epic?
-      # Send a notification to Lane et al to create users in Epic.  Once
-      # that has been done, one of them will click a link which calls
-      # approve_epic_rights.
-      @protocol.ensure_epic_user
-      if Setting.get_value("queue_epic")
-        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
-      else
-        @protocol.awaiting_approval_for_epic_push
-        send_epic_notification_for_user_approval(@protocol)
-      end
+        if Setting.get_value("use_epic") && @service_request.should_push_to_epic? && @protocol.selected_for_epic?
+          # Send a notification to Lane et al to create users in Epic.  Once
+          # that has been done, one of them will click a link which calls
+          # approve_epic_rights.
+          @protocol.ensure_epic_user
+          if Setting.get_value("queue_epic")
+            EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
+          else
+            @protocol.awaiting_approval_for_epic_push
+            send_epic_notification_for_user_approval(@protocol)
+          end
+        end
+
+        NotifierLogic.delay.confirmation_logic(@service_request, current_user, params[:ssrids])
+      }
     end
-
-    NotifierLogic.delay.confirmation_logic(@service_request, current_user)
-    render formats: [:html]
   end
 
   def save_and_exit

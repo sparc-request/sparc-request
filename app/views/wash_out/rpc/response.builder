@@ -18,23 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$ ->
-  if $('#use_system_satisfaction').val() == 'true'
-    $(document).one 'click ajax:beforeSend', '#getCostEstimate, #submitRequest', (event) ->
-      event.preventDefault()
-      $this = $(this)
-      $this.addClass('disabled')
-
-      $.ajax
-        method: 'get'
-        dataType: 'script'
-        url: '/service_request/system_satisfaction_survey'
-        data:
-          srid: getSRId()
-          forward: $this.prop('href')
-
-  $(document).on 'submit', '#submitSSRsForm', ->
-    event.preventDefault()
-    data = $('#ssrsSubmissionTable').bootstrapTable('getSelections').map (e, index) -> e[0]
-
-    window.location = "#{$(this).prop('action')}&#{$.param({ ssrids: data })}"
+# This view was taken from WashOut directly (https://github.com/inossidabile/wash_out/blob/master/app/views/wash_out/rpc/response.builder)
+# then modified to fit the specific RPC SOAP response OnCore requires to work with SPARC.
+# There was no way to include a MessageId element with an xmlns element and a value within the element,
+# so the proper format was forced in this view.
+xml.instruct!
+xml.tag! "soap:Envelope", "xmlns:soap" => 'http://schemas.xmlsoap.org/soap/envelope/',
+                          "xmlns:xsd" => 'http://www.w3.org/2001/XMLSchema',
+                          "xmlns:xsi" => 'http://www.w3.org/2001/XMLSchema-instance',
+                          "xmlns:tns" => @namespace do
+  if !header.nil?
+    xml.tag! "soap:Header" do
+      xml.tag! "MessageID", header.first.value, { "xmlns" => "http://www.w3.org/2005/08/addressing" }
+    end
+  end
+  xml.tag! "soap:Body" do
+    xml.tag! "tns:#{@action_spec[:response_tag]}" do
+      wsdl_data xml, result
+    end
+  end
+end

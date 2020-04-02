@@ -33,7 +33,7 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.3.0'
+gem 'grape', '1.3.1'
 gem 'grape-entity', '~> 0.8.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -68,7 +68,7 @@ gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.3'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4.1'
+gem 'rails', '5.2.4.2'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -82,6 +82,7 @@ gem 'slack-notifier'
 gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
+gem 'wash_out'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
@@ -114,7 +115,7 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 3.9'
+  gem 'rspec-rails', '~> 4.0'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage

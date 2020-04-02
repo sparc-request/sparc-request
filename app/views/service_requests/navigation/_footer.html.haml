@@ -46,7 +46,7 @@
             = save_as_draft_button(@service_request)
         .col.text-right
           - if action_name == 'review'
-            = link_to confirmation_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
+            = link_to confirmation_service_request_path(srid: @service_request.id), remote: @service_request.previously_submitted?, class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
               - succeed icon('fas', 'arrow-right ml-2') do
                 = t('proper.navigation.bottom.submit')
           - else

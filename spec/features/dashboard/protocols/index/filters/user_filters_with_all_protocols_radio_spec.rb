@@ -18,36 +18,31 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-def populate_settings_before_suite
-  Setting.auditing_enabled = false
-  SettingsPopulator.new().populate
+require "rails_helper"
 
-  Setting.find_by_key("use_epic").update_attribute(:value, true)
-  Setting.find_by_key("use_ldap").update_attribute(:value, false)
-  Setting.find_by_key("use_funding_module").update_attribute(:value, true)
-  Setting.find_by_key("suppress_ldap_for_user_search").update_attribute(:value, true)
-  Setting.find_by_key("ldap_auth_username").update_attribute(:value, nil)
-  Setting.find_by_key("ldap_auth_password").update_attribute(:value, nil)
-  Setting.find_by_key("ldap_filter").update_attribute(:value, nil)
+RSpec.describe "User filters using \"All Protocols\"", js: :true do
 
-  load File.expand_path("../../../app/lib/directory.rb", __FILE__)
-end
+  let_there_be_lane
+  fake_login_for_each_test
 
-def stub_config(key, value)
-  setting = Setting.find_by_key(key)
-  default_value = setting.value
+  context "as a general user (AKA the default search)" do
+    before :each do
+      organization  = create(:organization)
+      @protocol     = create(:study_without_validations, primary_pi: jug2)
+      @protocol2    = create(:study_without_validations, primary_pi: create(:identity))
 
-  before :each do
-    setting.update_attribute(:value, value)
-  end
+      visit dashboard_protocols_path
+      wait_for_javascript_to_finish
 
-  after :each do
-    setting.update_attribute(:value, default_value)
-  end
-end
+      find("#filterrific_admin_filter_for_all").click
+      click_button I18n.t('actions.filter')
+      wait_for_javascript_to_finish
+    end
 
-RSpec.configure do |config|
-  config.before :each do
-    Setting.preload_values
+    scenario "and sees all protocols" do
+      expect(page).to have_selector("#protocolsTable tbody tr", count: 2)
+      expect(page).to have_content(@protocol.short_title)
+      expect(page).to have_content(@protocol2.short_title)
+    end
   end
 end

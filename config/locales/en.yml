@@ -27,6 +27,7 @@ en:
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
+    apply_all: "Apply to all"
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -45,6 +46,7 @@ en:
     edit: "Edit"
     export: "Export"
     filter: "Filter"
+    max: "Max"
     preview: "Preview"
     print: "Print"
     remove: "Remove"
@@ -74,7 +76,7 @@ en:
     attributes:
       arm:
         name: "Arm Name"
-        subject_count: "Subject Count"
+        subject_count: "Max Subject Count"
         visit_count: "Visit Count"
       document:
         doc_type: "Document Type"
@@ -218,6 +220,7 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+        previously_submitted: "Previously Submitted"
       sub_service_request:
         srid: "SRID"
       short_interaction:
@@ -483,14 +486,15 @@ en:
 
   calendar_structure:
     header: "Calendar Structure"
-    lock_calendar: "Lock Calendar"
-    unlock_calendar: "Unlock Calendar"
+    lock_calendar: "Lock Calendar & Funding"
+    unlock_calendar: "Unlock Calendar & Funding"
+    funding_locked: "Funding for this %{protocol_type} has been locked by an administrator. No funding changes may be made at this time."
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     tooltips:
-      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      lock_calendar: 'Prevent users from making changes to arm, subject, visit, and funding information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   ##############################

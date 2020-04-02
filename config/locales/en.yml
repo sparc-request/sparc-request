@@ -358,6 +358,7 @@ en:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
+      subject_count_apply_all: "Apply the arm's subject count to all service line items in this arm."
       visit_count: 'Total number of visits per arm'
       screening: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 

@@ -85,7 +85,6 @@ SparcRails::Application.routes.draw do
     get :service_subsidy
     get :document_management
     get :review
-    get :obtain_research_pricing
     get :confirmation
     get :approve_changes
     get :system_satisfaction_survey

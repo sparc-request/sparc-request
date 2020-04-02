@@ -24,8 +24,8 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_action :initialize_service_request,      except: [:approve_changes]
-  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
@@ -105,14 +105,6 @@ class ServiceRequestsController < ApplicationController
     @service_request.arms.each do |arm|
       @pages[arm.id] = 1
     end
-  end
-
-  def obtain_research_pricing
-    @protocol = @service_request.protocol
-    @service_request.previous_submitted_at = @service_request.submitted_at
-
-    NotifierLogic.delay.obtain_research_pricing_logic(@service_request, current_user)
-    render :confirmation
   end
 
   def confirmation

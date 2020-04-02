@@ -1,7 +1,9 @@
 module CostAnalysis
 
     class OtfLineItem
-        attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate, :quantity_type, :quantity, :total_dollars_per_study, :unit_type, :program_or_core
+        attr_accessor :service_name, :status, :service_rate_dollars, :applicable_rate,
+            :quantity_type, :quantity, :unit_type, :units_per_quantity,
+            :total_dollars_per_study, :program_or_core
     end
 
     class OtfTable
@@ -22,6 +24,7 @@ module CostAnalysis
             otf_item.quantity = line_item.quantity
             otf_item.quantity_type = line_item.quantity_type
             otf_item.unit_type = line_item.otf_unit_type
+            otf_item.units_per_quantity = line_item.units_per_quantity
             otf_item.total_dollars_per_study = Service.cents_to_dollars(line_item.service.displayed_pricing_map.full_rate * line_item.quantity)
             otf_item.program_or_core = line_item.service.organization_hierarchy
 
@@ -37,8 +40,10 @@ module CostAnalysis
                 "Status",
                 "Service Rate",
                 "Your Cost",
-                "Unit Type #",
-                "Qty Type #",
+                "Qty",
+                "Qty Type",
+                "Units per Qty",
+                "Unit Type",
                 "Total Per Study"
             ]
         end
@@ -59,8 +64,10 @@ module CostAnalysis
                         li.status,
                         {:content => to_money(li.service_rate_dollars), :align => :right},
                         {:content => to_money(li.applicable_rate), :align => :right},
-                        {:content => li.unit_type, :align => :right},
+                        {:content => li.quantity.to_s, :align => :right},
                         {:content => li.quantity_type, :align => :right},
+                        {:content => li.units_per_quantity.to_s, :align => :right},
+                        {:content => li.unit_type, :align => :right},
                         {:content => to_money(li.total_dollars_per_study), :align => :right}
                     ])
                 end

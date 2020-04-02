@@ -377,7 +377,7 @@ class ServiceRequest < ApplicationRecord
     "%04d" %
       if self.protocol && self.protocol.next_ssr_id.present?
         self.protocol.next_ssr_id
-      elsif self.sub_service_requests.length == 0
+      elsif self.sub_service_requests.reload.length == 0
         1
       else
         self.sub_service_requests.last.ssr_id.gsub(/^0(0*)/, '').to_i + 1

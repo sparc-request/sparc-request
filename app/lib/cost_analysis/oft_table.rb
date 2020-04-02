@@ -98,7 +98,7 @@ module CostAnalysis
         def total_row
             [
                 {:colspan => get_col_labels.length - 1, :content => ''},
-                {:content => to_money(total), :align => :right, :font_style => :bold}
+                {:content => total_as_money, :align => :right, :font_style => :bold}
             ]
         end
 
@@ -121,6 +121,10 @@ module CostAnalysis
 
         def total
             @line_items.sum { |g| total_by_ssr_id(g[0]) }
+        end
+
+        def total_as_money
+            to_money(total)
         end
 
         def total_by_ssr_id(ssr_id)

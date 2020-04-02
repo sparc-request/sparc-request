@@ -2,6 +2,8 @@ module CostAnalysis
   module Generators
     class PDF
 
+      include ActionView::Helpers::NumberHelper
+
       attr_accessor :study_information, :visit_tables, :otf_tables
 
       def initialize(doc)
@@ -18,6 +20,8 @@ module CostAnalysis
         additional_contacts = study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] }
         visit_tables = @visit_tables
         otf_tables = @otf_tables
+        grand_total_data = compute_grand_total_data
+
 
         @doc.instance_eval do
           bounding_box([0,y], :width => 700, :height => 50) do
@@ -39,6 +43,38 @@ module CostAnalysis
           }
           move_down 10
           text "Funded by #{study_information.funding_source}"
+
+          move_down 20
+
+          grand_total_rows = [
+            [{ :content => "Study Total", :colspan => 2, :size => 10, :font_style => :bold} ],
+            ["Category", "Total Per Study"],
+            *grand_total_data[:data_rows].map do |d|
+              [
+                d[:category],
+                { :content => d[:total_as_money], :align => :right }
+              ]
+            end,
+            ["Grand Total", { :content => grand_total_data[:total_as_money], :align => :right, :size => 10, :font_style => :bold }]
+          ]
+
+          grand_total_table_style = {
+            :border_width => 1,
+            :border_color => '4c4c4c',
+            :overflow => :shrink_to_fit,
+            :size => 8
+          }
+
+          grand_total_table = make_table(
+            grand_total_rows,
+            :cell_style => grand_total_table_style, :header => true) do
+              # Title row
+              cells.columns(0..-1).rows(0..1).style({
+                :background_color => "91c6d8"
+              })
+            end
+
+          grand_total_table.draw
 
           move_down 20
 
@@ -127,7 +163,7 @@ module CostAnalysis
 
             summary_table = make_table(
               summary_table.table_rows,
-              :cell_style => visit_table_style, :header => true) do
+              :cell_style => otf_table_style, :header => true) do
                 cells.columns(0..-1).rows(0..1).style({
                   :background_color => "91c6d8",
                 })
@@ -183,6 +219,46 @@ module CostAnalysis
           }
         end
       end
+
+      private
+
+      def compute_grand_total_data
+        grand_total_data = []
+
+        @visit_tables.each do |visit_table|
+          summary_table_data = visit_table.summarized_by_service
+
+          table_total = visit_table.cores.sum do |core|
+            visit_table.line_items[core].sum do |li|
+              li.per_study_total
+            end
+          end
+
+          grand_total_data << {
+            :category => "ARM: #{visit_table.arm_name}",
+            :total => table_total,
+            :total_as_money => number_with_precision(table_total, :precision => 2, :delimiter => ",")
+          }
+        end
+
+        @otf_tables.each do |otf_table|
+          grand_total_data << {
+              :category => "One Time Fees",
+              :total => otf_table.total,
+              :total_as_money => otf_table.total_as_money
+            }
+        end
+
+        the_total = grand_total_data.sum { |d| d[:total] }
+        the_total_as_money = number_with_precision(the_total, :precision => 2, :delimiter => ",")
+        
+        {
+          :data_rows => grand_total_data,
+          :total => the_total,
+          :total_as_money => the_total_as_money
+        }
+      end
+
     end
   end
 end

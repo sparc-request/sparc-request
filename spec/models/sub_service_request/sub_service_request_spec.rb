@@ -89,21 +89,6 @@ RSpec.describe SubServiceRequest, type: :model do
           expect(line_item.quantity).to eq(20)
         end
       end
-
-      context 'adding a line item' do
-
-        before :each do
-          @fulfillment_service = create(:service, organization_id: program.id)
-          @fulfillment_service.pricing_maps.create(attributes_for(:pricing_map))
-          @fulfillment_service.reload
-        end
-
-        it 'should create the line item' do
-          li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
-          expect(li.service_id).to eq(@fulfillment_service.id)
-          expect(li).not_to be_new_record
-        end
-      end
     end
 
     describe "cost calculations" do

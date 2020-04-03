@@ -498,7 +498,7 @@ class Protocol < ApplicationRecord
       self.last_epic_push_status = 'started'
       save(validate: false)
 
-      Rails.logger.info("Sending study message to Epic")
+      Rails.logger.info("Sending study message to Epic - Study #{self.id}")
       withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
@@ -506,7 +506,8 @@ class Protocol < ApplicationRecord
 
       EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
     rescue Exception => e
-      Rails.logger.info("Push to Epic failed.")
+      Rails.logger.error("Push to Epic failed - Study #{self.id}")
+      Rails.logger.error([e.message, *e.backtrace].join($/))
 
       self.last_epic_push_status = 'failed'
       save(validate: false)

@@ -232,7 +232,7 @@ class ServiceRequest < ApplicationRecord
 
   def created_ssrs_since_previous_submission(ssrids)
     start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%'#{ssrids.any? ? "AND auditable_id IN (#{ssrids.join(', ')})" : ""} AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%'#{ssrids.blank? ? "" : "AND auditable_id IN (#{ssrids.join(', ')})"} AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs

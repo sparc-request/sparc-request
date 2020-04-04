@@ -138,8 +138,6 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver
       end
     end
-  end  
-    
   end
 
   def resend_survey

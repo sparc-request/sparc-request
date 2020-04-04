@@ -132,7 +132,14 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def complete
-    @survey = Response.find(params[:response_id]).survey
+    @response = Response.find(params[:response_id])
+    if @response.respondable_id && @response.respondable.organization.survey_completion_alerts
+      @response.respondable.organization.super_users.each do |su|
+        SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver
+      end
+    end
+  end  
+    
   end
 
   def resend_survey

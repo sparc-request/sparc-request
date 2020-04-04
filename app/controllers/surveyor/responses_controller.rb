@@ -134,7 +134,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def complete
     @response = Response.find(params[:response_id])
     if @response.respondable_id && @response.respondable.organization.survey_completion_alerts
-      @response.respondable.organization.super_users.each do |su|
+      ### sent emails to all relevant super users for an organization of which survey_completion_alerts is true
+      @response.respondable.organization.all_super_users.each do |su|
         SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver
       end
     end

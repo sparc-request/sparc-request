@@ -149,9 +149,6 @@ class OncoreEndpointController < ApplicationController
     # ==========================================================
 
     # find the protocol
-    # TODO: assign an error if the protocol doesn't exist, how would that be recorded in SPARC?
-    # TODO: Make all errors a SOAP fault, give proper error in SPARC for SPARC people to log the error
-
     protocol = find_protocol_by_rmid
 
     # Add arms to the protocol
@@ -186,10 +183,8 @@ class OncoreEndpointController < ApplicationController
       # Remove bad characters from the arm name
       arm_name.gsub!(/[\[\]\*\/\\\?\:]/, '')
 
-      # TODO: Add to the arm once there's a column for it
       calendar_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[1] # can't do this for arm name because the name can have a :
 
-      # TODO: Add to the arm once there's a column for it
       budget_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[3]
 
       # The number of VISITS equal the number of visit groups, we can use that for the visit count
@@ -198,15 +193,13 @@ class OncoreEndpointController < ApplicationController
         c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == arm_code
       }.count
 
-      if arm = protocol.arms.create(name: arm_name, subject_count: 1, visit_count: visit_count) # assumed subject_count: 1
-        # TODO: just add the arm code to the arm object IF we decide to store it SPARC
+      if arm = protocol.arms.create(name: arm_name, subject_count: 1, visit_count: visit_count)
         @arm_codes[arm.id] = arm_code
       end
     end
   end
 
   def build_calendar_info(arm)
-    # check if the arm passed can be updated (is a reference) and it's not just a copy
     # component4 VISIT elements contain visit group information and procedures.
     # VISITS are like visit groups and PROCS are like line item visits, including service information.
     protocol = arm.protocol
@@ -232,7 +225,6 @@ class OncoreEndpointController < ApplicationController
         end
 
         # Make a line item visit for all clinical line items on the protocol.
-        # TODO: See if this is ok, if OnCore doesn't do this there might be problems
         service_request.per_patient_per_visit_line_items.each do |li|
           unless arm.line_items_visits.any?{ |liv| liv.line_item_id == li.id }
             arm.line_item_visits.create(line_item_id: li.id, subject_count: 1) # assumed subject_count: 1

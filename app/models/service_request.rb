@@ -230,9 +230,9 @@ class ServiceRequest < ApplicationRecord
     AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
-  def created_ssrs_since_previous_submission
+  def created_ssrs_since_previous_submission(ssrids)
     start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%'#{ssrids.blank? ? "" : "AND auditable_id IN (#{ssrids.join(', ')})"} AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs
@@ -377,7 +377,7 @@ class ServiceRequest < ApplicationRecord
     "%04d" %
       if self.protocol && self.protocol.next_ssr_id.present?
         self.protocol.next_ssr_id
-      elsif self.sub_service_requests.length == 0
+      elsif self.sub_service_requests.reload.length == 0
         1
       else
         self.sub_service_requests.last.ssr_id.gsub(/^0(0*)/, '').to_i + 1

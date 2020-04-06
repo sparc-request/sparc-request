@@ -72,6 +72,10 @@ class ArmsController < ApplicationController
     setup_calendar_pages
 
     if @arm.update_attributes(arm_params)
+      if params[:apply_max_subject_count] == 'true'
+        @arm.line_items_visits.update_all(subject_count: @arm.subject_count)
+      end
+
       flash[:success] = t('arms.updated')
     else
       @errors = @arm.errors

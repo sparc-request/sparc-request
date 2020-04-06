@@ -70,3 +70,7 @@ $text-map: (
 .rotate {
   animation: rotate 3s linear infinite;
 }
+
+.pointer-none {
+  pointer-events: none;
+}

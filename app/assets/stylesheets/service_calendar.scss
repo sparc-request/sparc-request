@@ -26,6 +26,12 @@
 }
 
 #serviceCalendar .service-calendar-container {
+  &:not(:last-of-type) {
+    @extend .border-bottom;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
   .service-calendar-table {
     border-left: 0;
     border-right: 0;

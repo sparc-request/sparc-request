@@ -39,7 +39,7 @@ class LineItemsVisitsController < ApplicationController
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
 
     if @line_items_visit.update_attributes(line_items_visit_params)
-      unless @portal
+      unless @in_admin
         @line_items_visit.sub_service_request.update_attribute(:status, 'draft')
         @service_request.update_attribute(:status, 'draft')
       end

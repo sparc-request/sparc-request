@@ -43,24 +43,9 @@ SparcRails::Application.configure do
   config.assets.compile = true
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
-
-  config.after_initialize do
-    # Need to do this after initialization so that the database is loaded
-    begin
-      new_options = { host: Setting.get_value("root_url") }
-      config.action_mailer.default_url_options = new_options
-
-      # By the time we run ActionMailer has already copied the options
-      # from config so we need to override here to really make the change
-      # We only set the default_url_options to keep the settings consistent
-      ActionMailer::Base.default_url_options = new_options
-    rescue
-      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
-    end
-  end
 
   config.log_level = :debug
 

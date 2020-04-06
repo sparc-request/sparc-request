@@ -20,15 +20,18 @@
 
 task send_to_epic: :environment do
 
-  epic_queues = EpicQueue.where(user_change: true, attempted_push: false)
+  epic_queues = EpicQueue.eager_load(:protocol).where(user_change: true, attempted_push: false)
 
   epic_queues.each do |eq|
-    p = Protocol.find(eq.protocol_id)
-    p.push_to_epic(EPIC_INTERFACE, eq.user_change? ? 'protocol_update' : 'admin_push', eq.identity_id, true)
-    if p.last_epic_push_status == 'complete'
-      eq.update_attribute(:attempted_push, true)
-      eq.destroy
+    begin
+      eq.protocol.push_to_epic(EPIC_INTERFACE, eq.user_change? ? 'protocol_update' : 'admin_push', eq.identity_id, true)
+      if p.last_epic_push_status == 'complete'
+        eq.update_attribute(:attempted_push, true)
+        eq.destroy
+      end
     end
+  rescue Exception => e
+    # Do nothing, already logged by Protocol#push_to_epic
   end
 end
 

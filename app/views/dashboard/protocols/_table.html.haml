@@ -40,7 +40,7 @@
         %tr
           %th.w-10{ data: { field: 'id', align: 'center', sortable: 'true' } }
             = Protocol.human_attribute_name(:id)
-          %th.w-10{ data: { field: 'protocol_merges', align: 'center', sortable: 'true'} }
+          %th.w-10{ data: { field: 'protocol_merges', align: 'center', sortable: 'true', visible: false} }
             = t(:activerecord)[:attributes][:protocol][:protocol_merge] 
           %th.w-40{ data: { field: 'short_title', sortable: 'true' } }
             = Protocol.human_attribute_name(:short_title)

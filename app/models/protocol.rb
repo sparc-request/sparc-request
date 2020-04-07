@@ -182,6 +182,8 @@ class Protocol < ApplicationRecord
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'
       order("sub_service_requests_count" => order)
+    when 'protocol_merges'
+      joins(:protocol_merges).order("protocol_merges.id" => order)
     end
   }
 

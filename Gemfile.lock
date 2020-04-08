@@ -149,7 +149,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.1)
-    capistrano (3.12.1)
+    capistrano (3.13.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -637,7 +637,7 @@ DEPENDENCIES
   bootstrap3-datetimepicker-rails
   bullet
   byebug
-  capistrano (~> 3.12)
+  capistrano (~> 3.13)
   capistrano-bundler
   capistrano-passenger
   capistrano-rails

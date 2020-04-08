@@ -82,6 +82,7 @@ en:
           actions: "Actions"
           by: "By"
       emails:
+        link_to: "here"
         system_satisfaction:
           subject: "System Satisfaction Survey Completed in %{site_name}"
           text1: "has completed a system satisfaction survey."

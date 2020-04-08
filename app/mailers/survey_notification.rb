@@ -44,7 +44,7 @@ class SurveyNotification < ActionMailer::Base
 
   def service_survey_completed(response, ssr, super_user)
     @response  = response
-    @identity  = Identity.find(response.identity_id)
+    @identity  = response.identity
     email      = super_user.identity.email
     subject    = t('surveyor.responses.emails.service_survey_completed.subject', site_name: t(:proper)[:header], ssr_id: ssr.display_id)
 

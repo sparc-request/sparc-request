@@ -136,7 +136,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     if @response.respondable_id && @response.respondable.organization.survey_completion_alerts
       ### sent emails to all relevant super users for an organization of which survey_completion_alerts is true
       @response.respondable.organization.all_super_users.each do |su|
-        SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver
+        SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver_later
       end
     end
   end

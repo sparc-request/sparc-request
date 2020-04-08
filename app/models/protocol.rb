@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_and_belongs_to_many :study_phases
 
@@ -181,6 +182,8 @@ class Protocol < ApplicationRecord
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'
       order("sub_service_requests_count" => order)
+    when 'protocol_merges'
+      joins(:protocol_merges).order("protocol_merges.id" => order)
     end
   }
 

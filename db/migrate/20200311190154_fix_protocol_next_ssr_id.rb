@@ -3,6 +3,7 @@ class FixProtocolNextSsrId < ActiveRecord::Migration[5.2]
     # See https://www.pivotaltracker.com/story/show/171602442
 
     Protocol.where.not(next_ssr_id: nil).each do |protocol|
+      next if protocol.sub_service_requests.empty?
       old_next_ssr_id = protocol.next_ssr_id.to_s.gsub(/^0(0*)/, '').to_i
       last_ssr_id     = protocol.sub_service_requests.last.ssr_id.gsub(/^0(0*)/, '').to_i
 

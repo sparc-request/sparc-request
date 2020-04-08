@@ -280,6 +280,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :process_ssrs,
       :is_available,
       :use_default_statuses,
+      :survey_completion_alerts,
       { tag_list:  [] },
       submission_emails_attributes: [:organization_id, :email]
       ])

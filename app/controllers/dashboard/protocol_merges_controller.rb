@@ -60,8 +60,9 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
         return
       else
         ActiveRecord::Base.transaction do
+          merged_ssr_ids = @merged_protocol.sub_service_requests.map(&:id)
           merge_srs = Dashboard::MergeSrs.new()
-          fix_ssr_ids = Dashboard::FixSsrIds.new(@master_protocol)
+          fix_ssr_ids = Dashboard::FixSsrIds.new(@master_protocol, merged_ssr_ids)
           #transfer the project roles as needed
           @merged_protocol.project_roles.each do |role|
             if role.role != 'primary-pi' && role_should_be_assigned?(role, @master_protocol)

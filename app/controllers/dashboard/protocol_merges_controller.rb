@@ -55,6 +55,8 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
       elsif Setting.get_value("fulfillment_contingent_on_catalog_manager") && @merged_protocol.fulfillment_protocols.any?
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:cannot_merge]
+      elsif split_notify_checks_out(@master_protocol, @merged_protocol)
+        @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:split_notify_error]
       elsif @errors.empty? && !confirmed
         @no_errors = true
         return
@@ -159,5 +161,8 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
   def has_research?(protocol, research_type)
     protocol.research_types_info.try(research_type) || false
+  end
+
+  def split_notify_checks_out(master, merged)
   end
 end

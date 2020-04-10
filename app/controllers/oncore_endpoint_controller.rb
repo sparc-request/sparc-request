@@ -243,7 +243,7 @@ class OncoreEndpointController < ApplicationController
       vg_name = oncore_visit[:timePointEventDefinition][:title].sub("#{@arm_codes[arm.id]}, ", "")
       day = relative_date_to_day(encounter[:activityTime][:value])
       window_before = day - relative_date_to_day(encounter[:effectiveTime][:low][:value])
-      window_after = relative_date_to_day(encounter[:effectiveTime][:low][:value]) - day
+      window_after = relative_date_to_day(encounter[:effectiveTime][:high][:value]) - day
       visit_group.update_attributes(name: vg_name, day: day, window_before: window_before, window_after: window_after)
     end
   end

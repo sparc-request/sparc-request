@@ -799,10 +799,134 @@ RSpec.describe OncoreEndpointController do
                     }
                   }
                 }
+    @rpe_message = { "protocolDef":
+                {
+                  "plannedStudy": {
+                    "id": {
+                      "extension": @study.research_master_id,
+                      "root": "1.2.5.2.3.4"
+                    },
+                    "title": "A Phase 2 Trial of Nivolumab Plus Ipilimumab, Ipilimumab Alone, or Cabazitaxel ",
+                    "text": "A Phase 2 Trial of Nivolumab Plus Ipilimumab, Ipilimumab Alone, or Cabazitaxel in Men with Metastatic Castration-Resistant Prostate Cancer",
+                    "subjectOf": [
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "STAT"
+                          },
+                          "value": {
+                            "value": "IRB INITIAL APPROVAL"
+                          }
+                        }
+                      },
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "STATDT"
+                          },
+                          "value": {
+                            "value": "20191015"
+                          }
+                        }
+                      },
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "PROTOCOLNO"
+                          },
+                          "value": {
+                            "value": @study.research_master_id
+                          }
+                        }
+                      },
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "ST"
+                          },
+                          "value": {
+                            "value": "Tre"
+                          }
+                        }
+                      },
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "DEPT"
+                          },
+                          "value": {
+                            "value": "HOLLINGS CANCER CENTER"
+                          }
+                        }
+                      },
+                      {
+                        "studyCharacteristic": {
+                          "code": {
+                            "code": "MGMTGRP"
+                          },
+                          "value": {
+                            "value": "CTO Green"
+                          }
+                        }
+                      }
+                    ],
+                    "component2": [
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "1.ArmD1"
+                          },
+                          "title": "ArmD1: Nivolumab Q3W + Ipilimumab Q3W followed by Q4W Nivolumab maintenance"
+                        }
+                      },
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "1.ArmD2"
+                          },
+                          "title": "ArmD2: Nivolumab Q3W + Ipilimumab Q6W followed by Nivolumab maintenance"
+                        }
+                      },
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "1.ArmD3"
+                          },
+                          "title": "ArmD3: Ipilimumab monotherapy Q3W"
+                        }
+                      },
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "1.ArmD4"
+                          },
+                          "title": "ArmD4: SOC Cabazitaxel+ Prednisone or Prednisolone"
+                        }
+                      },
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "2.ReTreat1"
+                          },
+                          "title": "ReTreat1: Nivolumab Q3W + Ipilimumab Q3W followed by Q4W Nivolumab maintenance"
+                        }
+                      },
+                      {
+                        "arm": {
+                          "id": {
+                            "extension": "2.ReTreat2"
+                          },
+                          "title": "ReTreat2: Nivolumab Q3W + Ipilimumab Q6W followed by Nivolumab maintenance"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
   end
   
   describe '#retrieve_protocol_def CRPC message' do
-    it 'Imports the service calendar structure' do
+    it 'should import the service calendar structure' do
       @client.call(:retrieve_protocol_def_response, message: @crpc_message)
       expect(@study.arms.count).to eq(2)
       expect(@study.line_items.count).to eq(2)
@@ -811,7 +935,7 @@ RSpec.describe OncoreEndpointController do
       expect(@study.visits.count).to eq(12)
     end
 
-    it 'Sets the Visit Group day, window before, and window after' do
+    it 'should sets the Visit Group day, window before, and window after' do
       @client.call(:retrieve_protocol_def_response, message: @crpc_message)
       visit_group1 = @study.arms.first.visit_groups[0]
       visit_group3 = @study.arms.first.visit_groups[2]
@@ -821,6 +945,17 @@ RSpec.describe OncoreEndpointController do
       expect(visit_group3.day).to eq(10)
       expect(visit_group3.window_before).to eq(3)
       expect(visit_group3.window_after).to eq(3)
+    end
+  end
+
+  describe '#retrieve_protocol_def RPE message' do
+    it 'should not import any calendar information' do
+      @client.call(:retrieve_protocol_def_response, message: @rpe_message)
+      expect(@study.arms.count).to eq(0)
+      expect(@study.line_items.count).to eq(0)
+      expect(@study.line_items_visits.count).to eq(0)
+      expect(@study.visit_groups.count).to eq(0)
+      expect(@study.visits.count).to eq(0)
     end
   end
 end

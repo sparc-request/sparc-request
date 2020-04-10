@@ -151,12 +151,15 @@ class OncoreEndpointController < ApplicationController
     # find the protocol
     protocol = find_protocol_by_rmid
 
-    # Add arms to the protocol
-    get_arms_from_cells(protocol)
+    # Don't try to build calendar information if it doesn't exist (RPE messages don't have calendar info)
+    if !is_rpe_message?
+      # Add arms to the protocol
+      get_arms_from_cells(protocol)
 
-    # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
-    protocol.arms.each do |arm|
-      build_calendar_info(arm)
+      # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
+      protocol.arms.each do |arm|
+        build_calendar_info(arm)
+      end
     end
 
     # return proper SOAP response on successful load
@@ -246,6 +249,13 @@ class OncoreEndpointController < ApplicationController
       window_after = relative_date_to_day(encounter[:effectiveTime][:high][:value]) - day
       visit_group.update_attributes(name: vg_name, day: day, window_before: window_before, window_after: window_after)
     end
+  end
+
+  # Returns true if the SOAP message is an RPE message.
+  # The only difference between RPE messages and CRPC messages is that CRPC messages contain calendar information (component4's)
+  # and RPE messages do not have any calendar information (no component4 elements).
+  def is_rpe_message?
+    oncore_endpoint_params[:plannedStudy][:component4].nil?
   end
 
   # Returns an integer representing the number of days since Jan 1, 2000

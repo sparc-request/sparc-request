@@ -20,7 +20,6 @@
 
 class ReassociateRequesterFromServiceRequestToSubServiceRequest < ActiveRecord::Migration[4.2]
   def change
-
     add_column :sub_service_requests, :service_requester_id, :integer
     add_index :sub_service_requests, :service_requester_id
 
@@ -30,5 +29,8 @@ class ReassociateRequesterFromServiceRequestToSubServiceRequest < ActiveRecord::
 
     remove_column :service_requests, :service_requester_id
     remove_column :service_requests, :requester_contacted_date
+
+    ServiceRequest.reset_column_information
+    SubServiceRequest.reset_column_information
   end
 end

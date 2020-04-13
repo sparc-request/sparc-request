@@ -8,9 +8,9 @@ class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
       # This should be an array but for some reason on Travis
       # it's being treated as the raw string value
       if s.value.is_a?(String)
-        statuses = s.value.reject{ |status| status == 'get_a_cost_estimate' }
-      else
         statuses = s.value.gsub("\"get_a_cost_estimate\",", "")
+      else
+        statuses = s.value.reject{ |status| status == 'get_a_cost_estimate' }
       end
       s.update_attribute(:value, statuses)
     end

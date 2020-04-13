@@ -1,5 +1,8 @@
 class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
   def up
+    ServiceRequest.reset_column_information
+    SubServiceRequest.reset_column_information
+
     if pv = PermissibleValue.find_by_key('get_a_cost_estimate')
       pv.update_attribute(:default, false)
     end

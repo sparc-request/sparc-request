@@ -29,12 +29,6 @@
 
   %body
     /***** EMAIL INTRO *****
-    - Rails.logger.error "Status before reload: |#{@status}|"
-    - @service_request.reload
-    - @status = @service_request.status
-    - Rails.logger.error "Status after reload: |#{@status}|"
-    - Rails.logger.error "Service Request?: |#{@service_request.inspect}|"
-
     = intro_determination(@status)
     /***** END EMAIL INTRO *****
 

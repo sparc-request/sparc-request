@@ -68,8 +68,6 @@ class SubServiceRequest < ApplicationRecord
 
   before_validation :set_next_ssr_id, on: :create
 
-  after_create :increment_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
-
   after_save :update_org_tree
   after_save :update_past_status
 
@@ -532,13 +530,8 @@ class SubServiceRequest < ApplicationRecord
     self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
 
     if self.protocol
-      self.protocol.next_ssr_id += 1
-      self.protocol.save(validate: false)
+      self.protocol.increment!(:next_ssr_id)
     end
-  end
-
-  def increment_next_ssr_id
-    self.protocol.increment!(:next_ssr_id)
   end
 
   def notify_remote_around_update?

@@ -116,6 +116,8 @@ class Protocol < ApplicationRecord
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
+  before_create :set_next_ssr_id
+
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
     self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
@@ -636,6 +638,10 @@ class Protocol < ApplicationRecord
   end
 
   private
+
+  def set_next_ssr_id
+    self.next_ssr_id = self.service_requests.first ? self.service_requests.first.next_ssr_id : 1
+  end
 
   def indirect_cost_enabled
     Setting.get_value('use_indirect_cost')

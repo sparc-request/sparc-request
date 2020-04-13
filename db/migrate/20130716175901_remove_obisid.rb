@@ -25,6 +25,12 @@ class RemoveObisid < ActiveRecord::Migration[4.2]
     remove_column :services, :obisid
     remove_column :protocols, :obisid
     remove_column :service_requests, :obisid
+
+    Identity.reset_column_information
+    Organization.reset_column_information
+    Service.reset_column_information
+    Protocol.reset_column_information
+    ServiceRequest.reset_column_information
   end
 
   def down
@@ -33,5 +39,11 @@ class RemoveObisid < ActiveRecord::Migration[4.2]
     add_column :services, :obisid
     add_column :protocols, :obisid
     add_column :service_requests, :obisid
+
+    Identity.reset_column_information
+    Organization.reset_column_information
+    Service.reset_column_information
+    Protocol.reset_column_information
+    ServiceRequest.reset_column_information
   end
 end

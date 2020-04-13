@@ -352,8 +352,13 @@ determineStudyType = () ->
     ans7: ""
   }
 
-  answersArray  = Object.values(answers)
-  hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
+  ##IE requires it to be done this way:
+  answersArray = Object.keys(answers).map((key) -> answers[key])
+  hasNilValue   = $.inArray('', Object.keys(answers).map((key) -> answers[key])) < 5
+
+  ##The original way below is better, but unsupported by IE:
+  # answersArray  = Object.values(answers)
+  # hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
 
   if answersArray[0] == 'true' || !hasNilValue
     $.ajax

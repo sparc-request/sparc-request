@@ -18,18 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%tr.bg-light.max-total-per-patient
-  %th{ colspan: 28 }
-    = t(:calendars)[:pppv][:totals][:maximum_per_patient]
-  - visit_groups.each do |vg|
-    - cost = Setting.get_value("use_indirect_cost") ? currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100)))) : currency_converter(vg.per_patient_subtotals)
-    %th.text-center{ colspan: 3, title: cost, data: { toggle: 'tooltip' } }
-      = cost
-  - (VisitGroup.per_page - visit_groups.length).times do
-    %td{ colspan: 3 }
+= @identity.display_name
+= t(:surveyor)[:responses][:emails][:service_survey_completed][:text1]
 
-  - max_total_cost_pppv = display_max_total_cost_per_patient(arm, line_items_visits)
-
-  %th.text-center{ colspan: 4, title: max_total_cost_pppv, data: { toggle: 'tooltip' } }
-    = max_total_cost_pppv
-  %td.text-center{ colspan: 4 }
+= t(:surveyor)[:responses][:emails][:service_survey_completed][:text2]
+= link_to t(:surveyor)[:responses][:emails][:link_to], url_for(controller: '/surveyor/responses', action: :show, only_path: false, id: @response.id, format: :html), target: '_blank'

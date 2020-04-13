@@ -31,7 +31,7 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: "alert-#{bg_context}" }
-    %th{ colspan: in_dashboard? ? 21 : 25 }
+    %th{ colspan: in_dashboard? ? 24 : 28 }
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
     - visit_groups.each do
       %th.text-center{ colspan: 3 }
@@ -68,6 +68,8 @@
           = display_unit_type(liv)
 
       = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, editable: editable
+
+      %th{ colspan: 2 }
 
       - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|

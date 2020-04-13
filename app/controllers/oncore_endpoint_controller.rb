@@ -144,14 +144,22 @@ class OncoreEndpointController < ApplicationController
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
     # === Logging and testing info =============================
-    # Pretty print the params:
-    puts JSON.pretty_generate(oncore_endpoint_params.to_h)
     # Print the params to a specific OnCore log
     print_params_to_log
     # ==========================================================
 
-    # return proper SOAP response
-    # PROTOCOL_RECEIVED might be different if an error occurs
+    # find the protocol
+    protocol = find_protocol_by_rmid
+
+    # Add arms to the protocol
+    get_arms_from_cells(protocol)
+
+    # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
+    protocol.arms.each do |arm|
+      build_calendar_info(arm)
+    end
+
+    # return proper SOAP response on successful load
     render :soap => { 'tns:responseCode' => 'PROTOCOL_RECEIVED' },
            :header => SecureRandom.uuid
   end
@@ -159,15 +167,99 @@ class OncoreEndpointController < ApplicationController
   private
 
   def find_protocol_by_rmid
+    # TODO: Filter out any non-numerical characters from RMID
     rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
     return Protocol.find_by(research_master_id: rmid)
+  end
+
+  # Creates arms on the protocol and
+  # assigns a hash with the structure { SPARC_arm_id => arm_code } since arm_code is used like an ID that isn't stored in SPARC
+  def get_arms_from_cells(protocol)
+    # component4 CELL elements contain arm and visit imformation including calendar and budget version.
+    @arm_codes = {}
+    oncore_endpoint_params[:plannedStudy][:component4].select{ |c4| c4[:timePointEventDefinition][:code][:code] == "CELL" }.each do |cell|
+      arm_code = cell[:timePointEventDefinition][:id][:extension].split('.')[1]
+      arm_name = cell[:timePointEventDefinition][:title].gsub(/([^A][^r][^m][^\:])+Arm\:/, '')
+      # Remove bad characters from the arm name
+      arm_name.gsub!(/[\[\]\*\/\\\?\:]/, '')
+
+      calendar_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[1] # can't do this for arm name because the name can have a :
+
+      budget_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[3]
+
+      # The number of VISITS equal the number of visit groups, we can use that for the visit count
+      # Visits are also listed under CELL elements but are nested under CYCLES, which have no SPARC equivalent, so VISITs are used for simplicity
+      visit_count = oncore_endpoint_params[:plannedStudy][:component4].select{ |c4|
+        c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == arm_code
+      }.count
+
+      if arm = protocol.arms.create(name: arm_name, subject_count: 1, visit_count: visit_count)
+        @arm_codes[arm.id] = arm_code
+      end
+    end
+  end
+
+  def build_calendar_info(arm)
+    # component4 VISIT elements contain visit group information and procedures.
+    # VISITS are like visit groups and PROCS are like line item visits, including service information.
+    protocol = arm.protocol
+    service_request = protocol.service_requests.first
+
+    oncore_endpoint_params[:plannedStudy][:component4].select{ |c4| 
+      c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == @arm_codes[arm.id]
+    }.each_with_index do |oncore_visit, position|
+
+      if position == 0 # procedures are on all VISITs, but we only need to make line items and line items visits once per arm
+        oncore_visit[:timePointEventDefinition][:component1].select{ |c1| c1[:timePointEventDefinition][:code][:code] == "PROC" }.each do |procedure|
+          # get the service from the procedure
+          service_name = procedure[:timePointEventDefinition][:title]
+          service_code = procedure[:timePointEventDefinition][:component2][:procedure][:code][:code] # either eap_id or cpt_code
+          service = Service.where(name: service_name, is_available: true).merge(Service.where(cpt_code: service_code).or(Service.where(eap_id: service_code))).first
+
+          if service.nil?
+            raise "Unable to find service #{service_name} with code #{service_code}"
+          end
+
+          # For each procedure, make a line item on the protocol
+          service_request.create_line_items_for_service(service: service)
+        end
+
+        # Make a line item visit for all clinical line items on the protocol.
+        service_request.per_patient_per_visit_line_items.each do |li|
+          unless arm.line_items_visits.any?{ |liv| liv.line_item_id == li.id }
+            arm.line_item_visits.create(line_item_id: li.id, subject_count: 1) # assumed subject_count: 1
+          end
+        end
+      end
+
+      # create a visit group for each VISIT
+      # each VISIT should have one encounter. The encounter contains dates relative to Jan 1, 2000
+        # effectiveTime = window before and after:
+          # low = window before. ex) 20000327 - window before: 3
+          # high = window after. ex) 20000402 - window after: 3
+        # activityTime = day ex) 20000330 - day: 90
+      encounter = oncore_visit[:timePointEventDefinition][:component2][:encounter]
+      visit_group = arm.visit_groups[position]
+      vg_name = oncore_visit[:timePointEventDefinition][:title].sub("#{@arm_codes[arm.id]}, ", "")
+      day = relative_date_to_day(encounter[:activityTime][:value])
+      window_before = day - relative_date_to_day(encounter[:effectiveTime][:low][:value])
+      window_after = relative_date_to_day(encounter[:effectiveTime][:low][:value]) - day
+      visit_group.update_attributes(name: vg_name, day: day, window_before: window_before, window_after: window_after)
+    end
+  end
+
+  # Returns an integer representing the number of days since Jan 1, 2000
+  # Parameters:
+  #   date: string date with the format "yyyymmdd" any other formats will not work.
+  def relative_date_to_day(date)
+    ( Date.new(2000,1,1)..Date.new(date[0..3].to_i,date[4..5].to_i,date[6..7].to_i) ).count
   end
 
   def print_params_to_log
     logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")
     logger = ActiveSupport::Logger.new(logfile)
     logger.info "\n----------------------------------------------------------------------------------"
-    logger.info "RetrieveProtocolDefResponse request - #{DateTime.now}"
+    logger.info "RetrieveProtocolDefResponse request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     logger.info "Params received by OncoreEndpointController:"
     logger.info JSON.pretty_generate(oncore_endpoint_params.to_h)
     logger.info "----------------------------------------------------------------------------------\n"

@@ -50,13 +50,13 @@ RSpec.describe Dashboard::ServiceCalendars do
                     create(:visit, line_items_visit: @liv_pppv2, research_billing_qty: 1)
 
       # Draft LIV is conditional
-      @draft_ssr    = create(:sub_service_request, :without_validations, service_request: @sr, organization: org_A, status: "draft")
+      @draft_ssr    = create(:sub_service_request, service_request: @sr, organization: org_A, status: "draft")
       li_pppv_draft = create(:line_item, :without_validations, service: service_pppv, service_request: @sr, sub_service_request: @draft_ssr)
       @liv_draft    = create(:line_items_visit, arm: @arm, line_item: li_pppv_draft)
                       create(:visit, line_items_visit: @liv_draft, research_billing_qty: 1)
 
       # First Draft LIV is conditional
-      @first_draft_ssr    = create(:sub_service_request, :without_validations, service_request: @sr, organization: org_A, status: "first_draft")
+      @first_draft_ssr    = create(:sub_service_request, service_request: @sr, organization: org_A, status: "first_draft")
       li_pppv_first_draft = create(:line_item, :without_validations, service: service_pppv, sub_service_request: @first_draft_ssr)
       @liv_first_draft    = create(:line_items_visit, arm: @arm, line_item: li_pppv_first_draft)
                             create(:visit, line_items_visit: @liv_first_draft, research_billing_qty: 1)

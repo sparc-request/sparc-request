@@ -25,9 +25,10 @@ RSpec.describe ServiceRequest, type: :model do
   let!(:service)      { create(:service, organization: organization) }
   let!(:org_form)     { create(:form, surveyable: organization, active: true) }
   let!(:service_form) { create(:form, surveyable: service, active: true) }
-  let!(:request)      { create(:service_request_without_validations) }
-  let!(:ssr1)         { create(:sub_service_request, service_request: request, organization: organization) }
-  let!(:ssr2)         { create(:sub_service_request, service_request: request, organization: organization) }
+  let!(:protocol)     { create(:study_without_validations) }
+  let!(:request)      { create(:service_request_without_validations, protocol: protocol) }
+  let!(:ssr1)         { create(:sub_service_request, protocol: protocol, service_request: request, organization: organization) }
+  let!(:ssr2)         { create(:sub_service_request, protocol: protocol, service_request: request, organization: organization) }
   let!(:line_item1)   { create(:line_item_without_validations, service_request: request, sub_service_request: ssr1, service: service) }
   let!(:line_item2)   { create(:line_item_without_validations, service_request: request, sub_service_request: ssr2, service: service) }
 

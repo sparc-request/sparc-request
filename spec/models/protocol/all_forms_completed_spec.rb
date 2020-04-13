@@ -29,7 +29,7 @@ RSpec.describe Protocol, type: :model do
   let!(:service_form2)  { create(:form, surveyable: service, access_code: 'serv-form-2', active: true) }
   let!(:protocol)       { create(:study_without_validations) }
   let!(:request)        { create(:service_request_without_validations, protocol: protocol) }
-  let!(:ssr)            { create(:sub_service_request, service_request: request, organization: organization) }
+  let!(:ssr)            { create(:sub_service_request, protocol: protocol, service_request: request, organization: organization) }
   let!(:line_item)      { create(:line_item_without_validations, service_request: request, sub_service_request: ssr, service: service) }
 
   describe '#all_forms_completed?' do

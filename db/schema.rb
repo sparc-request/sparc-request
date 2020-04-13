@@ -414,6 +414,7 @@ ActiveRecord::Schema.define(version: 2020_04_02_195743) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
+    t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
   end
@@ -951,6 +952,7 @@ ActiveRecord::Schema.define(version: 2020_04_02_195743) do
     t.datetime "deleted_at"
     t.boolean "access_empty_protocols", default: false
     t.boolean "billing_manager"
+    t.boolean "allow_credit"
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end

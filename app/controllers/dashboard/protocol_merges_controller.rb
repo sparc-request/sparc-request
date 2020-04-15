@@ -55,7 +55,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
       elsif Setting.get_value("fulfillment_contingent_on_catalog_manager") && @merged_protocol.fulfillment_protocols.any?
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:cannot_merge]
-      elsif split_notify_checks_out(@master_protocol, @merged_protocol)
+      elsif requests_not_merge_eligible?(@master_protocol, @merged_protocol)
         @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:split_notify_error]
       elsif @errors.empty? && !confirmed
         @no_errors = true
@@ -163,6 +163,20 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     protocol.research_types_info.try(research_type) || false
   end
 
-  def split_notify_checks_out(master, merged)
+  # We can not merge if 2 requests are under the same process ssrs org AND either of those requests are locked or incomplete
+  def requests_not_merge_eligible?(master, merged)
+    master_requests = master.sub_service_requests
+    merged_requests = merged.sub_service_requests
+
+    master_requests.each do |master_request|
+      merged_requests.each do |merged_request|
+        master_merge_ineligible = (master_request.is_locked? || !master_request.is_complete?)
+        merged_merge_ineligible = (merged_request.is_locked? || !merged_request.is_complete?)
+        if (master_request.process_ssrs_organization == merged_request.process_ssrs_organization) && (master_protocol_ineligible || merged_protocol_ineligible)
+          return true
+        end
+      end
+    end
+    return false
   end
 end

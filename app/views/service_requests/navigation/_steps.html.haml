@@ -20,11 +20,10 @@
 
 - subsidy = @service_request.eligible_for_subsidy?
 
-- unless ['obtain_research_pricing', 'confirmation'].include?(action_name)
+- unless action_name == 'confirmation'
   %nav.nav.w-100.mb-1#stepsNav{ class: subsidy ? 'has-subsidy' : '' }
     .steps-container.d-flex.w-100{ class: subsidy ? 'even' : '' }
       - Step::CONFIG.each do |step, _|
-        - next if ['obtain_research_pricing', 'confirmation'].include?(step)
-        - next if !subsidy && step == 'service_subsidy'
+        - next if step == 'confirmation' || (!subsidy && step == 'service_subsidy')
         - config = Step.get(step)
         = render 'service_requests/navigation/step_arrow', text: config[:step_text], link: eval("#{step}_service_request_path(#{@service_request.new_record? ? "" : "srid: " + @service_request.id.to_s})"), color: config[:css_class], active: @current_page == step

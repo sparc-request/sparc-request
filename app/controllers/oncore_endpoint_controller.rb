@@ -145,26 +145,34 @@ class OncoreEndpointController < ApplicationController
   def retrieve_protocol_def
     # === Logging and testing info =============================
     # Print the params to a specific OnCore log
-    print_params_to_log
+    
     # ==========================================================
+    begin
+      # find the protocol
+      protocol = find_protocol_by_rmid
 
-    # find the protocol
-    protocol = find_protocol_by_rmid
+      # Don't try to build calendar information if it doesn't exist (RPE messages don't have calendar info)
+      if !is_rpe_message?
+        # Add arms to the protocol
+        get_arms_from_cells(protocol)
 
-    # Don't try to build calendar information if it doesn't exist (RPE messages don't have calendar info)
-    if !is_rpe_message?
-      # Add arms to the protocol
-      get_arms_from_cells(protocol)
-
-      # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
-      protocol.arms.each do |arm|
-        build_calendar_info(arm)
+        # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
+        protocol.arms.each do |arm|
+          build_calendar_info(arm)
+        end
       end
+    rescue Exception => e
+      # Print params and exception to testing log
+      print_params_to_log(e)
+      # Render a SOAP fault response for exceptions instead of the default HTML response from Rails
+      render_soap_error(e.message)
+    else
+      # Print params to testing log
+      print_params_to_log
+      # return PROTOCOL_RECEIVED SOAP response on successful load (they requested this solely because that's the response Epic sends)
+      render :soap => { 'tns:responseCode' => 'PROTOCOL_RECEIVED' },
+             :header => SecureRandom.uuid
     end
-
-    # return proper SOAP response on successful load
-    render :soap => { 'tns:responseCode' => 'PROTOCOL_RECEIVED' },
-           :header => SecureRandom.uuid
   end
 
   private
@@ -172,7 +180,11 @@ class OncoreEndpointController < ApplicationController
   def find_protocol_by_rmid
     # TODO: Filter out any non-numerical characters from RMID
     rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
-    return Protocol.find_by(research_master_id: rmid)
+    if !rmid.nil? && protocol = Protocol.find_by(research_master_id: rmid)
+      return protocol
+    else
+      raise "Protocol with RMID #{rmid} not found in SPARC."
+    end
   end
 
   # Creates arms on the protocol and
@@ -265,13 +277,18 @@ class OncoreEndpointController < ApplicationController
     ( Date.new(2000,1,1)..Date.new(date[0..3].to_i,date[4..5].to_i,date[6..7].to_i) ).count
   end
 
-  def print_params_to_log
+  def print_params_to_log(e=nil)
     logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")
     logger = ActiveSupport::Logger.new(logfile)
     logger.info "\n----------------------------------------------------------------------------------"
     logger.info "RetrieveProtocolDefResponse request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     logger.info "Params received by OncoreEndpointController:"
     logger.info JSON.pretty_generate(oncore_endpoint_params.to_h)
+    unless e.nil?
+      logger.info "Error:\n"
+      logger.info e.message
+      logger.info e.backtrace.inspect
+    end
     logger.info "----------------------------------------------------------------------------------\n"
   end
 

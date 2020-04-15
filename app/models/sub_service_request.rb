@@ -527,7 +527,7 @@ class SubServiceRequest < ApplicationRecord
 
   def set_next_ssr_id
     self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
-    self.protocol = self.service_request.protocol
+    self.protocol = self.service_request.try(:protocol)
 
     if self.protocol
       self.protocol.increment!(:next_ssr_id)

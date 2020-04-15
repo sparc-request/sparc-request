@@ -77,7 +77,7 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.2.0' # Check usage
+gem 'savon', '~> 2.12.0'
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
@@ -120,7 +120,7 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.2'
+  gem 'webdrivers', '~> 4.3'
   gem 'webmock'
 end
 

@@ -23,10 +23,8 @@ module NotifierHelper
     case status
     when 'ssr_destroyed'
       render "notifier/deleted_all_services_from_cart"
-    when 'get_a_cost_estimate'
-      render "notifier/welcome"
     when 'submitted'
-      render "notifier/welcome_for_submitted_status"
+      render "notifier/welcome"
     when 'request_amendment'
       render "notifier/request_amendment"
     end

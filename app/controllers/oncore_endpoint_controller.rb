@@ -143,10 +143,6 @@ class OncoreEndpointController < ApplicationController
     :header_return => :string,
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
-    # === Logging and testing info =============================
-    # Print the params to a specific OnCore log
-    
-    # ==========================================================
     begin
       # find the protocol
       protocol = find_protocol_by_rmid

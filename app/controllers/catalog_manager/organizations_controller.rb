@@ -93,7 +93,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   ####Actions for User Rights sub-form####
   def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
-    @new_ur_identity = Identity.find(params[:new_ur_identity_id])
+    @new_ur_identity = Identity.find_or_create(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
   end
 
@@ -114,7 +114,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   ####Actions for Fulfillment Rights sub-form####
   def add_fulfillment_rights_row
     @organization = Organization.find(params[:organization_id])
-    @new_fr_identity = Identity.find(params[:new_fr_identity_id])
+    @new_fr_identity = Identity.find_or_create(params[:new_fr_identity_id])
     @fulfillment_rights = fulfillment_rights(@organization_id)
   end
 

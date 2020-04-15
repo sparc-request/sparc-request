@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
@@ -528,6 +527,7 @@ class SubServiceRequest < ApplicationRecord
 
   def set_next_ssr_id
     self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
+    self.protocol = self.service_request.protocol
 
     if self.protocol
       self.protocol.increment!(:next_ssr_id)

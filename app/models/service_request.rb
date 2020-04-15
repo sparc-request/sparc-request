@@ -19,12 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
 
   belongs_to :protocol
+
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
@@ -42,7 +42,6 @@ class ServiceRequest < ApplicationRecord
   has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
-  after_save :set_ssr_protocol_id
 
   attr_accessor :previous_submitted_at
 
@@ -434,9 +433,5 @@ class ServiceRequest < ApplicationRecord
       self.original_submitted_date = self.submitted_at
       self.save(validate: false)
     end
-  end
-
-  def set_ssr_protocol_id
-    self.sub_service_requests.each{ |ssr| ssr.update_attribute(:protocol, self.protocol) }
   end
 end

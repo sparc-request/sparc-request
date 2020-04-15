@@ -640,7 +640,7 @@ class Protocol < ApplicationRecord
   private
 
   def set_next_ssr_id
-    self.next_ssr_id = self.service_requests.first ? self.service_requests.first.next_ssr_id : 1
+    self.next_ssr_id = self.service_requests.any? ? self.service_requests.first.next_ssr_id : 1
   end
 
   def indirect_cost_enabled

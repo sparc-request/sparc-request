@@ -20,10 +20,6 @@
 
 FactoryBot.define do
   factory :human_subjects_info do
-    pro_number          { Random.rand(20000).to_s }
-    irb_of_record       { Faker::Lorem.word }
-    submission_type     { Faker::Lorem.word }
-    irb_approval_date   { "2015-10-15" }
-    irb_expiration_date { "2015-10-25" }
+    nct_number { Faker::Number.number(digits: 8).to_s }
   end
 end

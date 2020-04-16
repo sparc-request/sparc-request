@@ -92,18 +92,13 @@ FactoryBot.define do
     end
 
     transient do
-      project_role_count {1}
-      pi {nil}
-      identity {nil}
-      project_rights {nil}
-      role {nil}
-      primary_pi {nil}
-      project_role {nil}
+      primary_pi                { nil }
+      project_role              { nil }
     end
 
     before(:create) do |protocol, evaluator|
       if evaluator.primary_pi
-        protocol.project_roles << create(:project_role, protocol_id: protocol.id, identity_id: evaluator.primary_pi.id, project_rights: 'approve', role: 'primary-pi')
+        protocol.project_roles << create(:project_role, protocol: protocol, identity: evaluator.primary_pi, project_rights: 'approve', role: 'primary-pi')
       end
 
       if evaluator.project_role

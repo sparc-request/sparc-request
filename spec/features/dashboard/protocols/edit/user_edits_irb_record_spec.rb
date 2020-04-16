@@ -18,16 +18,37 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
+require 'rails_helper'
 
-  factory :investigational_products_info do
-    ind_number  { Random.rand(20000).to_s }
-    ind_on_hold { false }
-    exemption_type { "ide" }
-    inv_device_number  { Random.rand(20000).to_s }
+RSpec.describe 'User wants to edit a Study with IRB Records', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
-    trait :ind_on_hold do
-      ind_on_hold {true}
-    end
+  before :each do
+    @protocol = create(:study_federally_funded, primary_pi: jug2, human_subjects: true, with_irb: true)
+    @irb      = @protocol.irb_records.first
+
+    visit edit_dashboard_protocol_path(@protocol)
+  end
+
+  it 'should update the IRB Records' do
+    find('.delete-irb').click
+    wait_for_javascript_to_finish
+
+    find('#newIrbRecord').click
+    wait_for_javascript_to_finish
+
+    fill_in 'irb_record_pro_number', with: '2222222222'
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
+
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
+
+    expect(@protocol.irb_records.count).to eq(1)
+    irb = @protocol.irb_records.first
+    expect(irb.pro_number).to eq('2222222222')
   end
 end

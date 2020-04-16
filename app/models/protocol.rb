@@ -60,6 +60,7 @@ class Protocol < ApplicationRecord
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
+  has_many :irb_records,                  through: :human_subjects_info
 
   has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity

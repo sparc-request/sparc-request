@@ -19,9 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class IrbRecordsController < ApplicationController
-  before_action :initialize_service_request,  unless: :in_dashboard?, only: []
-  before_action :authorize_identity,          unless: :in_dashboard?, only: []
-  before_action :authorize_dashboard_access,  if: :in_dashboard?,     only: []
   before_action :find_protocol
   before_action :find_human_subjects_info
   before_action :find_irb_record,           only: [:edit, :update, :destroy]

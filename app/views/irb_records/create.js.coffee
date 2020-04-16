@@ -33,7 +33,7 @@ $('#newIrbRecord').replaceWith("<%= j render 'irb_records/new_irb_record', proto
 
 <% if params[:primary] == 'false' %>
 $('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
-  prop('disabled', true).
+  attr('disabled', true).
   attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
 <% end %>
 

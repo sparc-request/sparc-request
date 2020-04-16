@@ -29,29 +29,29 @@ task merge_services: :environment do
 
   ActiveRecord::Base.transaction do
     
-    old_service_id = (prompt "Enter the old service id: ").to_i
-    new_service_id = (prompt "Enter the new service id: ").to_i
+    master_service_id = (prompt "Enter the master service id: ").to_i
+    old_service_id = (prompt "Enter the id of the service to be merged and deleted: ").to_i
 
-    puts "You have entered #{old_service_id} for the old service and #{new_service_id}"
-    puts "for the new service."
+    puts "You have entered #{old_service_id} for the old service and #{master_service_id}"
+    puts "for the master service."
     continue = prompt("Is this correct and is it ok to continue? (y/n): ")
     if continue == 'y'
       puts "Merging service"
-      merge_service(old_service_id, new_service_id)
+      merge_service(old_service_id, master_service_id)
     else
       puts "Exiting task..."
     end
   end # ActiveRecord::Base.transaction
 end # task
 
-def merge_service(old_service_id, new_service_id)
+def merge_service(old_service_id, master_service_id)
   old_service = Service.find(old_service_id)
-  new_service = Service.find(new_service_id)
-  dest_org_process_ssrs = new_service.organization.process_ssrs_parent
-  puts "Merging Service #{old_service.id} into #{new_service.id} belonging to Org ##{dest_org_process_ssrs.id}"
+  master_service = Service.find(master_service_id)
+  dest_org_process_ssrs = master_service.organization.process_ssrs_parent
+  puts "Merging Service #{old_service.id} into #{master_service.id} belonging to Org ##{dest_org_process_ssrs.id}"
 
   old_service.line_items.each do |line_item|
-    line_item.service_id = new_service.id
+    line_item.service_id = master_service.id
     line_item.save(validate: false)
   end
 

@@ -317,10 +317,6 @@ class SubServiceRequest < ApplicationRecord
     self.status == 'draft'
   end
 
-  def is_mergable?
-    !is_locked? && is_complete?
-  end
-
   def set_to_draft
     self.update_attributes(status: 'draft') unless status == 'draft'
   end

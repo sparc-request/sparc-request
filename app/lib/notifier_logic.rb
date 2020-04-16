@@ -23,10 +23,6 @@ class NotifierLogic
     NotifierLogic.new(service_request, current_user, ssrids).update_ssrs_and_send_emails
   end
 
-  def self.obtain_research_pricing_logic(service_request, current_user)
-    NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email
-  end
-
   def initialize(service_request, current_user, ssrids=[])
     @service_request = service_request
     @current_user = current_user
@@ -54,16 +50,6 @@ class NotifierLogic
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
-  end
-
-  def update_status_and_send_get_a_cost_estimate_email
-    to_notify = @service_request.update_status('get_a_cost_estimate', @current_user)
-    sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-    if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
-      send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
-      send_admin_notifications(sub_service_requests, request_amendment: false)
-      send_service_provider_notifications(sub_service_requests, request_amendment: false)
-    end
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false)

@@ -167,10 +167,6 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => email_from, :subject => subject)
   end
 
-  def obtain_research_pricing service_provider, service_request
-
-  end
-
   def provide_feedback feedback
     @feedback = feedback
 
@@ -286,8 +282,6 @@ class Notifier < ActionMailer::Base
 
   def email_title(status, protocol, ssr)
     email_status = case status
-    when 'get_a_cost_estimate'
-      "Get Cost Estimate"
     when 'request_amendment'
       "Amendment Submitted"
     when 'ssr_destroyed'

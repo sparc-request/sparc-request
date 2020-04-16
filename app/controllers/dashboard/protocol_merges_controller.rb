@@ -164,19 +164,12 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
   end
 
   # We can not merge if 2 requests are under the same process ssrs org AND either of those requests are locked or incomplete
+  # Grab all locked / incomplete requests from each protocol
+  # Take the intersection of the potentially ineligible requests to see if any of them have the same "organization_id"
   def requests_not_merge_eligible?(master, merged)
-    master_requests = master.sub_service_requests
-    merged_requests = merged.sub_service_requests
+    master_ineligible_requests = master.sub_service_requests.select{ |ssr| ssr.is_locked? || !ssr.is_complete?}
+    merged_ineligible_requests = merged.sub_service_requests.select{ |ssr| ssr.is_locked? || !ssr.is_complete?}
 
-    master_requests.each do |master_request|
-      merged_requests.each do |merged_request|
-        master_merge_ineligible = (master_request.is_locked? || !master_request.is_complete?)
-        merged_merge_ineligible = (merged_request.is_locked? || !merged_request.is_complete?)
-        if (master_request.process_ssrs_organization == merged_request.process_ssrs_organization) && (master_protocol_ineligible || merged_protocol_ineligible)
-          return true
-        end
-      end
-    end
-    return false
+    return (master_ineligible_requests.map(&:organization_id) & merged_ineligible_requests.map(&:organization_id)).any?
   end
 end

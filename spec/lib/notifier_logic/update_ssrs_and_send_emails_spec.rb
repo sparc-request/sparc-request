@@ -52,8 +52,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: nil)
         ### SSR SETUP ###
-        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, submitted_at: nil, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, submitted_at: nil, service_requester: service_requester)
+        @ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, submitted_at: nil, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -130,8 +130,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -216,8 +216,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: nil, submitted_at: nil, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: nil, submitted_at: nil, service_requester: service_requester)
         @ssr2.update_attribute(:status, 'draft')
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -295,8 +295,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -378,8 +378,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -464,8 +464,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
@@ -554,8 +554,8 @@ RSpec.describe NotifierLogic do
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr         = create(:sub_service_request, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        @ssr2        = create(:sub_service_request, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
         ### LINE ITEM SETUP ###
         li          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))

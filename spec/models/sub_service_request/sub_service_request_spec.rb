@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -76,7 +75,7 @@ RSpec.describe SubServiceRequest, type: :model do
 
     describe 'fulfillment line item manipulation' do
 
-      let!(:sub_service_request2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+      let!(:sub_service_request2) { create(:sub_service_request, service_request: service_request, organization: core) }
 
       context 'updating a line item' do
 

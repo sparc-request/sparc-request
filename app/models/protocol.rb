@@ -487,7 +487,7 @@ class Protocol < ApplicationRecord
     elsif self.pending_funding?
       self.potential_funding_source
     else
-      nil
+      'unfunded'  ## for other status options
     end
   end
 

@@ -21,7 +21,7 @@
 namespace :data do
   task fix_past_status_data: :environment do
     status_list_post_submission = ['ctrc_approved', 'administrative_review', 'approved', 'awaiting_pi_approval', 'complete', 'declined', 'invoiced', 'ctrc_review', 'committee_review', 'fulfillment_queue', 'in_process', 'on_hold', 'submitted', 'withdrawn', 'incomplete']
-    status_list_pre_submission  = ['draft', 'first_draft', 'get_a_cost_estimate']
+    status_list_pre_submission  = ['draft', 'first_draft']
 
     CSV.open("tmp/update_submitted_at_and_past_status_data_#{Time.now.strftime('%m%d%Y%H%M%S')}.csv", "wb") do |csv|
 

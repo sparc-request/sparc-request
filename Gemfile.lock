@@ -119,7 +119,7 @@ GEM
     afm (0.2.2)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
-    akami (1.2.2)
+    akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
@@ -286,7 +286,7 @@ GEM
     grape-entity (0.8.0)
       activesupport (>= 3.0.0)
       multi_json (>= 1.3.2)
-    gyoku (1.0.0)
+    gyoku (1.3.1)
       builder (>= 2.1.2)
     haml (5.1.2)
       temple (>= 0.8.0)
@@ -304,8 +304,9 @@ GEM
     httparty (0.18.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    httpi (2.0.2)
+    httpi (2.4.4)
       rack
+      socksify
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     i18n-js (3.6.0)
@@ -369,7 +370,7 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
-    nori (2.1.0)
+    nori (2.6.0)
     nprogress-rails (0.2.0.2)
     omniauth (1.9.1)
       hashie (>= 3.4.6)
@@ -522,14 +523,14 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    savon (2.2.0)
-      akami (~> 1.2.0)
+    savon (2.12.0)
+      akami (~> 1.2)
       builder (>= 2.1.2)
-      gyoku (~> 1.0.0)
-      httpi (~> 2.0.2)
-      nokogiri (>= 1.4.0)
-      nori (~> 2.1.0)
-      wasabi (~> 3.1.0)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
@@ -548,6 +549,7 @@ GEM
     site_prism-all_there (0.3.2)
     sixarm_ruby_unaccent (1.2.0)
     slack-notifier (2.3.2)
+    socksify (1.7.1)
     sort_alphabetical (1.1.0)
       unicode_utils (>= 1.2.2)
     spring (2.1.0)
@@ -589,12 +591,12 @@ GEM
     uniform_notifier (1.13.0)
     warden (1.2.8)
       rack (>= 2.0.6)
-    wasabi (3.1.0)
+    wasabi (3.5.0)
       httpi (~> 2.0)
-      nokogiri (>= 1.4.0)
+      nokogiri (>= 1.4.2)
     wash_out (0.12.0)
       nori (>= 2.0.0)
-    webdrivers (4.2.0)
+    webdrivers (4.3.0)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
       selenium-webdriver (>= 3.0, < 4.0)
@@ -719,7 +721,7 @@ DEPENDENCIES
   rubyzip (>= 1.2.1)
   sanitized_data!
   sassc-rails
-  savon (~> 2.2.0)
+  savon (~> 2.12.0)
   shoulda-callback-matchers
   shoulda-matchers
   simplecov
@@ -734,7 +736,7 @@ DEPENDENCIES
   twitter-typeahead-rails
   uglifier (>= 1.3.0)
   wash_out
-  webdrivers (~> 4.2)
+  webdrivers (~> 4.3)
   webmock
   whenever
   will_paginate

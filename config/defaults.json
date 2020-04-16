@@ -851,7 +851,7 @@
   },
   {
     "key":            "updatable_statuses",
-    "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
+    "value":          "[\"first_draft\", \"draft\", \"awaiting_pi_approval\"]",
     "friendly_name":  "Updatable Statuses",
     "description":    "This defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered \"un-updatable\".",
     "group":          "",

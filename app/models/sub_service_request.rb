@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
@@ -67,8 +66,6 @@ class SubServiceRequest < ApplicationRecord
   validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }, if: Proc.new{ |ssr| ssr.service_request_id.present? }
 
   before_validation :set_next_ssr_id, on: :create
-
-  after_create :increment_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
 
   after_save :update_org_tree
   after_save :update_past_status
@@ -530,15 +527,11 @@ class SubServiceRequest < ApplicationRecord
 
   def set_next_ssr_id
     self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
+    self.protocol = self.service_request.try(:protocol)
 
     if self.protocol
-      self.protocol.next_ssr_id += 1
-      self.protocol.save(validate: false)
+      self.protocol.increment!(:next_ssr_id)
     end
-  end
-
-  def increment_next_ssr_id
-    self.protocol.increment!(:next_ssr_id)
   end
 
   def notify_remote_around_update?

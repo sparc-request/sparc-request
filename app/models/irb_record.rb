@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class IrbRecord < ApplicationRecord
+  include RemotelyNotifiable
+
   belongs_to :human_subjects_info
 
   has_and_belongs_to_many :study_phases
@@ -26,4 +28,8 @@ class IrbRecord < ApplicationRecord
   has_one :protocol, through: :human_subjects_info
 
   validates_presence_of :pro_number
+
+  def study_phase_values
+    study_phases.pluck(:phase)
+  end
 end

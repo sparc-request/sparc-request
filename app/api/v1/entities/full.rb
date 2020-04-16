@@ -52,10 +52,17 @@ module V1
     root 'human_subjects_infos', 'human_subjects_info'
 
     expose  :protocol_id,
-            :nct_number,
+            :nct_number
+  end
+
+  class IrbRecordFull < IrbRecordShallow
+    root 'irb_records', 'irb_record'
+
+    expose  :human_subjects_info_id,
             :pro_number,
             :irb_of_record,
             :submission_type,
+            :study_phase_values,
             :approval_pending
 
     with_options(format_with: :iso_timestamp) do

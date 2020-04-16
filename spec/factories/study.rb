@@ -29,43 +29,36 @@ FactoryBot.define do
     end
 
     transient do
-      human_subjects            { false }
-      vertebrate_animals        { false }
-      investigational_products  { false }
-      ip_patents                { false }
-      with_irb                  { false }
+      human_subjects                { false }
+      vertebrate_animals            { false }
+      investigational_products      { false }
+      ip_patents                    { false }
+      with_irb                      { false }
+      human_subjects_info           { nil }
+      vertebrate_animals_info       { nil }
+      investigational_products_info { nil }
+      ip_patents_info               { nil }
     end
 
     after(:build) do |protocol, evaluator|
-      create(:research_types_info,
-        protocol: protocol,
-        human_subjects: evaluator.human_subjects,
-        vertebrate_animals: evaluator.vertebrate_animals,
-        investigational_products: evaluator.investigational_products,
-        ip_patents: evaluator.ip_patents
+      build(:research_types_info,
+        protocol:                 protocol,
+        human_subjects:           evaluator.human_subjects            || evaluator.human_subjects_info.present?,
+        vertebrate_animals:       evaluator.vertebrate_animals        || evaluator.vertebrate_animals_info.present?,
+        investigational_products: evaluator.investigational_products  || evaluator.investigational_products_info.present?,
+        ip_patents:               evaluator.ip_patents                || evaluator.ip_patents_info.present?
       )
 
-      if evaluator.human_subjects
-        hsi = create(:human_subjects_info, protocol: protocol)
+      protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) unless protocol.human_subjects_info
+      hsi = protocol.human_subjects_info
 
-        if evaluator.with_irb
-          create(:irb_record, human_subjects_info: hsi)
-        end
-      else
-        protocol.build_human_subjects_info(attributes_for(:human_subjects_info))
+      if evaluator.with_irb
+        hsi.irb_records.build(attributes_for(:irb_record))
       end
 
-      if evaluator.vertebrate_animals
-        create(:vertebrate_animals_info, protocol: protocol)
-      end
-
-      if evaluator.investigational_products
-        create(:investigational_products_info, protocol: protocol)
-      end
-
-      if evaluator.ip_patents
-        create(:ip_patents_info, protocol: protocol)
-      end
+      protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info))              unless protocol.vertebrate_animals_info
+      protocol.build_investigational_products_info(attributes_for(:investigational_products_info))  unless protocol.investigational_products_info
+      protocol.build_ip_patents_info(attributes_for(:ip_patents_info))                              unless protocol.ip_patents_info
     end
 
     factory :study_federally_funded,                    traits: [:funded, :federal]

@@ -198,7 +198,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -209,10 +209,9 @@ class EpicInterface
   end
 
   def emit_irb_number(xml, study)
-    irb_number = study.human_subjects_info.try(:pro_number)
-    irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
+    irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
-    if !irb_number.blank? then
+    if !irb_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')

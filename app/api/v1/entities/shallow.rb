@@ -39,6 +39,10 @@ module V1
     root 'human_subjects_info', 'human_subjects_info'
   end
 
+  class IrbRecordShallow < Shallow
+    root 'irb_record', 'irb_record'
+  end
+
   class IdentityShallow < Shallow
     root 'identities', 'identity'
   end

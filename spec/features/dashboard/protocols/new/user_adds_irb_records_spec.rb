@@ -34,7 +34,6 @@ RSpec.describe 'User wants to make a new Study with IRB Records', js: true do
     fill_in 'protocol_short_title', with: 'asd'
     fill_in 'protocol_title', with: 'asd'
     bootstrap_typeahead '#primary_pi', 'Julia'
-    find("[for='protocol_selected_for_epic_false']").click
     bootstrap_select '#protocol_funding_status', 'Funded'
     bootstrap_select '#protocol_funding_source', 'Federal'
     fill_in 'protocol_sponsor_name', with: 'asd'

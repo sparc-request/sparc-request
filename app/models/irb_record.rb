@@ -18,19 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class HumanSubjectsInfo < ApplicationRecord
-  include RemotelyNotifiable
+class IrbRecord < ApplicationRecord
+  belongs_to :human_subjects_info
 
-  audited
+  has_and_belongs_to_many :study_phases
 
-  self.table_name = 'human_subjects_info'
+  has_one :protocol, through: :human_subjects_info
 
-  belongs_to :protocol
-
-  has_many :irb_records
-
-  validates :nct_number, numericality: {allow_blank: true, only_integer: true, message: "must contain 8 numerical digits"}
-  validates :nct_number, length: {allow_blank: true, is: 8, message: "must contain 8 numerical digits"}
-
-  accepts_nested_attributes_for :irb_records, allow_destroy: true
+  validates_presence_of :pro_number
 end

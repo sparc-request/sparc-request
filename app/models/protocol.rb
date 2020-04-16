@@ -51,8 +51,6 @@ class Protocol < ApplicationRecord
   has_many :documents,                    dependent: :destroy
   has_many :protocol_merges,              foreign_key: :master_protocol_id
 
-  has_and_belongs_to_many :study_phases
-
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
   has_many :line_items,                   through: :service_requests
@@ -118,7 +116,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
   end
 
   def has_human_subject_info?

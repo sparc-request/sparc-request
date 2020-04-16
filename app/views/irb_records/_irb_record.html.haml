@@ -1,0 +1,84 @@
+-# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- primary = primary == 'true'
+
+.list-group-item.d-flex.border.flex-column.collapsed.mb-3.irb-record{ class: primary ? 'list-group-item-success primary-irb' : 'list-group-item-info', id: "irb#{index}", data: { toggle: 'collapse', target: "#irb#{index}Collapse" } }
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][pro_number]", irb_record.pro_number
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_of_record]", irb_record.irb_of_record
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][submission_type]", irb_record.submission_type
+  - irb_record.study_phases.each do |study_phase|
+    = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][study_phase_ids][]", study_phase.id, multiple: true
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][approval_pending]", irb_record.approval_pending
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][initial_irb_approval_date]", irb_record.initial_irb_approval_date
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_approval_date]", irb_record.irb_approval_date
+  = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_expiration_date]", irb_record.irb_expiration_date
+  .d-flex.justify-content-between
+    %h4.mb-0.collapsed{ title: primary ? t('irb_records.primary_irb') : '', data: { toggle: 'tooltip' } }
+      = icon('fas', 'caret-down mr-2')
+      = t('irb_records.pro_header', pro: irb_record.pro_number)
+      - if irb_record.irb_of_record.present?
+        = t('irb_records.irb_header', irb: irb_record.irb_of_record)
+    .d-flex.align-items-center
+      = link_to edit_irb_records_path(id: irb_record.id, index: index, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
+        = icon('fas', 'edit fa-lg')
+      = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: 'text-danger delete-irb', title: t('irb_records.tooltips.delete'), data: { toggle: 'tooltip' } do
+        = icon('fas', 'trash-alt fa-lg')
+  .collapse{ id: "irb#{index}Collapse" }
+    .w-100.pt-3
+      .form-row
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = IrbRecord.human_attribute_name(:submission_type)
+        .form-group.col-2
+          = irb_record.submission_type.present? ? PermissibleValue.get_value('submission_type', irb_record.submission_type) : t('constants.na')
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = icon('fas', 'calendar-alt')
+            = IrbRecord.human_attribute_name(:initial_irb_approval_date)
+        .form-group.col-2.text-right
+          = irb_record.initial_irb_approval_date.present? ? format_date(irb_record.initial_irb_approval_date) : t('constants.na')
+      .form-row
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = IrbRecord.human_attribute_name(:study_phase_ids)
+        .form-group.col-2
+          = irb_record.study_phases.any? ? irb_record.study_phases.map(&:phase).join(', ') : t('constants.na')
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = icon('fas', 'calendar-alt')
+            = IrbRecord.human_attribute_name(:irb_approval_date)
+        .form-group.col-2.text-right
+          = irb_record.irb_approval_date.present? ? format_date(irb_record.irb_approval_date) : t('constants.na')
+      .form-row
+        .form-group.col-4.mb-0
+          %label.mb-0.font-weight-bold
+            = IrbRecord.human_attribute_name(:approval_pending)
+        .form-group.col-2.mb-0
+          - if irb_record.approval_pending.nil?
+            = t('constants.na')
+          - else
+            = irb_record.approval_pending? ? t('constants.yes_select') : t('constants.no_select')
+        .form-group.col-4.mb-0
+          %label.mb-0.font-weight-bold
+            = icon('fas', 'calendar-alt')
+            = IrbRecord.human_attribute_name(:irb_expiration_date)
+        .form-group.col-2.text-right.mb-0
+          = irb_record.irb_expiration_date.present? ? format_date(irb_record.irb_expiration_date) : t('constants.na')

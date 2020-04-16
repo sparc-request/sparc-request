@@ -18,19 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class HumanSubjectsInfo < ApplicationRecord
-  include RemotelyNotifiable
+$("#irb<%= params[:index] %>").removeClass('d-flex').addClass('d-none').append("<%= j render 'irb_records/destroy', index: params[:index] %>")
 
-  audited
-
-  self.table_name = 'human_subjects_info'
-
-  belongs_to :protocol
-
-  has_many :irb_records
-
-  validates :nct_number, numericality: {allow_blank: true, only_integer: true, message: "must contain 8 numerical digits"}
-  validates :nct_number, length: {allow_blank: true, is: 8, message: "must contain 8 numerical digits"}
-
-  accepts_nested_attributes_for :irb_records, allow_destroy: true
-end
+if $('.irb-record:not(.d-none)').length == 1
+  $('.primary-irb .delete-irb').addClass('text-danger').removeClass('text-muted').
+    prop('disabled', false).
+    attr('data-original-title', I18n.t('irb_records.tooltips.delete'))
+else if $('.irb-record:not(.d-none)').length == 0
+  newUrl = new URL($('#newIrbRecord').prop('href'))
+  newUrl.searchParams.set('primary', 'true')
+  $('#newIrbRecord').prop('href', newUrl.href)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_11_190154) do
+ActiveRecord::Schema.define(version: 2020_04_14_145614) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -72,12 +72,12 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "auditable_id"
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "auditable_id"
     t.string "auditable_type"
-    t.bigint "associated_id"
+    t.integer "associated_id"
     t.string "associated_type"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -244,16 +244,9 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
 
   create_table "human_subjects_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.string "pro_number"
-    t.string "irb_of_record"
-    t.string "submission_type"
-    t.date "initial_irb_approval_date"
-    t.date "irb_approval_date"
-    t.date "irb_expiration_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.boolean "approval_pending"
     t.string "nct_number"
     t.index ["protocol_id"], name: "index_human_subjects_info_on_protocol_id"
   end
@@ -267,8 +260,8 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "catalog_overlord"
     t.string "credentials_other"
@@ -326,6 +319,27 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
+  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "human_subjects_info_id"
+    t.string "pro_number"
+    t.string "irb_of_record"
+    t.string "submission_type"
+    t.date "initial_irb_approval_date"
+    t.date "irb_approval_date"
+    t.date "irb_expiration_date"
+    t.boolean "approval_pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
+  end
+
+  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "irb_record_id"
+    t.bigint "study_phase_id"
+    t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"
+    t.index ["study_phase_id"], name: "index_irb_records_study_phases_on_study_phase_id"
+  end
+
   create_table "line_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "sub_service_request_id"
@@ -338,7 +352,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "units_per_quantity", default: 1
-    t.index ["service_id"], name: "index_line_items_on_service_id"
     t.index ["service_request_id"], name: "index_line_items_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id"
   end
@@ -414,6 +427,8 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
+    t.string "primary_ontology_tag"
+    t.string "secondary_ontology_tag"
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
@@ -629,13 +644,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
-  create_table "protocols_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "protocol_id", null: false
-    t.bigint "study_phase_id", null: false
-    t.index ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id"
-    t.index ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id"
-  end
-
   create_table "question_responses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "question_id"
     t.bigint "response_id"
@@ -779,6 +787,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.integer "order"
     t.text "description"
     t.boolean "is_available", default: true
+    t.boolean "share_externally", default: true
     t.decimal "service_center_cost", precision: 12, scale: 4
     t.string "cpt_code"
     t.string "charge_code"
@@ -881,6 +890,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
   create_table "sub_service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "organization_id"
+    t.string "organization_shard", default: "musc"
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
@@ -900,7 +910,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_190154) do
     t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
-    t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
     t.index ["service_request_id"], name: "index_sub_service_requests_on_service_request_id"

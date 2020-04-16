@@ -121,6 +121,8 @@ SparcRails::Application.routes.draw do
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
+  resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
+
   resources :associated_users, except: [:show] do
     collection do
       get :update_professional_organizations

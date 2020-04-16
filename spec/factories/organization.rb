@@ -28,6 +28,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    survey_completion_alerts { false }
     order         { 1 }
 
     trait :ctrc do
@@ -68,6 +69,10 @@ FactoryBot.define do
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
+    end
+
+    trait :survey_completion_alerts do
+      survey_completion_alerts {false}
     end
 
     transient do

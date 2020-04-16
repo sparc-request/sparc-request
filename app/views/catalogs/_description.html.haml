@@ -26,6 +26,7 @@
     - if organization.description.present?
       %p.description
         = raw(organization.description)
+    = render 'catalogs/primary_contacts', organization: organization
     - if organization.type == "Program"
       - if organization.services.any?
         = render 'catalogs/accordion/services', organization: organization, service_request: service_request

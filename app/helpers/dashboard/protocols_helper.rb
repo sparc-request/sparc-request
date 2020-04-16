@@ -30,29 +30,39 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def protocol_id_link(protocol)
-    link_to protocol.id, dashboard_protocol_path(protocol)
+  def protocol_id_link(protocol, access)
+    if access
+      link_to protocol.id, dashboard_protocol_path(protocol)
+    else
+      protocol.id
+    end
   end
 
-  def protocol_short_title_link(protocol)
-    content_tag(:div, (link_to protocol.short_title, dashboard_protocol_path(protocol)) ) + content_tag(:div, (display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))) )
+  def protocol_short_title_link(protocol, access)
+    short_title = if access
+      (link_to protocol.short_title, dashboard_protocol_path(protocol))
+    else
+      protocol.short_title
+    end
+
+    content_tag(:div, short_title) + content_tag(:div, (display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))) )
   end
 
   def pis_display(protocol)
-    if protocol.primary_pi
-      content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
-        content_tag(:span) do
+    content_tag(:div, class: 'd-flex flex-column align-items-start') do
+      if protocol.primary_pi
+        content_tag(:div, title: Protocol.human_attribute_name(:primary_pi), data: { toggle: 'tooltip', boundary: 'window' }) do
           icon('fas', 'user-circle mr-2') + protocol.primary_pi.display_name
-        end + '<br>'.html_safe
-      end
-    else
-      ""
-    end + raw(
-    protocol.principal_investigators.select{ |pi| pi != protocol.primary_pi }.map do |pi|
-      content_tag(:span) do
-        icon('fas', 'user mr-2') + pi.display_name
-      end
-    end.join('<br>'.html_safe))
+        end
+      else
+        ""
+      end + raw(
+      protocol.principal_investigators.select{ |pi| pi != protocol.primary_pi }.map do |pi|
+        content_tag(:span) do
+          icon('fas', 'user mr-2') + pi.display_name
+        end
+      end.join())
+    end
   end
 
   def display_requests_button(protocol, access)
@@ -63,5 +73,9 @@ module Dashboard::ProtocolsHelper
         end
       end
     end
+  end
+
+  def display_merges(protocol)
+    content_tag(:div, protocol.protocol_merges.pluck(:merged_protocol_id).join(" "))
   end
 end

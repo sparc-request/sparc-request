@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_and_belongs_to_many :study_phases
 
@@ -113,6 +114,9 @@ class Protocol < ApplicationRecord
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
   validates_presence_of :potential_funding_source,  if: :pending_funding?
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
+  validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
+
+  before_create :set_next_ssr_id
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -180,6 +184,8 @@ class Protocol < ApplicationRecord
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'
       order("sub_service_requests_count" => order)
+    when 'protocol_merges'
+      joins(:protocol_merges).order("protocol_merges.id" => order)
     end
   }
 
@@ -229,10 +235,13 @@ class Protocol < ApplicationRecord
 
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
+
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity(id)
+    elsif filter == 'for_all'
+      return
     end
   }
 
@@ -303,6 +312,12 @@ class Protocol < ApplicationRecord
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
   }
+
+  def research_master_id=(rmid)
+    self.rmid_validated = false if rmid.blank?
+
+    super(rmid)
+  end
 
   def validate_dates
     is_valid = true
@@ -475,7 +490,7 @@ class Protocol < ApplicationRecord
     elsif self.pending_funding?
       self.potential_funding_source
     else
-      nil
+      'unfunded'  ## for other status options
     end
   end
 
@@ -488,7 +503,7 @@ class Protocol < ApplicationRecord
       self.last_epic_push_status = 'started'
       save(validate: false)
 
-      Rails.logger.info("Sending study message to Epic")
+      Rails.logger.info("Sending study message to Epic - Study #{self.id}")
       withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
@@ -496,7 +511,8 @@ class Protocol < ApplicationRecord
 
       EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
     rescue Exception => e
-      Rails.logger.info("Push to Epic failed.")
+      Rails.logger.error("Push to Epic failed - Study #{self.id}")
+      Rails.logger.error([e.message, *e.backtrace].join($/))
 
       self.last_epic_push_status = 'failed'
       save(validate: false)
@@ -622,6 +638,10 @@ class Protocol < ApplicationRecord
   end
 
   private
+
+  def set_next_ssr_id
+    self.next_ssr_id = self.service_requests.any? ? self.service_requests.first.next_ssr_id : 1
+  end
 
   def indirect_cost_enabled
     Setting.get_value('use_indirect_cost')

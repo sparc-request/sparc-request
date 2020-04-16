@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 def populate_settings_before_suite
+  Setting.auditing_enabled = false
   SettingsPopulator.new().populate
 
   Setting.find_by_key("use_epic").update_attribute(:value, true)

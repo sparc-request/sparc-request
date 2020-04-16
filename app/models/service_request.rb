@@ -19,12 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
 
   belongs_to :protocol
+
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :one_time_fee_line_items, -> { joins(:service).where(services: { one_time_fee: true }) }, class_name: "LineItem"
@@ -42,7 +42,6 @@ class ServiceRequest < ApplicationRecord
   has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
-  after_save :set_ssr_protocol_id
 
   attr_accessor :previous_submitted_at
 
@@ -89,33 +88,38 @@ class ServiceRequest < ApplicationRecord
   #   optional:             whether the service is optional
   #
   def create_line_items_for_service(args)
-    service               = args[:service]
-    optional              = args[:optional]
-    allow_duplicates      = args[:allow_duplicates]
-    recursive_call        = args[:recursive_call]
+    service           = args[:service]
+    requester         = args[:requester]
+    optional          = args[:optional] || true
+    allow_duplicates  = args[:allow_duplicates] || false
+    recursive_call    = args[:recursive_call] || false
 
     # If this service has already been added, then do nothing
-    return if !allow_duplicates && (self.line_items.incomplete.where(service_id: service.id).any? or self.line_items.unassigned.where(service_id: service.id).any?)
+    return if !allow_duplicates && self.line_items.incomplete.where(service: service).any?
 
     line_items = []
 
+    ssr = find_or_create_ssr(service.process_ssrs_organization, requester)
+
     # add service to line items
-    line_items << create_line_item(service_id: service.id, optional: optional, quantity: service.displayed_pricing_map.quantity_minimum)
+    line_items << create_line_item(service: service, sub_service_request: ssr, optional: optional, quantity: service.displayed_pricing_map.quantity_minimum)
+
+    self.reload
 
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
-      rs_line_items = create_line_items_for_service( service: rs, optional: false, recursive_call: true)
-      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+      rs_line_items = create_line_items_for_service(service: rs, optional: false, recursive_call: true)
+      line_items   += rs_line_items if rs_line_items
     end
 
     # add optional services to line items
     # if were in a recursive call, we don't want to add optional services
     unless recursive_call
-      service.optional_services.each do |rs|
-        next unless rs.parents_available?
-        rs_line_items = create_line_items_for_service(service: rs, optional: true, recursive_call: true)
-        rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+      service.optional_services.each do |os|
+        next unless os.parents_available?
+        os_line_items = create_line_items_for_service(service: os, optional: true, recursive_call: true)
+        line_items   += os_line_items if os_line_items
       end
     end
 
@@ -123,18 +127,30 @@ class ServiceRequest < ApplicationRecord
   end
 
   def create_line_item(args)
-    quantity = args.delete('quantity') || args.delete(:quantity) || 1
-    if line_item = self.line_items.create(args)
-      if line_item.service.one_time_fee
-        # quantity is only set for one time fee
-        line_item.update_attribute(:quantity, quantity)
-      end
+    quantity        = args.delete('quantity') || args.delete(:quantity) || 1
+    args[:quantity] = quantity if args[:service].one_time_fee? # quantity is only set for one time fee
 
-      line_item.reload
+    if line_item = self.line_items.create(args)
       return line_item
     else
       return false
     end
+  end
+
+  def find_or_create_ssr(organization, requester)
+    if (ssr = self.sub_service_requests.where(organization_id: organization.id).reject(&:is_complete?).first)
+      if !ssr.first_draft? && ssr.can_be_edited?
+        ssr.update_attribute(:status, 'draft') 
+      end
+    else
+      ssr = self.sub_service_requests.create(
+        protocol:           self.protocol,
+        organization:       organization,
+        service_requester:  requester,
+        status:             self.status == 'first_draft' ? 'first_draft' : 'draft'
+      )
+    end
+    ssr
   end
 
   def set_visit_page page_passed, arm
@@ -213,9 +229,9 @@ class ServiceRequest < ApplicationRecord
     AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
-  def created_ssrs_since_previous_submission
+  def created_ssrs_since_previous_submission(ssrids)
     start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%'#{ssrids.blank? ? "" : "AND auditable_id IN (#{ssrids.join(', ')})"} AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs
@@ -356,21 +372,15 @@ class ServiceRequest < ApplicationRecord
     end.compact
   end
 
-  # Make sure that all the sub service requests have an ssr id
-  def ensure_ssr_ids
-    next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
-
-    self.sub_service_requests.each do |ssr|
-      unless ssr.ssr_id && self.protocol
-        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
+  def next_ssr_id
+    "%04d" %
+      if self.protocol && self.protocol.next_ssr_id.present?
+        self.protocol.next_ssr_id
+      elsif self.sub_service_requests.reload.length == 0
+        1
+      else
+        self.sub_service_requests.last.ssr_id.gsub(/^0(0*)/, '').to_i + 1
       end
-    end
-
-    if protocol
-      protocol.next_ssr_id = next_ssr_id
-      protocol.save(validate: false)
-    end
   end
 
   def submitted?
@@ -422,14 +432,6 @@ class ServiceRequest < ApplicationRecord
     if self.submitted_at && !self.original_submitted_date
       self.original_submitted_date = self.submitted_at
       self.save(validate: false)
-    end
-  end
-
-  def set_ssr_protocol_id
-    if saved_change_to_protocol_id?
-      sub_service_requests.each do |ssr|
-        ssr.update_attributes(protocol_id: protocol_id)
-      end
     end
   end
 end

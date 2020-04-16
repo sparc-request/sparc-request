@@ -17,23 +17,18 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class NotifierLogic
-
-
-  def self.confirmation_logic(service_request, current_user)
-    NotifierLogic.new(service_request, current_user).update_ssrs_and_send_emails
+  def self.confirmation_logic(service_request, current_user, ssrids)
+    NotifierLogic.new(service_request, current_user, ssrids).update_ssrs_and_send_emails
   end
 
-  def self.obtain_research_pricing_logic(service_request, current_user)
-    NotifierLogic.new(service_request, current_user).update_status_and_send_get_a_cost_estimate_email
-  end
-
-  def initialize(service_request, current_user)
+  def initialize(service_request, current_user, ssrids=[])
     @service_request = service_request
     @current_user = current_user
     @destroyed_ssrs_needing_notification = destroyed_ssr_that_needs_a_request_amendment_email
-    @created_ssrs_needing_notification = @service_request.created_ssrs_since_previous_submission
-    @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status
+    @created_ssrs_needing_notification = @service_request.created_ssrs_since_previous_submission(ssrids)
+    @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status(ssrids)
   end
 
   def ssr_deletion_emails(deleted_ssr: nil, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
@@ -55,16 +50,6 @@ class NotifierLogic
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
-  end
-
-  def update_status_and_send_get_a_cost_estimate_email
-    to_notify = @service_request.update_status('get_a_cost_estimate', @current_user)
-    sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-    if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
-      send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
-      send_admin_notifications(sub_service_requests, request_amendment: false)
-      send_service_provider_notifications(sub_service_requests, request_amendment: false)
-    end
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false)
@@ -91,8 +76,8 @@ class NotifierLogic
 
   private
 
-  def ssrs_that_have_been_updated_from_a_un_updatable_status
-    draft_ssrs = find_draft_ssrs
+  def ssrs_that_have_been_updated_from_a_un_updatable_status(ssrids)
+    draft_ssrs = find_draft_ssrs(ssrids)
     # Filtering out the newly created draft ssrs
     ssrs_that_have_been_updated_from_a_un_updatable_status = []
     draft_ssrs.each do |ssr|
@@ -244,7 +229,7 @@ class NotifierLogic
     deleted_ssr_audits_that_need_request_amendment_email
   end
 
-  def find_draft_ssrs
-    @service_request.sub_service_requests.select{ |ssr| (ssr.status == "draft") }
+  def find_draft_ssrs(ssrids)
+    @service_request.sub_service_requests.select{ |ssr| (ssrids.blank? || ssrids.include?(ssr.id.to_s)) && ssr.status == "draft" }
   end
 end

@@ -32,7 +32,7 @@ RSpec.describe NotifierLogic do
   context '#ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false) for an entire SR' do
     context 'deleted an entire SSR' do
       before :each do
-        service_requester     = create(:identity)
+        service_requester = create(:identity)
         ### SR SETUP ###
         ### PREVIOUSLY SUBMITTED SSR ###
         @org         = create(:organization_with_process_ssrs)
@@ -44,8 +44,8 @@ RSpec.describe NotifierLogic do
         protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
         ### SSR SETUP ###
-        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
-        ssr2         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        @ssr         = create(:sub_service_request, protocol: protocol, service_request: @sr, organization: @org2, status: 'submitted', submitted_at: Time.now.yesterday.utc, service_requester: service_requester)
+        ssr2         = create(:sub_service_request, protocol: protocol, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
         ### LINE ITEM SETUP ###
         li           = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1         = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service)

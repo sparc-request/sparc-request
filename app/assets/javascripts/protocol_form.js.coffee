@@ -132,6 +132,7 @@ $(document).ready ->
     }
   ).on 'typeahead:select', (event, suggestion) ->
     $('#protocol_primary_pi_role_attributes_identity_id').val(suggestion.value)
+    $('#lazy_identity_id').val(suggestion.lazy_id)
     $('#primary_pi').prop('placeholder', suggestion.label)
     $('#primary_pi').parents('.form-group').addClass('is-valid')
 
@@ -351,8 +352,13 @@ determineStudyType = () ->
     ans7: ""
   }
 
-  answersArray  = Object.values(answers)
-  hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
+  ##IE requires it to be done this way:
+  answersArray = Object.keys(answers).map((key) -> answers[key])
+  hasNilValue   = $.inArray('', Object.keys(answers).map((key) -> answers[key])) < 5
+
+  ##The original way below is better, but unsupported by IE:
+  # answersArray  = Object.values(answers)
+  # hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
 
   if answersArray[0] == 'true' || !hasNilValue
     $.ajax

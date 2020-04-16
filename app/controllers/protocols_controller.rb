@@ -21,9 +21,9 @@
 class ProtocolsController < ApplicationController
   include ProtocolsControllerShared
 
-  before_action :initialize_service_request,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :authorize_identity,          except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_action :find_protocol,               only:   [:edit, :update, :show]
+  before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
+  before_action :find_protocol,               only: [:show, :edit, :update]
 
   def show
     respond_to :js
@@ -38,9 +38,8 @@ class ProtocolsController < ApplicationController
         @protocol.project_roles.new(identity: current_user, role: 'general-access-user', project_rights: 'approve')
       end
 
-      @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
+      @protocol.service_requests << @service_request
       @protocol.save
-      @service_request.update_attribute(:protocol, @protocol)
       @service_request.update_status('draft', current_user)
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic

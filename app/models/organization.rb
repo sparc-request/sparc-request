@@ -33,6 +33,7 @@ class Organization < ApplicationRecord
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
+  has_many :primary_contacts, -> { where(is_primary_contact: true) }, class_name: 'ServiceProvider'
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
   has_many :patient_registrars, :dependent => :destroy
@@ -170,6 +171,19 @@ class Organization < ApplicationRecord
     else
       parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
+  end
+
+  def program
+    return self.parent  if self.type == 'Core'
+    return self         if self.type == 'Program'
+  end
+
+  def provider
+    self.type == 'Provider' ? self : self.program.parent
+  end
+
+  def institution
+    self.type == 'Institution' ? self : self.provider.parent
   end
 
   def update_ssr_org_name
@@ -447,6 +461,9 @@ class Organization < ApplicationRecord
     end
   end
 
+  def direct_link
+    "#{ENV.fetch('ROOT_URL')}/organizations/#{id}"
+  end
 
   private
 

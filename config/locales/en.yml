@@ -27,6 +27,7 @@ en:
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
+    apply_all: "Apply to all"
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -45,6 +46,7 @@ en:
     edit: "Edit"
     export: "Export"
     filter: "Filter"
+    max: "Max"
     preview: "Preview"
     print: "Print"
     remove: "Remove"
@@ -74,7 +76,7 @@ en:
     attributes:
       arm:
         name: "Arm Name"
-        subject_count: "Subject Count"
+        subject_count: "Max Subject Count"
         visit_count: "Visit Count"
       document:
         doc_type: "Document Type"
@@ -196,8 +198,10 @@ en:
         study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
+        protocol_merge: "Historical Protocol Merges"
       protocol_filter:
         search_name: "Name"
+
       question:
         content: "Question"
       question_response:
@@ -216,6 +220,7 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+        previously_submitted: "Previously Submitted"
       sub_service_request:
         srid: "SRID"
       short_interaction:
@@ -267,6 +272,12 @@ en:
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
+        document:
+          attributes:
+            document:
+              spoofed_media_type: "File type does not match file content"
+            document_file_name:
+              invalid: "Invalid file type"
         form:
           attributes:
             active:
@@ -282,6 +293,11 @@ en:
             quantity:
               min: "must be greater than or equal to #{min}"
               max: "must be less than or equal to #{max}"
+        project_role:
+          attributes:
+            base:
+              duplicate_role: "User is already associated with this protocol."
+              epic_api_down: "Epic user API server is down."
         protocol:
           attributes:
             end_date:
@@ -343,6 +359,7 @@ en:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
+      subject_count_apply_all: "Apply the arm's subject count to all service line items in this arm."
       visit_count: 'Total number of visits per arm'
       screening: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 
@@ -470,14 +487,15 @@ en:
 
   calendar_structure:
     header: "Calendar Structure"
-    lock_calendar: "Lock Calendar"
-    unlock_calendar: "Unlock Calendar"
+    lock_calendar: "Lock Calendar & Funding"
+    unlock_calendar: "Unlock Calendar & Funding"
+    funding_locked: "Funding for this %{protocol_type} has been locked by an administrator. No funding changes may be made at this time."
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     tooltips:
-      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      lock_calendar: 'Prevent users from making changes to arm, subject, visit, and funding information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   ##############################
@@ -978,6 +996,7 @@ en:
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
     epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
     link: "HERE"
     name: "User Name"
     non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
@@ -1023,7 +1042,6 @@ en:
     p_title: "Project Title"
     triggered_by: "Current Identity:"
     u_info: "User Information"
-    welcome_obtain_research_pricing: "A request has been made for a budget review (Get Cost Estimate)"
     welcome_submit: "A request has been submitted to start services"
 
   # Service Request approve epic rights

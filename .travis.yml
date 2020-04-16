@@ -16,13 +16,14 @@ before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml
   - cp config/fulfillment_db.yml.example config/fulfillment_db.yml
+  - cp dotenv.example .env
   - mysql -e 'create database test_sparc_request;'
   - mysql -e 'create database cwf_test;'
   - RAILS_ENV=test bundle exec rake db:migrate
   - cd ..
   - git clone https://github.com/sparc-request/sparc-fulfillment.git
   - cd sparc-fulfillment
-  - git checkout v3.0.0
+  - git checkout v3.1.0
   - rvm use $(< .ruby-version) --install --binary --fuzzy
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - mkdir -p tmp

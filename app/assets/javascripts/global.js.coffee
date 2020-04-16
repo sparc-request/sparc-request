@@ -81,7 +81,6 @@ $ ->
       $control.attr('alt', text)
 
   $(document).on 'show.bs.collapse hide.bs.collapse', 'div[data-toggle=collapse] + .collapse', (event) ->
-    console.log event.delegateTarget.activeElement.tagName
     if ['A', 'I'].includes(event.delegateTarget.activeElement.tagName)
       event.preventDefault()
 

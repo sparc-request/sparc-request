@@ -37,7 +37,7 @@
       - if irb_record.irb_of_record.present?
         = t('irb_records.irb_header', irb: irb_record.irb_of_record)
     .d-flex.align-items-center
-      = link_to edit_irb_records_path(id: irb_record.id, index: index, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
+      = link_to edit_irb_records_path(id: irb_record.id, index: index, primary: primary.to_s, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
         = icon('fas', 'edit fa-lg')
       = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: 'text-danger delete-irb', title: t('irb_records.tooltips.delete'), data: { toggle: 'tooltip' } do
         = icon('fas', 'trash-alt fa-lg')

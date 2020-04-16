@@ -28,6 +28,6 @@ $("[name='irb_record[<%= attr.to_s %>]']").parents('.form-group').removeClass('i
 <% end %>
 <% end %>
 <% else %>
-$("#irb<%= params[:index] %>").replaceWith("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index] %>")
+$("#irb<%= params[:index] %>").replaceWith("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] %>")
 $("#modalContainer").modal('hide')
 <% end %>

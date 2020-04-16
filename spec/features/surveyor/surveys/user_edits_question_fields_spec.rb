@@ -420,7 +420,7 @@ RSpec.describe 'User edits question fields', js: true do
       context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
-          @question2 = create(:question, section: @section, is_dependent: true)
+          @question2 = create(:question, section: @section, is_dependent: true, depender: @option)
 
           visit surveyor_surveys_path
           wait_for_javascript_to_finish
@@ -433,10 +433,8 @@ RSpec.describe 'User edits question fields', js: true do
           confirm_swal
           wait_for_javascript_to_finish
 
-          find('.select-depender').click
-          wait_for_javascript_to_finish
-
-          expect(page).to have_no_selector('.select-depender .text', text: @option.content, visible: true)
+          expect(page).to have_no_selector('.select-depender')
+          expect(page).to have_field("question-#{@question2.id}-is_dependent", checked: false, disabled: true)
         end
       end
     end

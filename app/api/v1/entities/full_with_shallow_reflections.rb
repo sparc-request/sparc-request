@@ -37,6 +37,13 @@ module V1
     root 'human_subjects_infos', 'human_subjects_info'
 
     expose :protocol, using: V1::ProtocolShallow
+    expose :irb_records, using: V1::IrbRecordShallow
+  end
+
+  class IrbRecordFullWithShallowReflection < IrbRecordFull
+    root 'irb_records', 'irb_record'
+
+    expose :human_subjects_info, using: V1::HumanSubjectsInfoShallow
   end
 
   class ClinicalProviderFullWithShallowReflection < ClinicalProviderFull

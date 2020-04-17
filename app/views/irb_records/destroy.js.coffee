@@ -18,10 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :vertebrate_animals_info do
-    iacuc_number          { Random.rand(20000).to_s }
-    iacuc_approval_date   { Time.now }
-    iacuc_expiration_date { Time.now + 15.day }
-  end
-end
+$("#irb<%= params[:index] %>").removeClass('d-flex').addClass('d-none').append("<%= j render 'irb_records/destroy', index: params[:index] %>")
+
+if $('.irb-record:not(.d-none)').length == 1
+  $('.primary-irb .delete-irb').addClass('text-danger').removeClass('text-muted').
+    prop('disabled', false).
+    attr('data-original-title', I18n.t('irb_records.tooltips.delete'))
+else if $('.irb-record:not(.d-none)').length == 0
+  newUrl = new URL($('#newIrbRecord').prop('href'))
+  newUrl.searchParams.set('primary', 'true')
+  $('#newIrbRecord').prop('href', newUrl.href)

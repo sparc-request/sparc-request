@@ -18,10 +18,24 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :vertebrate_animals_info do
-    iacuc_number          { Random.rand(20000).to_s }
-    iacuc_approval_date   { Time.now }
-    iacuc_expiration_date { Time.now + 15.day }
-  end
-end
+<% if @errors %>
+$("[name^='irb_record']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='irb_record[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+$('#irbRecords').append("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] %>")
+$('#newIrbRecord').replaceWith("<%= j render 'irb_records/new_irb_record', protocol: @protocol, index: params[:index].to_i + 1, primary: 'false' %>")
+
+<% if params[:primary] == 'false' %>
+$('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
+  attr('disabled', true).
+  attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
+<% end %>
+
+$("#modalContainer").modal('hide')
+<% end %>

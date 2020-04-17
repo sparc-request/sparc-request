@@ -18,10 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :vertebrate_animals_info do
-    iacuc_number          { Random.rand(20000).to_s }
-    iacuc_approval_date   { Time.now }
-    iacuc_expiration_date { Time.now + 15.day }
+class IrbRecord < ApplicationRecord
+  include RemotelyNotifiable
+
+  belongs_to :human_subjects_info
+
+  has_and_belongs_to_many :study_phases
+
+  has_one :protocol, through: :human_subjects_info
+
+  validates_presence_of :pro_number
+
+  def study_phase_values
+    study_phases.pluck(:phase)
   end
 end

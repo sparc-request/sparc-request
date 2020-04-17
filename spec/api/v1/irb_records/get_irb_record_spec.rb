@@ -22,17 +22,14 @@ require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
-  describe 'GET /v1/human_subjects_infos/:id.json' do
+  describe 'GET /v1/irb_records/:id.json' do
 
     before do
-      human_subjects_info = FactoryBot.build(:human_subjects_info)
-      @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
-      @study.save(validate: false)
-
+      @irb_record = create(:irb_record)
     end
 
     context 'response params' do
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'shallow') }
+      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'shallow') }
 
       context 'success' do
 
@@ -44,89 +41,89 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(response.content_type).to eq('application/json')
         end
 
-        it 'should respond with a human_subjects_info root object' do
-          expect(response.body).to include('"human_subjects_info":')
+        it 'should respond with a irb_record root object' do
+          expect(response.body).to include('"irb_record":')
         end
       end
     end
 
     context 'request for :shallow record' do
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'shallow') }
+      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'shallow') }
 
-      it 'should respond with a single shallow human_subjects_info' do
-        expect(response.body).to eq("{\"human_subjects_info\":{\"sparc_id\":#{@study.human_subjects_info.id},\"callback_url\":\"https://127.0.0.1:5000/v1/human_subjects_infos/#{@study.human_subjects_info.id}.json\"}}")
+      it 'should respond with a single shallow irb_record' do
+        expect(response.body).to eq("{\"irb_record\":{\"sparc_id\":#{@irb_record.id},\"callback_url\":\"https://127.0.0.1:5000/v1/irb_records/#{@irb_record.id}.json\"}}")
       end
     end
 
     context 'request for :full record' do
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'full') }
+      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'full') }
 
-      it 'should respond with a HumanSubjectsInfo' do
+      it 'should respond with an IrbRecord' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
+        expected_attributes = build(:irb_record).attributes.
                                 keys.
-                                reject { |key| ['id','created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
+                                reject{ |key| ['id','created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                push('callback_url', 'sparc_id', 'study_phase_values').
                                 sort
 
-        expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)
+        expect(parsed_body['irb_record'].keys.sort).to eq(expected_attributes)
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'full_with_shallow_reflections') }
+      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'full_with_shallow_reflections') }
 
-      it 'should respond with an array of human_subjects_info and their attributes and their shallow reflections' do
+      it 'should respond with an array of irb_record and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
+        expected_attributes = build(:irb_record).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'protocol', 'irb_records').
+                                reject{ |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                push('callback_url', 'sparc_id', 'study_phase_values', 'human_subjects_info').
                                 sort
 
-        expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)
+        expect(parsed_body['irb_record'].keys.sort).to eq(expected_attributes)
       end
     end
 
     context 'request for :shallow record with a bogus ID' do
 
-     before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'shallow') }
+     before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'shallow') }
 
      it 'should respond with a 404 and JSON content type' do
        expect(response.status).to eq(404)
        expect(response.content_type).to eq('application/json')
        parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['human_subjects_info']).to eq(nil)
-       expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+       expect(parsed_body['irb_record']).to eq(nil)
+       expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
      end
    end
 
    context 'request for :full record with a bogus ID' do
 
-    before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full') }
+    before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'full') }
 
     it 'should respond with a 404 and JSON content type' do
       expect(response.status).to eq(404)
       expect(response.content_type).to eq('application/json')
       parsed_body         = JSON.parse(response.body)
-      expect(parsed_body['human_subjects_info']).to eq(nil)
-      expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+      expect(parsed_body['irb_record']).to eq(nil)
+      expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
     end
   end
 
     context 'request for :full_with_shallow_reflections record with a bogus ID' do
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full_with_shallow_reflections') }
+      before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'full_with_shallow_reflections') }
 
       it 'should respond with a 404 and JSON content type' do
         expect(response.status).to eq(404)
         expect(response.content_type).to eq('application/json')
         parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['human_subjects_info']).to eq(nil)
-        expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+        expect(parsed_body['irb_record']).to eq(nil)
+        expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
       end
     end
   end

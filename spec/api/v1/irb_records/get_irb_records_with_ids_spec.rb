@@ -23,21 +23,19 @@ require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
-  describe 'GET /v1/human_subjects_info.json' do
+  describe 'GET /v1/irb_record.json' do
 
     before do
       5.times do
-        human_subjects_info = FactoryBot.build(:human_subjects_info)
-        @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
-        @study.save(validate: false)
+        create(:irb_record)
       end
 
-      @ids = HumanSubjectsInfo.pluck(:id)
+      @ids = IrbRecord.pluck(:id)
     end
 
     context 'with ids' do
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'shallow', @ids.pop(4)) }
+      before { cwf_sends_api_get_request_for_resources('irb_records', 'shallow', @ids.pop(4)) }
 
       context 'success' do
 
@@ -49,59 +47,59 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(response.content_type).to eq('application/json')
         end
 
-        it 'should respond with a human_subjects_info root object' do
-          expect(response.body).to include('"human_subjects_info":')
+        it 'should respond with a irb_record root object' do
+          expect(response.body).to include('"irb_record":')
         end
 
-        it 'should respond with an array of human_subjects_info' do
+        it 'should respond with an array of irb_record' do
           parsed_body = JSON.parse(response.body)
 
-          expect(parsed_body['human_subjects_info'].length).to eq(4)
+          expect(parsed_body['irb_record'].length).to eq(4)
         end
       end
     end
 
     context 'request for :shallow records' do
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'shallow', @ids) }
+      before { cwf_sends_api_get_request_for_resources('irb_records', 'shallow', @ids) }
 
       it 'should respond with an array of :sparc_ids' do
         parsed_body = JSON.parse(response.body)
 
-        expect(parsed_body['human_subjects_info'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+        expect(parsed_body['irb_record'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
       end
     end
 
     context 'request for :full records' do
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'full', @ids) }
+      before { cwf_sends_api_get_request_for_resources('irb_records', 'full', @ids) }
 
-      it 'should respond with an array of human_subjects_info and their attributes' do
+      it 'should respond with an array of irb_record and their attributes' do
         parsed_body         = JSON.parse(response.body)
 
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
+        expected_attributes = build(:irb_record).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
+                                push('callback_url', 'sparc_id', 'study_phase_values').
                                 sort
 
-        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(parsed_body['irb_records'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
       end
     end
 
     context 'request for :full_with_shallow_reflections records' do
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'full_with_shallow_reflections', @ids) }
+      before { cwf_sends_api_get_request_for_resources('irb_records', 'full_with_shallow_reflections', @ids) }
 
-      it 'should respond with an array of human_subjects_info and their attributes and their shallow reflections' do
+      it 'should respond with an array of irb_record and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
+        expected_attributes = build(:irb_record).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'protocol', 'irb_records').
+                                push('callback_url', 'sparc_id', 'study_phase_values', 'human_subjects_info').
                                 sort
 
-        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(parsed_body['irb_records'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
       end
     end
   end

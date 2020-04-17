@@ -18,10 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :vertebrate_animals_info do
-    iacuc_number          { Random.rand(20000).to_s }
-    iacuc_approval_date   { Time.now }
-    iacuc_expiration_date { Time.now + 15.day }
-  end
-end
+$("#modalContainer").html("<%= j render 'irb_records/form', irb_record: @irb_record %>")
+$("#modalContainer").modal('show')

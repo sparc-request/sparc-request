@@ -92,13 +92,8 @@ FactoryBot.define do
     end
 
     transient do
-      project_role_count {1}
-      pi {nil}
-      identity {nil}
-      project_rights {nil}
-      role {nil}
-      primary_pi {nil}
-      project_role {nil}
+      primary_pi   { nil }
+      project_role { nil }
     end
 
     before(:create) do |protocol, evaluator|

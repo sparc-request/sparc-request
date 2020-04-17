@@ -93,14 +93,8 @@ en:
         time: "Quantity"
         timeframe: "Qty Type"
       human_subjects_info:
-        approval_pending: "Pending Approval?"
-        initial_irb_approval_date: "Initial IRB Approval Date"
-        irb_approval_date: "Current IRB Approval Date"
-        irb_expiration_date: "IRB Expiration Date"
-        irb_of_record: "IRB of Record"
         nct_number: "National Clinical Trials (NCT) #"
-        pro_number: "PRO #"
-        submission_type: "Submission Type"
+        irb_records: "IRB Records"
       identity:
         credentials: "Credentials"
         email: "Email"
@@ -126,6 +120,15 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      irb_record:
+        approval_pending: "Pending Approval?"
+        initial_irb_approval_date: "Initial IRB Approval Date"
+        irb_approval_date: "Current IRB Approval Date"
+        irb_expiration_date: "IRB Expiration Date"
+        irb_of_record: "IRB of Record"
+        pro_number: "PRO #"
+        study_phase_ids: "Study Phase(s)"
+        submission_type: "Submission Type"
       line_item:
         id: "Service"
         status: "Status"
@@ -195,7 +198,6 @@ en:
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
-        study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
         protocol_merge: "Historical Protocol Merges"
@@ -608,6 +610,24 @@ en:
   forms:
     none: "You don't have any forms to complete"
     srid: "SRID"
+
+  ###############
+  # IRB RECORDS #
+  ###############
+  irb_records:
+    pro_header: "IRB #%{pro}"
+    irb_header: " (%{irb})"
+    primary_irb: "Primary IRB"
+    add: "Add a New IRB"
+    edit: "Edit IRB"
+    delete: "Delete IRB"
+    form:
+      new: "New IRB Record"
+      edit: "Edit IRB Record"
+    tooltips:
+      edit: "Edit IRB"
+      delete: "Delete IRB"
+      cant_delete_primary: "The Primary IRB cannot be deleted"
 
   ##########
   # LAYOUT #

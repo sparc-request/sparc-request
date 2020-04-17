@@ -19,9 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-  factory :vertebrate_animals_info do
-    iacuc_number          { Random.rand(20000).to_s }
-    iacuc_approval_date   { Time.now }
-    iacuc_expiration_date { Time.now + 15.day }
+  factory :irb_record do
+    pro_number                { Random.rand(20000).to_s }
+    irb_of_record             { Faker::Lorem.word }
+    submission_type           { Faker::Lorem.word }
+    approval_pending          { false }
+    initial_irb_approval_date { Faker::Date.between(from: 1.year.ago, to: Date.today) }
+    irb_approval_date         { Faker::Date.between(from: Date.today, to: 1.year.from_now) }
+    irb_expiration_date       { Faker::Date.between(from: 1.year.from_now, to: 2.years.from_now) }
   end
 end

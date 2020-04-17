@@ -51,8 +51,6 @@ class Protocol < ApplicationRecord
   has_many :documents,                    dependent: :destroy
   has_many :protocol_merges,              foreign_key: :master_protocol_id
 
-  has_and_belongs_to_many :study_phases
-
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
   has_many :line_items,                   through: :service_requests
@@ -62,6 +60,7 @@ class Protocol < ApplicationRecord
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
+  has_many :irb_records,                  through: :human_subjects_info
 
   has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity
@@ -120,7 +119,7 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -199,7 +198,7 @@ class Protocol < ApplicationRecord
     ### SEARCH QUERIES ###
     identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
     protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
-    pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
+    pro_num_query     = IrbRecord.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
     title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
     ### END SEARCH QUERIES ###
@@ -220,14 +219,14 @@ class Protocol < ApplicationRecord
     when "Protocol ID"
       where(protocol_id_query).distinct
     when "PRO#"
-      joins(:human_subjects_info).
+      joins(:irb_records).
         where(pro_num_query).distinct
     when "RMID"
       where(rmid_query).distinct
     when "Short/Long Title"
       where(title_query).distinct
     when ""
-      joins(:identities).left_outer_joins(:human_subjects_info).
+      joins(:identities).left_outer_joins(:irb_records).
         where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query)).
         distinct
     end

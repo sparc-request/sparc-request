@@ -21,7 +21,7 @@ class MoveStudyPhasesToIrbRecords < ActiveRecord::Migration[5.2]
       ProtocolsStudyPhase.all.each do |psp|
         protocol = Protocol.where(id: psp.protocol_id).first
 
-        if protocol && protocol.human_subjects_info && protocol.human_subjects_info.irb_records
+        if protocol && protocol.human_subjects_info && protocol.human_subjects_info.irb_records.any?
           irb_record  = protocol.human_subjects_info.irb_records.first
 
           IrbRecordsStudyPhase.create(

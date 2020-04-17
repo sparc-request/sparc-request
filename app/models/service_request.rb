@@ -395,8 +395,14 @@ class ServiceRequest < ApplicationRecord
     self.sub_service_requests.any?(&:eligible_for_subsidy?)
   end
 
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
+  def should_push_to_epic?(ssrids=nil)
+    # https://www.pivotaltracker.com/story/show/156705787
+    Setting.get_value("use_epic") && self.protocol.selected_for_epic? &&
+      if self.previously_submitted?
+        self.line_items.joins(:sub_service_request, :service).where(services: { send_to_epic: true }, sub_service_requests: { id: (ssrids.present? ? ssrids : self.sub_service_requests.ids), status: 'draft' }).any?
+      else
+        self.services.where(send_to_epic: true).any?
+      end
   end
 
   def has_ctrc_clinical_services?

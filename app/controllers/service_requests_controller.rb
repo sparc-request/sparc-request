@@ -114,7 +114,7 @@ class ServiceRequestsController < ApplicationController
         @protocol = @service_request.protocol
         @service_request.previous_submitted_at = @service_request.submitted_at
 
-        if Setting.get_value("use_epic") && @service_request.should_push_to_epic? && @protocol.selected_for_epic?
+        if @service_request.should_push_to_epic?
           # Send a notification to Lane et al to create users in Epic.  Once
           # that has been done, one of them will click a link which calls
           # approve_epic_rights.

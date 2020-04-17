@@ -573,7 +573,7 @@ class Protocol < ApplicationRecord
   end
 
   def should_push_to_epic?
-    service_requests.any?(&:should_push_to_epic?)
+    self.service_requests.any?(&:should_push_to_epic?)
   end
 
   def has_nexus_services?

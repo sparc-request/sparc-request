@@ -143,12 +143,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def resend_survey
     @response = Response.find(params[:response_id])
-    if @response.survey.access_code == 'system-satisfaction-survey'
-      SurveyNotification.system_satisfaction_survey(@response).deliver
-      @response.update_attribute(:updated_at, Time.now)
-    else
-      SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
-    end
+    ## resend button is disabled for surveys that are not tied to any organization
+    SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
     flash[:success] = t(:surveyor)[:responses][:resent]
   end
 

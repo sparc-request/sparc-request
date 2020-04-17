@@ -50,7 +50,7 @@ module Surveyor::ResponsesHelper
       if response.completed?
         false
       else
-        current_user.is_site_admin? || accessible_surveys.include?(response.survey)
+        response.respondable_type == "SubServiceRequest" && (current_user.is_site_admin? || accessible_surveys.include?(response.survey))
       end
 
     content_tag(:div,

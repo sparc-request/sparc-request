@@ -226,8 +226,8 @@ RSpec.describe 'User edits question fields', js: true do
           wait_for_javascript_to_finish
           wait_for_javascript_to_finish
 
-          expect(page).to have_selector("#question-#{@question2.id}-is_dependent[disabled=disabled")
-          expec(find("#question-#{@question2.id}is_dependent").checked?).to eq(false)
+          expect(page).to have_selector("#question-#{@question2.id}-is_dependent[disabled=disabled]")
+          expect(find("#question-#{@question2.id}-is_dependent").checked?).to eq(false)
           expect(page).to have_no_selector('.select-depender')
         end
       end
@@ -436,8 +436,8 @@ RSpec.describe 'User edits question fields', js: true do
           wait_for_javascript_to_finish
           wait_for_javascript_to_finish
 
-          expect(page).to have_selector("#question-#{@question2.id}-is_dependent[disabled=disabled")
-          expec(find("#question-#{@question2.id}is_dependent").checked?).to eq(false)
+          expect(page).to have_selector("#question-#{@question2.id}-is_dependent[disabled=disabled]")
+          expect(find("#question-#{@question2.id}-is_dependent").checked?).to eq(false)
           expect(page).to have_no_selector('.select-depender')
         end
       end

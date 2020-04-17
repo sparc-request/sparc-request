@@ -190,6 +190,7 @@ en:
         merged_does_not_exist: "Protocol to be merged ID does not exist"
         one_calendar: "Only one protocol may have a calendar to be merged"
         cannot_merge: "Protocol to be merged has already been pushed to SPARCFulfillment and can't be merged"
+        split_notify_error: "One or more of the requests are under the same split/notify and can't be merged"
       success: "Protocol merge successful"
 
     #####################

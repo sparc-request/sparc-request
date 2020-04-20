@@ -174,7 +174,6 @@ class OncoreEndpointController < ApplicationController
   private
 
   def find_protocol_by_rmid
-    # TODO: Filter out any non-numerical characters from RMID
     rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
     if !rmid.nil? && protocol = Protocol.find_by(research_master_id: rmid)
       return protocol
@@ -220,20 +219,32 @@ class OncoreEndpointController < ApplicationController
       c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == @arm_codes[arm.id]
     }.each_with_index do |oncore_visit, position|
 
-      if position == 0 # procedures are on all VISITs, but we only need to make line items and line items visits once per arm
-        oncore_visit[:timePointEventDefinition][:component1].select{ |c1| c1[:timePointEventDefinition][:code][:code] == "PROC" }.each do |procedure|
-          # get the service from the procedure
-          service_name = procedure[:timePointEventDefinition][:title]
-          service_code = procedure[:timePointEventDefinition][:component2][:procedure][:code][:code] # either eap_id or cpt_code
-          service = Service.where(name: service_name, is_available: true).merge(Service.where(cpt_code: service_code).or(Service.where(eap_id: service_code))).first
-
-          if service.nil?
-            raise "Unable to find service #{service_name} with code #{service_code}"
-          end
-
-          # For each procedure, make a line item on the protocol
-          service_request.create_line_items_for_service(service: service)
+      if position == 0 # procedures are on VISITs, but we only need to make line items and line items visits once per arm
+        # Create line items for a default placeholder service. The ID for this service is XXXXXX
+        service = Service.find(41714)
+        if service.nil?
+          raise "Unable to find the default OnCore Push service."
         end
+        service_request.create_line_items_for_service(service: service)
+
+        # -------------------------------------------------------------------------------------
+        # TODO: get the service from the procedure.
+        # Code for this is temporarily removed until the Chargemaster situation can be figured out. 
+        # This might need to be a conditional case where if there are no procedures, use the default service, otherwise, get the services.
+        # oncore_visit[:timePointEventDefinition][:component1].select{ |c1| c1[:timePointEventDefinition][:code][:code] == "PROC" }.each do |procedure|
+        #   # Get the service from the procedure.
+        #   service_name = procedure[:timePointEventDefinition][:title]
+        #   service_code = procedure[:timePointEventDefinition][:component2][:procedure][:code][:code] # either eap_id or cpt_code
+        #   service = Service.where(name: service_name, is_available: true).merge(Service.where(cpt_code: service_code).or(Service.where(eap_id: service_code))).first
+
+        #   if service.nil?
+        #     raise "Unable to find service #{service_name} with code #{service_code}"
+        #   end
+
+        #   # For each procedure, make a line item on the protocol
+        #   service_request.create_line_items_for_service(service: service)
+        # end
+        # -------------------------------------------------------------------------------------
 
         # Make a line item visit for all clinical line items on the protocol.
         service_request.per_patient_per_visit_line_items.each do |li|

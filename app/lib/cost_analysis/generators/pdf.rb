@@ -15,17 +15,10 @@ module CostAnalysis
       def setup_render
 
         draw do |pdf|
-          study_information = @study_information
-          primary_investigators = study_information.primary_investigators.map{ |p| ["Primary Investigator", p.name, p.email] }
-          additional_contacts = study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] }
-          visit_tables = @visit_tables
-          otf_tables = @otf_tables
-          grand_total_data = compute_grand_total_data
-
           pdf.bounding_box([0,pdf.y], :width => 700, :height => 50) do
-            pdf.text "CRU Protocol#: #{study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
-            pdf.text study_information.enrollment_period, :align => :right, :valign => :top
-            study_information.primary_investigators.each do |pi|
+            pdf.text "CRU Protocol#: #{@study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
+            pdf.text @study_information.enrollment_period, :align => :right, :valign => :top
+            @study_information.primary_investigators.each do |pi|
               pdf.text pi.name, :align => :right, :valign => :bottom
             end
           end
@@ -34,16 +27,17 @@ module CostAnalysis
 
           pdf.move_down 30
 
-          pdf.text study_information.short_title
+          pdf.text @study_information.short_title
           pdf.move_down 10
           pdf.indent(10) {
-            pdf.text study_information.study_title, :style => :italic, :size => 10
+            pdf.text @study_information.study_title, :style => :italic, :size => 10
           }
           pdf.move_down 10
-          pdf.text "Funded by #{study_information.funding_source}"
+          pdf.text "Funded by #{@study_information.funding_source}"
 
           pdf.move_down 20
 
+          grand_total_data = compute_grand_total_data
           grand_total_rows = [
             [{ :content => "Study Total", :colspan => 2, :size => 10, :font_style => :bold} ],
             ["Category", "Total Per Study"],
@@ -89,7 +83,7 @@ module CostAnalysis
           arm_colors = %w( 91c6d8 febc7a 8bcba5 e8aaaf )
           arm_mod = -1
 
-          visit_tables.each do |visit_table|
+          @visit_tables.each do |visit_table|
             arm_mod += 1
 
             summary_table_data = visit_table.summarized_by_service
@@ -156,7 +150,7 @@ module CostAnalysis
             :size => 8
           }
 
-          otf_tables.each do |otf_table|
+          @otf_tables.each do |otf_table|
             summary_table = otf_table.summarized_table
 
             summary_table = pdf.make_table(
@@ -177,7 +171,7 @@ module CostAnalysis
           pdf.move_down 20
 
           investigator_table = pdf.make_table(
-            primary_investigators + additional_contacts,
+            @study_information.primary_investigators.map{ |p| ["Primary Investigator", p.name, p.email] } + @study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] },
             :width => 700,
             :cell_style => {:border_width => 1, :border_color => 'E8E8E8'})
 

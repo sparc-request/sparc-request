@@ -40,7 +40,7 @@
         .form-group.row{ id: "for-#{SystemSurvey.name}", class: filterrific.of_type == SystemSurvey.name ? "" : "d-none" }
           = form.label :with_survey, Survey.name, class: 'col-4 control-label'
           .col-8
-            = render 'surveyor/responses/surveys_dropdown', surveys: SystemSurvey.unscoped, filterrific: filterrific, form: form
+            = render 'surveyor/responses/surveys_dropdown', surveys: SystemSurvey.for(current_user), filterrific: filterrific, form: form
         .form-group.row
           .col-sm-12
             %label

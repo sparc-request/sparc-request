@@ -17,7 +17,7 @@ module CostAnalysis
 
       end
 
-      pdf.update
+      pdf.setup_render
     end
 
     def build_visit_table(arm)

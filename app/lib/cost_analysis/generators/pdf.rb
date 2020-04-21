@@ -12,7 +12,7 @@ module CostAnalysis
         @otf_tables = []
       end
 
-      def update
+      def setup_render
 
         draw do |pdf|
           study_information = @study_information

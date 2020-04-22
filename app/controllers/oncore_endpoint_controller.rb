@@ -245,13 +245,6 @@ class OncoreEndpointController < ApplicationController
         #   service_request.create_line_items_for_service(service: service)
         # end
         # -------------------------------------------------------------------------------------
-
-        # Make a line item visit for all clinical line items on the protocol.
-        service_request.per_patient_per_visit_line_items.each do |li|
-          unless arm.line_items_visits.any?{ |liv| liv.line_item_id == li.id }
-            arm.line_item_visits.create(line_item_id: li.id, subject_count: 1) # assumed subject_count: 1
-          end
-        end
       end
 
       # create a visit group for each VISIT

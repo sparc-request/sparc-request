@@ -112,6 +112,7 @@ module V1
             :direct_link
 
     expose  :parent, using: V1::OrganizationFull
+    expose  :primary_contacts, using: V1::IdentityFull
   end
 
   class ProcessSsrsOrganizationFull < ProcessSsrsOrganizationShallow

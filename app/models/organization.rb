@@ -33,7 +33,7 @@ class Organization < ApplicationRecord
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
-  has_many :primary_contacts, -> { where(is_primary_contact: true) }, class_name: 'ServiceProvider'
+  has_many :primary_contact_providers, -> { where(is_primary_contact: true) }, class_name: 'ServiceProvider'
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
   has_many :patient_registrars, :dependent => :destroy
@@ -45,6 +45,7 @@ class Organization < ApplicationRecord
 
   has_many :protocols, through: :sub_service_requests
   has_many :surveys, through: :associated_surveys
+  has_many :primary_contacts, through: :primary_contact_providers, source: :identity
 
   validates :abbreviation,
             :order,

@@ -71,6 +71,7 @@ module ApplicationHelper
 
       formatted = "(#{phone.first(3)}) #{phone.from(3).to(2)}-#{phone.from(6).to(3)}"
       formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.length > 10
+      formatted
     else
       ""
     end

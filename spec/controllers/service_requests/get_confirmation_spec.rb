@@ -39,7 +39,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     it 'should call the Notifier Logic to update the request' do
       expect(NotifierLogic).to receive_message_chain(:delay, :confirmation_logic)
 
-      get :confirmation, params: { srid: sr.id }, xhr: true
+      get :confirmation, params: { srid: sr.id }, xhr: true, format: :html
 
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
@@ -62,7 +62,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
           it 'should update the existing record' do
             expect {
-              get :confirmation, params: { srid: sr.id }, xhr: true
+              get :confirmation, params: { srid: sr.id }, xhr: true, format: :html
             }.to change{ EpicQueue.count }.by(0)
 
             expect(@eq.reload.user_change).to eq(false)
@@ -76,7 +76,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
           it 'should create a queue record' do
             expect {
-              get :confirmation, params: { srid: sr.id }, xhr: true
+              get :confirmation, params: { srid: sr.id }, xhr: true, format: :html
             }.to change{ EpicQueue.count }.by(1)
           end
         end
@@ -88,7 +88,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should send an epic approval notification' do
           expect(Notifier).to receive_message_chain(:notify_for_epic_user_approval, :deliver)
 
-          get :confirmation, params: { srid: sr.id }, xhr: true
+          get :confirmation, params: { srid: sr.id }, xhr: true, format: :html
         end
       end
     end

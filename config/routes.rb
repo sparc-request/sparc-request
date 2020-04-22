@@ -46,7 +46,6 @@ Rails.application.routes.draw do
     get :service_subsidy
     get :document_management
     get :review
-    get :obtain_research_pricing
     get :confirmation
     get :approve_changes
     get :system_satisfaction_survey
@@ -81,6 +80,8 @@ Rails.application.routes.draw do
   resources :projects, controller: :protocols, except: [:index, :show, :destroy]
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
+
+  resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
 
   resources :associated_users, except: [:show] do
     collection do
@@ -125,6 +126,8 @@ Rails.application.routes.draw do
       get :identities
     end
   end
+
+  wash_out :oncore_endpoint # SOAP Endpoint for OnCore RPE messages
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
   match 'organizations/:organization_id' => 'service_requests#catalog', via: [:get]

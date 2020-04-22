@@ -23,7 +23,7 @@ class SubServiceRequest < ApplicationRecord
 
   audited
 
-  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
+  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id", optional: true
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
   belongs_to :service_request
   belongs_to :organization
@@ -63,7 +63,9 @@ class SubServiceRequest < ApplicationRecord
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
-  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }, if: Proc.new{ |ssr| ssr.service_request_id.present? }
+
+  before_validation :set_next_ssr_id, on: :create
 
   after_create :set_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
 
@@ -137,10 +139,6 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
-  end
-
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"
@@ -177,25 +175,6 @@ class SubServiceRequest < ApplicationRecord
 
   def has_subsidy?
     pending_subsidy.present? or approved_subsidy.present?
-  end
-
-  def create_line_item(args)
-    result = self.transaction do
-      new_args = {
-        sub_service_request_id: self.service_request_id
-      }
-      new_args.update(args)
-      li = service_request.create_line_item(new_args)
-
-      li
-    end
-
-    if result
-      return result
-    else
-      self.reload
-      return false
-    end
   end
 
   def has_one_time_fee_services?
@@ -331,16 +310,16 @@ class SubServiceRequest < ApplicationRecord
 
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
+    self.status != 'first_draft' && !organization.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    self.status == 'first_draft' || (process_ssrs_organization.has_editable_status?(self.status) && !self.is_complete?)
+    self.status == 'first_draft' || (organization.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
+    Status.complete?(self.status) && organization.has_editable_status?(self.status)
   end
 
   def is_in_draft?
@@ -385,7 +364,7 @@ class SubServiceRequest < ApplicationRecord
 
       # fall back to old method of assigning using audit trail, TODO: this is more of safety measure as it is hard to tell everywhere a SSR is saved/updated
       if past_status.changed_by_id.blank?
-        user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
+        user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.try(&:user_id)
         past_status.update_attribute(:changed_by_id, user_id)
       end
     end
@@ -558,8 +537,13 @@ class SubServiceRequest < ApplicationRecord
 
   private
 
-  def set_protocol_id
-    self.protocol_id = service_request.try(:protocol_id)
+  def set_next_ssr_id
+    self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
+    self.protocol = self.service_request.try(:protocol)
+
+    if self.protocol
+      self.protocol.increment!(:next_ssr_id)
+    end
   end
 
   def set_next_ssr_id

@@ -194,6 +194,7 @@ en:
       status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
       submit_button: "Save"
       tag_list: "Tags"
+      survey_completion_alerts: "Survey Alert"
 
     related_services_form:
       add_service: "Search for service to link"

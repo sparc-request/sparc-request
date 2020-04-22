@@ -40,20 +40,10 @@ RSpec.describe 'User takes system satisfaction survey after reviewing their requ
       wait_for_javascript_to_finish
     end
 
-    context 'Get a Cost Estimate' do
-      it 'should not offer a survey' do
-        click_link I18n.t("proper.navigation.bottom.get_cost_estimate")
-        wait_for_javascript_to_finish
-        expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
-      end
-    end
-
-    context 'Submitting Request' do
-      it 'should not offer a survey' do
-        click_link I18n.t('proper.navigation.bottom.submit')
-        wait_for_javascript_to_finish
-        expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
-      end
+    it 'should not offer a survey' do
+      click_link I18n.t('proper.navigation.bottom.submit')
+      wait_for_javascript_to_finish
+      expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
     end
   end
 
@@ -65,59 +55,28 @@ RSpec.describe 'User takes system satisfaction survey after reviewing their requ
 
       visit review_service_request_path(srid: @sr.id)
       wait_for_javascript_to_finish
+
+      click_link I18n.t('proper.navigation.bottom.submit')
+      wait_for_javascript_to_finish
     end
 
-    context 'Get a Cost Estimate' do
-      before :each do
-        click_link I18n.t("proper.navigation.bottom.get_cost_estimate")
-        wait_for_javascript_to_finish
-      end
+    it 'should offer a survey' do
+      confirm_swal
+      fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
+      click_button I18n.t('actions.submit')
+      wait_for_javascript_to_finish
 
-      it 'should offer a survey' do
-        confirm_swal
-        fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
-        click_button I18n.t('actions.submit')
-        wait_for_javascript_to_finish
-
-        expect(@survey.responses.count).to eq(1)
-        expect(jug2.responses.count).to eq(1)
-        expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
-      end
-
-      context 'user declines the survey' do
-        it 'should go to Get a Cost Estimate' do
-          cancel_swal
-          wait_for_javascript_to_finish
-
-          expect(page).to have_current_path(obtain_research_pricing_service_request_path(srid: @sr.id))
-        end
-      end
+      expect(@survey.responses.count).to eq(1)
+      expect(jug2.responses.count).to eq(1)
+      # expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id)) ##TODO: This causes random failures on Travis (page seems not to load)
     end
 
-    context 'Submitting Request' do
-      before :each do
-        click_link I18n.t('proper.navigation.bottom.submit')
-        wait_for_javascript_to_finish
-      end
-
-      it 'should offer a survey' do
-        confirm_swal
-        fill_in 'response_question_responses_attributes_0_content', with: 'My answer is no'
-        click_button I18n.t('actions.submit')
+    context 'user declines the survey' do
+      it' should go to Confirmation' do
+        cancel_swal
         wait_for_javascript_to_finish
 
-        expect(@survey.responses.count).to eq(1)
-        expect(jug2.responses.count).to eq(1)
-        # expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id)) ##TODO: This causes random failures on Travis (page seems not to load)
-      end
-
-      context 'user declines the survey' do
-        it' should go to Confirmation' do
-          cancel_swal
-          wait_for_javascript_to_finish
-
-          expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
-        end
+        expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
       end
     end
   end

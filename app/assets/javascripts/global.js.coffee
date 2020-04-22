@@ -93,7 +93,7 @@ $ ->
       $control.attr('alt', text)
 
   $(document).on 'show.bs.collapse hide.bs.collapse', 'div[data-toggle=collapse] + .collapse', (event) ->
-    if event.delegateTarget.activeElement.tagName == 'A'
+    if ['A', 'I'].includes(event.delegateTarget.activeElement.tagName)
       event.preventDefault()
 
   $(document).on('mouseover', 'div[data-toggle=collapse]', (event) ->
@@ -102,7 +102,7 @@ $ ->
     else
       $(this).addClass('hover')
   ).on('mouseleave', 'div[data-toggle=collapse]', (event) ->
-    $(this).removeClass('hover')
+    $(this).removeClass('hover active')
   ).on('mousedown', 'div[data-toggle=collapse]', (event) ->
     if event.target.tagName == 'DIV'
       $(this).addClass('active')

@@ -272,10 +272,6 @@ class LineItem < ApplicationRecord
     end
   end
 
-  def should_push_to_epic?
-    return self.service.send_to_epic
-  end
-
   ### audit reporting methods ###
 
   def audit_field_value_mapping

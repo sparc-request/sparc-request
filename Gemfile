@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.12'
+gem 'capistrano', '~> 3.13'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -34,7 +34,7 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.3.0'
+gem 'grape', '1.3.2'
 gem 'grape-entity', '~> 0.8.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -79,11 +79,12 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.2.0' # Check usage
+gem 'savon', '~> 2.12.0'
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
+gem 'wash_out'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
@@ -116,12 +117,12 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 3.9'
+  gem 'rspec-rails', '~> 4.0'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.2'
+  gem 'webdrivers', '~> 4.3'
   gem 'webmock'
 end
 

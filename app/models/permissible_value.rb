@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class PermissibleValue < ApplicationRecord
+  audited
+
   belongs_to :parent, class_name: 'PermissibleValue', optional: true
 
   acts_as_list column: :sort_order, scope: [:category]
@@ -36,7 +38,7 @@ class PermissibleValue < ApplicationRecord
   }
 
   def self.preload_values
-    RequestStore.store[:permissible_values] ||= PermissibleValue.all.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h
+    RequestStore.store[:permissible_values] ||= PermissibleValue.available.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h
   end
 
   # Get the first PermissibleValue value using a category and key

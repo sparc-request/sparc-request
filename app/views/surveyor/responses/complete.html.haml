@@ -23,7 +23,7 @@
     %h1
       = t(:surveyor)[:responses][:complete][:header]
     %h4.text-muted
-      = @survey.title
+      = @response.survey.title
     .alert.alert-info.text-center
       = t(:surveyor)[:responses][:complete][:thanks]
     = link_to t(:surveyor)[:responses][:complete][:to_dashboard], dashboard_root_path, class: 'btn btn-lg btn-success'

@@ -22,39 +22,6 @@ require 'savon'
 require 'securerandom'
 require 'builder'
 
-module Savon
-  # The Savon client by default does not allow adding new soap headers
-  # except via the global configuration.  This monkey patch allows adding
-  # soap headers via local (per-message) configuration.
-  class LocalOptions < Options
-    def soap_header(header)
-      @options[:soap_header] = header
-    end
-  end
-
-  class Header
-    def header
-      @header ||= build_header
-    end
-
-    def build_header
-      header = {}
-      header.update(@globals.include?(:soap_header) ? @globals[:soap_header] : {})
-      header.update(@locals.include?(:soap_header) ? @locals[:soap_header] : {})
-      return header
-    end
-  end
-
-  # We also need to be able to grab the configured endpoint and put it
-  # into the wsa:To header.
-  class Client
-    def endpoint
-      return @globals[:endpoint] || @wsdl.endpoint
-    end
-  end
-end
-
-
 # Use this class to send protocols (studies/projects) along with their
 # associated billing calendars to Epic via an InterConnect server.
 #
@@ -67,7 +34,7 @@ class EpicInterface
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
-    logger = ActiveSupport::Logger.new(logfile)
+    @logger = ActiveSupport::Logger.new(logfile)
 
     @config = config
     @errors = {}
@@ -85,7 +52,7 @@ class EpicInterface
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
-        logger: logger,
+        logger: @logger,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
@@ -102,16 +69,6 @@ class EpicInterface
         })
   end
 
-  def soap_header(msg_type)
-    soap_header = {
-      'wsa:Action' => "#{@namespace}:#{msg_type}",
-      'wsa:MessageID' => "uuid:#{SecureRandom.uuid}",
-      'wsa:To' => @client.endpoint,
-    }
-
-    return soap_header
-  end
-
   # Send the given SOAP action to the server along with the given
   # message.  Automatically builds a header with the right WS-A
   # elements.
@@ -122,10 +79,10 @@ class EpicInterface
       action = action.snakecase.to_sym
     end
 
+    @logger.info "\nSOAP Action: #{action} ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     begin
       return @client.call(
           action,
-          soap_header: soap_header(action),
           message: message)
     rescue Savon::Error => error
       raise Error.new(error.to_s)
@@ -241,7 +198,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -252,10 +209,9 @@ class EpicInterface
   end
 
   def emit_irb_number(xml, study)
-    irb_number = study.human_subjects_info.try(:pro_number)
-    irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
+    irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
-    if !irb_number.blank? then
+    if !irb_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')

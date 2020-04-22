@@ -25,6 +25,7 @@ module APIV1
         root 'human_subjects_infos', 'human_subjects_info'
 
         expose :protocol, using: APIV1::Entities::Shallow::Protocol
+        expose :irb_records, using: APIV1::Entities::Shallow::IrbRecord
       end
     end
   end

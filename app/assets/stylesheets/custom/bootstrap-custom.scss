@@ -402,11 +402,11 @@ form, .form {
   .list-group-item.list-group-item-#{$color}[data-toggle=collapse] {
     transition: $btn-transition;
 
-    &:hover {
+    &.hover {
       background-color: theme-color-level($color, -8) !important;
     }
 
-    &.active, &:active, &:focus {
+    &.active {
       background-color: theme-color-level($color, -6) !important;
       color: theme-color-level($color, 6) !important;
     }

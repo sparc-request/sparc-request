@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
@@ -43,7 +42,6 @@ class ServiceRequest < ApplicationRecord
   has_many :visit_groups, through: :arms
 
   after_save :set_original_submitted_date
-  after_save :set_ssr_protocol_id, if: :saved_change_to_protocol_id?
 
   attr_accessor :previous_submitted_at
 
@@ -98,7 +96,7 @@ class ServiceRequest < ApplicationRecord
     recursive_call    = args[:recursive_call] || false
 
     # If this service has already been added, then do nothing
-    return if !allow_duplicates && (self.line_items.incomplete.joins(:sub_service_request).where(service_id: service.id, sub_service_requests: { organization_shard: @shard }).any? or self.line_items.unassigned.joins(:sub_service_request).where(service_id: service.id, sub_service_requests: { organization_shard: @shard }).any?)
+    return if !allow_duplicates && self.line_items.incomplete.joins(:sub_service_request).where(service_id: service.id, sub_service_requests: { organization_shard: @shard }).any?
 
     line_items = []
 
@@ -141,27 +139,20 @@ class ServiceRequest < ApplicationRecord
   end
 
   def find_or_create_ssr(organization, shard, requester)
-    if (ssr = self.sub_service_requests.find_by(organization_id: organization.id, organization_shard: shard)) && !ssr.is_complete?
-      if !ssr.first_draft? && ssr.can_be_edited? && ssr_has_changed?(ssr, requester)
+    if ssr = self.sub_service_requests.where(organization_id: organization.id, organization_shard: shard).reject(&:is_complete?).first
+      if !ssr.first_draft? && ssr.can_be_edited?
         ssr.update_attribute(:status, 'draft') 
       end
     else
       ssr = self.sub_service_requests.create(
-        organization_id:    organization.id,
+        protocol:           self.protocol,
+        organization:       organization,
         organization_shard: shard,
         service_requester:  requester,
-        protocol:           self.protocol,
-        status:             self.status == 'first_draft' ? 'first_draft' : 'draft',
-        ssr_id:             self.next_ssr_id
+        status:             self.status == 'first_draft' ? 'first_draft' : 'draft'
       )
     end
     ssr
-  end
-
-  def ssr_has_changed?(ssr, requester) #specific ssr has changed?
-    previously_submitted_at = self.previous_submitted_at.nil? ? Time.now.utc : self.previous_submitted_at.utc
-
-    ssr.audit_report(ssr.service_requester, previously_submitted_at, Time.now.utc)[:line_items].any?
   end
 
   def set_visit_page page_passed, arm
@@ -240,9 +231,9 @@ class ServiceRequest < ApplicationRecord
     AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
-  def created_ssrs_since_previous_submission
+  def created_ssrs_since_previous_submission(ssrids)
     start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%'#{ssrids.blank? ? "" : "AND auditable_id IN (#{ssrids.join(', ')})"} AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs
@@ -387,7 +378,7 @@ class ServiceRequest < ApplicationRecord
     "%04d" %
       if self.protocol && self.protocol.next_ssr_id.present?
         self.protocol.next_ssr_id
-      elsif self.sub_service_requests.count == 0
+      elsif self.sub_service_requests.reload.length == 0
         1
       else
         self.sub_service_requests.last.ssr_id.gsub(/^0(0*)/, '').to_i + 1
@@ -406,8 +397,14 @@ class ServiceRequest < ApplicationRecord
     self.sub_service_requests.any?(&:eligible_for_subsidy?)
   end
 
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
+  def should_push_to_epic?(ssrids=nil)
+    # https://www.pivotaltracker.com/story/show/156705787
+    Setting.get_value("use_epic") && self.protocol.selected_for_epic? &&
+      if self.previously_submitted?
+        self.line_items.joins(:sub_service_request, :service).where(services: { send_to_epic: true }, sub_service_requests: { id: (ssrids.present? ? ssrids : self.sub_service_requests.ids), status: 'draft' }).any?
+      else
+        self.services.where(send_to_epic: true).any?
+      end
   end
 
   def has_ctrc_clinical_services?
@@ -437,9 +434,5 @@ class ServiceRequest < ApplicationRecord
       self.original_submitted_date = self.submitted_at
       self.save(validate: false)
     end
-  end
-
-  def set_ssr_protocol_id
-    self.sub_service_requests.each{ |ssr| ssr.update_attribute(:protocol, self.protocol) }
   end
 end

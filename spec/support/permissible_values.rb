@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 def populate_permissible_values_before_suite
+  PermissibleValue.auditing_enabled = false
   ActiveRecord::Base.transaction do
     build_impact_areas
     build_statuses

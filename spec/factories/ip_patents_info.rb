@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-
   factory :ip_patents_info do
     patent_number { Random.rand(20000).to_s }
     inventors     { Faker::Lorem.sentence(word_count: 3) }

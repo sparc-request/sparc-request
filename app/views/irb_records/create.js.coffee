@@ -17,32 +17,25 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-require 'rails_helper'
 
-RSpec.describe Protocol, type: :model do
+<% if @errors %>
+$("[name^='irb_record']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-  let!(:organization) { create(:organization) }
-  let!(:service)      { create(:service, organization: organization) }
-  let!(:org_form)     { create(:form, surveyable: organization, active: true) }
-  let!(:service_form) { create(:form, surveyable: service, active: true) }
-  let!(:protocol)     { create(:study_without_validations) }
-  let!(:request)      { create(:service_request_without_validations, protocol: protocol) }
-  let!(:ssr)          { create(:sub_service_request, service_request: request, organization: organization) }
-  let!(:line_item)    { create(:line_item_without_validations, service_request: request, sub_service_request: ssr, service: service) }
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='irb_record[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+$('#irbRecords').append("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] %>")
+$('#newIrbRecord').replaceWith("<%= j render 'irb_records/new_irb_record', protocol: @protocol, index: params[:index].to_i + 1, primary: 'false' %>")
 
-  describe '#has_completed_forms?' do
-    it 'should return false if no forms are complete' do
-      expect(protocol.has_completed_forms?).to eq(false)
-    end
+<% if params[:primary] == 'false' %>
+$('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
+  attr('disabled', true).
+  attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
+<% end %>
 
-    it 'should return true if any Organization forms are complete' do
-      create(:response, survey: org_form, respondable: ssr)
-      expect(protocol.has_completed_forms?).to eq(true)
-    end
-
-    it 'should return true if any Service forms are complete' do
-      create(:response, survey: service_form, respondable: ssr)
-      expect(protocol.has_completed_forms?).to eq(true)
-    end
-  end
-end
+$("#modalContainer").modal('hide')
+<% end %>

@@ -20,34 +20,35 @@
 
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController, type: :controller do
-  stub_controller
-  let!(:logged_in_user) { create(:identity) }
-
-  let!(:org)      { create(:organization) }
-  let!(:service)  { create(:service, organization: org, one_time_fee: true) }
-  let!(:protocol) { create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study') }
-  let!(:sr)       { create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-02-10') }
-  let!(:ssr)      { create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id) }
-  let!(:li)       { create(:line_item, service_request: sr, sub_service_request: ssr, service: service) }
+RSpec.describe 'User wants to edit a Study with IRB Records', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+  build_study_type_question_groups
+  build_study_type_questions
 
   before :each do
-    session[:identity_id] = logged_in_user.id
+    @protocol = create(:study_federally_funded, primary_pi: jug2, human_subjects: true, with_irb: true)
+    @irb      = @protocol.irb_records.first
+
+    visit edit_dashboard_protocol_path(@protocol)
   end
 
-  describe '#obtain_research_pricing' do
-    it 'should call the Notifier Logic to update the request' do
-      expect(NotifierLogic).to receive_message_chain(:delay, :obtain_research_pricing_logic)
+  it 'should update the IRB Records' do
+    find('.delete-irb').click
+    wait_for_javascript_to_finish
 
-      get :obtain_research_pricing, params: { srid: sr.id }, xhr: true
+    find('#newIrbRecord').click
+    wait_for_javascript_to_finish
 
-      expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
-    end
+    fill_in 'irb_record_pro_number', with: '2222222222'
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
 
-    it 'should render confirmation' do
-      get :obtain_research_pricing, params: { srid: sr.id }, xhr: true
+    click_button I18n.t('actions.save')
+    wait_for_javascript_to_finish
 
-      expect(controller).to render_template(:confirmation)
-    end
+    expect(@protocol.irb_records.count).to eq(1)
+    irb = @protocol.irb_records.first
+    expect(irb.pro_number).to eq('2222222222')
   end
 end

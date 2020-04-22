@@ -49,6 +49,7 @@ module APIV1
       :project_roles,
       :arms,
       :human_subjects_infos,
+      :irb_records,
       :line_items,
       :line_items_visits,
       :protocols,

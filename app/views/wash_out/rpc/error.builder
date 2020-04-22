@@ -18,16 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-
-  factory :investigational_products_info do
-    ind_number  { Random.rand(20000).to_s }
-    ind_on_hold { false }
-    exemption_type { "ide" }
-    inv_device_number  { Random.rand(20000).to_s }
-
-    trait :ind_on_hold do
-      ind_on_hold {true}
+# This view was taken from WashOut directly (https://github.com/inossidabile/wash_out/blob/master/app/views/wash_out/rpc/response.builder)
+# then modified to fit the specific RPC SOAP response OnCore requires to work with SPARC.
+# There was no way to include a MessageId element with an xmlns element and a value within the element,
+# so the proper format was forced in this view.
+xml.instruct!
+xml.tag! "soap:Envelope", "xmlns:soap" => 'http://schemas.xmlsoap.org/soap/envelope/',
+                          "xmlns:xsd" => 'http://www.w3.org/2001/XMLSchema',
+                          "xmlns:xsi" => 'http://www.w3.org/2001/XMLSchema-instance',
+                          "xmlns:tns" => @namespace do
+  xml.tag! "soap:Header" do
+    xml.tag! "MessageID", SecureRandom.uuid, { "xmlns" => "http://www.w3.org/2005/08/addressing" }
+  end
+  xml.tag! "soap:Body" do
+    xml.tag! "soap:Fault", :encodingStyle => 'http://schemas.xmlsoap.org/soap/encoding/' do
+      xml.faultcode error_code, 'xsi:type' => 'xsd:QName'
+      xml.faultstring error_message, 'xsi:type' => 'xsd:string'
     end
   end
 end

@@ -38,6 +38,7 @@ en:
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
+    apply_all: "Apply to all"
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -56,6 +57,7 @@ en:
     edit: "Edit"
     export: "Export"
     filter: "Filter"
+    max: "Max"
     preview: "Preview"
     print: "Print"
     remove: "Remove"
@@ -85,7 +87,7 @@ en:
     attributes:
       arm:
         name: "Arm Name"
-        subject_count: "Subject Count"
+        subject_count: "Max Subject Count"
         visit_count: "Visit Count"
       document:
         doc_type: "Document Type"
@@ -102,14 +104,8 @@ en:
         time: "Quantity"
         timeframe: "Qty Type"
       human_subjects_info:
-        approval_pending: "Pending Approval?"
-        initial_irb_approval_date: "Initial IRB Approval Date"
-        irb_approval_date: "Current IRB Approval Date"
-        irb_expiration_date: "IRB Expiration Date"
-        irb_of_record: "IRB of Record"
         nct_number: "National Clinical Trials (NCT) #"
-        pro_number: "PRO #"
-        submission_type: "Submission Type"
+        irb_records: "IRB Records"
       identity:
         credentials: "Credentials"
         email: "Email"
@@ -135,6 +131,15 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      irb_record:
+        approval_pending: "Pending Approval?"
+        initial_irb_approval_date: "Initial IRB Approval Date"
+        irb_approval_date: "Current IRB Approval Date"
+        irb_expiration_date: "IRB Expiration Date"
+        irb_of_record: "IRB of Record"
+        pro_number: "PRO #"
+        study_phase_ids: "Study Phase(s)"
+        submission_type: "Submission Type"
       line_item:
         id: "Service"
         status: "Status"
@@ -204,7 +209,6 @@ en:
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
-        study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
         protocol_merge: "Historical Protocol Merges"
@@ -230,6 +234,7 @@ en:
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+        previously_submitted: "Previously Submitted"
       sub_service_request:
         srid: "SRID"
       short_interaction:
@@ -370,6 +375,7 @@ en:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
+      subject_count_apply_all: "Apply the arm's subject count to all service line items in this arm."
       visit_count: 'Total number of visits per arm'
       screening: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 
@@ -498,14 +504,15 @@ en:
 
   calendar_structure:
     header: "Calendar Structure"
-    lock_calendar: "Lock Calendar"
-    unlock_calendar: "Unlock Calendar"
+    lock_calendar: "Lock Calendar & Funding"
+    unlock_calendar: "Unlock Calendar & Funding"
+    funding_locked: "Funding for this %{protocol_type} has been locked by an administrator. No funding changes may be made at this time."
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     tooltips:
-      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      lock_calendar: 'Prevent users from making changes to arm, subject, visit, and funding information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   ##############################
@@ -618,6 +625,24 @@ en:
   forms:
     none: "You don't have any forms to complete"
     srid: "SRID"
+
+  ###############
+  # IRB RECORDS #
+  ###############
+  irb_records:
+    pro_header: "IRB #%{pro}"
+    irb_header: " (%{irb})"
+    primary_irb: "Primary IRB"
+    add: "Add a New IRB"
+    edit: "Edit IRB"
+    delete: "Delete IRB"
+    form:
+      new: "New IRB Record"
+      edit: "Edit IRB Record"
+    tooltips:
+      edit: "Edit IRB"
+      delete: "Delete IRB"
+      cant_delete_primary: "The Primary IRB cannot be deleted"
 
   ##########
   # LAYOUT #
@@ -1067,7 +1092,6 @@ en:
     triggered_by: "Current Identity:"
     u_info: "User Information"
     u_info_external: "User Information (External)"
-    welcome_obtain_research_pricing: "A request has been made for a budget review (Get Cost Estimate)"
     welcome_submit: "A Request has been submitted to start services"
     welcome_submit_external: "An <span class='red-text'>External Request</span> has been submitted to start services"
 

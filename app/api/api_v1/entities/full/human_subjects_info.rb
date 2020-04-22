@@ -25,17 +25,7 @@ module APIV1
         root 'human_subjects_infos', 'human_subjects_info'
 
         expose  :protocol_id,
-                :nct_number,
-                :pro_number,
-                :irb_of_record,
-                :submission_type,
-                :approval_pending
-
-        with_options(format_with: :iso_timestamp) do
-          expose :initial_irb_approval_date
-          expose :irb_approval_date
-          expose :irb_expiration_date
-        end
+                :nct_number
       end
     end
   end

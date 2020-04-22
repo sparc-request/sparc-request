@@ -25,7 +25,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/human_subjects_infos/:id.json' do
 
     before do
-      human_subjects_info = FactoryBot.build(:human_subjects_info, pro_number: nil)
+      human_subjects_info = FactoryBot.build(:human_subjects_info)
       @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
       @study.save(validate: false)
 
@@ -84,7 +84,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'protocol').
+                                push('callback_url', 'sparc_id', 'protocol', 'irb_records').
                                 sort
 
         expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)

@@ -39,9 +39,9 @@ module ProtocolsControllerShared
 
   def protocol_params
     # Fix identity_id nil problem when lazy loading is enabled
-    # when lazy loadin is enabled, identity_id is merely ldap_uid, the identity may not exist in database yet, so we create it if necessary here
-    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:primary_pi_role_attributes][:identity_id].present?
-      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:protocol][:primary_pi_role_attributes][:identity_id]).id
+    # when lazy loading is enabled, the identity may not exist in database yet, so we create it using lazy_identity_id if necessary here
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") && params[:lazy_identity_id].present?
+      params[:protocol][:primary_pi_role_attributes][:identity_id] = Identity.find_or_create(params[:lazy_identity_id]).id
     end
 
     # Sanitize date formats
@@ -56,12 +56,6 @@ module ProtocolsControllerShared
 
     # Sanitize phone formats
     params[:protocol][:guarantor_phone] = sanitize_phone params[:protocol][:guarantor_phone] if params[:protocol][:guarantor_phone]
-
-    if params[:protocol][:human_subjects_info_attributes]
-      params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date] = sanitize_date params[:protocol][:human_subjects_info_attributes][:initial_irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_approval_date]         = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_approval_date]
-      params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]       = sanitize_date params[:protocol][:human_subjects_info_attributes][:irb_expiration_date]
-    end
 
     if params[:protocol][:vertebrate_animals_info_attributes]
       params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]   = sanitize_date params[:protocol][:vertebrate_animals_info_attributes][:iacuc_approval_date]
@@ -112,7 +106,11 @@ module ProtocolsControllerShared
       :type,
       :udak_project_number,
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-      human_subjects_info_attributes: [:id, :nct_number, :pro_number, :irb_of_record, :submission_type, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :approval_pending],
+      human_subjects_info_attributes: [
+        :id,
+        :nct_number,
+        irb_records_attributes: [:id, :pro_number, :irb_of_record, :submission_type, :approval_pending, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :_destroy, study_phase_ids: []]
+      ],
       impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],
       ip_patents_info_attributes: [:id, :patent_number, :inventors],

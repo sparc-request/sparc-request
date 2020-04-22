@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright © 2011-2019 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -76,7 +75,7 @@ RSpec.describe SubServiceRequest, type: :model do
 
     describe 'fulfillment line item manipulation' do
 
-      let!(:sub_service_request2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+      let!(:sub_service_request2) { create(:sub_service_request, service_request: service_request, organization: core) }
 
       context 'updating a line item' do
 
@@ -87,21 +86,6 @@ RSpec.describe SubServiceRequest, type: :model do
         it 'should update the line item successfully' do
           sub_service_request.update_line_item(line_item, quantity: 20)
           expect(line_item.quantity).to eq(20)
-        end
-      end
-
-      context 'adding a line item' do
-
-        before :each do
-          @fulfillment_service = create(:service, organization_id: program.id)
-          @fulfillment_service.pricing_maps.create(attributes_for(:pricing_map))
-          @fulfillment_service.reload
-        end
-
-        it 'should create the line item' do
-          li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
-          expect(li.service_id).to eq(@fulfillment_service.id)
-          expect(li).not_to be_new_record
         end
       end
     end
@@ -212,12 +196,6 @@ RSpec.describe SubServiceRequest, type: :model do
 
         it "should return true if the status is submitted" do
           sub_service_request.update_attributes(status: "submitted")
-          expect(sub_service_request.can_be_edited?).to eq(true)
-        end
-
-        it "should return true if the status is get a cost estimate" do
-          sub_service_request.organization.available_statuses.where(status: "get_a_cost_estimate").first.update_attributes(selected: true)
-          sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 

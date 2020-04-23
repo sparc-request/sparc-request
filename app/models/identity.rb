@@ -88,6 +88,16 @@ class Identity < ApplicationRecord
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
 
+  ## This method is meant to mirror the suggestion_value
+  #  So if the logic for how that value is provided changes
+  #  this method should change with it.
+  def self.find_by_suggestion_value(suggestion_value)
+    if Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") 
+      find_by_ldap_uid(suggestion_value)
+    else
+      find(suggestion_value)
+    end
+  end
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################

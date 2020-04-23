@@ -93,7 +93,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   ####Actions for User Rights sub-form####
   def add_user_rights_row
     @organization = Organization.find(params[:organization_id])
-    @new_ur_identity = Identity.find(params[:new_ur_identity_id])
+    @new_ur_identity = Identity.find_by_suggestion_value(params[:new_ur_identity_id])
     @user_rights  = user_rights(@organization.id)
   end
 

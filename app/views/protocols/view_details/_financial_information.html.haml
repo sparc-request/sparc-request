@@ -30,11 +30,12 @@
             = label :protocol, :funding_status, class: 'mb-0', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
           %td.w-75
             = PermissibleValue.get_value('funding_status', protocol.funding_status)
-        %tr
-          %td.w-25
-            = label :protocol, protocol.funded? ? :funding_source : :potential_funding_source, class: 'mb-0', title: protocol.funded? ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' }
-          %td.w-75
-            = protocol.display_funding_source_value
+        - if protocol.funded? || protocol.pending_funding?
+          %tr
+            %td.w-25
+              = label :protocol, protocol.funded? ? :funding_source : :potential_funding_source, class: 'mb-0', title: protocol.funded? ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' }
+            %td.w-75
+              = protocol.display_funding_source_value
         - if protocol.is_a?(Study)
           - if protocol.funded?
             %tr
@@ -42,7 +43,7 @@
                 = label :protocol, :funding_start_date, class: 'mb-0'
               %td.w-75
                 = protocol.funding_start_date.present? ? format_date(protocol.funding_start_date) : t('constants.na')
-          - else
+          - elsif protocol.pending_funding?
             %tr
               %td.w-25
                 = label :protocol, :potential_funding_start_date, class: 'mb-0'

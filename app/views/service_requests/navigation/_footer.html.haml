@@ -41,7 +41,7 @@
             = link_to catalog_service_request_path(srid: @service_request.id), class: 'btn btn-lg btn-outline-primary' do
               = icon('fas', 'book')
               = t('proper.cart.back_to_catalog')
-        - if !@service_request.previously_submitted? && @service_request.protocol.present?
+        - if identity_signed_in? && !@service_request.previously_submitted? && @service_request.protocol.present?
           .col.text-center
             = save_as_draft_button(@service_request)
         .col.text-right

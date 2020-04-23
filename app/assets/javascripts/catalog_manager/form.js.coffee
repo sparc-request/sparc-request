@@ -84,6 +84,15 @@ $ ->
       type: 'PUT'
       url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[access_empty_protocols]=#{access_empty_protocols}"
 
+  $(document).on 'change', '.su-hold_emails', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    hold_emails = $(this).prop('checked')
+
+    $.ajax
+      type: 'PUT'
+      url: "/catalog_manager/super_user?super_user[identity_id]=#{identity_id}&super_user[organization_id]=#{organization_id}&super_user[hold_emails]=#{hold_emails}"
+
   $(document).on 'change', '.su-allow-credit', ->
     identity_id = $(this).data('identity-id')
     organization_id = $(this).data('organization-id')

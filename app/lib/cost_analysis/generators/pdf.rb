@@ -14,64 +14,62 @@ module CostAnalysis
 
       def setup_render
 
-        draw do |pdf|
-          render_header(pdf)
+        render_header
 
-          pdf.move_down 30
+        @doc.move_down 30
 
-          render_title_and_funding(pdf)
+        render_title_and_funding
 
-          pdf.move_down 20
+        @doc.move_down 20
 
-          render_grant_total_table(pdf)
+        render_grant_total_table
 
-          pdf.move_down 20
+        @doc.move_down 20
 
-          render_visit_tables(pdf)
+        render_visit_tables
 
-          pdf.move_down 20
+        @doc.move_down 20
 
-          render_otf_tables(pdf)
+        render_otf_tables
 
-          pdf.move_down 20
+        @doc.move_down 20
 
-          render_investigator_table_and_disclaimer(pdf)
+        render_investigator_table_and_disclaimer
 
-          pdf.number_pages "<page>", {
-            :at => [pdf.bounds.right - 150, pdf.bounds.bottom - 5],
-            :width => 150,
-            :align => :right,
-            :start_count_at => 1,
-          }
-        end
+        @doc.number_pages "<page>", {
+          :at => [@doc.bounds.right - 150, @doc.bounds.bottom - 5],
+          :width => 150,
+          :align => :right,
+          :start_count_at => 1,
+        }
 
       end
 
       private
 
-      def render_header(pdf)
-        pdf.bounding_box([0,pdf.y], :width => 700, :height => 50) do
-          pdf.text "CRU Protocol#: #{@study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
-          pdf.text @study_information.enrollment_period, :align => :right, :valign => :top
+      def render_header
+        @doc.bounding_box([0,@doc.y], :width => 700, :height => 50) do
+          @doc.text "CRU Protocol#: #{@study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
+          @doc.text @study_information.enrollment_period, :align => :right, :valign => :top
           @study_information.primary_investigators.each do |pi|
-            pdf.text pi.name, :align => :right, :valign => :bottom
+            @doc.text pi.name, :align => :right, :valign => :bottom
           end
         end
-        pdf.move_down 5
-        pdf.stroke_horizontal_rule
+        @doc.move_down 5
+        @doc.stroke_horizontal_rule
       end
 
-      def render_title_and_funding(pdf)
-        pdf.text @study_information.short_title
-        pdf.move_down 10
-        pdf.indent(10) {
-          pdf.text @study_information.study_title, :style => :italic, :size => 10
+      def render_title_and_funding
+        @doc.text @study_information.short_title
+        @doc.move_down 10
+        @doc.indent(10) {
+          @doc.text @study_information.study_title, :style => :italic, :size => 10
         }
-        pdf.move_down 10
-        pdf.text "Funded by #{@study_information.funding_source}"
+        @doc.move_down 10
+        @doc.text "Funded by #{@study_information.funding_source}"
       end
 
-      def render_grant_total_table(pdf)
+      def render_grant_total_table
         grand_total_data = compute_grand_total_data
         grand_total_rows = [
           [{ :content => "Study Total", :colspan => 2, :size => 10, :font_style => :bold} ],
@@ -92,7 +90,7 @@ module CostAnalysis
           :size => 8
         }
 
-        grand_total_table = pdf.make_table(
+        grand_total_table = @doc.make_table(
           grand_total_rows,
           :cell_style => grand_total_table_style, :header => true) do
             # Title row
@@ -104,7 +102,7 @@ module CostAnalysis
         grand_total_table.draw
       end
 
-      def render_visit_tables(pdf)
+      def render_visit_tables
         #These styles are automatically
         #inherited because they are passed as the cell_style
         #argument
@@ -123,7 +121,7 @@ module CostAnalysis
 
           summary_table_data = visit_table.summarized_by_service
 
-          summary_table = pdf.make_table(
+          summary_table = @doc.make_table(
             summary_table_data.table_rows,
             :cell_style => visit_table_style, :header => true) do
 
@@ -133,13 +131,13 @@ module CostAnalysis
               })
           end
 
-          unless summary_table.cells.fits_on_current_page?(pdf.cursor, pdf.bounds)
-            pdf.start_new_page
+          unless summary_table.cells.fits_on_current_page?(@doc.cursor, @doc.bounds)
+            @doc.start_new_page
           end
 
           summary_table.draw
 
-          pdf.move_down 5
+          @doc.move_down 5
 
           # Picking the page size that will keep the tables
           # all as close tot he same size as possible
@@ -151,7 +149,7 @@ module CostAnalysis
 
           visit_table.line_item_detail.split(keep: VisitTable::DETAIL_TABLE_STATIC_COLUMNS,cols: best_page_size).each do |page|
 
-            detail_table = pdf.make_table(
+            detail_table = @doc.make_table(
               page.table_rows,
               :cell_style => visit_table_style, :header => true) do
 
@@ -166,18 +164,18 @@ module CostAnalysis
                 })
               end
 
-              unless detail_table.cells.fits_on_current_page?(pdf.cursor, pdf.bounds)
-                pdf.start_new_page
+              unless detail_table.cells.fits_on_current_page?(@doc.cursor, @doc.bounds)
+                @doc.start_new_page
               end
 
               detail_table.draw
-              pdf.move_down 5
+              @doc.move_down 5
           end
-          pdf.move_down 5
+          @doc.move_down 5
         end
       end
 
-      def render_otf_tables(pdf)
+      def render_otf_tables
         otf_table_style = {
           :border_width => 1,
           :border_color => '4c4c4c',
@@ -188,7 +186,7 @@ module CostAnalysis
         @otf_tables.each do |otf_table|
           summary_table = otf_table.summarized_table
 
-          summary_table = pdf.make_table(
+          summary_table = @doc.make_table(
             summary_table.table_rows,
             :cell_style => otf_table_style, :header => true) do
               cells.columns(0..-1).rows(0..1).style({
@@ -196,51 +194,47 @@ module CostAnalysis
               })
             end
 
-          unless summary_table.cells.fits_on_current_page?(pdf.cursor, pdf.bounds)
-            pdf.start_new_page
+          unless summary_table.cells.fits_on_current_page?(@doc.cursor, @doc.bounds)
+            @doc.start_new_page
           end
 
           summary_table.draw
         end
       end
 
-      def render_investigator_table_and_disclaimer(pdf)
-        investigator_table = pdf.make_table(
+      def render_investigator_table_and_disclaimer
+        investigator_table = @doc.make_table(
           @study_information.primary_investigators.map{ |p| ["Primary Investigator", p.name, p.email] } + @study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] },
           :width => 700,
           :cell_style => {:border_width => 1, :border_color => 'E8E8E8'})
 
-          pdf.move_down 20
+          @doc.move_down 20
 
         disclaimer_lines = I18n.t(:disclaimer,scope: [:reporting,:cost_analysis])
         disclaimer_height = disclaimer_lines.map{ |l| 20 }.sum
-        fit_table_and_disclaimer = investigator_table.cells.height_with_span + disclaimer_height < (investigator_table.cells[0,0].y + pdf.cursor) - pdf.bounds.absolute_bottom
+        fit_table_and_disclaimer = investigator_table.cells.height_with_span + disclaimer_height < (investigator_table.cells[0,0].y + @doc.cursor) - @doc.bounds.absolute_bottom
 
         unless fit_table_and_disclaimer
-          pdf.start_new_page
+          @doc.start_new_page
         end
 
         investigator_table.draw
 
-        pdf.move_down 20
+        @doc.move_down 20
 
-        pdf.default_leading 3
+        @doc.default_leading 3
 
-        pdf.bounding_box([100, pdf.cursor], :width => 500, :height => disclaimer_height, :fill => 'E8E8E8') do
-          pdf.transparent(1.0) {
-            pdf.stroke_bounds
-            pdf.fill_color 'd5edda'
-            pdf.fill_rectangle [0,disclaimer_height], 500, disclaimer_height
+        @doc.bounding_box([100, @doc.cursor], :width => 500, :height => disclaimer_height, :fill => 'E8E8E8') do
+          @doc.transparent(1.0) {
+            @doc.stroke_bounds
+            @doc.fill_color 'd5edda'
+            @doc.fill_rectangle [0,disclaimer_height], 500, disclaimer_height
           }
-          pdf.move_down 5
+          @doc.move_down 5
           I18n.t(:disclaimer,scope: [:reporting,:cost_analysis]).each do |line|
-            pdf.text line, :size => 11, :align => :center
+            @doc.text line, :size => 11, :align => :center
           end
         end
-      end
-
-      def draw(&block)
-        block.call(@doc)
       end
 
       def compute_grand_total_data

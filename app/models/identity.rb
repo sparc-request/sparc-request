@@ -378,6 +378,6 @@ class Identity < ApplicationRecord
   end
 
   def unread_notification_count(sub_service_request_id=nil)
-    Notification.of_ssr(sub_service_request_id).unread_by(id).count
+    Notification.of_ssr(sub_service_request_id).unread_by(self).count
   end
 end

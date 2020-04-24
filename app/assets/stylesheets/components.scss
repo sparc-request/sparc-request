@@ -30,3 +30,10 @@ th[data-toggle=tooltip] > label, td[data-toggle=tooltip] > label {
   border-bottom: 1px dashed theme-color('info');
   cursor: pointer;
 }
+
+.col-form-label[data-toggle='tooltip'] {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: calc(#{$input-padding-y} + #{$input-border-width});
+  margin-bottom: calc(#{$input-padding-y} + #{$input-border-width});
+}

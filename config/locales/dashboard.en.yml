@@ -85,6 +85,7 @@ en:
         service_providers: "Service Providers"
         inbox: "Inbox"
         sent: "Sent"
+        shared: "Shared"
         mark_as_unread: "Mark as Unread"
         mark_as_read: "Mark as Read"
         from: "From"
@@ -99,6 +100,7 @@ en:
       tooltips:
         table_button: "Send correspondence related to this request to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
+        shared: "Share this message with super users of your group and overlords."
 
     ######################
     #  PROTOCOL FILTERS  #

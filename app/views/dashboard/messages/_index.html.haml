@@ -27,7 +27,7 @@
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body
       - messages.each do |msg|
-        .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-right callout-success float-right' : 'callout-info' }
+        .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-success float-right' : 'callout-info' }
           .card-body
             %h5.card-title.mb-2
               = msg.sender.full_name
@@ -38,14 +38,19 @@
         .alert.alert-danger.mb-0
           = t('messages.none')
     .modal-footer
-      = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|
-        = f.hidden_field :notification_id
-        = f.hidden_field :to
-        = f.hidden_field :from
-        .form-row
-          .form-group.col-9.offset-3
-            = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('messages.placeholder')
+      - if notification.originator == current_user || notification.oher_user == current_user
+        = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|
+          = f.hidden_field :notification_id
+          = f.hidden_field :to
+          = f.hidden_field :from
+          .form-row
+            .form-group.col-9.offset-3
+              = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('messages.placeholder')
+          .text-right
+            %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+              = t('actions.close')
+            = f.submit t('actions.reply'), class: 'btn btn-primary'
+      - else
         .text-right
           %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
             = t('actions.close')
-          = f.submit t('actions.reply'), class: 'btn btn-primary'

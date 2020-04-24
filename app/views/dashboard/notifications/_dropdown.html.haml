@@ -26,7 +26,7 @@
       = icon('far', 'envelope', class: in_admin? ? 'mr-2' : '')
       - if in_admin?
         = t('dashboard.notifications.compose')
-    .dropdown-menu.dropdown-menu-right{ aria: { labelledby: "sendNotificationRequest#{sub_service_request.id}" } }
+    .dropdown-menu{ class: action_name == 'show' ? 'dropdown-menu-right' : '', aria: { labelledby: "sendNotificationRequest#{sub_service_request.id}" } }
       .dropdown-header
         %h5.mb-0
           = t('dashboard.notifications.authorized_users.header')

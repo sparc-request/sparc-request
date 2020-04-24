@@ -45,7 +45,7 @@
           = label_tag :billing_manager, t(:catalog_manager)[:organization_form][:user_rights][:billing_manager], class: 'non_bold_label'
       .row
         .col-sm-4
-          = check_box_tag :hold_emails, true, su.try(:hold_emails), { id: "su-access-empty-protocols-#{user.id}", class: "su-hold_emails", data: { identity_id: user.id, organization_id: organization.id } }
+          = check_box_tag :hold_emails, true, su.hold_emails, { id: "su-hold-emails-#{user.id}", class: "su-hold-emails", data: { identity_id: user.id, organization_id: organization.id } }
         .col-sm-4
           = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
         .col-sm-4

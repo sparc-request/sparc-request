@@ -60,6 +60,7 @@ en:
         allow_credit: "Allow Credit"
         name_email: "Name, Email"
         super_user: "Super User"
+        su_hold_emails: "Hold Email"
         access_empty_protocols: "Empty Protocols"
         billing_manager: "Billing Manager"
         catalog_manager: "Catalog Manager"

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module V1
-
   class ArmFullWithShallowReflection < ArmFull
     root 'arms', 'arm'
 
@@ -77,6 +76,7 @@ module V1
     root 'organizations', 'organization'
 
     expose :services, using: V1::ServiceShallow
+    expose :primary_contacts, using: V1::IdentityShallow
   end
 
   class LineItemFullWithShallowReflection < LineItemFull

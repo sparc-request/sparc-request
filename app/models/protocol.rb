@@ -188,7 +188,9 @@ class Protocol < ApplicationRecord
     end
   }
 
-  scope :search_query, lambda { |search_attrs|
+  scope :search_query, -> (search_attrs) {
+    return if search_attrs.search_text.blank?
+
     # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters

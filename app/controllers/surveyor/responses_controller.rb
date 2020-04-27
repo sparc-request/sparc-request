@@ -29,6 +29,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def index
+    @admin_org_ids = (current_user.is_site_admin? ? Organization.all : current_user.authorized_admin_organizations).pluck(:id)
+
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && filterrific_params,
         default_filter_params: {
@@ -178,7 +180,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def load_responses
     @responses =
       if @type == Survey.name
-        @filterrific.find.eager_load(:survey, :question_responses, :identity)
+        ## https://www.pivotaltracker.com/n/projects/1918597/stories/167076358
+        if current_user.is_site_admin?
+          @filterrific.find.eager_load(:survey, :question_responses, :identity)
+        else
+          @filterrific.find.eager_load(:survey, :question_responses, :identity).
+            where(survey: SystemSurvey.for(current_user), respondable_id: SubServiceRequest.where(organization_id: @admin_org_ids))
+        end
       else
         existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
           where(survey: Form.for(current_user))
@@ -205,7 +213,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     responses = []
     Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
-      p.sub_service_requests.each do |ssr|
+      # It should only shows those admin have access to
+      p.sub_service_requests.where(organization_id: @admin_org_ids).each do |ssr|
         ssr.forms_to_complete.values.flatten.select do |f|
           # Apply the State, Survey/Form, and Start/End Date filters manually
           (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&

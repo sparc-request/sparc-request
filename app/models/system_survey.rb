@@ -30,6 +30,21 @@ class SystemSurvey < Survey
     })
   }
 
+  # forsite admins, super users and/or service providers
+  scope :for, -> (identity) {
+    if identity.is_site_admin?
+      SystemSurvey.all
+    else
+      orgs = Organization.authorized_for_super_user(identity.id).or(
+        Organization.authorized_for_service_provider(identity.id))
+
+      joins(:associated_surveys).
+      where(associated_surveys: {
+        associable: orgs
+      }).distinct
+    end
+  }
+
   def system_satisfaction?
     self.access_code == 'system-satisfaction-survey'
   end

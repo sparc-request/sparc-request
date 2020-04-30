@@ -661,7 +661,7 @@ en:
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
-      copyright: "&copy; 2011-2019 MUSC Foundation for Research Development"
+      copyright: "&copy; 2011-2020 MUSC Foundation for Research Development"
       links:
         about: "About"
         sctr:

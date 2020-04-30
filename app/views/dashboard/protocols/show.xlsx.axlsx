@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -465,7 +465,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
     sheet.add_row ["Total Margin", total_margin], style: [bold_default, bold_money]
 
     margin_cell = sheet.rows.last.cells.last.r
-    
+
     sheet.add_row ["Study Contingency", "=#{margin_cell}-#{total_users_cost_cell}"], style: [bold_default, bold_money]
     sheet.add_row ["Breakeven Analysis", breakeven_analysis], style: [bold_default, bold_right]
   end

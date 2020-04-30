@@ -38,7 +38,7 @@
         .alert.alert-danger.mb-0
           = t('messages.none')
     .modal-footer
-      - if notification.originator == current_user || notification.oher_user == current_user
+      - if notification.originator == current_user || notification.other_user == current_user
         = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|
           = f.hidden_field :notification_id
           = f.hidden_field :to

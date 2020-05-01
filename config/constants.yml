@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -121,12 +121,12 @@ study_type_notes:             { '1' : 'De-identified Research Participant',
                                 '17': 'Full Epic Functionality:  notification, no pink header, MyChart access.',
                                 '0': 'Full Epic Functionality:  notification, pink header, MyChart access.' }
 
-study_type_questions: ["1a. Does your study require a higher level of privacy for the participants?",   
-                         "1b. Does your study have a Certificate of Confidentiality?",   
-                         "1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?",   
-                         "2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?",   
-                         "3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?",   
-                         "4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?"]     
+study_type_questions: ["1a. Does your study require a higher level of privacy for the participants?",
+                         "1b. Does your study have a Certificate of Confidentiality?",
+                         "1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?",
+                         "2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?",
+                         "3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?",
+                         "4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?"]
 
 study_type_questions_version_2: ["1. Does your study have a Certificate of Confidentiality?*",
                                  "2. Does your study require a higher level of privacy for the participants?*",

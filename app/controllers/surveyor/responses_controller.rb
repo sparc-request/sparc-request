@@ -189,7 +189,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
         end
       else
         existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
-          where(survey: Form.for(current_user))
+          where(survey: Form.for_admin_users(current_user))
 
         if @filterrific.include_incomplete == 'false'
           existing_responses

@@ -54,6 +54,15 @@ class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
         end
       end
     end
+
+    SubServiceRequest.eager_load(:service_request).where(status: 'get_a_cost_estimate').each do |ssr|
+      if ssr.service_request.previously_submitted?
+        ssr.update_attribute(:status, 'submitted')
+        ssr.update_attribute(:submitted_at, Time.now)
+      else
+        ssr.update_attribute(:status, 'draft')
+      end
+    end
   end
 
   def down

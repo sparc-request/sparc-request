@@ -47,13 +47,17 @@ end # task
 def merge_service(old_service_id, master_service_id)
   old_service = Service.find(old_service_id)
   master_service = Service.find(master_service_id)
+  organization = master_service.process_ssrs_organization
   dest_org_process_ssrs = master_service.organization.process_ssrs_parent
   puts "Merging Service #{old_service.id} into #{master_service.id} belonging to Org ##{dest_org_process_ssrs.id}"
 
   old_service.line_items.each do |line_item|
+    ssr = line_item.sub_service_request
     line_item.service_id = master_service_id
     line_item.save(validate: false)
+    ssr.organization = organization
+    ssr.save(validate: false)
   end
 
-  old_service.destroy
+  old_service.delete
 end

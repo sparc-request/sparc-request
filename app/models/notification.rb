@@ -58,13 +58,13 @@ class Notification < ApplicationRecord
                         other_user: identity
                       )
 
-    unless identity.catalog_overlord?
+    if identity.catalog_overlord?
+      notifications
+    else 
       notifications.joins(sub_service_request: :super_users).where(
         super_users: { identity: identity }
       )
     end
-
-    notifications
   end
 
   def self.in_sent_of(identity, sub_service_request_id=nil)

@@ -150,6 +150,8 @@ en:
         subject: "Subject"
       note:
         body: "Note"
+      notification:
+        shared: "Share with administrators"
       option:
         content: "Option"
       project:

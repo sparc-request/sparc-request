@@ -30,7 +30,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_14_145614) do
+ActiveRecord::Schema.define(version: 2020_04_24_141815) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -420,6 +420,7 @@ ActiveRecord::Schema.define(version: 2020_04_14_145614) do
     t.bigint "other_user_id"
     t.boolean "read_by_originator"
     t.boolean "read_by_other_user"
+    t.boolean "shared"
     t.index ["originator_id"], name: "index_notifications_on_originator_id"
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end

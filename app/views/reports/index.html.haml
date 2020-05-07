@@ -21,14 +21,17 @@
 .col-12.col-sm-8.px-0.mx-auto#reporting-container
   .card
     .card-body.p-xl-5#report-selection
-      %h1.card-title.text-center.mb-2
+      %h1.card-title.text-center.mb-5
         = t(:reporting)[:index][:intro]
         %br
         %small.card-subtitle.text-muted
           = t(:reporting)[:index][:subtext]
 
-      .d-flex.justify-content-center.flex-wrap
+      .d-flex.flex-wrap
         - if !Setting.get_value('use_short_interaction')
           - $canned_reports.delete("ShortInteractionsReport")
         - $canned_reports.sort.each do |report|
-          = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg m-2"
+          .col-3  
+            = link_to setup_reports_path(report: report), remote: true, class: "btn btn-lg btn-block btn-outline-primary mb-4 text-left" do
+              = succeed report.constantize.title do
+                = icon('far', 'file-alt mr-2')

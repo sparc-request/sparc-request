@@ -66,6 +66,15 @@ module CostAnalysis
       end
     end
 
+    def otf_line_items()
+      Dashboard::ServiceCalendars.otf_line_items_to_display(
+        @service_request,
+        nil,
+        merged: true,
+        statuses_hidden: nil,
+        display_all_services: true)
+    end
+
     private
 
     def pppv_line_item_visits(arm)
@@ -117,5 +126,6 @@ module CostAnalysis
     def display_unit_type(liv)
       liv.line_item.service.displayed_pricing_map.unit_type.gsub("/", "/ ")
     end
+
   end
 end

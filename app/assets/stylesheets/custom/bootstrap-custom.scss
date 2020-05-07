@@ -151,7 +151,6 @@
 
     &.callout-right {
       border-right-width: .25rem;
-      text-align: right;
     }
 
     &:not(.callout-right) {
@@ -409,6 +408,36 @@ form, .form {
     &.active {
       background-color: theme-color-level($color, -6) !important;
       color: theme-color-level($color, 6) !important;
+    }
+  }
+}
+
+.list-group {
+  &.list-group-flush {
+    .list-group-item:first-child {
+      border: 0;
+    }
+
+    .list-group-item:not(:first-child) {
+      border-bottom: 0;
+    }
+  }
+
+  &.list-group-blend {
+    .list-group-item {
+      border: 1px solid transparent;
+
+      .nav-link {
+        border-radius: 0;
+      }
+
+      &:not(.active) {
+        background: none;
+
+        &:hover {
+          background: theme-color-level('light', 0.5);
+        }
+      }
     }
   }
 }

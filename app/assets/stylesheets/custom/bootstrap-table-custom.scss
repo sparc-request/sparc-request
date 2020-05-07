@@ -60,3 +60,29 @@
     margin-top: 0px;
   }
 }
+
+.bootstrap-table {
+  .fixed-table-container {
+    .fixed-table-body {
+      .fixed-table-loading {
+        border-top: 0;
+
+        .loading-wrap {
+          .loading-text {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+.bootstrap-table-nav-spacer {
+  margin: 10px 0;
+}
+
+.card {
+  .bootstrap-table-nav-spacer {
+    margin-top: 0;
+  }
+}

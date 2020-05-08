@@ -195,7 +195,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
           existing_responses
         else
           incomplete_responses = get_incomplete_form_responses
-          existing_responses + incomplete_responses
+          Response.includes(:survey).where(id: (incomplete_responses + existing_responses))
         end
       end
     preload_responses

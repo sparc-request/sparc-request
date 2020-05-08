@@ -424,10 +424,6 @@ class Protocol < ApplicationRecord
     end
   end
 
-  def primary_principal_investigator
-    primary_pi_role.try(:identity)
-  end
-
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end

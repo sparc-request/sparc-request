@@ -79,12 +79,12 @@ class ServiceRequestsReport < ReportingModule
       attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
-    attrs["Primary PI Last Name"]         = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"]        = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
-    attrs["Primary PI Institution"]       = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'institution')"
-    attrs["Primary PI College"]           = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'college')"
-    attrs["Primary PI Department"]        = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'department')"
-    attrs["Primary PI Division"]          = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'division')"
+    attrs["Primary PI Last Name"]         = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"
+    attrs["Primary PI First Name"]        = "service_request.try(:protocol).try(:primary_pi).try(:first_name)"
+    attrs["Primary PI Institution"]       = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'institution')"
+    attrs["Primary PI College"]           = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'college')"
+    attrs["Primary PI Department"]        = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'department')"
+    attrs["Primary PI Division"]          = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'division')"
     attrs["Primary Coordinator(s)"]       = "service_request.try(:protocol).try(:coordinators).try(:map, &:full_name).try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
 
@@ -129,7 +129,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :organization, :service_request => {:line_items => :service}
+    return :organization, service_request: { protocol: { primary_pi: { professional_organization: { parent: { parent: :parent } } } }, line_items: :service }
   end
 
   # Conditions

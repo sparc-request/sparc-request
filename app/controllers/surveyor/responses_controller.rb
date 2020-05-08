@@ -203,25 +203,30 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
   def preload_responses
     preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
-    preloader.preload(@responses.select { |r| r.respondable_type == ServiceRequest.name }, { respondable: { protocol: { primary_pi_role: :identity } } })
+    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, [:question_responses, :identity, respondable: { protocol: :primary_pi } ])
+    preloader.preload(@responses.select { |r| r.respondable_type == ServiceRequest.name }, [:question_responses, :identity, respondable: { protocol: :primary_pi } ])
   end
 
   def get_incomplete_form_responses
     @filterrific.with_state.reject!(&:blank?) if @filterrific.with_state
     @filterrific.with_survey.reject!(&:blank?) if @filterrific.with_survey
 
+    state_selected  = @filterrific.with_state.try(&:any?)
+    survey_selected = @filterrific.with_survey.try(&:any?)
+
     responses = []
-    Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
-      # It should only shows those admin have access to
-      p.sub_service_requests.where(organization_id: @admin_org_ids).each do |ssr|
-        ssr.forms_to_complete.values.flatten.select do |f|
-          # Apply the State, Survey/Form, and Start/End Date filters manually
-          (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
-          (@filterrific.with_survey.try(&:empty?) || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))
-        end.each do |f|
-          responses << Response.new(survey: f,respondable: ssr)
-        end
+    ssrs      = SubServiceRequest.eager_load(:responses, :service_forms, :organization_forms).where(organization_id: @admin_org_ids) # It should only shows those admin have access to
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(ssrs, service_forms: :surveyable)
+    preloader.preload(ssrs, organization_forms: :surveyable)
+
+    ssrs.each do |ssr|
+      ssr.forms_to_complete.values.flatten.select do |f|
+        # Apply the State, Survey/Form, and Start/End Date filters manually
+        (!state_selected || (state_selected && @filterrific.with_state.include?(f.active ? 1 : 0))) &&
+        (!survey_selected || (@filterrific.with_survey.try(&:any?) && @filterrific.with_survey.include?(f.id)))
+      end.each do |f|
+        responses << Response.new(survey: f,respondable: ssr)
       end
     end
 

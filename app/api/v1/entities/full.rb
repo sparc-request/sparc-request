@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -112,6 +112,7 @@ module V1
             :direct_link
 
     expose  :parent, using: V1::OrganizationFull
+    expose  :primary_contacts, using: V1::IdentityFull
   end
 
   class ProcessSsrsOrganizationFull < ProcessSsrsOrganizationShallow

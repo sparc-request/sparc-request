@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def index
+    @admin_org_ids = (current_user.is_site_admin? ? Organization.all : current_user.authorized_admin_organizations).pluck(:id)
+
     @filterrific  =
       initialize_filterrific(Response, params[:filterrific] && filterrific_params,
         default_filter_params: {
@@ -134,8 +136,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def complete
     @response = Response.find(params[:response_id])
     if @response.respondable_id && @response.respondable.organization.survey_completion_alerts
-      ### sent emails to all relevant super users for an organization of which survey_completion_alerts is true
+      ### Per discussions, if Survey Alert is checked for the organization, email alerts go out
+      ### to those relevant super users who want to receive emails.
       @response.respondable.organization.all_super_users.each do |su|
+        next if su.hold_emails
         SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver_later
       end
     end
@@ -176,7 +180,13 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def load_responses
     @responses =
       if @type == Survey.name
-        @filterrific.find.eager_load(:survey, :question_responses, :identity)
+        ## https://www.pivotaltracker.com/n/projects/1918597/stories/167076358
+        if current_user.is_site_admin?
+          @filterrific.find.eager_load(:survey, :question_responses, :identity)
+        else
+          @filterrific.find.eager_load(:survey, :question_responses, :identity).
+            where(survey: SystemSurvey.for(current_user), respondable_id: SubServiceRequest.where(organization_id: @admin_org_ids))
+        end
       else
         existing_responses = @filterrific.find.eager_load(:survey, :question_responses, :identity).
           where(survey: Form.for(current_user))
@@ -203,7 +213,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     responses = []
     Protocol.eager_load(sub_service_requests: [:responses, :service_forms, :organization_forms]).distinct.each do |p|
-      p.sub_service_requests.each do |ssr|
+      # It should only shows those admin have access to
+      p.sub_service_requests.where(organization_id: @admin_org_ids).each do |ssr|
         ssr.forms_to_complete.values.flatten.select do |f|
           # Apply the State, Survey/Form, and Start/End Date filters manually
           (@filterrific.with_state.try(&:empty?) || (@filterrific.with_state.try(&:any?) && @filterrific.with_state.include?(f.active ? 1 : 0))) &&

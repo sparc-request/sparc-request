@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -263,7 +263,7 @@ toggleFundingSource = (val) ->
 
       toggleFederalFields(potentialFundingSource)
       toggleFundingSourceOther(potentialFundingSource)
-    else
+    else if val == 'funded'
       potentialFundingSource    = $('#protocol_potential_funding_source').val()
       potentialFundingStartDate = $('#protocol_potential_funding_start_date').val()
 
@@ -279,7 +279,13 @@ toggleFundingSource = (val) ->
 
       toggleFederalFields(fundingSource)
       toggleFundingSourceOther(fundingSource)
-
+    else
+      $('#fundingSourceContainer').addClass('d-none')
+      $('#potentialFundingSourceContainer').addClass('d-none')
+      $('#fundingSourceOtherContainer').addClass('d-none')
+      $('#fundingRfaContainer').addClass('d-none')
+      $('#fundingStartDateContainer').addClass('d-none')
+      $('#potentialFundingStartDateContainer').addClass('d-none')
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
 
 

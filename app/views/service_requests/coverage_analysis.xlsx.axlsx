@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -86,7 +86,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##### beginning of arms
   if has_per_patient_per_visit_services
-    
+
     arms_to_be_displayed = @display_all_services ? @service_request.arms : @service_request.arms.joins(:visits).where(Visit.arel_table[:research_billing_qty].gt(0).or(Visit.arel_table[:insurance_billing_qty].gt(0)).or(Visit.arel_table[:effort_billing_qty].gt(0))).distinct
 
     arms_to_be_displayed.each do |arm|

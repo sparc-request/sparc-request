@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,6 +39,7 @@ class ProtocolsController < ApplicationController
       end
 
       @protocol.service_requests << @service_request
+      @service_request.sub_service_requests.each{ |ssr| @protocol.sub_service_requests << ssr }
       @protocol.save
       @service_request.update_status('draft', current_user)
 

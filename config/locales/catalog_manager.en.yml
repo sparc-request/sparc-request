@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -60,6 +60,7 @@ en:
         allow_credit: "Allow Credit"
         name_email: "Name, Email"
         super_user: "Super User"
+        su_hold_emails: "Hold Email"
         access_empty_protocols: "Empty Protocols"
         billing_manager: "Billing Manager"
         catalog_manager: "Catalog Manager"

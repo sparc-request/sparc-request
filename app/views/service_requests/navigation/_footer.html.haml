@@ -46,7 +46,8 @@
             = save_as_draft_button(@service_request)
         .col.text-right
           - if action_name == 'review'
-            = link_to confirmation_service_request_path(srid: @service_request.id), remote: @service_request.previously_submitted?, class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
+            -# If the request has SSRs to be resubmitted, send a remote request to prompt the SSR Resubmission Modal, else submit the request
+            = link_to confirmation_service_request_path(srid: @service_request.id), remote: @service_request.previously_submitted? && service_request.sub_service_requests.any?{ |ssr| ['draft', 'awaiting_pi_approval'].include?(ssr.status) }, class: 'btn btn-lg btn-outline-success', id: 'submitRequest' do
               - succeed icon('fas', 'arrow-right ml-2') do
                 = t('proper.navigation.bottom.submit')
           - else

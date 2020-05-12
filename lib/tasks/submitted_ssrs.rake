@@ -51,7 +51,7 @@ namespace :data do
         srid = ssr.display_id
         org_tree = ssr.org_tree_display
         completed_date = AuditRecovery.where("auditable_id = #{ssr.id} and auditable_type = 'SubServiceRequest' and audited_changes like '%\n- complete%' and created_at between '#{start_date}' and '#{end_date}'").first.try(:created_at)
-        primary_pi = protocol.primary_principal_investigator
+        primary_pi = protocol.primary_pi
         name = primary_pi.full_name
         college = primary_pi.college
         department = primary_pi.department

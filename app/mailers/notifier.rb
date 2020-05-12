@@ -191,7 +191,7 @@ class Notifier < ActionMailer::Base
 
   def notify_for_epic_user_approval protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
@@ -200,7 +200,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_final_review protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     email_to = @primary_pi.email
     subject = "#{@protocol.id} - Epic Rights User Approval"
@@ -210,7 +210,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
     @protocol       = protocol
-    @primary_pi     = @protocol.primary_principal_investigator
+    @primary_pi     = @protocol.primary_pi
     @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"

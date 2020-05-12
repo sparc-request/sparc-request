@@ -24,6 +24,8 @@
       .navbar-nav.mr-auto
         - Setting.get_value("navbar_links").each do |identifier, data|
           = navbar_link(identifier, data, @highlighted_link)
+    %button.btn.btn-primary.navbar-toggler.p-0.border-0.text-light{ type: 'button', data: { toggle: 'collapse', target: '#navbarLinks' }, aria: { controls: 'navbarLinks', expanded: 'false', label: t('layout.navigation.toggle') } }
+      = icon('fas', 'bars fa-2x')
     .navbar-nav#navbarUtilities
       - if Setting.get_value('use_news_feed')
         = render 'layouts/news'
@@ -31,5 +33,3 @@
         = render 'layouts/events'
       = render 'layouts/profile'
       = render 'layouts/help'
-    %button.btn.btn-primary.navbar-toggler.p-0.border-0.text-light{ type: 'button', data: { toggle: 'collapse', target: '#navbarLinks' }, aria: { controls: 'navbarLinks', expanded: 'false', label: t('layout.navigation.toggle') } }
-      = icon('fas', 'bars fa-2x')

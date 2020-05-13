@@ -145,5 +145,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof' # Check usage
+  gem 'ruby-prof', '~> 1.3.2' # Check usage
 end

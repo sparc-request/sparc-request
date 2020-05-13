@@ -70,6 +70,10 @@ class ProtocolsController < ApplicationController
         @service_request.update_status('draft', current_user)
       end
 
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
+        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id)
+      end
+      
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors

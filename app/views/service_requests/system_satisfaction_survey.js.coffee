@@ -25,7 +25,7 @@ ConfirmSwal.fire(
   confirmButtonText: I18n.t('constants.yes_select')
   cancelButtonText: I18n.t('constants.no_select')
 ).then (result) ->
-  $('#getCostEstimate, #submitRequest').removeClass('disabled')
+  $('#submitRequest').removeClass('disabled')
   if result.value
     $.ajax
       method: 'get'
@@ -39,7 +39,7 @@ ConfirmSwal.fire(
       success: ->
         $(document).one 'hidden.bs.modal', ->
           # When previously subbmited show the SSRs resubmission modal
-          <% if @service_request.previously_submitted? && @forward.include?('confirmation') %>
+          <% if @service_request.has_ssrs_for_resubmission? && @forward.include?('confirmation') %>
           $.ajax
             method: 'get'
             dataType: 'script'
@@ -48,8 +48,8 @@ ConfirmSwal.fire(
           window.location = "<%= @forward %>"
           <% end %>
   else
-    # When previously subbmited show the SSRs resubmission modal
-    <% if @service_request.previously_submitted? && @forward.include?('confirmation') %>
+    # When previously submited show the SSRs resubmission modal
+    <% if @service_request.has_ssrs_for_resubmission? && @forward.include?('confirmation') %>
     $.ajax
       method: 'get'
       dataType: 'script'

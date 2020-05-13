@@ -219,6 +219,10 @@ class ServiceRequest < ApplicationRecord
     groupings
   end
 
+  def has_ssrs_for_resubmission?
+    self.previously_submitted? && self.sub_service_requests.any?{ |ssr| ['draft', 'awaiting_pi_approval'].include?(ssr.status) }
+  end
+
   def deleted_ssrs_since_previous_submission(start_time_at_previous_sub_time=false)
     ### start_time varies depending on if the submitted_at has been updated or not
     if start_time_at_previous_sub_time
@@ -362,12 +366,12 @@ class ServiceRequest < ApplicationRecord
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
-  def update_status(new_status, current_user)
+  def update_status(new_status, current_user, ssrids=nil)
     # Do not change the Service Request if it has been submitted
     update_attribute(:status, new_status) unless self.previously_submitted?
     update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
-    self.sub_service_requests.map do |ssr|
+    self.sub_service_requests.select{ |ssr| ssrids.nil? || ssrids.include?(ssr.id.to_s) }.map do |ssr|
       ssr.update_status_and_notify(new_status, current_user)
     end.compact
   end

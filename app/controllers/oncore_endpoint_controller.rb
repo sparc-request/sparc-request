@@ -176,13 +176,13 @@ class OncoreEndpointController < ApplicationController
   def find_valid_protocol_by_rmid
     rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
     if !rmid.nil? && protocol = Protocol.find_by(research_master_id: rmid)
-      return protocol
+      if protocol.has_clinical_services?
+        raise "Error: SPARC Protocol #{rmid} has an existing calendar and cannot be overwritten."
+      else
+        return protocol
+      end
     else
-      raise "Error: No existing SPARC protocol with identifier #{rmid}."
-    end
-
-    if protocol.has_clinical_services?
-      raise "Error: SPARC Protocol #{rmid} has an existing calendar and cannot be overwritten."
+      raise "Error: No existing SPARC Protocol with identifier #{rmid}."
     end
   end
 

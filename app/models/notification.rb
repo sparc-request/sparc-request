@@ -60,9 +60,9 @@ class Notification < ApplicationRecord
 
     if identity.catalog_overlord?
       notifications
-    else 
-      notifications.joins(sub_service_request: :super_users).where(
-        super_users: { identity: identity }
+    else
+      notifications.joins(:sub_service_request).where(
+        sub_service_requests: { organization: Organization.authorized_for_super_user(identity.id) }
       )
     end
   end

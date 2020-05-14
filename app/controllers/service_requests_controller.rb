@@ -127,7 +127,7 @@ class ServiceRequestsController < ApplicationController
           end
         end
 
-        NotifierLogic.confirmation_logic(@service_request, current_user, params[:ssrids])
+        NotifierLogic.delay.confirmation_logic(@service_request, current_user, params[:ssrids])
       }
     end
   end

@@ -371,7 +371,7 @@ class ServiceRequest < ApplicationRecord
     update_attribute(:status, new_status) unless self.previously_submitted?
     update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
-    self.sub_service_requests.select{ |ssr| ssrids.nil? || ssrids.include?(ssr.id.to_s) }.map do |ssr|
+    self.sub_service_requests.select{ |ssr| ssrids.blank? || ssrids.include?(ssr.id.to_s) }.map do |ssr|
       ssr.update_status_and_notify(new_status, current_user)
     end.compact
   end

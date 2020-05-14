@@ -49,7 +49,7 @@ class SettingsPopulator
         end
       end
 
-      Setting.where(key: deprecaed_settings).destroy_all
+      Setting.where(key: deprecated_settings).destroy_all
     end
 
     Setting.auditing_enabled = true

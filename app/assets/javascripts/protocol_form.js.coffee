@@ -286,6 +286,7 @@ toggleFundingSource = (val) ->
       $('#fundingRfaContainer').addClass('d-none')
       $('#fundingStartDateContainer').addClass('d-none')
       $('#potentialFundingStartDateContainer').addClass('d-none')
+      $('#federalGrantInformation').addClass('d-none')
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
 
 

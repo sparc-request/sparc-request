@@ -67,4 +67,22 @@ class Form < Survey
     or(where(surveyable: identity))
   }
 
+  ## for super users, service providers, and site_admins only
+  ## https://www.pivotaltracker.com/n/projects/1918597/stories/167076358
+  scope :for_admin_users, -> (identity) {
+    orgs =
+      if identity.is_site_admin?
+        Organization.all
+      else
+        Organization.authorized_for_super_user(identity.id).or(
+          Organization.authorized_for_service_provider(identity.id))
+      end
+      
+    services = Service.where(organization: orgs)
+    
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
+
 end

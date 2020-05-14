@@ -60,10 +60,7 @@ class EpicInterface
         namespace: @namespace,
         endpoint: @config['epic_endpoint'],
         wsdl: @config['epic_wsdl'],
-        headers: {
-        },
-        soap_header: {
-        },
+        use_wsa_headers: true,
         namespaces: {
           'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
         })

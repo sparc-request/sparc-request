@@ -48,7 +48,7 @@
 
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:table][:headers][:primary_pi]
-      %td{:style => 'border: 1px solid black;'}= @protocol.primary_principal_investigator.full_name
+      %td{:style => 'border: 1px solid black;'}= @protocol.primary_pi.full_name
 
     %tr{:style => 'border: 1px solid black;'}
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:surveyor)[:responses][:table][:headers][:request_owner]

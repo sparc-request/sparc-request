@@ -53,7 +53,7 @@ namespace :reports do
                 research_rate = procedure.cost
                 cost = research_rate * r_qty
 
-                csv << [protocol.id, protocol.try(:primary_principal_investigator).try(:full_name), subject.name, subject.label, visit_name, visit_date, procedure.display_service_name, r_qty, research_rate, cost]
+                csv << [protocol.id, protocol.try(:primary_pi).try(:full_name), subject.name, subject.label, visit_name, visit_date, procedure.display_service_name, r_qty, research_rate, cost]
               end
             end
           end

@@ -410,7 +410,7 @@ class SubServiceRequest < ApplicationRecord
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-    primary_pi = protocol.primary_principal_investigator
+    primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver

@@ -60,13 +60,13 @@ class ProtocolsReport < ReportingModule
     attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
     attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
 
-    attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
-    attrs["Primary PI Email"]       = "service_request.try(:protocol).try(:primary_principal_investigator).try(:email)"
-    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'institution')"
-    attrs["Primary PI College"]     = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'college')"
-    attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'department')"
-    attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'division')"
+    attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"
+    attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_pi).try(:first_name)"
+    attrs["Primary PI Email"]       = "service_request.try(:protocol).try(:primary_pi).try(:email)"
+    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'institution')"
+    attrs["Primary PI College"]     = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'college')"
+    attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'department')"
+    attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'division')"
 
     attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map, &:full_name).try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
@@ -106,7 +106,7 @@ class ProtocolsReport < ReportingModule
 
   # Other tables to include
   def includes
-    [:organization, { service_request: { protocol: [:project_roles, :study_phases, :human_subjects_info, :investigational_products_info, primary_pi_role: { identity: { professional_organization: { parent: { parent: :parent } } } }] } }, { line_items: :service }]
+    [:organization, { service_request: { protocol: [:project_roles, :study_phases, :human_subjects_info, :investigational_products_info, primary_pi: { professional_organization: { parent: { parent: :parent } } }] } }, { line_items: :service }]
   end
 
   # Conditions

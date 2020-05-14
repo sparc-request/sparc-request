@@ -21,9 +21,10 @@
 - if current_user
   .nav-item.dropdown.no-caret.profile
     = link_to 'javascript:void(0)', class: 'nav-link dropdown-toggle', id: 'profileDropdown', role: 'button', aria: { haspopup: 'true', expanded: 'false' } do
-      = icon('fas', 'user-circle fa-2x')
-      - if current_user.unread_notification_count > 0
-        %span.badge.badge-pill.badge-c.badge-danger.notification-badge &nbsp;
+      .d-flex.justify-content-center
+        = icon('fas', 'user-circle fa-2x')
+        - if current_user.unread_notification_count > 0
+          %span.badge.badge-pill.badge-c.badge-danger.notification-badge &nbsp;
     .dropdown-menu.dropdown-menu-xl-right{ aria: { labelledby: 'profileDropdown' } }
       = link_to 'javascript:void(0)', class: 'dropdown-header d-flex text-secondary' do
         = icon('fas', 'user-circle fa-3x mr-2')

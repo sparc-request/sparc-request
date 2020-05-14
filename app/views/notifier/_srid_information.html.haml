@@ -30,7 +30,8 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      - link = Setting.get_value("dashboard_link") + '/sub_service_requests/' + ssr.id.to_s
+      - link = dashboard_sub_service_request_url(ssr)
+
       %tr.skinny-black-border
         - if @role == 'none'
           %td.center

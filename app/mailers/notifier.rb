@@ -50,7 +50,7 @@ class Notifier < ActionMailer::Base
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
 
     if admin_delete_ssr
       @ssrs_to_be_displayed = [@deleted_ssrs]
@@ -89,7 +89,7 @@ class Notifier < ActionMailer::Base
     @full_name = submission_email_address
     @ssrs_to_be_displayed = [ssr]
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @audit_report = audit_report
@@ -115,7 +115,7 @@ class Notifier < ActionMailer::Base
     @full_name = service_provider.identity.full_name
     @audit_report = audit_report
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     ### ATTACHMENTS ###

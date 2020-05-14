@@ -24,7 +24,13 @@
       = link_to Setting.get_value("header_link_1"), target: :_blank do
         = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'
     .logo-container.col-12.col-lg-6.d-flex.justify-content-center
-      = link_to Setting.get_value("header_link_2_#{location}") do
+      - if location == 'dashboard'
+        - linked = dashboard_root_path
+      - elsif location == 'catalogo_manager'
+        - link == 'catalog_manager_root_path'
+      - else
+        - link == 'root_path'
+      = link_to link do
         = image_tag "logos/#{location}_logo.jpg", alt: t('layout.header.brand_logo_alt', location: location), id: 'sparcLogo', class: 'header-logo'
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
       = link_to Setting.get_value("header_link_3"), target: :_blank do

@@ -79,8 +79,6 @@ SPARCRequest has many settings that are used internally to customize content and
 ##### Emails
 - **send_emails_to_real_users**: This tells the application whether or not to send emails to users. When turned off, emails will be generated in the browser but not sent. This should be turned off in development environments.
 - **send_authorized_user_emails**: This determines whether the application will send emails to all authorized users with `View` or greater rights.
-- **root_url**: This is the root URL for the application for use in emails.
-- **dashboard_link**: This is the URL of SPARCDashboard for use in emails.
 - **admin_mail_to**: This field will overwrite the admin user mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to admin users.
 - **default_mail_to**: This field will overwrite the mailers in the application to instead mail to this address. This is overwritten in development/testing/staging environments in order to prevent real emails from being sent out to general users.
 - **listserv_mail_to**: This is the emails of users who are emailed by the Listserv link in the footer.
@@ -90,9 +88,6 @@ SPARCRequest has many settings that are used internally to customize content and
 ##### Links and URLs
 - **about_sparc_url**: This is the URL linked to by the `About SPARCRequest` button on the homepage.
 - **header_link_1**: This is the URL for the _**Organization Logo**_ - the left image in the SPARCRequest header.
-- **header_link_2_proper**: This is the URL for the _**SPARCRequest Logo**_ in the SPARCRequest header.
-- **header_link_2_dashboard**: This is the URL for the _**SPARCDashboard Logo**_ in the SPARCDashboard header.
-- **header_link_2_catalog**: This is the URL for the _**SPARCCatalog Logo**_ in the SPARCCatalog header.
 - **header_link_3**: This is the URL for the _**Institution Logo**_ - the right image in the SPARCRequest header.
 - **navbar_links**: This defines the links that appear in the header navbar.
   - **SPARCRequest**: This is a link to the SPARCRequest homepage.
@@ -109,7 +104,6 @@ SPARCRequest has many settings that are used internally to customize content and
 - **finished_statuses**: This defines the statuses in which a SubServiceRequest is considered complete. When in these statuses, SubServiceRequests can't be updated. New services from those organizations will be added to new SubServiceRequests.
 
 ##### Other Settings
-- **host**: This is the host domain of your instance of SPARCRequest.
 - **site_admins**: This is a list of users who will have full access to the Survey/Form builder and SPARCForms.
 - **use_indirect_cost**: This determines how the application displays costs to users. If turned on, then in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total. If turned off, then indirect costs will not be displayed to users, nor included in the grand total.
 - **use_separate_audit_database**: This determines whether the application will store audits in a separate datebase. The application expects this database to be named `audit_#{Rails.env}`.
@@ -194,11 +188,8 @@ Your institution may opt to use the SPARCFunding module to keep track of funding
 Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment.
 
 - **current_api_version**: This is the current version of the SPARCRequest API.
-- **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.
 - **remote_service_notifier_username**: This is the authentication username of the SPARCRequest API.
 - **remote_service_notifier_password**: This is the authentication password of the SPARCRequest API.
-- **remote_service_notifier_host**: This is the host domain of the SPARCRequest API.
-- **remote_service_notifier_path**: This is the URL path of the SPARCRequest API.
 
 #### 2.9 Right Navigation
 
@@ -363,11 +354,12 @@ SPARCRequest stores several environment variables specific to each institution. 
 The environment variables are as follows:
 
 - **site_name**: This is an optional name that will be displayed as an alert at the top of SPARCRequest. This can be useful for keeping track of the current environment.
-- **SPARC_VERSION**: This is the version of SPARCRequest your institution is using and will be displayed in the footer of the application.
+- **sparc_version**: This is the version of SPARCRequest your institution is using and will be displayed in the footer of the application.
 - **institution**: This is the name of your institution. This is currently only used for the CAS and Shibboleth login buttons.
 - **institution_logo**: This is the path to your institution's logo image. This image should be placed in `app/assets/images` and should be 1206x791 pixels or a similar ratio.
 - **org_logo**: This is the path to your organization's logo image. This image should be placed in `app/assets/images` and should be 300x140 pixels or a similar ratio.
 - **time_zone**: This is the time zone for your application. You can find the correct time zone from [the Ruby on Rails docs](http://api.rubyonrails.org/v5.1/classes/ActiveSupport/TimeZone.html) or by running `rake time:zones:all`.
+- **ROOT_URL**: This is the full domain that your SPARC instance is being run on.
 
 ### 5. Localization
 SPARCRequest uses the [I18n gem](http://guides.rubyonrails.org/i18n.html) which allows each institution to customize any text content throughout the application. All of the text content of a page can be found in one of the locales files found in `config/locales`. Each file contains text specific to the corresponding portion of the application, with shared values stored in `en.yml`.

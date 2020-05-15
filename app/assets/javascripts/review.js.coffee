@@ -20,7 +20,7 @@
 
 $ ->
   if $('#use_system_satisfaction').val() == 'true'
-    $(document).one 'click ajax:beforeSend', '#getCostEstimate, #submitRequest', (event) ->
+    $(document).one 'click ajax:beforeSend', '#submitRequest', (event) ->
       event.preventDefault()
       $this = $(this)
       $this.addClass('disabled')

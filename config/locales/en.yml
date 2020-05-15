@@ -41,6 +41,7 @@ en:
       complete: "Text successfully copied to your clipboard"
     create: "Create"
     delete: "Delete"
+    delete_disabled: "Has Fulfillments, Delete Disabled"
     delete_selected: "Delete Selected"
     disable: "Disable"
     edit: "Edit"

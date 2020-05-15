@@ -25,7 +25,7 @@ class ShortInteraction < ApplicationRecord
 
   validates_presence_of :subject, :interaction_type, :duration_in_minutes, :name, :email, :institution, :note
   validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
-  validates_numericality_of :duration_in_minutes
+  validates :duration_in_minutes, numericality: { only_integer: true, greater_than: 0 }
 
 
   def display_subject

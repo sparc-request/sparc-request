@@ -27,6 +27,8 @@
       .modal-header
         %h3.modal-title
           = t("irb_records.form.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-row
           .form-group.col-6

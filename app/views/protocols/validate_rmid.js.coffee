@@ -38,9 +38,12 @@ $('#protocol_short_title').val("<%= @rmid_record['short_title'] %>").prop('reado
 $('#protocol_title').val("<%= @rmid_record['long_title'] %>").prop('readonly', true)
 
 <% if @rmid_record['eirb_validated'] %>
-$('#protocol_human_subjects_info_attributes_pro_number').val("<%= @rmid_record['eirb_pro_number'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val("<%= @rmid_record['date_initially_approved'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_irb_approval_date').val("<%= @rmid_record['date_approved'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_irb_expiration_date').val("<%= @rmid_record['date_expiration'] %>").prop('readonly', true)
+if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+  $('#protocol_research_types_info_attributes_human_subjects').click()
+  $('#protocol_research_master_id').click()
+$.ajax
+  method: 'POST'
+  dataType: 'script'
+  url: "<%= irb_records_path(irb_record: { pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
 <% end %>
 <% end %>

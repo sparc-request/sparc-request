@@ -30,11 +30,14 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_service_name_display(line_item)
-    if line_item.service.is_available
-      line_item.service.display_service_name
-    else
-      line_item.service.display_service_name + inactive_tag
-    end
+    text      = line_item.service.display_service_name
+    text     += inactive_tag unless line_item.service.is_available
+    text     += " (In Work Fulfillment)" if sla_in_fulfillment?(line_item)
+    raw(text)
+  end
+
+  def sla_in_fulfillment?(line_item)
+    (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
   end
 
   def sla_cost_display(line_item)

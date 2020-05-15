@@ -20,3 +20,5 @@
 
 $("#modalContainer").html("<%= j render 'dashboard/notifications/new_notification', notification: @notification, message: @message %>")
 $("#modalContainer").modal('show')
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

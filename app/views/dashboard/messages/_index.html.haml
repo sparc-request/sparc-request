@@ -37,6 +37,10 @@
       - if messages.none?
         .alert.alert-danger.mb-0
           = t('messages.none')
+      - if notification.shared?
+        .d-flex.w-100.justify-content-end
+          %small.form-text.text-warning.mb-0
+            = t('dashboard.messages.index.shared_text')
     .modal-footer
       - if notification.originator == current_user || notification.other_user == current_user
         = form_for [:dashboard, message], remote: true, html: { class: 'w-100' } do |f|

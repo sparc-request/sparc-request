@@ -66,6 +66,7 @@ en:
         user: "User"
         date: "Date"
         message: "Message"
+        shared_text: "This message chain is being shared with administrators"
       new:
         header: "New Message to "
 

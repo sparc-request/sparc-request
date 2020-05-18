@@ -227,12 +227,12 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fulfillment_synchs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "SubServiceRequest_id"
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sub_service_request_id"
     t.integer "line_item_id"
     t.string "action"
     t.boolean "synched", default: false
-    t.index ["SubServiceRequest_id"], name: "index_fulfillment_synchs_on_SubServiceRequest_id"
+    t.index ["sub_service_request_id"], name: "index_fulfillment_synchronizations_on_sub_service_request_id"
   end
 
   create_table "fulfillments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

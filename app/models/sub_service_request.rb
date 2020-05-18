@@ -45,6 +45,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
   has_and_belongs_to_many :documents
+  has_many :fulfillment_synchronizations, dependent: :destroy
 
   has_many :line_items_visits, through: :line_items
   has_many :services, through: :line_items

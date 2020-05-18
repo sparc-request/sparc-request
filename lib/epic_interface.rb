@@ -22,6 +22,25 @@ require 'savon'
 require 'securerandom'
 require 'builder'
 
+# Override the Savon WSA headers to work for Epic
+module Savon
+  class Header
+    def build_wsa_header
+       return '' unless @globals[:use_wsa_headers]
+       convert_to_xml({
+         'wsa:Action' => "#{@globals[:namespace]}:#{@locals[:soap_action]}",
+         'wsa:To' => @globals[:endpoint],
+         'wsa:MessageID' => "urn:uuid:#{SecureRandom.uuid}",
+         attributes!: {
+          'wsa:MessageID' => {
+            "xmlns:wsa" => "http://schemas.xmlsoap.org/ws/2004/08/addressing"
+          }
+         }
+       })
+    end
+  end
+end
+
 # Use this class to send protocols (studies/projects) along with their
 # associated billing calendars to Epic via an InterConnect server.
 #
@@ -42,10 +61,6 @@ class EpicInterface
     @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
 
-    # TODO: I'm not really convinced that Savon is buying us very much
-    # other than some added complexity, but it's working, so no point in
-    # pulling it out.
-    #
     # We must set namespace_identifier to nil here, in order to prevent
     # Savon from prepending a wsdl: prefix to the
     # RetrieveProtocolDefResponse tag and to force it to set an xmlns

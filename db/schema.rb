@@ -1,23 +1,3 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
-# All rights reserved.~
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
-# disclaimer in the documentation and/or other materials provided with the distribution.~
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
-# derived from this software without specific prior written permission.~
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -30,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_141815) do
+ActiveRecord::Schema.define(version: 2020_05_18_155844) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -92,12 +72,12 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "auditable_id"
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.bigint "auditable_id"
     t.string "auditable_type"
-    t.integer "associated_id"
+    t.bigint "associated_id"
     t.string "associated_type"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -372,6 +352,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "units_per_quantity", default: 1
+    t.index ["service_id"], name: "index_line_items_on_service_id"
     t.index ["service_request_id"], name: "index_line_items_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id"
   end
@@ -448,8 +429,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
-    t.string "primary_ontology_tag"
-    t.string "secondary_ontology_tag"
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
@@ -808,7 +787,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.integer "order"
     t.text "description"
     t.boolean "is_available", default: true
-    t.boolean "share_externally", default: true
     t.decimal "service_center_cost", precision: 12, scale: 4
     t.string "cpt_code"
     t.string "charge_code"
@@ -911,7 +889,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
   create_table "sub_service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "organization_id"
-    t.string "organization_shard", default: "musc"
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
@@ -931,6 +908,8 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
+    t.boolean "synch_to_fulfillment"
+    t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
     t.index ["service_request_id"], name: "index_sub_service_requests_on_service_request_id"
@@ -983,6 +962,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.boolean "access_empty_protocols", default: false
     t.boolean "billing_manager"
     t.boolean "allow_credit"
+    t.boolean "hold_emails", default: true
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end

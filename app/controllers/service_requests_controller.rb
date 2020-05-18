@@ -114,6 +114,8 @@ class ServiceRequestsController < ApplicationController
         @protocol = @service_request.protocol
         @service_request.previous_submitted_at = @service_request.submitted_at
 
+        perform_fulfillment_synch_check(@service_request)
+
         if @service_request.should_push_to_epic?
           # Send a notification to Lane et al to create users in Epic.  Once
           # that has been done, one of them will click a link which calls
@@ -304,6 +306,23 @@ class ServiceRequestsController < ApplicationController
       @core         = @organization             if @organization.is_a?(Core)
 
       redirect_to catalog_service_request_path(srid: @service_request.id) unless @organization.is_available?
+    end
+  end
+
+  # If a service request's ssr is in work fulfillment and a line item has been 
+  # added (exists in sparc but not in fulfillment) then that ssr should be synched
+  # to fulfillment
+  def perform_fulfillment_synch_check(service_request)
+    service_request.line_items.each do |line_item|
+      ssr = line_item.sub_service_request
+
+      if ssr.in_work_fulfillment
+        cwf_ssr_service_ids = Shard::Fulfillment::Protocol.where(sub_service_request_id: ssr.id).first.line_items.map{|x| x.service_id}
+        if !cwf_ssr_service_ids.include?(line_item.service_id) 
+          ssr.synch_to_fulfillment = true
+          ssr.save(validate: false)
+        end
+      end
     end
   end
 end

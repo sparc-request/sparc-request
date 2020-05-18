@@ -316,7 +316,7 @@ class ServiceRequestsController < ApplicationController
     service_request.line_items.each do |line_item|
       ssr = line_item.sub_service_request
 
-      if ssr.in_work_fulfillment
+      if (ssr.in_work_fulfillment && line_item.service.one_time_fee)
         cwf_ssr_service_ids = Shard::Fulfillment::Protocol.where(sub_service_request_id: ssr.id).first.line_items.map{|x| x.service_id}
         if !cwf_ssr_service_ids.include?(line_item.service_id) 
           ssr.synch_to_fulfillment = true

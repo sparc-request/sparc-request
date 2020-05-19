@@ -94,6 +94,20 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     end
   end
 
+  def synch_to_fulfillment
+    sub_service_request = SubServiceRequest.find(params[:id])
+    sub_service_request.fulfillment_synchronizations.each do |synch|
+      if synch.action == 'create'
+        line_item = LineItem.find(synch.line_item_id)
+        cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: sub_service_request.id).first
+        cwf_protocol.line_items.create(sparc_id: line_item.id, arm_id: nil, service_id: line_item.service_id, quantity_requested: line_item.quantity)
+        synch.update_attributes(synched: true)
+      end
+    end
+    sub_service_request.synch_to_fulfillment = false
+    sub_service_request.save(validate: false)
+  end
+
   def resend_surveys
     if @sub_service_request.surveys_completed?
       flash[:alert] = 'All surveys have already been completed.'

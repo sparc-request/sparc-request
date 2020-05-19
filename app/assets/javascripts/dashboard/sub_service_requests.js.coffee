@@ -65,6 +65,15 @@ $ ->
       success: ->
         refreshFulfillmentButton()
 
+  $(document).on 'click', '#synchToFulfillment:not(.disabled)', ->
+    $(this).prop('disabled', true)
+    $.ajax
+      type: 'PUT'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}/synch_to_fulfillment"
+      # success: ->
+      #   refreshFulfillmentButton()
+
   $(document).on 'click', '#pushToEpic:not(.disabled)', ->
     $(this).prop('disabled', true)
     $.ajax

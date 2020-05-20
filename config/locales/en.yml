@@ -643,6 +643,8 @@ en:
       toggle: "Toggle Navigation"
       sign_in_up: "Sign In / Sign Up"
       sign_out: "Sign Out"
+      sign_in: "SIGN IN"
+      sign_up: "SIGN UP"
       news:
         header: "Recent News"
         none: "There is no recent news. Please check back later."

@@ -28,7 +28,12 @@ $("[name='line_item[<%= attr.to_s %>]']").parents('.form-group').removeClass('is
 <% end %>
 <% end %>
 <% else %>
+<% @sub_service_request.reload %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
+# Re-render Admin Edit SSR header
+$("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+
 <% end %>

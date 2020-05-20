@@ -315,9 +315,10 @@ class ServiceRequestsController < ApplicationController
   def perform_fulfillment_synch_check(service_request)
     service_request.line_items.each do |line_item|
       ssr = line_item.sub_service_request
+      cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: ssr.id).first
 
-      if (ssr.imported_to_fulfillment? && line_item.service.one_time_fee)
-        cwf_ssr_service_ids = Shard::Fulfillment::Protocol.where(sub_service_request_id: ssr.id).first.line_items.map{|x| x.service_id}
+      if (ssr.imported_to_fulfillment? && cwf_protocol && line_item.service.one_time_fee)
+        cwf_ssr_service_ids = cwf_protocol.line_items.map{|x| x.service_id}
         if !cwf_ssr_service_ids.include?(line_item.service_id) 
           ssr.synch_to_fulfillment = true
           FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: line_item.id, action: 'create')

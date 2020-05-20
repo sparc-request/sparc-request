@@ -67,7 +67,9 @@ class EpicInterface
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
+        log: true,
         logger: @logger,
+        log_level: :debug,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,

@@ -615,9 +615,9 @@ en:
   # IRB RECORDS #
   ###############
   irb_records:
+    primary_pro_header: "Primary IRB #%{pro}"
     pro_header: "IRB #%{pro}"
     irb_header: " (%{irb})"
-    primary_irb: "Primary IRB"
     add: "Add a New IRB"
     edit: "Edit IRB"
     delete: "Delete IRB"

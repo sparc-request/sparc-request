@@ -642,7 +642,7 @@ en:
       institution_logo_alt: "Institution Logo"
     navigation:
       toggle: "Toggle Navigation"
-      sign_in_up: "Sign In / Sign Up"
+      sign_in_up: "Sign In"
       sign_out: "Sign Out"
       sign_in: "SIGN IN"
       sign_up: "SIGN UP"

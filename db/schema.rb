@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_141815) do
+ActiveRecord::Schema.define(version: 2020_05_18_200713) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -72,12 +72,12 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "auditable_id"
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.bigint "auditable_id"
     t.string "auditable_type"
-    t.integer "associated_id"
+    t.bigint "associated_id"
     t.string "associated_type"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -227,6 +227,14 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sub_service_request_id"
+    t.integer "line_item_id"
+    t.string "action"
+    t.boolean "synched", default: false
+    t.index ["sub_service_request_id"], name: "index_fulfillment_synchronizations_on_sub_service_request_id"
+  end
+
   create_table "fulfillments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.string "timeframe"
@@ -352,6 +360,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "units_per_quantity", default: 1
+    t.index ["service_id"], name: "index_line_items_on_service_id"
     t.index ["service_request_id"], name: "index_line_items_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id"
   end
@@ -428,8 +437,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
-    t.string "primary_ontology_tag"
-    t.string "secondary_ontology_tag"
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
@@ -788,7 +795,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.integer "order"
     t.text "description"
     t.boolean "is_available", default: true
-    t.boolean "share_externally", default: true
     t.decimal "service_center_cost", precision: 12, scale: 4
     t.string "cpt_code"
     t.string "charge_code"
@@ -891,7 +897,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
   create_table "sub_service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "organization_id"
-    t.string "organization_shard", default: "musc"
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
@@ -911,6 +916,8 @@ ActiveRecord::Schema.define(version: 2020_04_24_141815) do
     t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
+    t.boolean "synch_to_fulfillment"
+    t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
     t.index ["service_request_id"], name: "index_sub_service_requests_on_service_request_id"

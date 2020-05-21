@@ -145,7 +145,7 @@ class OncoreEndpointController < ApplicationController
   def retrieve_protocol_def
     begin
       # find the protocol
-      protocol = find_protocol_by_rmid
+      protocol = find_valid_protocol_by_rmid
 
       # Don't try to build calendar information if it doesn't exist (RPE messages don't have calendar info)
       if !is_rpe_message?
@@ -173,12 +173,16 @@ class OncoreEndpointController < ApplicationController
 
   private
 
-  def find_protocol_by_rmid
+  def find_valid_protocol_by_rmid
     rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
     if !rmid.nil? && protocol = Protocol.find_by(research_master_id: rmid)
-      return protocol
+      if protocol.has_clinical_services?
+        raise "Error: SPARC Protocol #{rmid} has an existing calendar and cannot be overwritten."
+      else
+        return protocol
+      end
     else
-      raise "Protocol with RMID #{rmid} not found in SPARC."
+      raise "Error: No existing SPARC Protocol with identifier #{rmid}."
     end
   end
 

@@ -45,7 +45,7 @@ if window.location.pathname.startsWith('/dashboard')
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 
 <% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>
-<% if @response.respondable.previously_submitted? %>
+<% if @response.respondable.has_ssrs_for_resubmission? %>
 $.ajax
   method: 'GET'
   dataType: 'script'

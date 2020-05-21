@@ -27,6 +27,7 @@ module Shard
       belongs_to :arm
 
       has_many :visits, -> { joins(:visit_group).order('visit_groups.position') }
+      has_many :fulfillments
 
       ##########################
       ### SPARC Associations ###
@@ -36,7 +37,7 @@ module Shard
       belongs_to :sparc_service, class_name: '::Service', foreign_key: :service_id
 
       def one_time_fee?
-        self.sparc_line_item.one_time_fee?
+        self.sparc_line_item.service.one_time_fee?
       end
 
       def fulfilled?

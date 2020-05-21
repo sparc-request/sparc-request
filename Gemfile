@@ -14,7 +14,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.13'
+gem 'capistrano', '~> 3.14'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -68,7 +68,7 @@ gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.3'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4.2'
+gem 'rails', '5.2.4.3'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -145,5 +145,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof' # Check usage
+  gem 'ruby-prof', '~> 1.4.1' # Check usage
 end

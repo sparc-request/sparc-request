@@ -28,6 +28,17 @@ module Surveyor::ResponsesHelper
     end
   end
 
+  def protocol_link(response)
+    display_id = response.try(:respondable).try(:display_id)
+    protocol_id = response.try(:respondable).try(:protocol_id)
+
+    if protocol_id
+      link_to((display_id || protocol_id), dashboard_protocol_path(protocol_id), target: :_blank)
+    else
+      'N/A'
+    end
+  end
+
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
     view_permissions =

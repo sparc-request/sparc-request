@@ -37,5 +37,6 @@ $('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
   attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
 <% end %>
 
-$("#modalContainer").modal('hide')
+if $('#modalContainer').hasClass('show')
+  $("#modalContainer").modal('hide')
 <% end %>

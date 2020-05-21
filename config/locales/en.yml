@@ -41,6 +41,7 @@ en:
       complete: "Text successfully copied to your clipboard"
     create: "Create"
     delete: "Delete"
+    delete_disabled: "Has Fulfillments, Delete Disabled"
     delete_selected: "Delete Selected"
     disable: "Disable"
     edit: "Edit"
@@ -617,9 +618,9 @@ en:
   # IRB RECORDS #
   ###############
   irb_records:
+    primary_pro_header: "Primary IRB #%{pro}"
     pro_header: "IRB #%{pro}"
     irb_header: " (%{irb})"
-    primary_irb: "Primary IRB"
     add: "Add a New IRB"
     edit: "Edit IRB"
     delete: "Delete IRB"
@@ -643,6 +644,8 @@ en:
       toggle: "Toggle Navigation"
       sign_in_up: "Sign In / Sign Up"
       sign_out: "Sign Out"
+      sign_in: "SIGN IN"
+      sign_up: "SIGN UP"
       news:
         header: "Recent News"
         none: "There is no recent news. Please check back later."

@@ -38,6 +38,9 @@ class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
       s.update_attribute(:value, statuses)
     end
 
+    AvailableStatus.joins(:organization).where(status: 'get_a_cost_estimate', organizations: { use_default_statuses: true }).update_all(selected: false)
+    EditableStatus.joins(:organization).where(status: 'get_a_cost_estimate', organizations: { use_default_statuses: true }).update_all(selected: false)
+
     ServiceRequest.eager_load(:sub_service_requests).where(status: 'get_a_cost_estimate').each do |sr|
       if sr.previously_submitted?
         sr.update_attribute(:status, 'submitted')

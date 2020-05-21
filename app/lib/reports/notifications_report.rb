@@ -40,7 +40,7 @@ class NottificationsReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["SRID"]                 = "notification.sub_service_request.try(&:ssr_id)"
+    attrs["SRID"]                 = "notification.sub_service_request.try(&:display_id)"
     attrs["Request Organization"] = "notification.sub_service_request.try(&:organization).try(&:name)"
     attrs["From"]                 = "sender.full_name"
     attrs["To"]                   = "recipient.full_name"

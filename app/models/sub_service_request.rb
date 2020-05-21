@@ -45,6 +45,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
   has_and_belongs_to_many :documents
+  has_many :fulfillment_synchronizations, dependent: :destroy
 
   has_many :line_items_visits, through: :line_items
   has_many :services, through: :line_items
@@ -410,7 +411,7 @@ class SubServiceRequest < ApplicationRecord
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-    primary_pi = protocol.primary_principal_investigator
+    primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver

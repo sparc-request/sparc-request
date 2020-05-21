@@ -35,6 +35,11 @@
             = f.text_field :subject, {class: 'form-control', placeholder: Message.human_attribute_name(:subject), rows: "6"}
           .form-group
             = message_form.text_area :body, {class: 'form-control', placeholder: t(:dashboard)[:notifications][:form][:message], rows: "6"}
+        .form-group.row
+          .col-6
+            = f.label :shared, class: 'col-form-label', title: t('dashboard.notifications.tooltips.shared'), data: { toggle: 'tooltip' }
+          .col-4.offset-2
+            = f.check_box :shared, checked: true, data: { toggle: 'toggle', style: 'btn-block', onstyle: 'success', offstyle: 'danger', on: t('constants.yes_select'), off: t('constants.no_select') }
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

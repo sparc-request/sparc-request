@@ -30,7 +30,7 @@ RSpec.describe Dashboard::NotificationsController do
     context 'inbox' do
       before :each do
         allow(Notification).to receive(:in_inbox_of).
-          with(@logged_in_user.id, anything).
+          with(@logged_in_user, anything).
           and_return(Notification.none)
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Dashboard::NotificationsController do
     context 'sent' do
       before :each do
         allow(Notification).to receive(:in_sent_of).
-          with(@logged_in_user.id, anything).
+          with(@logged_in_user, anything).
           and_return(Notification.none)
       end
 

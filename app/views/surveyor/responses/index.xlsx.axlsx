@@ -77,7 +77,7 @@ bold              = wb.styles.add_style alignment: { horizontal: :left, vertical
 header_style      = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, vertical: :center, wrap_text: true}
 sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left, vertical: :center, wrap_text: true }
 
-@responses.includes(:question_responses).order("surveys.title, surveys.version").group_by(&:survey).each do |survey, responses|
+@responses.sort_by{|response| [response.survey.title, response.survey.version]}.group_by(&:survey).each do |survey, responses|
   version = "v#{survey.version}"
   wb.add_worksheet(name: "#{survey.full_title.truncate(30 - version.length).gsub(/[\[\]\:\/\\\?\*]/, "-")} #{version}") do |sheet|
     sheet.add_row survey_header(survey), style: header_style

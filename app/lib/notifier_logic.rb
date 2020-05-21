@@ -26,6 +26,7 @@ class NotifierLogic
   def initialize(service_request, current_user, ssrids=[])
     @service_request = service_request
     @current_user = current_user
+    @ssrids = ssrids
     @destroyed_ssrs_needing_notification = destroyed_ssr_that_needs_a_request_amendment_email
     @created_ssrs_needing_notification = @service_request.created_ssrs_since_previous_submission(ssrids)
     @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status(ssrids)
@@ -46,7 +47,7 @@ class NotifierLogic
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @to_notify = @service_request.update_status('submitted', @current_user)
+    @to_notify = @service_request.update_status('submitted', @current_user, @ssrids)
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email

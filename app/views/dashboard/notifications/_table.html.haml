@@ -20,23 +20,23 @@
 
 %div{ id: "notifications#{table}CustomToolbar" }
   - if table == 'inbox'
-    %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}
-      -# mark as unread
-      = t(:dashboard)[:notifications][:table][:mark_as_unread]
-    %button.btn.btn-outline-secondary.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}
-      -# mark as read
+    %button.btn.btn-success.mark-read-unread.d-none{data: {sub_service_request_id: sub_service_request.try(:id), read: "true"}}<
+      = icon('fas', 'check mr-1')
       = t(:dashboard)[:notifications][:table][:mark_as_read]
-%table.notifications-table.table-condensed{id: "notifications#{table}Table", data: {toggle: 'table', search: "true", show_refresh: 'true', show_columns: 'true', url: dashboard_notifications_path(format: :json, ssrid: sub_service_request.try(:id), table: table.nil? ? "inbox" : table), toolbar: "#notifications#{table}CustomToolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
-  %thead.bg-light
+    %button.btn.btn-danger.mark-read-unread.d-none{data: {sub_service_request_id: sub_service_request.try(:id), read: "false"}}<
+      = icon('fas', 'times mr-1')
+      = t(:dashboard)[:notifications][:table][:mark_as_unread]
+%table.notifications-table.table-condensed.bg-white.table-interactive{id: "notifications#{table}Table", data: {toggle: 'table', search: "true", show_refresh: 'true', show_columns: 'true', url: dashboard_notifications_path(format: :json, ssrid: sub_service_request.try(:id), table: table.nil? ? "inbox" : table), toolbar: "#notifications#{table}CustomToolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
+  %thead
     %tr
       - if table == 'inbox'
-        %th{data: {class: 'state', field: "state", checkbox: "true"}}
-      %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
-        - if table == 'inbox'
+        %th{ data: { class: 'state', field: "state", checkbox: "true"} }
+      %th{ data: { class: 'user w-25', align: "left", sortable: "true", field: "user"} }
+        - if ['inbox', 'shared'].include?(table)
           = t(:dashboard)[:notifications][:table][:from]
         -else
           = t(:dashboard)[:notifications][:table][:to]
-      %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
+      %th{ data: { class: 'subject w-60', align: "left", sortable: "false", field: "subject" } }
         = t(:dashboard)[:notifications][:table][:subject]
-      %th{data: {class: 'time', sortable: "true", field: "time", sorter: "dateSorter"}}
+      %th{ data: { class: 'time w-15', sortable: "true", field: "time", sorter: "dateSorter" } }
         = t(:dashboard)[:notifications][:table][:time]

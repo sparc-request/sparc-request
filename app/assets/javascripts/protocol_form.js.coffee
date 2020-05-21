@@ -230,10 +230,10 @@ resetRmidFields = () ->
   $('#protocol_research_master_id').parents('.form-group').removeClass('is-valid is-invalid')
   $('#protocol_short_title').val('').prop('readonly', false)
   $('#protocol_title').val('').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').prop('readonly', false).datetimepicker('clear')
-  $('#protocol_human_subjects_info_attributes_irb_approval_date').prop('readonly', false).datetimepicker('clear')
-  $('#protocol_human_subjects_info_attributes_irb_expiration_date').prop('readonly', false).datetimepicker('clear')
+  if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+    $('#protocol_research_types_info_attributes_human_subjects').click()
+    $('#protocol_research_master_id').click()
+  $('#irbRecords .irb-record').remove()
 
 fundingSource             = ""
 potentialFundingSource    = ""
@@ -286,6 +286,7 @@ toggleFundingSource = (val) ->
       $('#fundingRfaContainer').addClass('d-none')
       $('#fundingStartDateContainer').addClass('d-none')
       $('#potentialFundingStartDateContainer').addClass('d-none')
+      $('#federalGrantInformation').addClass('d-none')
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
 
 

@@ -163,7 +163,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       if @protocol.update_attributes(protocol_params)
         if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
-          EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id)
+          if EpicQueue.where(protocol_id: @protocol.id).size == 0
+            EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
+          end
         end
         
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)

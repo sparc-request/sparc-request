@@ -930,6 +930,7 @@ ActiveRecord::Schema.define(version: 2020_04_14_145614) do
     t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
+    t.boolean "synch_to_fulfillment"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
     t.index ["service_request_id"], name: "index_sub_service_requests_on_service_request_id"

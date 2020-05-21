@@ -31,9 +31,9 @@
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_approval_date]", irb_record.irb_approval_date
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_expiration_date]", irb_record.irb_expiration_date
   .d-flex.justify-content-between
-    %h4.mb-0.collapsed{ title: primary ? t('irb_records.primary_irb') : '', data: { toggle: 'tooltip' } }
+    %h4.mb-0.collapsed
       = icon('fas', 'caret-down mr-2')
-      = t('irb_records.pro_header', pro: irb_record.pro_number)
+      = t("irb_records.#{primary ? 'primary_' : ''}pro_header", pro: irb_record.pro_number)
       - if irb_record.irb_of_record.present?
         = t('irb_records.irb_header', irb: irb_record.irb_of_record)
     .d-flex.align-items-center

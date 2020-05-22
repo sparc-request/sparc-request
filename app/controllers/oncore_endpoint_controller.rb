@@ -161,7 +161,7 @@ class OncoreEndpointController < ApplicationController
       # Print params and exception to testing log
       print_params_to_log(e)
       # Render a SOAP fault response for exceptions instead of the default HTML response from Rails
-      render_soap_error(e.message)
+      render_soap_error(e.message, 'soap:Server')
     else
       # Print params to testing log
       print_params_to_log

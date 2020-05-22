@@ -31,10 +31,6 @@ every 1.day, :at => '5:00 pm' do
   rake 'send_to_epic'
 end
 
-every 1.day at: '12:00am' do
-  rake "fetch_google_calendar"
-end
-
 every 1.hour do
   rake 'delayed_job_monitor'
 end

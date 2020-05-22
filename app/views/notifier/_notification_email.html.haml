@@ -47,12 +47,12 @@
     /***** OTHER EMAIL TIDBITS *****
     - if @notes.any?
       = render 'notes', notes: @notes, protocol: @protocol
-    
+
     - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
-    
+
     = render 'issue_contact'
-    
+
     - if @role != 'none'
       = render "acknowledgments"
     /***** END OTHER EMAIL TIDBITS *****

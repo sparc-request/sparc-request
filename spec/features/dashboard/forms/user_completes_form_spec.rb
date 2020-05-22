@@ -29,7 +29,7 @@ RSpec.describe 'User completes a form', js: true do
     @service  = create(:service, name: "My Service", abbreviation: "My Service", organization: org)
     @protocol = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: @protocol)
-    ssr       = create(:sub_service_request_without_validations, service_request: @sr, organization: org)
+    ssr       = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: org)
                 create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
     @form     = create(:form, :with_question, surveyable: @service, active: true)
 

@@ -29,7 +29,7 @@ RSpec.describe "User clicks a saved filter", js: :true do
     protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
     protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
 
-    filter = create(:protocol_filter, identity: jug2, show_archived: true)
+    filter = create(:protocol_filter, identity: jug2, show_archived: true, search_query: {"search_drop"=>"", "search_text"=>""})
 
     visit dashboard_protocols_path
     wait_for_javascript_to_finish

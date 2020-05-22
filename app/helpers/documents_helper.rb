@@ -40,12 +40,14 @@ module DocumentsHelper
   def display_document_providers(document)
     organizations = document.organizations.uniq
 
-    if organizations.length > 3
-      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', boundary: 'window', html: 'true', content: organizations.map(&:name).join('<br>') } do
-        t('documents.providers', provider_count: organizations.length)
+    content_tag :div, class: 'd-inline-flex flex-column' do
+      if organizations.length > 3
+        link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', boundary: 'window', html: 'true', content: content_tag(:div, organizations.map{ |org| breadcrumb_text(org) }.join('').html_safe, class: 'd-flex flex-column') } do
+          t('documents.providers', provider_count: organizations.length)
+        end
+      else
+        organizations.map{ |org| breadcrumb_text(org) }.join().html_safe
       end
-    else
-      organizations.map(&:name).join('<br>')
     end
   end
 
@@ -76,11 +78,5 @@ module DocumentsHelper
 
   def document_file_types_as_string
     Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
-  end
-
-  def document_org_access_collection(document)
-    default_select = action_name == 'new' ? document.protocol.organizations.ids : document.sub_service_requests.pluck(:organization_id)
-
-    options_from_collection_for_select(document.protocol.organizations.distinct.order(:name), :id, :name, default_select)
   end
 end

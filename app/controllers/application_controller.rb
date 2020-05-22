@@ -27,13 +27,25 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  around_action :select_shard
+
   before_action :preload_database_values
   before_action :set_highlighted_link
-  before_action :get_news_feed,               if: Proc.new{ request.format.html? }
-  before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
   before_action :configure_permitted_params,  if: :devise_controller?
 
   protected
+
+  def select_shard(&block)
+    Octopus.load_shards!
+
+    if identity_signed_in?
+      Octopus.using(current_user.shard_identifier, &block)
+    elsif devise_controller? && resource_params && resource_params['ldap_uid'] && Octopus.shards.keys.include?(Identity.shard_identifier(resource_params['ldap_uid']))
+      Octopus.using(Identity.shard_identifier(resource_params['ldap_uid']), &block)
+    else
+      yield
+    end
+  end
 
   ##############################
   ### Devise-Related Methods ###
@@ -49,13 +61,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    initialize_service_request
-    stored_location_for(resource) || root_path(srid: @service_request.try(:id))
+    stored_location_for(resource) || root_path
   end
 
   def after_sign_out_path_for(resource)
-    initialize_service_request
-    root_path(srid: @service_request.try(:id))
+    root_path
   end
 
   def configure_permitted_params
@@ -68,81 +78,14 @@ class ApplicationController < ActionController::Base
 
   def preload_database_values
     Setting.preload_values
-    PermissibleValue.preload_values
+
+    if identity_signed_in?
+      PermissibleValue.preload_values
+    end
   end
 
   def set_highlighted_link  # default value, override inside controllers
     @highlighted_link ||= ''
-  end
-
-  def get_news_feed
-    if Setting.get_value("use_news_feed")
-      @news =
-        if Setting.get_value("use_news_feed_api")
-          NewsFeed.const_get("#{Setting.get_value("news_feed_api")}Adapter").new.posts
-        else
-          @news = NewsFeed::PageParser.new.posts
-        end
-    end
-  end
-
-  def get_calendar_events
-    if Setting.get_value("use_google_calendar")
-      curTime   = Time.now.utc
-      startMin  = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
-      begin
-        path = Rails.root.join("tmp", "basic.ics")
-        if path.exist?
-          cal_file  = File.open(path)
-          cals      = Icalendar::Calendar.parse(cal_file)
-          cal       = cals.first
-
-          # Use index like an ID to view more information
-          index = 0
-          cal.events.each do |event|
-            if event.occurrences_between(startMin, startMax).present?
-              event.occurrences_between(startMin, startMax).each do |occurrence|
-                @events << create_calendar_event(event, occurrence, index)
-                index += 1
-              end
-            end
-          end
-
-          if @events.present?
-            @events.sort!{ |x, y| y[:sort_by_start].to_i <=> x[:sort_by_start].to_i }
-            @events.reverse!
-          end
-
-          Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-        end
-      rescue Exception, ArgumentError => e
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-  end
-
-  def create_calendar_event(event, occurrence, index)
-    all_day     = !occurrence.start_time.to_s.include?("UTC")
-    start_time  = DateTime.parse(occurrence.start_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    end_time    = DateTime.parse(occurrence.end_time.to_s).in_time_zone("Eastern Time (US & Canada)")
-    {
-      index:          index,
-      title:          event.summary,
-      description:    simple_format(event.description).gsub(URI::regexp(%w(http https)), '<a href="\0" target="blank">\0</a>'),
-      date:           start_time.strftime("%A, %B %d"),
-      time:           all_day ? t('layout.navigation.events.all_day') : [start_time.strftime("%l:%M %p"), end_time.strftime("%l:%M %p")].join(' - '),
-      where:          event.location,
-      month:          start_time.strftime("%b"),
-      day:            start_time.day,
-      sort_by_start:  start_time.strftime("%Y%m%d")
-    }
   end
 
   #####################
@@ -159,22 +102,20 @@ class ApplicationController < ActionController::Base
   def initialize_service_request
     if params[:srid].present?
       @service_request = ServiceRequest.find(params[:srid])
-    else
+    elsif identity_signed_in?
       @service_request = ServiceRequest.new(status: 'first_draft')
     end
   end
 
   def authorize_identity
-    # If the request is in first_draft status
-
-    if @service_request.status == 'first_draft' && (action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && (request.format.js? || request.format.json?)))
+    if (@service_request.nil? || @service_request.new_record?) && action_name == 'catalog' || (helpers.request_referrer_action == 'catalog' && !request.format.html?)
+      # The user is viewing the catalog without starting a request
       return true
-    elsif current_user && current_user.can_edit_service_request?(@service_request)
+    elsif identity_signed_in? && (@service_request.new_record? || current_user.can_edit_service_request?(@service_request))
       return true
     elsif !identity_signed_in?
       store_location_for(:identity, request.get? && request.format.html? ? request.url : request.referrer)
       authenticate_identity!
-      return true
     end
 
     authorization_error("The service request you are trying to access is not editable.", "SR#{params[:id]}")
@@ -262,6 +203,15 @@ class ApplicationController < ActionController::Base
   end
 
   def find_locked_org_ids
-    @locked_org_ids = @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
+    @locked_org_ids =
+      if identity_signed_in?
+        @service_request.sub_service_requests.
+          eager_load(organization: { org_children: :org_children }).
+          select(&:is_locked?).reject(&:is_complete?).
+          group_by(&:organization_shard).
+          map{ |shard, ssrs| [shard, ssrs.map(&:organization_id)] }.to_h
+      else
+        {}
+      end
   end
 end

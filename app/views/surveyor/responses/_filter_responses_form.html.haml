@@ -28,11 +28,11 @@
         .form-group.row
           = form.label :of_type, t(:surveyor)[:response_filters][:fields][:type], class: 'col-4 control-label'
           .col-8
-            = form.select :of_type, filterrific.select_options[:of_type], {}, class: 'form-control selectpicker'
+            = form.select :of_type, filterrific.select_options[:of_type], {}, autocomplete: 'off', class: 'form-control selectpicker'
         .form-group.row
           = form.label :with_state, t(:surveyor)[:response_filters][:fields][:state], class: 'col-4 control-label'
           .col-8
-            = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, class: 'form-control selectpicker', multiple: true
+            = form.select :with_state, options_for_select(Response::STATE_FILTERS, filterrific.with_state), {}, autocomplete: 'off', class: 'form-control selectpicker', multiple: true
         .form-group.row{ id: "for-#{Form.name}", class: filterrific.of_type == Form.name ? "" : "d-none" }
           = form.label :with_survey, Form.name, class: 'col-4 control-label'
           .col-8

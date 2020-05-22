@@ -74,6 +74,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
       :identity_id,
       :organization_id,
       :access_empty_protocols,
-      :billing_manager)
+      :billing_manager,
+      :allow_credit)
   end
 end

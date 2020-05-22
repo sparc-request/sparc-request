@@ -19,6 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module ServiceRequestsHelper
+  def cart_sub_service_requests(service_request)
+    if identity_signed_in?
+      active    = service_request.sub_service_requests.select{ |ssr| !ssr.is_complete? }
+      complete  = service_request.sub_service_requests.select{ |ssr| ssr.is_complete? }
+    else
+      active = {}
+      complete = {}
+    end
+
+    { active: active, complete: complete }
+  end
+
   def organization_name_display(organization, locked, has_children)
     raw(if locked
       icon('fas', 'lock mr-3')
@@ -27,18 +39,6 @@ module ServiceRequestsHelper
     else
       ""
     end + content_tag(:span, organization.name, class: 'flex-fill text-left'))
-  end
-
-  def ssr_name_display(sub_service_request)
-    header = content_tag(:strong, "(#{sub_service_request.ssr_id})", class: 'mr-2')
-
-    if sub_service_request.is_complete?
-      header += icon('fas', 'check fa-lg mr-2')
-    elsif sub_service_request.is_locked?
-      header += icon('fas', 'lock fa-lg mr-2')
-    end
-
-    content_tag :span, (header + sub_service_request.organization.name)
   end
 
   def service_name_display(line_item)

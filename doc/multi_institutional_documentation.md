@@ -304,7 +304,7 @@ Permissible Values are options and labels used across SPARCRequest, most of whic
 The data that generates Permissible Values is stored in various CSV files located in `db/seeds/permissible_values/2.0.5` (see below for descriptions of the various types of Permissible Values). To customize these values for your institution, simply edit these files, then run the following rake task in your terminal:
 
 ```
-rake:import_permissible_values
+rake:data:import_permissible_values
 ```
 
 ##### Protocol Options

@@ -21,12 +21,9 @@
 require 'directory'
 
 class Identity < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
-
-  after_create :send_admin_mail
 
   #Version.primary_key = 'id'
   #has_paper_trail
@@ -75,14 +72,29 @@ class Identity < ApplicationRecord
   validates_format_of :email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: :email_changed?
   validates_format_of :phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: :phone_changed?
 
-  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates :ldap_uid, presence: true
+
+  # Validate uniqueness and ensure the ldap_uid matches <somthing>@<shard_name>.edu
+  validates :ldap_uid, uniqueness: { case_sensitive: false }, if: Proc.new{ |record| record.ldap_uid.present? }
+  validate :ldap_uid_valid, if: Proc.new{ |record| record.ldap_uid.present? }
+
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
 
   # validates_presence_of :reason, if: :new_record?
 
+  after_create :send_admin_mail
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
+
+  def self.shard_identifier(ldap_uid)
+    ldap_uid.split('@')[1].try(:gsub, '.edu', '')
+  end
+
+  def university
+    University.using('master').find_by_key(Identity.shard_identifier(self.ldap_uid))
+  end
 
   def suggestion_value
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
@@ -109,10 +121,14 @@ class Identity < ApplicationRecord
   # Return the netid (ldap_uid without the @musc.edu)
   def netid
     if Setting.get_value("use_ldap") then
-      return ldap_uid.sub(/@#{Directory.domain}/, '')
+      return ldap_uid.sub(/@#{Directory.ldap_domain}/, '')
     else
       return ldap_uid
     end
+  end
+
+  def shard_identifier
+    Identity.shard_identifier(self.ldap_uid)
   end
 
   #replace old organization methods with new professional organization lookups
@@ -212,14 +228,16 @@ class Identity < ApplicationRecord
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
+      using(shard_identifier(login)).where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
+    elsif conditions[:ldap_uid]
+      using(shard_identifier(conditions[:ldap_uid])).where(conditions).first
     else
       where(conditions).first
     end
   end
 
   def self.send_reset_password_instructions(attributes={})
-    recoverable = find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
+    recoverable = using(shard_identifier(attributes['ldap_uid'])).find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
     if !recoverable.approved?
       recoverable.errors[:base] << I18n.t("devise.failure.not_approved")
     elsif recoverable.persisted?
@@ -379,5 +397,13 @@ class Identity < ApplicationRecord
 
   def unread_notification_count(sub_service_request_id=nil)
     Notification.of_ssr(sub_service_request_id).unread_by(id).count
+  end
+
+  private
+
+  def ldap_uid_valid
+    unless self.ldap_uid.match(/\A([^\s\@]+@(#{Octopus.shards.keys.join('|')})\.edu)\Z/)
+      self.errors.add(:ldap_uid, :invalid)
+    end
   end
 end

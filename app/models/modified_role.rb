@@ -23,7 +23,9 @@
 
 class ModifiedRole
 
-  attr_accessor *ProjectRole.column_names
+  [:id, :protocol_id, :identity_id, :project_rights, :role, :created_at, :updated_at, :deleted_at, :role_other, :epic_access].each do |attribute|
+    attr_accessor attribute
+  end
 
   def initialize(project_role_attrs)
     project_role_attrs.each{ |attr, value| instance_variable_set("@#{attr}", value) }

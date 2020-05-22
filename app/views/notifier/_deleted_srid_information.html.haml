@@ -28,12 +28,18 @@
     %th.skinny-black-border= t(:notifier)[:requester]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
-      %tr.skinny-black-border
+      - external = action_name == 'notify_user' && ssr.external_request?
+      %tr.skinny-black-border{ class: external ? 'red-text' : '' }
         %td.skinny-black-border.center<
-          %strike= ssr.display_id
+          %strike<
+            = ssr.display_id
         %td.skinny-black-border.center<
-          %strike= ssr.org_tree_display
+          %strike
+            - if external
+              = t('notifier.external_requests.external_request')
+            = ssr.organization.organization_hierarchy(true, true, false, false)
         %td.skinny-black-border.center<
-          %strike= ssr.service_requester.try(&:full_name) || 'N/A'
+          %strike<
+            = ssr.service_requester.try(&:full_name) || 'N/A'
 %br
 %br

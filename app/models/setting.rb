@@ -25,27 +25,47 @@ class Setting < ApplicationRecord
 
   validates_uniqueness_of :key
 
-  validates :data_type, inclusion: { in: %w(boolean string json email url path) }, presence: true
+  validates :data_type, inclusion: { in: %w(boolean float string json email url path) }, presence: true
   validates :parent_key, inclusion: { in: Setting.all.pluck(:key) }, allow_blank: true
 
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
   def self.preload_values
+    Octopus.load_shards!
+
     # Cache settings for the current request thread for the current request
-    RequestStore.store[:settings_map] ||= Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+    RequestStore.store[:settings_map] ||= Octopus.shards.keys.append('master').map do |shard|
+      Octopus.using(shard) do
+        [
+          shard,
+          Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
+        ]
+      end
+    end.to_h
   end
 
   def self.get_value(key)
-    if RequestStore.store[:settings_map].try(:[], key)
-      converted_value(RequestStore.store[:settings_map][key][:value], RequestStore.store[:settings_map][key][:data_type])
+    key = key.to_s
+
+    unless RequestStore.store[:settings_map]
+      self.preload_values
+    end
+
+    if RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s].try(:[], key)
+      converted_value(RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:value], RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:data_type])
     else
-      Setting.find_by_key(key).value rescue nil
+      if s = Setting.find_by_key(key)
+        RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key] = { value: s.read_attribute(:value), data_type: s.data_type }
+        s.value
+      else
+        nil
+      end
     end
   end
 
   def value=(val)
-    RequestStore.store[:settings_map][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
+    RequestStore.store[:settings_map][ActiveRecord::Base.connection.current_shard.to_s][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
     
     # Needed to correctly write boolean true and false as value in specs
     if [TrueClass, FalseClass].include?(val.class)
@@ -76,6 +96,8 @@ class Setting < ApplicationRecord
     case data_type
     when 'boolean'
       val == 'true'
+    when 'float'
+      val.to_f
     when 'json'
       begin
         JSON.parse(val.gsub("=>", ": "))

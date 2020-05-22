@@ -36,46 +36,24 @@ $(document).ready ->
           url: '/service_request/save_and_exit'
           data: $('.milestone-field input').serialize() + "&srid=#{getSRId()}"
 
-  ###################
-  ### Add Service ###
-  ###################
-
-  $(document).on 'click', '.add-service', ->
-    $(this).prop('disabled', true)
-    $this = $(this)
-    service_id = $(this).data('service-id')
-
-    $.ajax
-      method: 'POST'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid: getSRId()
-        service_id: service_id
-      complete: ->
-        $this.prop('disabled', false)
-
   ###############
   ### Catalog ###
   ###############
 
-  $(document).on 'click', '#institutionAccordion .org-link', ->
-    id = $(this).data('id')
+  $(document).on 'change', '#institutionAccordion #include_external', ->
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: '/catalogs/update_catalog'
+      data:
+        srid:             getSRId()
+        include_external: $(this).prop('checked')
 
-    if $(this).hasClass('locked')
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/locked_organization"
-        data:
-          srid: getSRId()
-    else
-      $.ajax
-        type: 'get'
-        dataType: 'script'
-        url: "/catalogs/#{id}/update_description"
-        data:
-          srid: getSRId()
+  $(document).on 'click', '#institutionAccordion .org-link', ->
+    $.ajax
+      type: 'get'
+      dataType: 'script'
+      url: $(this).data('url')
 
   $(document).on('submit', '#serviceCatalogForm', (event) ->
     if $('#cart #activeServices .sub-service-request, #cart #completedServices .sub-service-request').length == 0
@@ -98,18 +76,33 @@ $(document).ready ->
       $('html, body').animate({ scrollTop: $('#stepsHeader').offset().top }, 'slow')
   )
 
+  $(document).on 'click', '.add-service', ->
+    $(this).prop('disabled', true)
+    $this = $(this)
+
+    $.ajax
+      method: 'POST'
+      dataType: 'script'
+      url: '/service_request/add_service'
+      data:
+        srid: getSRId()
+        service_id: $(this).data('service-id')
+        shard:      $(this).data('shard')
+      complete: ->
+        $this.prop('disabled', false)
+
+  initializeServiceCatalogSearch()
+
+(exports ? this).initializeServiceCatalogSearch = () ->
   servicesBloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.whitespace
     queryTokenizer: Bloodhound.tokenizers.whitespace
     remote:
-      url: "/search/services?term=%TERM&srid=#{getSRId()}",
+      url: "/search/services?term=%TERM&srid=#{getSRId()}&include_external=#{$('#include_external').prop('checked')}",
       wildcard: '%TERM'
   )
 
   servicesBloodhound.initialize()
-
-  $(document).on 'mouseleave', '#serviceQuery + .tt-menu .tt-suggestion', (e) ->
-    console.log e
 
   $('#serviceQuery').typeahead(
     {
@@ -117,6 +110,7 @@ $(document).ready ->
       hint: false,
     }, {
       displayKey: 'term',
+      hightlight: true,
       source: servicesBloodhound.ttAdapter(),
       limit: 100,
       templates: {
@@ -141,11 +135,13 @@ $(document).ready ->
   ).on('typeahead:render', ->
     initializePopovers()
   ).on('typeahead:select', (event, suggestion) ->
-    $.ajax
-      method: 'post'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        srid:       getSRId()
-        service_id: suggestion.service_id
+    if $('.profile').length # Only add services when logged in
+      $.ajax
+        method: 'post'
+        dataType: 'script'
+        url: '/service_request/add_service'
+        data:
+          srid:       getSRId()
+          service_id: suggestion.service_id
+          shard:      suggestion.shard
   )

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class HumanSubjectsInfo < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
@@ -27,6 +26,11 @@ class HumanSubjectsInfo < ApplicationRecord
   self.table_name = 'human_subjects_info'
 
   belongs_to :protocol
+
+  has_many :irb_records
+
   validates :nct_number, numericality: {allow_blank: true, only_integer: true, message: "must contain 8 numerical digits"}
   validates :nct_number, length: {allow_blank: true, is: 8, message: "must contain 8 numerical digits"}
+
+  accepts_nested_attributes_for :irb_records, allow_destroy: true
 end

@@ -42,6 +42,10 @@ module ServicesHelper
     if current_user.present?
       rates = service.displayed_pricing_map.true_rate_hash
 
+      if @shard != current_user.shard_identifier
+        rates.each { |type, rate| rates[type] = rate * Service.external_charge_rate }
+      end
+
       content_tag(:div, class: 'w-100 d-flex flex-wrap') do
         content_tag(:div, class: 'w-100') do
           content_tag(:span, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"
@@ -62,15 +66,17 @@ module ServicesHelper
     end
   end
 
-  def breadcrumb_text(item)
-    if item.parents.any?
-      breadcrumb = []
-      item.parents.reverse.each do |parent|
-        breadcrumb << content_tag(:span, "#{parent.abbreviation}", class: "text-#{parent.type.downcase}")
-        breadcrumb << " " + icon('fas', 'caret-right') + " "
+  def breadcrumb_text(item, opts={})
+    if (orgs = item.is_a?(Service) ? item.organization_hierarchy(false, true, false, true) : item.organization_hierarchy(true, true, false, true)).any?
+      content_tag :div, class: 'd-inline-flex flex-wrap align-items-center' do
+        breadcrumb = []
+        orgs.each do |parent|
+          breadcrumb << content_tag(:span, "#{parent.abbreviation}", class: opts[:context] == false ? "" : "text-#{parent.type.downcase}")
+          breadcrumb << icon('fas', 'caret-right mx-1')
+        end
+        breadcrumb.pop
+        breadcrumb.join.html_safe
       end
-      breadcrumb.pop
-      breadcrumb.join
     end
   end
 end

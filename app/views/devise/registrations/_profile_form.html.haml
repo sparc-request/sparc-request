@@ -22,7 +22,7 @@
 - last_name_disabled = Setting.get_value("noneditable_identity_fields").include?("last_name")
 - email_disabled = Setting.get_value("noneditable_identity_fields").include?("email")
 
-= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, method: :put do |f|
+= form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, method: :put, html: { autocomplete: 'off' } do |f|
   .form-row
     .form-group.col-12.col-xl-6
       = f.label :first_name, class: 'required'

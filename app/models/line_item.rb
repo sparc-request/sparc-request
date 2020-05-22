@@ -50,6 +50,7 @@ class LineItem < ApplicationRecord
   delegate :one_time_fee, to: :service
   delegate :name, to: :service
   delegate :status, to: :sub_service_request
+  delegate :external_request?, to: :sub_service_request
 
   validates :service_id, :service_request_id, presence: true
   validates :service_id, uniqueness: { scope: :sub_service_request_id }
@@ -70,6 +71,16 @@ class LineItem < ApplicationRecord
   scope :unassigned, -> {
     where(sub_service_request_id: nil)
   }
+
+  # Overwrite the default `belongs_to :service` association method
+  # to grab the service from the correct shard
+  def service
+    if self.sub_service_request.external_request?
+      @service ||= Service.using(self.sub_service_request.organization_shard).find(self.service_id)
+    else
+      super
+    end
+  end
 
   def friendly_notable_type
     Service.model_name.human
@@ -126,6 +137,12 @@ class LineItem < ApplicationRecord
     end
   end
 
+  def external_charge_rate
+    if self.sub_service_request.external_request?
+      Octopus.using(self.sub_service_request.organization_shard) { Service.external_charge_rate }
+    end
+  end
+
   def applicable_rate
     rate = nil
 
@@ -141,6 +158,7 @@ class LineItem < ApplicationRecord
       rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     end
 
+    rate *= self.external_charge_rate if self.sub_service_request.external_request?
     rate
   end
 
@@ -252,10 +270,6 @@ class LineItem < ApplicationRecord
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
     end
-  end
-
-  def should_push_to_epic?
-    return self.service.send_to_epic
   end
 
   ### audit reporting methods ###

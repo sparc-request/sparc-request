@@ -34,6 +34,8 @@
     - unless Rails.env.production?
       %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize
+    - unless content_for?(:flash)
+      = render 'layouts/flash'
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
     = yield(:sub_header) if content_for(:sub_header)
@@ -44,8 +46,6 @@
         = hidden_field_tag :srid, @service_request.id, disabled: true
       - if @sub_service_request
         = hidden_field_tag :ssrid, @sub_service_request.id, disabled: true
-      - unless content_for?(:flash)
-        = render 'layouts/flash'
       = content_for?(:content) ? yield(:content) : yield
     = render 'layouts/footer'
     = render 'layouts/back_to_top'

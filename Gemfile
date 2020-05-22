@@ -4,7 +4,8 @@ gem 'activerecord-import' # Use this more! In particular for arms/calendar creat
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
-gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+gem 'acts-as-taggable-on', '~> 6.0'
+gem 'ar-octopus', git: 'https://github.com/schovi/octopus.git'
 gem 'audited', '~> 4.9'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
@@ -14,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.11'
+gem 'capistrano', '~> 3.13'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -33,21 +34,22 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.2.5'
-gem 'grape-entity', '~> 0.7.1'
+gem 'grape', '1.3.2'
+gem 'grape-entity', '~> 0.8.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.17.1'
+gem 'httparty', '~> 0.18.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
-gem 'jbuilder', '~> 2.9'
+gem 'jbuilder', '~> 2.10'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
+gem 'lockbox'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
 gem 'mysql2', '0.5.2'
 gem 'nested_form' # Check usage
@@ -68,7 +70,7 @@ gem 'prawn', '2.2.2' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 4.3'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4'
+gem 'rails', '6.0.2'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -77,11 +79,12 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.2.0' # Check usage
+gem 'savon', '~> 2.12.0'
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
+gem 'wash_out'
 gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
@@ -103,37 +106,33 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'factory_bot_rails'
-  gem 'parallel_tests' # Check usage
-  gem 'pry'
-  gem 'rails-erd' # Check usage
-  gem 'rspec-rails', '~> 3.9'
-end
-
-group :development do
-  gem 'highline' # Check usage
-  gem 'spring-commands-rspec' # Check usage
-  gem 'spring'
-  gem 'sqlite3' # Check usage
-  gem 'traceroute' # Check usage
-end
-
-group :test do
   gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
-  # gem 'geckodriver-helper' # Replace with https://github.com/titusfortner/webdrivers
-  gem 'webdrivers', '~> 4.1'
+  gem 'factory_bot_rails'
+  gem 'parallel_tests' # Check usage
+  gem 'pdf-inspector', require: false
+  gem 'pry'
   gem 'rails-controller-testing', require: false # Consider removing and cleaning up controller specs
+  gem 'rails-erd' # Check usage
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  # gem 'selenium-webdriver'
+  gem 'rspec-rails', '~> 4.0'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
+  gem 'webdrivers', '~> 4.3'
   gem 'webmock'
-  gem 'pdf-inspector', require: false
+end
+
+group :development do
+  gem 'highline' # Check usage
+  gem 'listen'
+  gem 'spring-commands-rspec' # Check usage
+  gem 'spring'
+  gem 'sqlite3' # Check usage
+  gem 'traceroute' # Check usage
 end
 
 group :assets do

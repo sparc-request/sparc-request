@@ -21,6 +21,7 @@ module DataTypeValidator
   require 'json'
   require 'uri'
 
+  FLOAT_REGEXP  = /\A[-]?([1-9]\d*|0)(\.\d+)?\Z/
   PHONE_REGEXP  = /\A[0-9]{10}(#[0-9]+)?\Z/
   EMAIL_REGEXP  = /\A([^\s\@]+@[A-Za-z0-9.-]+)(,[ ]?[^\s\@]+@[A-Za-z0-9.-]+)*\Z/
   URL_REGEXP    = /\A((ftp|http|https):\/\/)?[\w\-]+(((\.[a-zA-Z0-9]+)+(:\d+)?)|(:\d+))(\/[\w\-]+)*((\.[a-zA-Z]+)|(\/))?(\?([\w\-]+=.+(&[\w\-]+=.+)*)+)?\Z/
@@ -28,6 +29,10 @@ module DataTypeValidator
 
   def is_boolean?(value)
     %w(true false).include?(value)
+  end
+
+  def is_float?(value)
+    value.match?(FLOAT_REGEXP)
   end
 
   def is_json?(value)
@@ -54,6 +59,8 @@ module DataTypeValidator
   def get_type(value)
     if is_boolean?(value)
       'boolean'
+    elsif is_float?(value)
+      'float'
     elsif is_json?(value)
       'json'
     elsif is_email?(value)

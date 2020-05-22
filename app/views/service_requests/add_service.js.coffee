@@ -33,7 +33,8 @@ ConfirmSwal.fire(
       url: '/service_request/add_service'
       data:
         service_id: "<%= params[:service_id] %>"
-        confirmed: "true"
+        shard:      "<%= params[:shard] %>"
+        confirmed:  "true"
   else if result.dismiss == 'cancel'
     window.location = "<%= dashboard_root_path %>"
 <% elsif @duplicate_service %>
@@ -46,6 +47,8 @@ $('.profile').replaceWith("<%= j render 'layouts/profile' %>")
 $('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
 $('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
 
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+
 url = new URL(window.location.href)
 if !url.searchParams.get('srid')
   url.searchParams.append('srid', "<%= @service_request.id %>")
@@ -53,6 +56,4 @@ if !url.searchParams.get('srid')
   $('input[name=srid]').val("<%= @service_request.id %>")
   $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
   $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
-
-  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 <% end %>

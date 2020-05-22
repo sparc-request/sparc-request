@@ -30,16 +30,20 @@
             .row
               .col-3<
                 = protocol.research_types_info.human_subjects? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                = label :research_types_info, :human_subjects, class: 'mb-0'
+                %label.mb-0
+                  = ResearchTypesInfo.human_attribute_name(:human_subjects)
               .col-3<
                 = protocol.research_types_info.vertebrate_animals? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                = label :research_types_info, :vertebrate_animals, class: 'mb-0'
+                %label.mb-0
+                  = ResearchTypesInfo.human_attribute_name(:vertebrate_animals)
               .col-3<
                 = protocol.research_types_info.investigational_products? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                = label :research_types_info, :investigational_products, class: 'mb-0'
+                %label.mb-0
+                  = ResearchTypesInfo.human_attribute_name(:investigational_products)
               .col-3<
                 = protocol.research_types_info.ip_patents? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                = label :research_types_info, :ip_patents, class: 'mb-0'
+                %label.mb-0
+                  = ResearchTypesInfo.human_attribute_name(:ip_patents)
         - if protocol.research_types_info.human_subjects?
           = render 'protocols/view_details/research_involving/human_subjects', protocol: protocol
         - if protocol.research_types_info.vertebrate_animals?

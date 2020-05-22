@@ -26,19 +26,21 @@
       = hidden_field_tag :tab, 'billing_strategy'
       = hidden_field_tag :page, params[:page]
       .modal-header
-        %h3.modal-title
+        %h3.modal-title<
           = t(:calendars)[:pppv][:header_fields][:edit_billing_modal]
+          %small.text-muted
+            = visit.service.display_service_name
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-row
-          .form-group.col-4
+          .form-group.col-4.mb-0
             = f.label :research_billing_qty, class: 'required'
             = f.text_field :research_billing_qty, class: 'form-control'
-          .form-group.col-4
+          .form-group.col-4.mb-0
             = f.label :insurance_billing_qty, class: 'required'
             = f.text_field :insurance_billing_qty, class: 'form-control'
-          .form-group.col-4
+          .form-group.col-4.mb-0
             = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
       .modal-footer

@@ -18,4 +18,32 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+require 'delayed/command'
+
+module Delayed
+  class Command
+    alias_method :run_process_without_octopus, :run_process
+    alias_method :run_without_octopus, :run
+
+    # Force Delayed::Command to fork separate processes for each Shard
+    def run_process(process_name, options = {})
+      Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
+      @worker_count = Octopus.shards.length
+
+      Octopus.shards.keys.each do |shard|
+        run_process_without_octopus("#{process_name}.#{shard}", options)
+      end
+    end
+
+    def run(process_name, options = {})
+      Octopus.load_shards!
+      shard = process_name.split('.')[1]
+
+      Octopus.using(shard) do
+        run_without_octopus(process_name, options)
+      end
+    end
+  end
+end
+
 Delayed::Worker.destroy_failed_jobs = false

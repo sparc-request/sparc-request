@@ -32,7 +32,7 @@ class Service < ApplicationRecord
   }
 
   belongs_to :organization, -> { includes(:pricing_setups) }
-  belongs_to :revenue_code_range
+  belongs_to :revenue_code_range, optional: true
 
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
@@ -83,6 +83,10 @@ class Service < ApplicationRecord
   # Services listed under the funding organizations
   scope :funding_opportunities, -> { where(organization_id: Setting.get_value("funding_org_ids")) }
 
+  def self.external_charge_rate
+    1 + Setting.get_value('external_service_charge_rate')
+  end
+
   def humanized_status
     self.is_available ? I18n.t(:reporting)[:service_pricing][:available] : I18n.t(:reporting)[:service_pricing][:unavailable]
   end
@@ -110,7 +114,7 @@ class Service < ApplicationRecord
     end
 
     if use_array
-      parent_orgs[0..root]
+      parent_orgs[0..root] + (include_self ? [self] : [])
     elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span>#{self.abbreviation}</span>" : '')
     else
@@ -333,7 +337,7 @@ class Service < ApplicationRecord
   end
 
   def direct_link
-    "#{Setting.get_value('root_url')}/services/#{id}"
+    "#{ENV.fetch('root_url')}/services/#{id}"
   end
 
   private
@@ -343,5 +347,4 @@ class Service < ApplicationRecord
       errors[:base] << "You must choose either One Time Fee, or Clinical Service."
     end
   end
-
 end

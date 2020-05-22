@@ -33,6 +33,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @default_filter_params  = { show_archived: 0 }
 
+    # if we are performing a search, check if user is looking for an old protocol
+    # that has been merged and return the most current master protocol
+    if params.has_key?(:filterrific) && params[:filterrific].has_key?(:search_query)
+      search_term = params[:filterrific][:search_query][:search_text].to_i
+      merge = search_protocol_merges(search_term)
+      if merge
+        params[:filterrific][:search_query][:search_text] = merge.master_protocol_id.to_s
+      end 
+    end
+
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).admin_organizations_with_protocols
@@ -68,7 +78,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       }
       format.json {
         @protocol_count = @filterrific.find.length
-        @protocols      = @filterrific.find.includes(:primary_pi, :principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
+        @protocols      = @filterrific.find.includes(:primary_pi, :principal_investigators, :sub_service_requests, :protocol_merges).sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset])
       }
       format.csv {
         @protocols = @filterrific.find.includes(:principal_investigators, :sub_service_requests).sorted(params[:sort], params[:order])
@@ -217,5 +227,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       with_organization: [],
       with_status: [],
       with_owner: [])
+  end
+
+  def search_protocol_merges(protocol_id)
+    merge = ProtocolMerge.where(merged_protocol_id: protocol_id).first
+
+    while merge do
+      check_merge = ProtocolMerge.where(merged_protocol_id: merge.master_protocol_id).first
+      if check_merge
+        merge = check_merge
+      else
+        return merge
+      end
+    end
   end
 end

@@ -26,13 +26,16 @@ class Organization < ApplicationRecord
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
+
   has_one :subsidy_map, :dependent => :destroy
+
   has_many :submission_emails, :dependent => :destroy
   has_many :associated_surveys, as: :associable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_many :forms, -> { active }, as: :surveyable, dependent: :destroy
   has_many :super_users, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
+  has_many :primary_contacts, -> { where(is_primary_contact: true) }, class_name: 'ServiceProvider'
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
   has_many :patient_registrars, :dependent => :destroy
@@ -164,12 +167,25 @@ class Organization < ApplicationRecord
     end
 
     if use_array
-      parent_orgs[0..root]
+      parent_orgs[0..root] + (include_self ? [self] : [])
     elsif use_css
       parent_orgs[0..root].map{ |o| "<span class='#{o.css_class}-text'>#{o.abbreviation}</span>"}.join('<span> / </span>') + (include_self ? '<span> / </span>' + "<span class='#{self.css_class}-text'>#{self.abbreviation}</span>" : '')
     else
       parent_orgs[0..root].map(&:abbreviation).join(' > ') + (include_self ? ' > ' + self.abbreviation : '')
     end
+  end
+
+  def program
+    return self.parent  if self.type == 'Core'
+    return self         if self.type == 'Program'
+  end
+
+  def provider
+    self.type == 'Provider' ? self : self.program.parent
+  end
+
+  def institution
+    self.type == 'Institution' ? self : self.provider.parent
   end
 
   def update_ssr_org_name
@@ -228,9 +244,31 @@ class Organization < ApplicationRecord
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services(include_self=true)
-    org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
-    Service.where(organization_id: org_ids)
+  def all_child_services(include_self=true, eager_loaded=false)
+     all_services = lambda do
+      if eager_loaded
+        # Assuming we have eager loading, use the loaded associations
+        # to return an array of services
+        if include_self
+          services = self.services
+        else
+          services = []
+        end
+
+        unless self.org_children.length == 0
+          self.org_children.each do |org|
+            services += org.all_child_services(true, true)
+          end
+        end
+        
+        return services
+      else
+        org_ids = include_self ? all_child_organizations_with_self.map(&:id) : all_child_organizations.map(&:id)
+        Service.where(organization_id: org_ids)
+      end
+    end
+
+    @child_services ||= all_services.call()
   end
 
   def has_one_time_fee_services?(opts={})
@@ -447,6 +485,9 @@ class Organization < ApplicationRecord
     end
   end
 
+  def direct_link
+    "#{ENV.fetch('root_url')}/organizations/#{id}"
+  end
 
   private
 

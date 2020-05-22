@@ -1,22 +1,33 @@
-# Copyright © 2011 MUSC Foundation for Research Development
-# All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, `list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
-# disclaimer in the documentation and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
 
 en:
   ###########
@@ -27,6 +38,7 @@ en:
     activate: "Activate"
     add: "Add"
     adding: "Adding..."
+    apply_all: "Apply to all"
     back: "Back"
     approve: "Approve"
     cancel: "Cancel"
@@ -45,6 +57,7 @@ en:
     edit: "Edit"
     export: "Export"
     filter: "Filter"
+    max: "Max"
     preview: "Preview"
     print: "Print"
     remove: "Remove"
@@ -74,7 +87,7 @@ en:
     attributes:
       arm:
         name: "Arm Name"
-        subject_count: "Subject Count"
+        subject_count: "Max Subject Count"
         visit_count: "Visit Count"
       document:
         doc_type: "Document Type"
@@ -91,14 +104,8 @@ en:
         time: "Quantity"
         timeframe: "Qty Type"
       human_subjects_info:
-        approval_pending: "Pending Approval?"
-        initial_irb_approval_date: "Initial IRB Approval Date"
-        irb_approval_date: "Current IRB Approval Date"
-        irb_expiration_date: "IRB Expiration Date"
-        irb_of_record: "IRB of Record"
         nct_number: "National Clinical Trials (NCT) #"
-        pro_number: "PRO #"
-        submission_type: "Submission Type"
+        irb_records: "IRB Records"
       identity:
         credentials: "Credentials"
         email: "Email"
@@ -124,6 +131,15 @@ en:
       ip_patents_info:
         patent_number: "Patent #"
         inventors: "Inventor(s)"
+      irb_record:
+        approval_pending: "Pending Approval?"
+        initial_irb_approval_date: "Initial IRB Approval Date"
+        irb_approval_date: "Current IRB Approval Date"
+        irb_expiration_date: "IRB Expiration Date"
+        irb_of_record: "IRB of Record"
+        pro_number: "PRO #"
+        study_phase_ids: "Study Phase(s)"
+        submission_type: "Submission Type"
       line_item:
         id: "Service"
         status: "Status"
@@ -193,11 +209,12 @@ en:
         short_title: "Short Title"
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
-        study_phase_ids: "Study Phase(s)"
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (UDAK #)"
+        protocol_merge: "Historical Protocol Merges"
       protocol_filter:
         search_name: "Name"
+
       question:
         content: "Question"
       question_response:
@@ -210,12 +227,14 @@ en:
       service:
         abbreviation: "Abbreviation"
         charge_code: "Charge Code"
+        share_externally: "Share With Outside Institutions"
       service_request:
         id: "SRID"
         organization: "Organization"
         owner: "Owner"
         status: "Status"
         forms: "Forms"
+        previously_submitted: "Previously Submitted"
       sub_service_request:
         srid: "SRID"
       short_interaction:
@@ -267,6 +286,12 @@ en:
             visit_groups:
               invalid: "Please specify a day for each visit"
               out_of_order: "Please make sure all visit days are in sequential order"
+        document:
+          attributes:
+            document:
+              spoofed_media_type: "File type does not match file content"
+            document_file_name:
+              invalid: "Invalid file type"
         form:
           attributes:
             active:
@@ -282,6 +307,13 @@ en:
             quantity:
               min: "must be greater than or equal to #{min}"
               max: "must be less than or equal to #{max}"
+        project_role:
+          attributes:
+            base:
+              duplicate_role: "User is already associated with this protocol."
+              epic_api_down: "Epic user API server is down."
+            identity:
+              required: "Please select a user"
         protocol:
           attributes:
             end_date:
@@ -343,6 +375,7 @@ en:
       new: 'A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol.'
       name: "A group, or subgroup, of participants in a clinical trial that receive specific intervention, or no intervention, according to the study protocol. Arm Name must be unique within a protocol, and the following special characters are not allowed: []*/\\?:)."
       subject_count: 'Total number of estimated participants per arm'
+      subject_count_apply_all: "Apply the arm's subject count to all service line items in this arm."
       visit_count: 'Total number of visits per arm'
       screening: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 
@@ -467,17 +500,19 @@ en:
       visit_day: 'Day the anticipated visit occurs (incremental)'
       visit_name: 'Name of the visit'
       modified_rate: "Modified Rate<br>%{cost}"
+      external_charge: "This service has an additional external charge rate of %{charge_percent}%"
 
   calendar_structure:
     header: "Calendar Structure"
-    lock_calendar: "Lock Calendar"
-    unlock_calendar: "Unlock Calendar"
+    lock_calendar: "Lock Calendar & Funding"
+    unlock_calendar: "Unlock Calendar & Funding"
+    funding_locked: "Funding for this %{protocol_type} has been locked by an administrator. No funding changes may be made at this time."
     table_fields:
       arm_name: "Arm Name"
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     tooltips:
-      lock_calendar: 'Locking the calendar will prevent users from making changes to arm, subject, and visit information.'
+      lock_calendar: 'Prevent users from making changes to arm, subject, visit, and funding information.'
       arm_info: 'The calendar has been locked by an administrator. No changes to the stucture may be made at this time.'
 
   ##############################
@@ -591,6 +626,24 @@ en:
     none: "You don't have any forms to complete"
     srid: "SRID"
 
+  ###############
+  # IRB RECORDS #
+  ###############
+  irb_records:
+    pro_header: "IRB #%{pro}"
+    irb_header: " (%{irb})"
+    primary_irb: "Primary IRB"
+    add: "Add a New IRB"
+    edit: "Edit IRB"
+    delete: "Delete IRB"
+    form:
+      new: "New IRB Record"
+      edit: "Edit IRB Record"
+    tooltips:
+      edit: "Edit IRB"
+      delete: "Delete IRB"
+      cant_delete_primary: "The Primary IRB cannot be deleted"
+
   ##########
   # LAYOUT #
   ##########
@@ -606,11 +659,13 @@ en:
       news:
         header: "Recent News"
         none: "There is no recent news. Please check back later."
+        loading: "Loading News Feed..."
       events:
         header: "Upcoming Events"
         all_day: "All Day"
         none: "No events scheduled within a month from today."
         learn_more: "Learn More"
+        loading: "Loading Events..."
       help:
         header: "Get Help"
       profile:
@@ -636,20 +691,21 @@ en:
         faqs:
           text: "FAQs"
           header: "Frequently Asked Questions"
-          question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
-          answer_1: "No. Please browse and select services for only one research study/project at a time."
+          question_1: "May I submit a request for services for multiple Research Studies/Projects simultaneously?"
+          answer_1: "No. Please browse and select services for only one Rresearch Study/Project at a time."
           question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
-          answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+          answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research Study/Project."
           question_3: "How many Authorized Users can I add?"
           answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-          question_4: "What is the difference  between a Research Study and a Project?"
+          question_4: "What is the difference between a Research Study and a Project?"
           answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
           question_5: "How is SPARCRequest calculating my indirect costs?"
-          answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
+          answer_5: "The original requester for your Study/Project defined both the funding source of the Study/Project and the indirect cost rate. SPARCRequest uses this data to calculate your total overall indirect costs."
           question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
     back_to_top: "Go to Top"
+    sign_in_required: "You must sign in to use this feature"
 
   ##############
   # Line Items #
@@ -816,6 +872,13 @@ en:
     duration_placeholder: "Enter an integer"
     institution_prompt: "- Select Institution -"
 
+  ########################
+  # SUB SERVICE REQUESTS #
+  ########################
+  sub_service_requests:
+    external:
+      tooltip: "This request is from an external Provider"
+
   #############
   # SUBSIDIES #
   #############
@@ -948,7 +1011,7 @@ en:
     delete_intro: "An Authorized User has been deleted in"
     delete_intro_p: "Authorized Users have been deleted in"
     epic_access: "Epic Access"
-    issue_contact: "Please contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a> for assistance with this process or with any questions you may have."
+    issue_contact: "Please contact <a href='mailto:%{email}'>%{email}</a> or call %{phone} for technical assistance or contact the service provider directly for questions related to your service request."
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
@@ -978,6 +1041,11 @@ en:
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
     epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
+    external_requests:
+      general_user_subject: " - Contains External Requests"
+      service_provider_subject: " - External Request"
+      external_request: "(External Request)"
     link: "HERE"
     name: "User Name"
     non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
@@ -1023,8 +1091,9 @@ en:
     p_title: "Project Title"
     triggered_by: "Current Identity:"
     u_info: "User Information"
-    welcome_obtain_research_pricing: "A request has been made for a budget review (Get Cost Estimate)"
-    welcome_submit: "A request has been submitted to start services"
+    u_info_external: "User Information (External)"
+    welcome_submit: "A Request has been submitted to start services"
+    welcome_submit_external: "An <span class='red-text'>External Request</span> has been submitted to start services"
 
   # Service Request approve epic rights
   approve_epic_rights:

@@ -223,7 +223,6 @@ RSpec.describe 'User filters responses', js: true do
         scenario 'and sees both complete and incomplete responses' do
           @other_form     = create(:form, surveyable: @organization, title: 'Formula One', active: true)
           other_response  = create(:response, survey: @other_form)
-          ssr             = create(:sub_service_request, organization: @organization)
 
           bootstrap_select '#filterrific_of_type', Form.name
           find('#filterrific_include_incomplete').click

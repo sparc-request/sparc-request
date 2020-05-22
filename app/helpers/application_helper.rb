@@ -19,6 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
+  def encrypt(text)
+    text = text.to_s unless text.is_a?(String)
+
+    len   = ActiveSupport::MessageEncryptor.key_len
+    salt  = SecureRandom.hex(len)
+    key   = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, len)
+    crypt = ActiveSupport::MessageEncryptor.new(key)
+    encrypted_data = crypt.encrypt_and_sign(text)
+
+    "#{salt}$$#{encrypted_data}"
+  end
+
+  def decrypt(text)
+    salt, data = text.split("$$")
+
+    len   = ActiveSupport::MessageEncryptor.key_len
+    key   = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(salt, len)
+    crypt = ActiveSupport::MessageEncryptor.new(key)
+
+    crypt.decrypt_and_verify(data)
+  end
+
   def format_date(date, opts={})
     if date.present?
       if opts[:html]
@@ -44,21 +66,14 @@ module ApplicationHelper
   end
 
   def format_phone(phone)
-    if phone.present?
+    if phone.present? && phone.match(DataTypeValidator::PHONE_REGEXP)
       phone.gsub!(/[^0-9#]/, '')
 
-      formatted = ""
-      begin
-        formatted += "(#{phone.first(3)})"
-        formatted += " #{phone.from(3).to(2)}"
-        formatted += "-#{phone.from(6).to(3)}"
-        formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
-      rescue
-      end
-
-      return formatted
+      formatted = "(#{phone.first(3)}) #{phone.from(3).to(2)}-#{phone.from(6).to(3)}"
+      formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.length > 10
+      formatted
     else
-      return phone
+      ""
     end
   end
 
@@ -211,6 +226,55 @@ module ApplicationHelper
       content_tag :li, class: 'nav-item' do
         link_to name, path, target: :_blank, class: ['nav-link', active ? 'active' : '']
       end
+    end
+  end
+
+  def faq_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : 'mb-1']
+
+    if identity_signed_in? && Setting.get_value('use_faq_link')
+      link_to Setting.get_value("faq_url"), target: :_blank, class: klass do
+        (opts[:dropdown] ? icon('fas', 'question mr-2') : '') + t('layout.footer.links.faqs.header')
+      end
+    else
+      link_to faqs_pages_path, remote: true, class: klass do
+        (opts[:dropdown] ? icon('fas', 'question mr-2') : '') + t('layout.footer.links.faqs.header')
+      end
+    end
+  end
+
+  def contact_us_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : '', identity_signed_in? ? 'mb-1' : 'disabled']
+
+    link = link_to new_contact_form_path, remote: true, class: klass do
+      (opts[:dropdown] ? icon('fas', 'comment mr-2') : '') + t('layout.footer.links.contact')
+    end
+
+    if identity_signed_in?
+      link
+    else
+      content_tag :span, link, class: 'tooltip-wrapper', title: t('layout.sign_in_required'), data: { toggle: 'tooltip', placement: 'left' }
+    end
+  end
+
+  def feedback_link(opts={})
+    klass = [opts[:dropdown] ? 'dropdown-item text-secondary' : '', identity_signed_in? ? '' : 'disabled']
+
+    link = 
+      if identity_signed_in? && Setting.get_value("use_feedback_link")
+        link_to Setting.get_value("feedback_link"), target: :_blank, class: klass do
+          (opts[:dropdown] ? icon('fas', 'pencil-alt mr-2') : '') + t('layout.footer.links.feedback')
+        end
+      else
+        link_to new_feedback_path, remote: true, class: klass do
+          (opts[:dropdown] ? icon('fas', 'pencil-alt mr-2') : '') + t('layout.footer.links.feedback')
+        end
+      end
+
+    if identity_signed_in?
+      link
+    else
+      content_tag :span, link, class: 'tooltip-wrapper', title: t('layout.sign_in_required'), data: { toggle: 'tooltip', placement: 'left' }
     end
   end
 

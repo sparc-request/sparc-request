@@ -33,10 +33,19 @@ class Identities::PasswordsController < Devise::PasswordsController
     end
   end
 
+  # GET /resource/password/edit?reset_password_token=abcdef
+  def edit
+    self.resource = resource_class.new
+    set_minimum_password_length
+    resource.ldap_uid = params[:ldap_uid]
+    resource.reset_password_token = params[:reset_password_token]
+  end
+
   def update
     respond_to :js
 
-    self.resource = resource_class.reset_password_by_token(resource_params)
+    shard = Identity.shard_identifier(helpers.decrypt(resource_params[:ldap_uid]))
+    self.resource = resource_class.using(shard).reset_password_by_token(resource_params)
     yield resource if block_given?
 
     if resource.errors.empty?

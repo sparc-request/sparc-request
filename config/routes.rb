@@ -1,56 +1,15 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
-# All rights reserved.
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
-# disclaimer in the documentation and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-SparcRails::Application.routes.draw do
   ####################
   ### Devise Setup ###
   ####################
 
-  begin
-    if Setting.get_value("use_shibboleth_only")
-      devise_for :identities,
-                 controllers: {
-                   omniauth_callbacks: 'identities/omniauth_callbacks',
-                 }, path_names: { sign_in: 'auth/shibboleth' }
-
-    elsif Setting.get_value("use_cas_only")
-      devise_for :identities,
-                 controllers: {
-                   omniauth_callbacks: 'identities/omniauth_callbacks',
-                 }, path_names: { sign_in: 'auth/cas' }
-    else
-      devise_for :identities,
-                 controllers: {
-                   omniauth_callbacks: 'identities/omniauth_callbacks',
-                   registrations: 'identities/registrations',
-                   passwords: 'identities/passwords'
-                 }
-    end
-  rescue
-    devise_for :identities,
-               controllers: {
-                 omniauth_callbacks: 'identities/omniauth_callbacks',
-                 registrations: 'identities/registrations',
-                 passwords: 'identities/passwords'
-               }
-  end
+  devise_for :identities, controllers: {
+    omniauth_callbacks: 'identities/omniauth_callbacks',
+    registrations: 'identities/registrations',
+    passwords: 'identities/passwords'
+  }
 
   resources :identities, only: [] do
     member do
@@ -66,6 +25,8 @@ SparcRails::Application.routes.draw do
   resource :pages, only: [] do
     get :event_details
     get :faqs
+    get :get_news_feed
+    get :get_calendar_events
   end
 
   resources :forms, only: [:index]
@@ -85,7 +46,6 @@ SparcRails::Application.routes.draw do
     get :service_subsidy
     get :document_management
     get :review
-    get :obtain_research_pricing
     get :confirmation
     get :approve_changes
     get :system_satisfaction_survey
@@ -121,6 +81,8 @@ SparcRails::Application.routes.draw do
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
+  resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
+
   resources :associated_users, except: [:show] do
     collection do
       get :update_professional_organizations
@@ -150,11 +112,10 @@ SparcRails::Application.routes.draw do
 
   resources :notes, only: [:index, :create, :edit, :update, :destroy]
 
-  resources :catalogs, param: :organization_id, only: [] do
-    member do
-      get :update_description
-      get :locked_organization
-    end
+  resource :catalogs, only: [] do
+    get :update_catalog
+    get :update_description
+    get :locked_organization
   end
 
   resources :search, only: [] do
@@ -166,7 +127,10 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  wash_out :oncore_endpoint # SOAP Endpoint for OnCore RPE messages
+
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
+  match 'organizations/:organization_id' => 'service_requests#catalog', via: [:get]
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
@@ -342,7 +306,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  mount API::Base => '/'
+  mount APIV1::Base => '/'
 
   root to: 'service_requests#catalog'
 

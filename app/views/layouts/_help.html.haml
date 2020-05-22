@@ -26,22 +26,6 @@
       %h5.m-0<
         = t('layout.navigation.help.header')
     .dropdown-divider
-    - if Setting.get_value('use_faq_link')
-      = link_to Setting.get_value("faq_url"), target: :_blank, class: 'dropdown-item text-secondary' do
-        = icon('far', 'question-circle mr-2')
-        = t('layout.footer.links.faqs.header')
-    - else
-      = link_to faqs_pages_path, remote: true, class: 'dropdown-item text-secondary' do
-        = icon('fas', 'question mr-2')
-        = t('layout.footer.links.faqs.header')
-    = link_to new_contact_form_path, remote: true, class: 'dropdown-item text-secondary' do
-      = icon('fas', 'comment mr-2')
-      = t('layout.footer.links.contact')
-    - if Setting.get_value("use_feedback_link")
-      = link_to Setting.get_value("feedback_link"), target: :_blank, class: 'dropdown-item text-secondary' do
-        = icon('fas', 'pencil-alt mr-2')
-        = t('layout.footer.links.feedback')
-    - else
-      = link_to new_feedback_path, remote: true, class: 'dropdown-item text-secondary' do
-        = icon('fas', 'pencil-alt mr-2')
-        = t('layout.footer.links.feedback')
+    = faq_link(dropdown: true)
+    = contact_us_link(dropdown: true)
+    = feedback_link(dropdown: true)

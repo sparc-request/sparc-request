@@ -64,11 +64,11 @@ class Study < Protocol
 
   def populate_for_edit
     super
-    self.build_research_types_info           unless self.research_types_info
-    self.build_human_subjects_info           unless self.human_subjects_info
-    self.build_vertebrate_animals_info       unless self.vertebrate_animals_info
-    self.build_investigational_products_info unless self.investigational_products_info
-    self.build_ip_patents_info               unless self.ip_patents_info
+    self.build_research_types_info              unless self.research_types_info
+    self.build_human_subjects_info              unless self.human_subjects_info
+    self.build_vertebrate_animals_info          unless self.vertebrate_animals_info
+    self.build_investigational_products_info    unless self.investigational_products_info
+    self.build_ip_patents_info                  unless self.ip_patents_info
     self.setup_study_types
     self.setup_impact_areas
     self.setup_affiliations

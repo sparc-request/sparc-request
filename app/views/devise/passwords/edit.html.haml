@@ -22,6 +22,7 @@
   = t('devise.passwords.edit.header')
 = form_for resource, as: resource_name, url: password_path(resource_name), method: :put, remote: true do |f|
   = f.hidden_field :reset_password_token, value: resource.reset_password_token
+  = f.hidden_field :ldap_uid, value: resource.ldap_uid
   .form-group
     = f.label :password, t('devise.passwords.edit.new_password'), class: 'required'
     = f.password_field :password, autofocus: true, autocomplete: 'off', class: 'form-control'

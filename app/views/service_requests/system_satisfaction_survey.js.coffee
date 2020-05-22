@@ -25,6 +25,7 @@ ConfirmSwal.fire(
   confirmButtonText: I18n.t('constants.yes_select')
   cancelButtonText: I18n.t('constants.no_select')
 ).then (result) ->
+  $('#getCostEstimate, #submitRequest').removeClass('disabled')
   if result.value
     $.ajax
       method: 'get'
@@ -36,7 +37,23 @@ ConfirmSwal.fire(
         survey_id:        "<%= @survey.id %>"
         type:             "<%= SystemSurvey.name %>"
       success: ->
-        $(document).one 'hide.bs.modal', ->
+        $(document).one 'hidden.bs.modal', ->
+          # When previously subbmited show the SSRs resubmission modal
+          <% if @service_request.previously_submitted? && @forward.include?('confirmation') %>
+          $.ajax
+            method: 'get'
+            dataType: 'script'
+            url: "<%= confirmation_service_request_path(srid: @service_request.id) %>"
+          <% else %>
           window.location = "<%= @forward %>"
+          <% end %>
   else
+    # When previously subbmited show the SSRs resubmission modal
+    <% if @service_request.previously_submitted? && @forward.include?('confirmation') %>
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: "<%= confirmation_service_request_path(srid: @service_request.id) %>"
+    <% else %>
     window.location = "<%= @forward %>"
+    <% end %>

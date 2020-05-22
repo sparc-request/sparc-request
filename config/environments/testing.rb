@@ -29,43 +29,30 @@ SparcRails::Application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # Show full error reports and disable caching
-  config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
+  # Show full error reports.
+  config.consider_all_requests_local = true
 
-  # Don't care if the mailer can't send
+  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  config.assets.compile = false
+
+  # Store uploaded files on the local file system (see config/storage.yml for options).
+  config.active_storage.service = :local
+
+  config.action_mailer.default_url_options = { host: 'sparc-d.obis.musc.edu' }
   config.action_mailer.raise_delivery_errors = true
+  config.action_controller.perform_caching = false
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
-  # Only use best-standards-support built into browsers
-  config.action_dispatch.best_standards_support = :builtin
-
-  # Log the query plan for queries taking more than this (works
-  # with SQLite, MySQL, and PostgreSQL)
-  # config.active_record.auto_explain_threshold_in_seconds = 0.5
-
-  # Do not compress assets
-  config.assets.compress = false
-
-  # Expands the lines which load the assets
+  # Debug mode disables concatenation and preprocessing of assets.
+  # This option may cause significant delays in view rendering with a large
+  # number of complex assets.
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
+  # Suppress logger output for asset requests.
+  config.assets.quiet = true
 
-  config.after_initialize do
-    # Need to do this after initialization so that the database is loaded
-    begin
-      new_options = { host: Setting.get_value("root_url") }
-      config.action_mailer.default_url_options = new_options
-
-      # By the time we run ActionMailer has already copied the options
-      # from config so we need to override here to really make the change
-      # We only set the default_url_options to keep the settings consistent
-      ActionMailer::Base.default_url_options = new_options
-    rescue
-      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
-    end
-  end
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
 end

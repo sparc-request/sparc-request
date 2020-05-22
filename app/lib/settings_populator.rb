@@ -22,38 +22,61 @@ class SettingsPopulator
   include DataTypeValidator
 
   def initialize
-    load_data_and_config
+    load_defaults
+    load_stored_yaml
   end
 
   def populate
-    ActiveRecord::Base.transaction do
-      @defaults.each do |hash|
-        if Setting.exists?(key: hash['key'])
-          Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
-        else
-          setting = Setting.create(
-            key:            hash['key'],
-            value:          @stored[hash['key']].present? ? @stored[hash['key']] : hash['value'],
-            data_type:      get_type(hash['value']),
-            friendly_name:  hash['friendly_name'],
-            description:    hash['description'],
-            group:          hash['group'],
-            version:        hash['version'],
-          )
+    Setting.auditing_enabled = false
 
-          setting.parent_key    = hash['parent_key']
-          setting.parent_value  = hash['parent_value']
-          setting.save(validate: false)
+    ActiveRecord::Base.transaction do
+      @defaults.each do |db, defaults|
+        puts("[#{db}] Importing Settings")
+        Octopus.using(db) do
+          defaults.each do |hash|
+            if Setting.exists?(key: hash['key'])
+              Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
+            else
+              setting = Setting.create(
+                key:            hash['key'],
+                value:          @stored[hash['key']].present? ? @stored[hash['key']] : hash['value'],
+                data_type:      get_type(hash['value']),
+                friendly_name:  hash['friendly_name'],
+                description:    hash['description'],
+                group:          hash['group'],
+                version:        hash['version'],
+              )
+
+              setting.parent_key    = hash['parent_key']
+              setting.parent_value  = hash['parent_value']
+              setting.save(validate: false)
+            end
+          end
+
+          Setting.where(key: deprecated_settings[db]).destroy_all
         end
       end
     end
+
+    Setting.auditing_enabled = true
   end
 
   private
 
-  def load_data_and_config
-    @defaults = JSON.parse(File.read(Rails.root.join('config', 'defaults.json')))
-    @stored   = {}
+  def load_defaults
+    @defaults = {
+      master: JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'master.json'))),
+    }
+
+    shards_defaults = JSON.parse(File.read(Rails.root.join('db', 'seeds', 'settings', 'shards.json')))
+
+    Octopus.shards.keys.each do |shard|
+      @defaults[shard.to_sym] = shards_defaults
+    end
+  end
+
+  def load_stored_yaml
+    @stored = {}
 
     if File.exists? Rails.root.join('config', 'application.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env])
@@ -66,5 +89,32 @@ class SettingsPopulator
     if File.exists? Rails.root.join('config', 'ldap.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env])
     end
+  end
+
+  def deprecated_settings
+    @deprecated = {
+      master: []
+    }
+
+    Octopus.shards.keys.each do |shard|
+      @deprecated[shard.to_sym] = [
+        'current_api_version',
+        'dashboard_link',
+        'default_mail_to',
+        'header_link_2_catalog',
+        'header_link_2_catalog',
+        'header_link_2_proper',
+        'host',
+        'remote_service_notifier_host',
+        'remote_service_notifier_password',
+        'remote_service_notifier_path',
+        'remote_service_notifier_protocol',
+        'remote_service_notifier_username',
+        'root_url',
+        'send_emails_to_real_users'
+      ]
+    end
+
+    @deprecated
   end
 end

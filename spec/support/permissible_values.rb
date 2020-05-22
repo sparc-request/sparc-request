@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 def populate_permissible_values_before_suite
+  PermissibleValue.auditing_enabled = false
   ActiveRecord::Base.transaction do
     build_impact_areas
     build_statuses
@@ -30,6 +31,7 @@ def populate_permissible_values_before_suite
     build_document_types
     build_funding_statuses
     build_short_interactions
+    build_ontology_tags
   end
 end
 
@@ -151,4 +153,11 @@ def build_short_interactions
   FactoryBot.create(:permissible_value, category: 'interaction_type', key: 'in_person', value: 'In-Person')
   FactoryBot.create(:permissible_value, category: 'interaction_subject', key: 'general_question', value: 'General Questionn')
   FactoryBot.create(:permissible_value, category: 'institution', key: 'other', value: 'Other')
+end
+
+def build_ontology_tags
+  FactoryBot.create(:permissible_value, category: 'ontology_tag', key: 'admin_core_ctsa', value: 'Administrative Core (CTSA)')
+  FactoryBot.create(:permissible_value, category: 'ontology_tag', key: 'informatics_ctsa', value: 'Informatics (CTSA)')
+  FactoryBot.create(:permissible_value, category: 'ontology_tag', key: 'community_engagement_ctsa', value: 'Community Engagement (CTSA)')
+  FactoryBot.create(:permissible_value, category: 'ontology_tag', key: 'team_science_ctsa', value: 'Multidisciplinary Team Science (CTSA)')
 end

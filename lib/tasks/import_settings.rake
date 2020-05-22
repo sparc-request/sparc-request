@@ -21,6 +21,6 @@
 namespace :data do
   desc "Import any missing settings from config/settings into the Settings database table"
   task import_settings: :environment do
-    SettingsPopulator.new().populate
+    SettingsPopulator.new().populate()
   end
 end

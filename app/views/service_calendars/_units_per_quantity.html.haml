@@ -20,8 +20,8 @@
 
 - editable = editable && !merged
 
-%td.units-per-quantity.text-center{ class: editable ? 'editable' : '', title: line_item.units_per_quantity, data: { toggle: 'tooltip' } }
+%td.units-per-quantity.text-center{ class: editable ? 'editable' : '', title: number_with_delimiter(line_item.units_per_quantity, delimiter: ','), data: { toggle: 'tooltip' } }
   - if editable
-    = link_to line_item.units_per_quantity, edit_line_item_path(line_item, srid: service_request.id, field: 'units_per_quantity'), remote: true
+    = link_to number_with_delimiter(line_item.units_per_quantity, delimiter: ','), edit_line_item_path(line_item, srid: service_request.id, field: 'units_per_quantity'), remote: true
   - else
-    = line_item.units_per_quantity
+    = number_with_delimiter(line_item.units_per_quantity, delimiter: ',')

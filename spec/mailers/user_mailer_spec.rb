@@ -55,7 +55,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[.='Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[.='Please contact #{Setting.get_value('contact_us_mail_to')} or call (843) 792-8300 for technical assistance or contact the service provider directly for questions related to your service request.']")
       end
 
       it "should display acknowledgments" do
@@ -118,7 +118,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[.='Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[.='Please contact #{Setting.get_value('contact_us_mail_to')} or call (843) 792-8300 for technical assistance or contact the service provider directly for questions related to your service request.']")
       end
 
       it "should display acknowledgments" do

@@ -55,13 +55,16 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
       elsif Setting.get_value("fulfillment_contingent_on_catalog_manager") && @merged_protocol.fulfillment_protocols.any?
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:cannot_merge]
+      elsif requests_not_merge_eligible?(@master_protocol, @merged_protocol)
+        @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:split_notify_error]
       elsif @errors.empty? && !confirmed
         @no_errors = true
         return
       else
         ActiveRecord::Base.transaction do
+          merged_ssr_ids = @merged_protocol.sub_service_requests.map(&:id)
           merge_srs = Dashboard::MergeSrs.new()
-          fix_ssr_ids = Dashboard::FixSsrIds.new(@master_protocol)
+          fix_ssr_ids = Dashboard::FixSsrIds.new(@master_protocol, merged_ssr_ids)
           #transfer the project roles as needed
           @merged_protocol.project_roles.each do |role|
             if role.role != 'primary-pi' && role_should_be_assigned?(role, @master_protocol)
@@ -158,5 +161,15 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
   def has_research?(protocol, research_type)
     protocol.research_types_info.try(research_type) || false
+  end
+
+  # We can not merge if 2 requests are under the same process ssrs org AND either of those requests are locked or incomplete
+  # Grab all locked / incomplete requests from each protocol
+  # Take the intersection of the potentially ineligible requests to see if any of them have the same "organization_id"
+  def requests_not_merge_eligible?(master, merged)
+    master_ineligible_requests = master.sub_service_requests.select{ |ssr| ssr.is_locked? || !ssr.is_complete?}
+    merged_ineligible_requests = merged.sub_service_requests.select{ |ssr| ssr.is_locked? || !ssr.is_complete?}
+
+    return (master_ineligible_requests.map(&:organization_id) & merged_ineligible_requests.map(&:organization_id)).any?
   end
 end

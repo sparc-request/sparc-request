@@ -19,6 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
+
+  def role_formatter(pr)
+    role_text = PermissibleValue.get_value('user_role', pr.role)
+    if pr.role == "other"
+      "#{role_text}-#{pr.role_other}"
+    else
+      role_text
+    end
+  end
+
   def new_authorized_user_button(opts={})
     unless in_dashboard? && !opts[:permission]
       url = in_dashboard? ? new_dashboard_associated_user_path(protocol_id: opts[:protocol_id]) : new_associated_user_path(srid: opts[:srid])

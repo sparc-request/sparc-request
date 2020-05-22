@@ -46,6 +46,14 @@
           = check_box_tag :access_empty_protocols, true, su.try(:access_empty_protocols), { id: "su-access-empty-protocols-#{user.id}", class: "su-access-empty-protocols", data: { identity_id: user.id, organization_id: organization.id } }
         .col-sm-6
           = check_box_tag :billing_manager, true, su.try(:billing_manager), { id: "su-billing-manager-#{user.id}", class: "su-billing-manager", data: { identity_id: user.id, organization_id: organization.id } }
+      - if su.try(:billing_manager).present?
+        .form_row
+        .row
+          .col-sm-12
+            = label_tag :allow_credit, t(:catalog_manager)[:organization_form][:user_rights][:allow_credit], class: 'non_bold_label'
+        .row
+          .col-sm-12
+            = check_box_tag :allow_credit, true, su.try(:allow_credit), { id: "su-allow-credit-#{user.id}", class: "su-allow-credit", data: { identity_id: user.id, organization_id: organization.id } }
 
   .col-sm-2.text-center
     - if cm_disabled

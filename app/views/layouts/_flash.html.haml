@@ -20,9 +20,9 @@
 
 - messages = defined?(errors) ? errors : flash
 
-.container-fluid.p-0#flashContainer
+.container-fluid#flashContainer
   - messages.each do |type, message|
-    .alert.d-flex.align-items-start.justify-content-between.fade.show{ class: twitterized_type(type) }
+    .alert.d-flex.align-items-start.justify-content-between.mb-0.fade.show{ class: twitterized_type(type) }
       = message
       %button.close{ type: 'button', data: { dismiss: 'alert' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;

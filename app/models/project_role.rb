@@ -32,11 +32,7 @@ class ProjectRole < ApplicationRecord
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
   accepts_nested_attributes_for :identity
 
-  validates :role,
-            :project_rights,
-            :identity_id,
-            presence: true
-
+  validates_presence_of :role, :project_rights, presence: true
   validates_presence_of :role_other, if: Proc.new{ |pr| pr.role == 'other' }
 
   scope :primary_pis, -> { where(role: "primary-pi") }
@@ -57,7 +53,7 @@ class ProjectRole < ApplicationRecord
     duplicate_project_roles = ProjectRole.where(protocol_id: self.protocol.id).select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self
     if duplicate_project_roles.count > 1
-      errors.add(:this, "user is already associated with this protocol.")
+      errors.add(:base, :duplicate_role)
       return false
     end
 

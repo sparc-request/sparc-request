@@ -19,20 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ApplicationRecord
-
   include RemotelyNotifiable
 
   audited
 
-  before_create :set_protocol_id
-  after_save :update_org_tree
-  after_save :update_past_status
-
-  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
-  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
+  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id", optional: true
+  belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id", optional: true
   belongs_to :service_request
   belongs_to :organization
-  belongs_to :protocol, counter_cache: true
+  belongs_to :protocol, counter_cache: true, optional: true
 
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
@@ -68,7 +63,14 @@ class SubServiceRequest < ApplicationRecord
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
-  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }, if: Proc.new{ |ssr| ssr.service_request_id.present? }
+
+  before_validation :set_next_ssr_id, on: :create
+
+  after_create :set_next_ssr_id, if: Proc.new{ |ssr| ssr.protocol.present? }
+
+  after_save :update_org_tree
+  after_save :update_past_status
 
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
   scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
@@ -86,6 +88,20 @@ class SubServiceRequest < ApplicationRecord
   def status= status
     @prev_status = self.status
     super(status)
+  end
+
+  # Overwrite the default `belongs_to :organization` association method
+  # to grab the organization from the correct shard
+  def organization
+    if self.external_request?
+      @organization ||= Organization.using(self.organization_shard).find(self.organization_id)
+    else
+      super
+    end
+  end
+
+  def external_request?
+    @external_request ||= self.current_shard != self.organization_shard
   end
 
   def label
@@ -121,10 +137,6 @@ class SubServiceRequest < ApplicationRecord
     if self.committee_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
       self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
     end
-  end
-
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
   end
 
   def update_org_tree
@@ -163,25 +175,6 @@ class SubServiceRequest < ApplicationRecord
 
   def has_subsidy?
     pending_subsidy.present? or approved_subsidy.present?
-  end
-
-  def create_line_item(args)
-    result = self.transaction do
-      new_args = {
-        sub_service_request_id: self.service_request_id
-      }
-      new_args.update(args)
-      li = service_request.create_line_item(new_args)
-
-      li
-    end
-
-    if result
-      return result
-    else
-      self.reload
-      return false
-    end
   end
 
   def has_one_time_fee_services?
@@ -311,18 +304,22 @@ class SubServiceRequest < ApplicationRecord
     self.organization.tag_list.include? "ctrc"
   end
 
+  def first_draft?
+    self.status == 'first_draft'
+  end
+
   #A request is locked if the organization it's in isn't editable
   def is_locked?
-    self.status != 'first_draft' && !process_ssrs_organization.has_editable_status?(status)
+    self.status != 'first_draft' && !organization.has_editable_status?(status)
   end
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    self.status == 'first_draft' || (process_ssrs_organization.has_editable_status?(self.status) && !self.is_complete?)
+    self.status == 'first_draft' || (organization.has_editable_status?(self.status) && !self.is_complete?)
   end
 
   def is_complete?
-    Status.complete?(self.status) && process_ssrs_organization.has_editable_status?(self.status)
+    Status.complete?(self.status) && organization.has_editable_status?(self.status)
   end
 
   def is_in_draft?
@@ -367,7 +364,7 @@ class SubServiceRequest < ApplicationRecord
 
       # fall back to old method of assigning using audit trail, TODO: this is more of safety measure as it is hard to tell everywhere a SSR is saved/updated
       if past_status.changed_by_id.blank?
-        user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
+        user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.try(&:user_id)
         past_status.update_attribute(:changed_by_id, user_id)
       end
     end
@@ -540,8 +537,17 @@ class SubServiceRequest < ApplicationRecord
 
   private
 
-  def set_protocol_id
-    self.protocol_id = service_request.try(:protocol_id)
+  def set_next_ssr_id
+    self.ssr_id = self.service_request.try(:next_ssr_id) || ("%04d" % 1)
+    self.protocol = self.service_request.try(:protocol)
+
+    if self.protocol
+      self.protocol.increment!(:next_ssr_id)
+    end
+  end
+
+  def set_next_ssr_id
+    self.protocol.increment!(:next_ssr_id)
   end
 
   def notify_remote_around_update?

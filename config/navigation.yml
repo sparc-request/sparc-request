@@ -47,8 +47,5 @@ review:
   back: "document_management"
   forward: "confirmation"
 
-obtain_research_pricing:
-  css_class: "success"
-
 confirmation:
   css_class: "success"

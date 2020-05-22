@@ -132,17 +132,19 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def complete
-    @survey = Response.find(params[:response_id]).survey
+    @response = Response.find(params[:response_id])
+    if @response.respondable_id && @response.respondable.organization.survey_completion_alerts
+      ### sent emails to all relevant super users for an organization of which survey_completion_alerts is true
+      @response.respondable.organization.all_super_users.each do |su|
+        SurveyNotification.service_survey_completed(@response, @response.respondable, su).deliver_later
+      end
+    end
   end
 
   def resend_survey
     @response = Response.find(params[:response_id])
-    if @response.survey.access_code == 'system-satisfaction-survey'
-      SurveyNotification.system_satisfaction_survey(@response).deliver
-      @response.update_attribute(:updated_at, Time.now)
-    else
-      SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
-    end
+    ## resend button is disabled for surveys that are not tied to any organization
+    SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
     flash[:success] = t(:surveyor)[:responses][:resent]
   end
 

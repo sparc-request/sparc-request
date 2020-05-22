@@ -18,12 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 class Notifier < ActionMailer::Base
   helper ApplicationHelper
 
-  def new_identity_waiting_for_approval identity
+  def new_identity_waiting_for_approval(identity)
     @identity = identity
+    @shard    = identity.current_shard
 
     email = Setting.get_value("admin_mail_to")
     cc = Setting.get_value("new_user_cc")
@@ -44,13 +44,15 @@ class Notifier < ActionMailer::Base
     xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
     ### END ATTACHMENTS ###
 
-    @status = status(admin_delete_ssr, audit_report.present?, @service_request)
+    @status   = status(admin_delete_ssr, audit_report.present?, @service_request)
+    @external = service_request.sub_service_requests.any?(&:external_request?)
+
     @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
 
     if admin_delete_ssr
       @ssrs_to_be_displayed = [@deleted_ssrs]
@@ -63,8 +65,9 @@ class Notifier < ActionMailer::Base
     end
 
     # only send these to the correct person in the production env
-    email = @identity.email
-    subject = email_title(@status, @protocol, @deleted_ssrs)
+    email     = @identity.email
+    subject   = email_title(@status, @protocol, @deleted_ssrs)
+    subject  += t('notifier.external_requests.general_user_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
@@ -83,13 +86,14 @@ class Notifier < ActionMailer::Base
     @ssr_deleted = false
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, audit_report.present?, @service_request)
+    @status   = status(ssr_destroyed, audit_report.present?, @service_request)
+    @external = ssr.external_request?
 
     @role = 'none'
     @full_name = submission_email_address
     @ssrs_to_be_displayed = [ssr]
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @audit_report = audit_report
@@ -98,8 +102,9 @@ class Notifier < ActionMailer::Base
       attachments["service_request_#{@protocol.id}.xlsx"] = xls
     end
 
-    email =  submission_email_address
-    subject = email_title(@status, @protocol, ssr)
+    email     = submission_email_address
+    subject   = email_title(@status, @protocol, ssr)
+    subject  += t('notifier.external_requests.service_provider_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
@@ -109,13 +114,14 @@ class Notifier < ActionMailer::Base
     @service_request = service_request
     @notes = @protocol.notes.eager_load(:identity)
 
-    @status = status(ssr_destroyed, request_amendment, @service_request)
+    @status   = status(ssr_destroyed, request_amendment, @service_request)
+    @external = ssr.external_request?
 
     @role = 'none'
     @full_name = service_provider.identity.full_name
     @audit_report = audit_report
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     ### ATTACHMENTS ###
@@ -150,8 +156,9 @@ class Notifier < ActionMailer::Base
     end
 
     # only send these to the correct person in the production env
-    email = service_provider.identity.email
-    subject = email_title(@status, @protocol, ssr)
+    email     = service_provider.identity.email
+    subject   = email_title(@status, @protocol, ssr)
+    subject  += t('notifier.external_requests.service_provider_subject') if @external
 
     mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
@@ -160,22 +167,18 @@ class Notifier < ActionMailer::Base
     @approved = approved
 
     ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
+    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : ENV.fetch('default_mail_to')
     email_to = identity.email
     subject = "#{t(:mailer)[:application_title]} account request - status change"
 
     mail(:to => email_to, :from => email_from, :subject => subject)
   end
 
-  def obtain_research_pricing service_provider, service_request
-
-  end
-
   def provide_feedback feedback
     @feedback = feedback
 
     email_to = Setting.get_value("feedback_mail_to")
-    email_from = @feedback.email.blank? ? Setting.get_value("default_mail_to") : @feedback.email
+    email_from = @feedback.email
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end
@@ -286,8 +289,6 @@ class Notifier < ActionMailer::Base
 
   def email_title(status, protocol, ssr)
     email_status = case status
-    when 'get_a_cost_estimate'
-      "Get Cost Estimate"
     when 'request_amendment'
       "Amendment Submitted"
     when 'ssr_destroyed'

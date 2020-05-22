@@ -246,7 +246,7 @@ en:
           in_fulfillment: "In Fulfillment"
           pending: "Pending"
           send_to_fulfillment: "Push to Fulfillment"
-          synch_to_fulfillment: "Synch to Fulfillment"
+          synch_to_fulfillment: "Sync to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog"
         surveys:
           header: "Surveys"

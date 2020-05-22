@@ -47,7 +47,10 @@ RSpec.describe 'User wants to make a new Study', js: true do
     click_button I18n.t('actions.save')
     wait_for_javascript_to_finish
 
-    expect(Study.count).to eq(1)
-    expect(page).to have_current_path(dashboard_protocol_path(Protocol.last))
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until Study.count == 1
+      expect(Study.count).to eq(1)
+      expect(page).to have_current_path(dashboard_protocol_path(Protocol.last))
+    end
   end
 end

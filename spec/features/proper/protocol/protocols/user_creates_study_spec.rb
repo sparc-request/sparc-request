@@ -53,8 +53,11 @@ RSpec.describe 'User creates study', js: true do
     click_button I18n.t('actions.save')
     wait_for_javascript_to_finish
 
-    expect(Study.count).to eq(1)
-    expect(@sr.reload.protocol.becomes(Study)).to eq(Study.last)
-    expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until Study.count == 1
+      expect(Study.count).to eq(1)
+      expect(@sr.reload.protocol.becomes(Study)).to eq(Study.last)
+      expect(page).to have_current_path(protocol_service_request_path(srid: @sr.id))
+    end
   end
 end

@@ -32,7 +32,7 @@ module Dashboard::StudyLevelActivitiesHelper
   def sla_service_name_display(line_item)
     text      = line_item.service.display_service_name
     text     += inactive_tag unless line_item.service.is_available
-    text     += " (In Work Fulfillment)" if sla_in_fulfillment?(line_item)
+    text     += content_tag :span, style: 'color:green;' do " (In SPARCFulfillment)" if sla_in_fulfillment?(line_item) end
     raw(text)
   end
 

@@ -24,9 +24,7 @@
 # so the proper format was forced in this view.
 xml.instruct!
 xml.tag! "soap:Envelope", "xmlns:soap" => 'http://schemas.xmlsoap.org/soap/envelope/',
-                          "xmlns:xsd" => 'http://www.w3.org/2001/XMLSchema',
-                          "xmlns:xsi" => 'http://www.w3.org/2001/XMLSchema-instance',
-                          "xmlns:tns" => @namespace do
+                          "xmlns:xsi" => 'http://www.w3.org/2001/XMLSchema-instance' do
   xml.tag! "soap:Header" do
     xml.tag! "MessageID", SecureRandom.uuid, { "xmlns" => "http://www.w3.org/2005/08/addressing" }
   end

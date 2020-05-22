@@ -32,7 +32,7 @@
       %h5
         = HumanSubjectsInfo.human_attribute_name(:irb_records)
     .w-100#irbRecords
-      - index = ff_hsi.object.irb_records.length
+      - @irb_count = ff_hsi.object.irb_records.length
       = ff_hsi.fields_for :irb_records do |ff_irb|
-        = render 'irb_records/irb_record', protocol: protocol, irb_record: ff_irb.object, index: ff_irb.index, primary: (ff_irb.index == 0).to_s
-    = render 'irb_records/new_irb_record', protocol: protocol, index: index, primary: index == 0
+        = render 'irb_records/irb_record', protocol: protocol, irb_record: ff_irb.object, index: ff_irb.index, primary: ff_irb.index == 0
+    = render 'irb_records/new_irb_record', protocol: protocol, index: @irb_count, primary: @irb_count == 0

@@ -28,6 +28,13 @@ $("[name='irb_record[<%= attr.to_s %>]']").parents('.form-group').removeClass('i
 <% end %>
 <% end %>
 <% else %>
-$("#irb<%= params[:index] %>").replaceWith("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] %>")
-$("#modalContainer").modal('hide')
+$("#irb<%= params[:index] %>").replaceWith("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] == 'true' %>")
+
+if $('.irb-record:not(.d-none)').length > 1
+  $('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
+    attr('disabled', true).
+    attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
+
+if $('#modalContainer').hasClass('show')
+  $("#modalContainer").modal('hide')
 <% end %>

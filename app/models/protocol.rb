@@ -655,7 +655,7 @@ class Protocol < ApplicationRecord
   def validate_existing_rmid
     rmid = Protocol.get_rmid(self.research_master_id)
 
-    if self.research_master_id.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty? 
+    if self.research_master_id.present? && rmid.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty?
       self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
     end
   end

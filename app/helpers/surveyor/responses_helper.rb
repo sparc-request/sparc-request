@@ -110,7 +110,7 @@ module Surveyor::ResponsesHelper
       link_to(
         icon('fas', 'reply'),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
-        class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
+        class: ['btn btn-success resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend'),
         data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body'}
       )

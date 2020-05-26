@@ -72,7 +72,7 @@ class ProtocolsReport < ReportingModule
     attrs["Primary Coordinator Email(s)"] = "coordinator_emails"
 
     attrs["Business Manager(s)"]          = "billing_managers.try(:map, &:full_name).try(:join, ', ')"
-    attrs["Business Manager Email(s)"]    = ":billing_business_manager_email"
+    attrs["Business Manager Email(s)"]    = "billing_business_manager_email"
 
     if params[:show_epic_cols]
       attrs["Selected For Epic"]          = "selected_for_epic ? 'Yes' : selected_for_epic.nil? ? '' : 'No'"

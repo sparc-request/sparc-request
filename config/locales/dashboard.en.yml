@@ -275,6 +275,7 @@ en:
         created: "Non-clinical Service Added!"
         updated: "Non-clinical Service Updated!"
         destroyed: "Non-clinical Service Removed!"
+        not_destroyed: "This service has fulfillments in SPARCFulfillment and can not be deleted"
         fulfillments:
           header: "Fulfillments - %{service}"
           new: "Add Fulfillment"

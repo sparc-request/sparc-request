@@ -90,10 +90,10 @@ class ServiceRequestsReport < ReportingModule
 
     if params[:apr_data]
       if params[:apr_data].include?("irb")
-        attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
-        attrs["If true, PRO #)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number)"
-        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
-        attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date).try(:strftime, \"%D\")"
+        attrs["IRB Checked Y/N"]      = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? 'Y' : 'N'"
+        attrs["If true, PRO #)"]      = "service_request.try(:protocol).try{irb_records.first}.try(:pro_number)"
+        attrs["IRB Approval Date"]    = "service_request.try(:protocol).try{irb_records.first}.try(:irb_approval_date).try(:strftime, '%D')"
+        attrs["IRB Expiration Date"]  = "service_request.try(:protocol).try{irb_records.first}.try(:irb_expiration_date).try(:strftime, '%D')"
       end
       if params[:apr_data].include?("iacuc")
         attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
@@ -129,7 +129,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Other tables to include
   def includes
-    return :organization, service_request: { protocol: { primary_pi: { professional_organization: { parent: { parent: :parent } } } }, line_items: :service }
+    return :organization, :owner, service_request: { protocol: [:coordinators, :irb_records, primary_pi: { professional_organization: { parent: { parent: :parent } } } ], line_items: :service }
   end
 
   # Conditions

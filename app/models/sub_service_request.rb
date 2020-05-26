@@ -154,7 +154,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def display_id
-    return "#{protocol.try(:id)}-#{ssr_id || 'DRAFT'}"
+    return "#{protocol_id}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?

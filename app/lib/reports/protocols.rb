@@ -44,46 +44,46 @@ class ProtocolsReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["Protocol ID"]              = "service_request.try(:protocol).try(:id)"
-    attrs["Research Master ID"]       = "service_request.try(:protocol).try(:research_master_id)"
-    attrs["Protocol Short Title"]     = "service_request.try(:protocol).try(:short_title)"
-    attrs["Protocol Title"]           = "service_request.try(:protocol).try(:title)"
-    attrs["Number of Requests"]       = "service_request.try(:protocol).try(:sub_service_requests).try(:length)"
-    attrs["Funding Source"]           = "service_request.try(:protocol).try(:funding_source)"
-    attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
-    attrs["Sponsor Name"]             = "service_request.try(:protocol).try(:sponsor_name)"
-    attrs["Financial Account"]        = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
+    attrs["Protocol ID"]                  = "id"
+    attrs["Research Master ID"]           = "research_master_id"
+    attrs["Protocol Short Title"]         = "short_title"
+    attrs["Protocol Title"]               = "title"
+    attrs["Number of Requests"]           = "sub_service_requests.length"
+    attrs["Funding Source"]               = "funding_source.present? ? PermissibleValue.get_value('funding_source', funding_source) : ''"
+    attrs["Potential Funding Source"]     = "potential_funding_source.present? ? PermissibleValue.get_value('potential_funding_source', potential_funding_source) : ''"
+    attrs["Sponsor Name"]                 = "sponsor_name"
+    attrs["Financial Account"]            = "udak_project_number.try{prepend(' ')}"
 
-    attrs["NCT #"]                = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
-    attrs["PRO #"]                = "service_request.try(:protocol).try{irb_records.first}.try(:pro_number).try{prepend(' ')}"
-    attrs["IRB of Record"]        = "service_request.try(:protocol).try{irb_records.first}.try(:irb_of_record)"
-    attrs["Study Phase"]          = "service_request.try(:protocol).try{irb_records.first}.try{study_phases.map(&:phase).join(', ')}"
-    attrs["IRB Expiration Date"]  = "service_request.try(:protocol).try{irb_records.first}.try(:irb_expiration_date).try(:strftime, '%D')"
+    attrs["NCT #"]                        = "human_subjects_info.try(:nct_number).try{prepend(' ')}"
+    attrs["PRO #"]                        = "irb_records.first.try(:pro_number).try{prepend(' ')}"
+    attrs["IRB of Record"]                = "irb_records.first.try(:irb_of_record)"
+    attrs["Study Phase"]                  = "irb_records.first.try{study_phases.map(&:phase).join(', ')}"
+    attrs["IRB Expiration Date"]          = "irb_records.first.try(:irb_expiration_date).try(:strftime, '%D')"
 
-    attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"
-    attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_pi).try(:first_name)"
-    attrs["Primary PI Email"]       = "service_request.try(:protocol).try(:primary_pi).try(:email)"
-    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'institution')"
-    attrs["Primary PI College"]     = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'college')"
-    attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'department')"
-    attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'division')"
+    attrs["Primary PI Last Name"]         = "primary_pi.try(:last_name)"
+    attrs["Primary PI First Name"]        = "primary_pi.try(:first_name)"
+    attrs["Primary PI Email"]             = "primary_pi.try(:email)"
+    attrs["Primary PI Institution"]       = "primary_pi.try(:professional_org_lookup, 'institution')"
+    attrs["Primary PI College"]           = "primary_pi.try(:professional_org_lookup, 'college')"
+    attrs["Primary PI Department"]        = "primary_pi.try(:professional_org_lookup, 'department')"
+    attrs["Primary PI Division"]          = "primary_pi.try(:professional_org_lookup, 'division')"
 
-    attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map, &:full_name).try(:join, ', ')"
-    attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
+    attrs["Primary Coordinator(s)"]       = "coordinators.try{map(&:full_name)}.try(:join, ', ')"
+    attrs["Primary Coordinator Email(s)"] = "coordinator_emails"
 
-    attrs["Business Manager(s)"] = "service_request.try(:protocol).try(:billing_managers).try(:map, &:full_name).try(:join, ', ')"
-    attrs["Business Manager Email(s)"] = "service_request.try(:protocol).try(:billing_business_manager_email)"
+    attrs["Business Manager(s)"]          = "billing_managers.try(:map, &:full_name).try(:join, ', ')"
+    attrs["Business Manager Email(s)"]    = ":billing_business_manager_email"
 
     if params[:show_epic_cols]
-      attrs["Selected For Epic"] = "service_request.try(:protocol).try(:selected_for_epic) ? 'Yes' : service_request.try(:protocol).try(:selected_for_epic).nil? ? '' : 'No'"
-      attrs["Last Epic Push Date"] = "service_request.try(:protocol).try(:last_epic_push_time)"
-      attrs["Last Epic Push Status"] = "service_request.try(:protocol).try(:last_epic_push_status)"
+      attrs["Selected For Epic"]          = "selected_for_epic ? 'Yes' : selected_for_epic.nil? ? '' : 'No'"
+      attrs["Last Epic Push Date"]        = "last_epic_push_time"
+      attrs["Last Epic Push Status"]      = "last_epic_push_status"
     end
 
     if params[:show_device_cols]
-      attrs["IND #"]            = "service_request.try(:protocol).try(:investigational_products_info).try(:ind_number)"
-      attrs["IDE/HDE/HUD Type"] = "PermissibleValue.get_value('product_exemption_type', service_request.try(:protocol).try(:investigational_products_info).try(:exemption_type))"
-      attrs["IDE/HDE/HUD #"]    = "service_request.try(:protocol).try(:investigational_products_info).try(:inv_device_number)"
+      attrs["IND #"]                      = "investigational_products_info.try(:ind_number)"
+      attrs["IDE/HDE/HUD Type"]           = "investigational_products_info.try(:exemption_type).present? ? PermissibleValue.get_value('product_exemption_type', investigational_products_info.try(:exemption_type)) : ''"
+      attrs["IDE/HDE/HUD #"]              = "investigational_products_info.try(:inv_device_number)"
     end
 
     attrs
@@ -93,20 +93,26 @@ class ProtocolsReport < ReportingModule
 
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
-  # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
-  # def includes => other tables to include
+  # includes, preload, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
+  # def includes => other tables to include for where queries
+  # def preload => other tables to eager load
   # def where => conditions for query
   # def uniq => return distinct records
   # def group => group by this attribute (including table name is always a safe bet, ex. identities.id)
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    SubServiceRequest
+    Protocol
   end
 
   # Other tables to include
   def includes
-    [:organization, { service_request: { protocol: [:sub_service_requests, :project_roles, :billing_managers, :coordinators, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }] } }, { line_items: :service }]
+    [:service_requests, sub_service_requests: { line_items: :service }]
+  end
+
+  # Other tables to prload
+  def preload
+    [:billing_managers, :coordinators, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }]
   end
 
   # Conditions
@@ -124,7 +130,7 @@ class ProtocolsReport < ReportingModule
     ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
 
     # get child organizations
-    if not ssr_organization_ids.empty?
+    if ssr_organization_ids.any?
       org = Organization.find(selected_organization_id)
       ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
@@ -133,15 +139,16 @@ class ProtocolsReport < ReportingModule
       submitted_at = DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
     end
 
-    # default values if none are provided
-    service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+    query             = { service_requests: { submitted_at: submitted_at } }
+    query[:services]  = { organization_id: service_organization_ids } if service_organization_ids.any?
 
-    ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
+    if ssr_organization_ids.any? || args[:status]
+      query[:sub_service_requests] = {}
+      query[:sub_service_requests][:organization_id]  = ssr_organization_ids if ssr_organization_ids.any?
+      query[:sub_service_requests][:status]           = args[:status] if args[:status]
+    end
 
-    submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
-    statuses = args[:status] || PermissibleValue.get_key_list('status') # use all if none are selected
-
-    return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return query
   end
 
   # Return only uniq records for
@@ -149,7 +156,6 @@ class ProtocolsReport < ReportingModule
   end
 
   def group
-    "protocol_id"
   end
 
   def order

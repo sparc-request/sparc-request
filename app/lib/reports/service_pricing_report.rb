@@ -143,8 +143,9 @@ class ServicePricingReport < ReportingModule
 
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
-  # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
-  # def includes => other tables to include
+  # includes, preload, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
+  # def includes => other tables to include for where queries
+  # def preload => other tables to eager load
   # def where => conditions for query
   # def uniq => return distinct records
   # def group => group by this attribute (including table name is always a safe bet, ex. identities.id)

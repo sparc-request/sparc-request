@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,13 +29,16 @@
       .form-row
         .form-group.col-3
           = f.label :funding_status, class: 'required', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
-          = f.select :funding_status,options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status), { include_blank: true }, class: 'selectpicker'
+          .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
+            = f.select :funding_status,options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status), { include_blank: true }, class: 'selectpicker', disabled: protocol.locked?
         .form-group.col-3#fundingSourceContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
           = f.label :funding_source, class: 'required', title: t('protocols.tooltips.funding_source'), data: { toggle: 'tooltip', placement: 'right' }
-          = f.select :funding_source,options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record?
+          .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
+            = f.select :funding_source, options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record? || protocol.locked?
         .form-group.col-3#potentialFundingSourceContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
           = f.label :potential_funding_source, class: 'required', title: t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' }
-          = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record?
+          .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
+            = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record? || protocol.locked?
         .form-group.col-3#fundingSourceOtherContainer{ class: protocol.internally_funded? ? '' : 'd-none' }
           = f.label :funding_source_other, t('constants.prompts.please_specify'), class: 'required'
           = f.text_field :funding_source_other, class: 'form-control'

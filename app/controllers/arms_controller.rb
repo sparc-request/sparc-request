@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,6 @@ class ArmsController < ApplicationController
   before_action :initialize_service_request,  unless: :in_dashboard?
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_admin,             if: :in_dashboard?, except: [:index]
-  before_action :authorize_overlord,          only: [:index]
   before_action :find_arm,                    only: [:edit, :update, :destroy]
 
   def index
@@ -73,6 +72,10 @@ class ArmsController < ApplicationController
     setup_calendar_pages
 
     if @arm.update_attributes(arm_params)
+      if params[:apply_max_subject_count] == 'true'
+        @arm.line_items_visits.update_all(subject_count: @arm.subject_count)
+      end
+
       flash[:success] = t('arms.updated')
     else
       @errors = @arm.errors

@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,10 +29,7 @@
         %h3.mb-0
           = t(:proper)[:confirmation][:service_requests_notice]
       .alert.alert-success.mb-0.rounded-0
-        - if action_name == 'obtain_research_pricing'
-          = t(:proper)[:confirmation][:cost_estimate_warning]
-        - else
-          = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
+        = raw t('proper.confirmation.confirmation_warning', department_name: Setting.get_value('contact_us_department'), phone: Setting.get_value('contact_us_phone'), email: Setting.get_value('contact_us_mail_to'))
       %table.table.table-bordered.mb-0#request-ssrs-table
         %thead.bg-light
           %tr

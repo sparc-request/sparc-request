@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,5 +24,11 @@ $('#studyLevelActivitiesTab').html('<%= j render "dashboard/sub_service_requests
 <% else %>
 $('#studyLevelActivitiesTable').bootstrapTable('refresh')
 <% end %>
+
+# Re-render Admin Edit SSR header to update costs
+if $("#subServiceRequestSummary").length
+  $("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

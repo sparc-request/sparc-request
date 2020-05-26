@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -175,9 +175,6 @@ RSpec.describe 'User edits survey fields', js: true do
       wait_for_javascript_to_finish
 
       bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
-      wait_for_javascript_to_finish
-
-      fill_in "survey-#{@form.id}-surveyable", with: "Helpful"
       wait_for_javascript_to_finish
 
       bootstrap_typeahead("#survey-#{@form.id}-surveyable", service.name)

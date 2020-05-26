@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,12 +24,12 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_action :initialize_service_request,      except: [:approve_changes]
-  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
+  before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
   before_action :authorize_identity,              except: [:approve_changes, :show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
-  before_action :find_service,                    only:   [:catalog]
+  before_action :find_linked_entity,              only:   [:catalog]
   before_action :current_page
 
   def show
@@ -107,39 +107,36 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def obtain_research_pricing
-    @protocol = @service_request.protocol
-    @service_request.previous_submitted_at = @service_request.submitted_at
-
-    NotifierLogic.delay.obtain_research_pricing_logic(@service_request, current_user)
-    render :confirmation
-  end
-
   def confirmation
-    @protocol = @service_request.protocol
-    @service_request.previous_submitted_at = @service_request.submitted_at
+    respond_to do |format|
+      format.js # Nothing needed but rendering a modal
+      format.html {
+        @protocol = @service_request.protocol
+        @service_request.previous_submitted_at = @service_request.submitted_at
 
-    if Setting.get_value("use_epic") && @service_request.should_push_to_epic? && @protocol.selected_for_epic?
-      # Send a notification to Lane et al to create users in Epic.  Once
-      # that has been done, one of them will click a link which calls
-      # approve_epic_rights.
-      @protocol.ensure_epic_user
-      if Setting.get_value("queue_epic")
-        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
-      else
-        @protocol.awaiting_approval_for_epic_push
-        send_epic_notification_for_user_approval(@protocol)
-      end
+        perform_fulfillment_synch_check(@service_request)
+
+        if @service_request.should_push_to_epic?
+          # Send a notification to Lane et al to create users in Epic.  Once
+          # that has been done, one of them will click a link which calls
+          # approve_epic_rights.
+          @protocol.ensure_epic_user
+          if Setting.get_value("queue_epic")
+            EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) if should_queue_epic?(@protocol)
+          else
+            @protocol.awaiting_approval_for_epic_push
+            send_epic_notification_for_user_approval(@protocol)
+          end
+        end
+
+        NotifierLogic.delay.confirmation_logic(@service_request, current_user, params[:ssrids])
+      }
     end
-
-    NotifierLogic.delay.confirmation_logic(@service_request, current_user)
-    render formats: [:html]
   end
 
   def save_and_exit
     @service_request.protocol.update_attributes(milestones_params) if milestones_params
     @service_request.update_status('draft', current_user)
-    @service_request.ensure_ssr_ids
 
     respond_to :js
   end
@@ -293,7 +290,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def find_service
+  def find_linked_entity
     if params[:service_id]
       @service  = Service.find(params[:service_id])
       @provider = @service.provider
@@ -301,6 +298,33 @@ class ServiceRequestsController < ApplicationController
       @core     = @service.core
 
       redirect_to catalog_service_request_path(srid: @service_request.id) unless @service.is_available?
+    elsif params[:organization_id]
+      @organization = Organization.find(params[:organization_id])
+      @institution  = @organization.institution unless @organization.is_a?(Institution)
+      @provider     = @organization.provider    unless [Institution, Provider].include?(@organization.class)
+      @program      = @organization.program     unless [Institution, Provider, Program].include?(@organization.class)
+      @core         = @organization             if @organization.is_a?(Core)
+
+      redirect_to catalog_service_request_path(srid: @service_request.id) unless @organization.is_available?
+    end
+  end
+
+  # If a service request's ssr is in work fulfillment and a line item has been 
+  # added (exists in sparc but not in fulfillment) then that ssr should be synched
+  # to fulfillment
+  def perform_fulfillment_synch_check(service_request)
+    service_request.line_items.each do |line_item|
+      ssr = line_item.sub_service_request
+      cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: ssr.id).first
+
+      if (ssr.imported_to_fulfillment? && cwf_protocol && line_item.service.one_time_fee)
+        cwf_ssr_service_ids = cwf_protocol.line_items.map{|x| x.service_id}
+        if !cwf_ssr_service_ids.include?(line_item.service_id) 
+          ssr.synch_to_fulfillment = true
+          FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: line_item.id, action: 'create')
+          ssr.save(validate: false)
+        end
+      end
     end
   end
 end

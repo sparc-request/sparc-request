@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,8 +41,20 @@ if window.location.pathname.startsWith('/dashboard')
   $('.service-request-card:not(:eq(0))').remove()
   $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
   $(".service-requests-table").bootstrapTable()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
 <% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>
+<% if @response.respondable.has_ssrs_for_resubmission? %>
+$.ajax
+  method: 'GET'
+  dataType: 'script'
+  url: '/service_request/confirmation'
+  data:
+    srid: getSRId()
+<% else %>
 $('#modalContainer').modal('hide')
+<% end %>
 <% else %>
 window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% end %>

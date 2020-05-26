@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ RSpec.describe 'User completes a form', js: true do
     service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1, one_time_fee: true)
     @protocol = create(:study_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
-    @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
+    @ssr      = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: org, status: 'draft')
                 create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     @form     = create(:form, :with_question, surveyable: service, active: true)
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -32,11 +32,11 @@ RSpec.describe "User selects organizations and filters", js: :true do
 		good_org      = create(:core, parent: program, name: "Corey's House")
 		good_protocol = create(:study_without_validations, primary_pi: jug2)
 		good_sr       = create(:service_request_without_validations, protocol: good_protocol)
-										create(:sub_service_request, service_request: good_sr, organization: good_org)
+										create(:sub_service_request, protocol: good_protocol, service_request: good_sr, organization: good_org)
 		bad_org       = create(:core, parent: program, name: "Not Corey's House")
 		bad_protocol  = create(:study_without_validations, primary_pi: jug2)
 		bad_sr        = create(:service_request_without_validations, protocol: bad_protocol)
-										create(:sub_service_request, service_request: bad_sr, organization: bad_org)
+										create(:sub_service_request, protocol: bad_protocol, service_request: bad_sr, organization: bad_org)
 
 		create(:service_provider, identity: jug2, organization: good_org)
 

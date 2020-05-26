@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,7 @@ ConfirmSwal.fire(
   confirmButtonText: I18n.t('constants.yes_select')
   cancelButtonText: I18n.t('constants.no_select')
 ).then (result) ->
+  $('#submitRequest').removeClass('disabled')
   if result.value
     $.ajax
       method: 'get'
@@ -36,7 +37,23 @@ ConfirmSwal.fire(
         survey_id:        "<%= @survey.id %>"
         type:             "<%= SystemSurvey.name %>"
       success: ->
-        $(document).one 'hide.bs.modal', ->
+        $(document).one 'hidden.bs.modal', ->
+          # When previously subbmited show the SSRs resubmission modal
+          <% if @service_request.has_ssrs_for_resubmission? && @forward.include?('confirmation') %>
+          $.ajax
+            method: 'get'
+            dataType: 'script'
+            url: "<%= confirmation_service_request_path(srid: @service_request.id) %>"
+          <% else %>
           window.location = "<%= @forward %>"
+          <% end %>
   else
+    # When previously submited show the SSRs resubmission modal
+    <% if @service_request.has_ssrs_for_resubmission? && @forward.include?('confirmation') %>
+    $.ajax
+      method: 'get'
+      dataType: 'script'
+      url: "<%= confirmation_service_request_path(srid: @service_request.id) %>"
+    <% else %>
     window.location = "<%= @forward %>"
+    <% end %>

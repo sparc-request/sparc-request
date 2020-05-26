@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,9 +21,9 @@
 FactoryBot.define do
   factory :sub_service_request do
     service_requester_id { Random.rand(1000) }
-    sequence(:ssr_id) { |n| "000#{n}" }
     status {"draft"}
     imported_to_fulfillment {true}
+    ssr_id { "0001" }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -76,10 +76,11 @@ RSpec.describe EpicInterface do
   build_study_type_question_groups
 
   let!(:study) {
-    human_subjects_info = build(:human_subjects_info, pro_number: nil)
+    human_subjects_info = build(:human_subjects_info)
     investigational_products_info = build(:investigational_products_info, inv_device_number: nil)
     study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: study_type_question_group_version_3.id)
     study.save(validate: false)
+    create(:irb_record, human_subjects_info: study.human_subjects_info)
     study
   }
 
@@ -316,15 +317,15 @@ RSpec.describe EpicInterface do
       epic_interface.send_study_creation(study)
 
       xml = <<-END
-          <subjectOf typeCode="SUBJ"
-                    xmlns='urn:hl7-org:v3'
-                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-            <studyCharacteristic classCode="OBS" moodCode="EVN">
-              <code code="RGCL3"/>
-              <value value="NO_COFC"/>
-            </studyCharacteristic>
-          </subjectOf>
-        END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB" />
+            <value value="#{study.irb_records.first.pro_number}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
 
       expected = Nokogiri::XML(xml)
 
@@ -338,8 +339,6 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for a pro number' do
-      study.human_subjects_info.update_attributes(pro_number: '1234')
-
       epic_interface.send_study_creation(study)
 
       xml = <<-END
@@ -348,7 +347,7 @@ RSpec.describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value value="1234" />
+            <value value="#{study.irb_records.first.pro_number}" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -361,13 +360,10 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[1]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for an nct number' do
-      study.human_subjects_info.update_attributes(nct_number: '12345678')
-      study.research_types_info.update_attributes(human_subjects: true)
-
       epic_interface.send_study_creation(study)
 
       xml = <<-END
@@ -376,7 +372,7 @@ RSpec.describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="NCT" />
-            <value value="12345678" />
+            <value value="#{study.human_subjects_info.nct_number}" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -393,8 +389,6 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for an ide number' do
-      study.investigational_products_info.update_attributes(inv_device_number: '12345678')
-
       epic_interface.send_study_creation(study)
 
       xml = <<-END
@@ -403,7 +397,7 @@ RSpec.describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="RGFT2" />
-            <value value="12345678" />
+            <value value="#{study.investigational_products_info.inv_device_number}" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -416,7 +410,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[1]).to be_equivalent_to(expected.root)
+      expect(node[3]).to be_equivalent_to(expected.root)
     end
 
     describe 'emitting a subjectOf for an version 1 study type' do
@@ -450,7 +444,8 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-        expect(node[1]).to be_equivalent_to(expected.root)
+
+        expect(node[4]).to be_equivalent_to(expected.root)
       end
 
       it 'should have value = YES_COFC' do
@@ -479,7 +474,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[1]).to be_equivalent_to(expected.root)
+        expect(node[4]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 1' do
@@ -507,7 +502,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 2' do
@@ -536,7 +531,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 5' do
@@ -565,7 +560,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 15' do
@@ -594,7 +589,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
     end
 
@@ -630,7 +625,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[3]).to be_equivalent_to(expected.root)
 
       end
 
@@ -660,7 +655,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[1]).to be_equivalent_to(expected.root)
+        expect(node[4]).to be_equivalent_to(expected.root)
       end
 
       it 'return a study type of 1' do
@@ -688,7 +683,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'return a study type of 2' do
@@ -717,7 +712,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'return a study type of 5' do
@@ -746,7 +741,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
 
       it 'return a study type of 11' do
@@ -775,7 +770,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[2]).to be_equivalent_to(expected.root)
       end
     end
 
@@ -804,7 +799,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
@@ -831,7 +826,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
@@ -858,7 +853,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
   end # send_study_creation
@@ -893,7 +888,8 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-      expect(node[1]).to be_equivalent_to(expected.root)
+
+      expect(node[4]).to be_equivalent_to(expected.root)
 
     end
 
@@ -922,7 +918,7 @@ RSpec.describe EpicInterface do
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[1]).to be_equivalent_to(expected.root)
+      expect(node[4]).to be_equivalent_to(expected.root)
     end
 
     it 'return a study type of 1' do
@@ -950,7 +946,7 @@ RSpec.describe EpicInterface do
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'return a study type of 3' do
@@ -978,7 +974,8 @@ RSpec.describe EpicInterface do
       'env' => 'http://www.w3.org/2003/05/soap-envelope',
       'rpe' => 'urn:ihe:qrph:rpe:2009',
       'hl7' => 'urn:hl7-org:v3')
-      expect(node[0]).to be_equivalent_to(expected.root)
+
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
@@ -1005,7 +1002,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
@@ -1032,7 +1029,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
@@ -1059,7 +1056,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[2]).to be_equivalent_to(expected.root)
     end
   end
 

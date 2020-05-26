@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -52,10 +52,17 @@ module V1
     root 'human_subjects_infos', 'human_subjects_info'
 
     expose  :protocol_id,
-            :nct_number,
+            :nct_number
+  end
+
+  class IrbRecordFull < IrbRecordShallow
+    root 'irb_records', 'irb_record'
+
+    expose  :human_subjects_info_id,
             :pro_number,
             :irb_of_record,
             :submission_type,
+            :study_phase_values,
             :approval_pending
 
     with_options(format_with: :iso_timestamp) do
@@ -89,6 +96,23 @@ module V1
     expose  :arm_id,
             :line_item_id,
             :subject_count
+  end
+
+  class OrganizationFull < OrganizationShallow
+    root 'organizations', 'organization'
+
+    expose  :name,
+            :abbreviation,
+            :order,
+            :description,
+            :type,
+            :is_available,
+            :process_ssrs,
+            :tag_list,
+            :direct_link
+
+    expose  :parent, using: V1::OrganizationFull
+    expose  :primary_contacts, using: V1::IdentityFull
   end
 
   class ProcessSsrsOrganizationFull < ProcessSsrsOrganizationShallow

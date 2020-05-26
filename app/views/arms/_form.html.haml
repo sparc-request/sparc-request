@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,13 @@
           = f.text_field :name, class: 'form-control'
         .form-group
           = f.label :subject_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
-          = f.number_field :subject_count, class: 'form-control', min: 0
+          .input-group
+            = f.number_field :subject_count, class: 'form-control', min: 0
+            .input-group-append
+              %button.btn.btn-secondary#applyMaxSubjectCount{ type: 'button', title: t('arms.tooltips.subject_count_apply_all'), onclick: "$('#apply_max_subject_count').prop('checked', !$('#apply_max_subject_count').prop('checked'))", data: { toggle: 'tooltip' } }
+                %span.mr-2
+                  = t('actions.apply_all')
+                = check_box_tag :apply_max_subject_count, 'true', false, class: 'pointer-none'
         .form-group
           = f.label :visit_count, class: 'required', title: t('arms.tooltips.subject_count'), data: { toggle: 'tooltip' }
           = f.number_field :visit_count, class: 'form-control', min: 0

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -79,7 +79,7 @@ RSpec.describe Notification, type: :model do
         read_by_other_user: true,
         body: "message4")
 
-      expect(Notification.unread_by(user1.id)).to eq(expected)
+      expect(Notification.unread_by(user1)).to eq(expected)
     end
   end
 
@@ -118,7 +118,7 @@ RSpec.describe Notification, type: :model do
           sub_service_request_id: sub_service_request1.id,
           body: "message4") # doesn't involve user1
 
-        expect(Notification.belonging_to(user1.id)).to eq(expected)
+        expect(Notification.belonging_to(user1)).to eq(expected)
       end
     end
 
@@ -156,7 +156,7 @@ RSpec.describe Notification, type: :model do
           sub_service_request_id: sub_service_request1.id,
           body: "message4") # doesn't involve user1
 
-        expect(Notification.belonging_to(user1.id, sub_service_request1.id)).to eq(expected)
+        expect(Notification.belonging_to(user1, sub_service_request1.id)).to eq(expected)
       end
     end
   end
@@ -188,7 +188,7 @@ RSpec.describe Notification, type: :model do
           other_user_id: user1.id,
           body: "message3")
 
-        expect(Notification.in_inbox_of(user1.id, sub_service_request1.id)).to eq([notification1])
+        expect(Notification.in_inbox_of(user1, sub_service_request1.id)).to eq([notification1])
       end
     end
 
@@ -218,7 +218,7 @@ RSpec.describe Notification, type: :model do
           other_user_id: user1.id,
           body: "message3")
 
-        expect(Notification.in_inbox_of(user1.id)).to eq([notification1, notification2])
+        expect(Notification.in_inbox_of(user1)).to eq([notification1, notification2])
       end
     end
   end
@@ -250,7 +250,7 @@ RSpec.describe Notification, type: :model do
           other_user_id: user2.id,
           body: "message3")
 
-        expect(Notification.in_sent_of(user1.id, sub_service_request1.id)).to eq([expected_notification])
+        expect(Notification.in_sent_of(user1, sub_service_request1.id)).to eq([expected_notification])
       end
     end
 
@@ -280,7 +280,7 @@ RSpec.describe Notification, type: :model do
           other_user_id: user2.id,
           body: "message3")
 
-        expect(Notification.in_sent_of(user1.id)).to eq([notification1, notification2])
+        expect(Notification.in_sent_of(user1)).to eq([notification1, notification2])
       end
     end
   end

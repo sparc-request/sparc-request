@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -67,14 +67,12 @@ RSpec.describe Arm, type: :model do
       arm = build(:arm, protocol: @protocol, visit_count: 0)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Visit Count must be greater than 0")
     end
 
     it 'must not have a visit count of less than 0' do
       arm = build(:arm, protocol: @protocol, visit_count: -1)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Visit Count must be greater than 0")
     end
   end
 
@@ -89,14 +87,12 @@ RSpec.describe Arm, type: :model do
       arm = build(:arm, protocol: @protocol, subject_count: 0)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Subject Count must be greater than 0")
     end
 
     it 'must not have a subject count of less than 0' do
       arm = build(:arm, protocol: @protocol, subject_count: -1)
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Subject Count must be greater than 0")
     end
   end
 end

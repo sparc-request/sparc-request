@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -36,11 +36,11 @@ RSpec.describe ContactMailer, type: :mailer do
   end
 
   it 'renders the receiver email' do
-    expect(mail.to).to eq(['success@musc.edu'])
+    expect(mail.to).to eq([Setting.get_value('contact_us_mail_to')])
   end
 
   it 'renders the receiver cc email' do
-    expect(mail.cc).to eq(['sparcrequest@gmail.com'])
+    expect(mail.cc).to eq([Setting.get_value('contact_us_cc')])
   end
 
   it 'renders the sender email' do

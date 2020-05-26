@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -55,7 +55,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[.='Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[.='Please contact #{Setting.get_value('contact_us_mail_to')} or call (843) 792-8300 for technical assistance or contact the service provider directly for questions related to your service request.']")
       end
 
       it "should display acknowledgments" do
@@ -118,7 +118,7 @@ RSpec.describe UserMailer do
       end
 
       it "should display message conclusion" do
-        expect(@mail).to have_xpath("//p[.='Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+        expect(@mail).to have_xpath("//p[.='Please contact #{Setting.get_value('contact_us_mail_to')} or call (843) 792-8300 for technical assistance or contact the service provider directly for questions related to your service request.']")
       end
 
       it "should display acknowledgments" do

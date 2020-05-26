@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,13 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .col-12.col-lg-6.mb-3.mb-lg-0#catalogCenter
-  .form-group.input-group
-    %span.input-group-icon
-      = icon('fas', 'search fa-lg text-muted')
-    = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "form-control form-control-lg"
   #welcomeMessage
     - if organization
-      = render 'catalogs/description', organization: organization, service_request: service_request, locked_org_ids: locked_org_ids
+      = render 'catalogs/description', organization: organization.is_a?(Core) ? organization.parent : organization, service_request: service_request, locked_org_ids: locked_org_ids
     - elsif @service
       = render 'catalogs/description', organization: @program, service_request: service_request, locked_org_ids: locked_org_ids
     - else

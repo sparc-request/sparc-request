@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,7 +49,7 @@
 #     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
 
 #   ### Statuses ###
-#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   updatable_statuses:                         ['first_draft', 'draft', 'awaiting_pi_approval']
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
@@ -173,7 +173,7 @@
 #     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
 
 #   ### Statuses ###
-#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   updatable_statuses:                         ['first_draft', 'draft', 'awaiting_pi_approval']
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
@@ -297,7 +297,7 @@
 #     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
 
 #   ### Statuses ###
-#   updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+#   updatable_statuses:                         ['first_draft', 'draft', 'awaiting_pi_approval']
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
@@ -421,7 +421,7 @@ development:
     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
 
   ### Statuses ###
-  updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  updatable_statuses:                         ['first_draft', 'draft', 'awaiting_pi_approval']
   finished_statuses:                          ['complete', 'withdrawn']
 
   ### Other Generic Settings ###
@@ -545,7 +545,7 @@ test:
     sparc_forms:                              ['SPARCForms',        '127.0.0.1:3000/surveyor/responses']
 
   ### Statuses ###
-  updatable_statuses:                         ['first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  updatable_statuses:                         ['first_draft', 'draft', 'awaiting_pi_approval']
   finished_statuses:                          ['complete', 'withdrawn']
 
   ### Other Generic Settings ###

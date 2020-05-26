@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ RSpec.describe 'User sets each Service Calendar field', js: true do
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     sr        = create(:service_request_without_validations, protocol: protocol)
-    ssr       = create(:sub_service_request, service_request: sr, organization: org)
+    ssr       = create(:sub_service_request, protocol: protocol, service_request: sr, organization: org)
     @pppv_li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: pppv)
     @otf_li   = create(:line_item, service_request: sr, sub_service_request: ssr, service: otf, units_per_quantity: 1, quantity: 1)
 

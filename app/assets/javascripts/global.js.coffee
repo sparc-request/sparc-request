@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -81,7 +81,7 @@ $ ->
       $control.attr('alt', text)
 
   $(document).on 'show.bs.collapse hide.bs.collapse', 'div[data-toggle=collapse] + .collapse', (event) ->
-    if event.delegateTarget.activeElement.tagName == 'A'
+    if ['A', 'I'].includes(event.delegateTarget.activeElement.tagName)
       event.preventDefault()
 
   $(document).on('mouseover', 'div[data-toggle=collapse]', (event) ->
@@ -90,7 +90,7 @@ $ ->
     else
       $(this).addClass('hover')
   ).on('mouseleave', 'div[data-toggle=collapse]', (event) ->
-    $(this).removeClass('hover')
+    $(this).removeClass('hover active')
   ).on('mousedown', 'div[data-toggle=collapse]', (event) ->
     if event.target.tagName == 'DIV'
       $(this).addClass('active')

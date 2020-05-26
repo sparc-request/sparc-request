@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,8 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
-
-  has_and_belongs_to_many :study_phases
+  has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_many :identities,                   through: :project_roles
   has_many :services,                     through: :service_requests
@@ -61,6 +60,7 @@ class Protocol < ApplicationRecord
   has_many :organizations,                through: :sub_service_requests
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
+  has_many :irb_records,                  through: :human_subjects_info
 
   has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity
@@ -115,9 +115,11 @@ class Protocol < ApplicationRecord
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
+  before_create :set_next_ssr_id
+
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && has_human_subject_info?
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
   end
 
   def has_human_subject_info?
@@ -181,10 +183,14 @@ class Protocol < ApplicationRecord
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'
       order("sub_service_requests_count" => order)
+    when 'protocol_merges'
+      joins(:protocol_merges).order("protocol_merges.id" => order)
     end
   }
 
-  scope :search_query, lambda { |search_attrs|
+  scope :search_query, -> (search_attrs) {
+    return if search_attrs.search_text.blank?
+
     # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
@@ -194,7 +200,7 @@ class Protocol < ApplicationRecord
     ### SEARCH QUERIES ###
     identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
     protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
-    pro_num_query     = HumanSubjectsInfo.arel_table[:pro_number].matches(like_search_term)
+    pro_num_query     = IrbRecord.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
     title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
     ### END SEARCH QUERIES ###
@@ -215,14 +221,14 @@ class Protocol < ApplicationRecord
     when "Protocol ID"
       where(protocol_id_query).distinct
     when "PRO#"
-      joins(:human_subjects_info).
+      joins(:irb_records).
         where(pro_num_query).distinct
     when "RMID"
       where(rmid_query).distinct
     when "Short/Long Title"
       where(title_query).distinct
     when ""
-      joins(:identities).left_outer_joins(:human_subjects_info).
+      joins(:identities).left_outer_joins(:irb_records).
         where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query)).
         distinct
     end
@@ -230,10 +236,13 @@ class Protocol < ApplicationRecord
 
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
+
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity(id)
+    elsif filter == 'for_all'
+      return
     end
   }
 
@@ -304,6 +313,12 @@ class Protocol < ApplicationRecord
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
   }
+
+  def research_master_id=(rmid)
+    self.rmid_validated = false if rmid.blank?
+
+    super(rmid)
+  end
 
   def validate_dates
     is_valid = true
@@ -409,16 +424,16 @@ class Protocol < ApplicationRecord
     end
   end
 
-  def primary_principal_investigator
-    primary_pi_role.try(:identity)
-  end
-
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end
 
   def coordinator_emails
-    coordinators.pluck(:email).join(', ')
+    if self.coordinators.loaded?
+      coordinators.map(&:email).join(', ')
+    else
+      coordinators.pluck(:email).join(', ')
+    end
   end
 
   def emailed_associated_users
@@ -476,7 +491,7 @@ class Protocol < ApplicationRecord
     elsif self.pending_funding?
       self.potential_funding_source
     else
-      nil
+      'unfunded'  ## for other status options
     end
   end
 
@@ -489,7 +504,7 @@ class Protocol < ApplicationRecord
       self.last_epic_push_status = 'started'
       save(validate: false)
 
-      Rails.logger.info("Sending study message to Epic")
+      Rails.logger.info("Sending study message to Epic - Study #{self.id}")
       withhold_calendar ? epic_interface.send_study_creation(self) : epic_interface.send_study(self)
 
       self.last_epic_push_status = 'complete'
@@ -497,7 +512,8 @@ class Protocol < ApplicationRecord
 
       EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
     rescue Exception => e
-      Rails.logger.info("Push to Epic failed.")
+      Rails.logger.error("Push to Epic failed - Study #{self.id}")
+      Rails.logger.error([e.message, *e.backtrace].join($/))
 
       self.last_epic_push_status = 'failed'
       save(validate: false)
@@ -559,7 +575,7 @@ class Protocol < ApplicationRecord
   end
 
   def should_push_to_epic?
-    service_requests.any?(&:should_push_to_epic?)
+    self.service_requests.any?(&:should_push_to_epic?)
   end
 
   def has_nexus_services?
@@ -624,6 +640,10 @@ class Protocol < ApplicationRecord
 
   private
 
+  def set_next_ssr_id
+    self.next_ssr_id = self.service_requests.any? ? self.service_requests.first.next_ssr_id : 1
+  end
+
   def indirect_cost_enabled
     Setting.get_value('use_indirect_cost')
   end
@@ -639,7 +659,7 @@ class Protocol < ApplicationRecord
   def validate_existing_rmid
     rmid = Protocol.get_rmid(self.research_master_id)
 
-    if self.research_master_id.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty? 
+    if self.research_master_id.present? && rmid.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty?
       self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
     end
   end

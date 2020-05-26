@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,11 +37,12 @@ en:
     catalog:
       accordion:
         header: "Browse Service Catalog"
+        search_placeholder: "Search by Name, CPT Code, or EAP ID"
       center:
-        search_placeholder: "Search for services by name, CPT code, or EAP ID"
         header: "Welcome to SPARCRequest"
         subheader: "Storefront of Research Services"
         description: "<b>SPARCRequest</b> (<b>S</b>ervices, <b>P</b>ricing, & <b>A</b>pplication for <b>R</b>esearch <b>C</b>enters) is a web-based research transaction management system that provides a central portal to researchers and their study teams to browse for research services and resources as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. SPARCRequest is OSS (Open-Source Software) for which MUSC holds the copyright license. SPARCRequest is developed in a collaborative and public manner for easy adoptability and the source code is available to anyone."
+        cd2h_text: "Services listed in SPARCRequest are discoverable in <a href='http://labs.cd2h.org/search/' target='_blank'><strong>CTSAsearch</strong></a>, part of CD2H’s Science of Translational Science platform."
         text: "Browse our service catalog to start a new request<sup>*</sup> or"
         notice: "* You may only select services applicable to ONE Study or Project at a time"
         dashboard_link: "Visit Your Dashboard"
@@ -55,6 +56,7 @@ en:
         text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."
       services_missing:
         header: "Add Services to Continue"
+      service_provider_text: "To learn more about these Services, please contact one of the Service Providers listed below:"
 
     ############
     # PROTOCOL #
@@ -116,11 +118,12 @@ en:
     # CONFIRMATION #
     ################
     confirmation:
+      ssr_resubmission:
+        header: "Select Requests to Resubmit"
       confirmation_warning: "An email has been sent to each of your Service Providers and they should be contacting you soon.<br>If you have any questions or concerns, please don't hesitate to contact the %{department_name} at %{phone} or <a href='mailto:%{email}'>%{email}</a>"
-      cost_estimate_warning: " Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
       service_requests_notice: "My Service Requests"
       download_request: "Download Request"
-      to_dashboard: "Go to Dashboard"
+      to_protocol: "Go to Protocol"
       table_fields:
         request_id: "Request ID"
         institution: "Institution"
@@ -138,7 +141,7 @@ en:
       header: "My Services"
       add_service: "Add to cart"
       remove_service: "Remove from cart"
-      back_to_catalog: "Back to Catalog"
+      back_to_catalog: "Return to Catalog"
       tabs:
         active:
           header: "Current"
@@ -208,9 +211,6 @@ en:
             xs: "Step 5"
           header: "Step 5: Review Your Request"
           sub_header: "Review your request and make changes if necessary"
-        obtain_research_pricing:
-          header: "Get a Cost Estimate"
-          sub_header: "You have successfully submitted a request to get a cost estimate"
         confirmation:
           header: "Submission Confirmation"
           sub_header: "Thank you for submitting your request through SPARCRequest"
@@ -219,14 +219,12 @@ en:
           full: "Go Back"
           small: "Back"
         save_as_draft: "Save as Draft"
-        get_cost_estimate: "Get a Cost Estimate"
         save_and_continue:
           full: "Save and Continue"
           small: "Continue"
         submit: "Submit Request"
         saving: "Saving..."
         submitting: "Submitting..."
-        getting_cost: "Getting Cost..."
       save_as_draft:
         title: "Save as Draft?"
         text: "This Protocol will be saved as a draft and no notifications or emails will be sent to service providers.<br><br>Are you sure you want to proceed?"

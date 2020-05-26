@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,10 +29,10 @@ RSpec.describe "User selects statuses and filters", js: :true do
     organization        = create(:organization)
     protocol_draft      = create(:study_without_validations, primary_pi: jug2)
     sr_draft            = create(:service_request_without_validations, protocol: protocol_draft)
-                          create(:sub_service_request, status: 'draft', service_request: sr_draft, organization: organization)
+                          create(:sub_service_request, status: 'draft', protocol: protocol_draft, service_request: sr_draft, organization: organization)
     protocol_submitted  = create(:study_without_validations, primary_pi: jug2)
     sr_submitted        = create(:service_request_without_validations, protocol: protocol_submitted)
-                          create(:sub_service_request, status: 'submitted', service_request: sr_submitted, organization: organization)
+                          create(:sub_service_request, status: 'submitted', protocol: protocol_submitted, service_request: sr_submitted, organization: organization)
 
     visit dashboard_protocols_path
     wait_for_javascript_to_finish

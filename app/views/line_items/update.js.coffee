@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -43,4 +43,10 @@ $(".line-item-<%= @line_item.id %>:visible .total-per-study").replaceWith("<%= j
 $('.one-time-fees-container:visible .max-total-direct').replaceWith("<%= j render 'service_calendars/master_calendar/otf/totals/max_total_direct_one_time_fee', service_request: @service_request %>")
 $('.one-time-fees-container:visible .max-total-per-study').replaceWith("<%= j render 'service_calendars/master_calendar/otf/totals/total_cost_per_study', service_request: @service_request %>")
 <% end %>
+
+# Re-render Admin Edit SSR header to update costs
+<% if @in_dashboard %>
+$("#subServiceRequestSummary").replaceWith("<%= j render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request %>")
+<% end %>
+
 <% end %>

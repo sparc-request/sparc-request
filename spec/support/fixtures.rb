@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -128,29 +128,29 @@ def build_project_type_answers
 end
 
 def build_service_request_with_project
-  build_service_request()
   build_project()
+  build_service_request()
   build_arms()
   build_one_time_fee_services()
   build_per_patient_per_visit_services()
 end
 
 def build_service_request_with_project_and_one_time_fees_only
-  build_service_request()
   build_project()
+  build_service_request()
   build_one_time_fee_services()
 end
 
 def build_service_request_with_project_and_per_patient_per_visit_only
-  build_service_request()
   build_project()
+  build_service_request()
   build_arms()
   build_per_patient_per_visit_services()
 end
 
 def build_service_request_with_study
-  build_service_request()
   build_study()
+  build_service_request()
   build_arms()
   build_one_time_fee_services()
   build_per_patient_per_visit_services()
@@ -179,7 +179,19 @@ def build_per_patient_per_visit_services
 end
 
 def build_service_request
-  let!(:service_request)     { create(:service_request_without_validations, status: "draft") }
+  let!(:service_request) { 
+    protocol =
+      if defined?(protocol) && protocol.present?
+        protocol
+      elsif defined?(study) && study.present?
+        study
+      elsif defined?(project) && project.present?
+        project
+      else
+        nil
+      end
+    create(:service_request_without_validations, status: "draft", protocol: protocol)
+  }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0, is_available: 1)}
   let!(:program)             { create(:program,:with_subsidy_map,parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, use_default_statuses: false)}
@@ -189,15 +201,12 @@ def build_service_request
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository") }
   let!(:core_15)             { create(:core, parent_id: program.id, abbreviation: "Imaging") }
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
-  let!(:sub_service_request) { create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft", org_tree_display: "SCTR1/Office of Biomedical Informatics")}
+  let!(:sub_service_request) { create(:sub_service_request, service_request: service_request, organization: program, status: "draft", org_tree_display: "SCTR1/Office of Biomedical Informatics")}
 
 
   before :each do
     program.tag_list.add("ctrc")
     program.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
-
-    # program.available_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
-    # program.editable_statuses.where(status: ['draft', 'submitted', 'get_a_cost_estimate', 'administrative_review']).update_all(selected: true)
 
     [program, core_13, core_15, core_16, core_17, core_62].each do |organization|
       organization.tag_list.add("clinical work fulfillment")
@@ -237,10 +246,6 @@ def build_project
         identity_id:     identity2.id,
         project_rights:  "approve",
         role:            "business-grants-manager")
-    service_request.update_attribute(:protocol_id, protocol.id)
-    sub_service_request.update_attribute(:protocol_id, protocol.id)
-    protocol.reload
-    service_request.reload
     protocol
   }
   build_project_type_answers()
@@ -257,9 +262,6 @@ def build_study
     protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, primary_pi_role_attributes: {identity_id: identity.id, project_rights: "approve", role: "primary-pi"})
     protocol.project_roles.create({identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"})
     protocol.save validate: false
-    service_request.update_attribute(:protocol_id, protocol.id)
-    sub_service_request.update_attribute(:protocol_id, protocol.id)
-    protocol.reload
     protocol
   }
   build_study_type_answers()

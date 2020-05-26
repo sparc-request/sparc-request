@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,10 +24,10 @@ class Document < ApplicationRecord
   audited
 
   SUPPORTED_FILE_TYPES = [
-    /\.pdf$/i,  /\.docx?$/i,  /\.xlsx?$/i,  /\.rtf$/i,
-    /\.txt$/i,  /\.csv$/i,    /\.ppt?$/i,   /\.msg$/i,
-    /\.eml$/i,  /\.jpg$/i,    /\.gif$/i,    /\.png$/i,
-    /\.tiff$/i, /\.jpeg$/i
+    /\.pdf$/i,  /\.docx?$/i, /\.xlsx?$/i, /\.txt$/i,
+    /\.csv$/i,  /\.ppt?$/i,  /\.msg$/i,   /\.eml$/i,
+    /\.jpg$/i,  /\.gif$/i,   /\.png$/i,   /\.tiff$/i,
+    /\.jpeg$/i
   ]
 
   belongs_to :protocol

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -53,7 +53,7 @@ namespace :reports do
                 research_rate = procedure.cost
                 cost = research_rate * r_qty
 
-                csv << [protocol.id, protocol.try(:primary_principal_investigator).try(:full_name), subject.name, subject.label, visit_name, visit_date, procedure.display_service_name, r_qty, research_rate, cost]
+                csv << [protocol.id, protocol.try(:primary_pi).try(:full_name), subject.name, subject.label, visit_name, visit_date, procedure.display_service_name, r_qty, research_rate, cost]
               end
             end
           end

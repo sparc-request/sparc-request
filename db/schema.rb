@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_31_190917) do
+ActiveRecord::Schema.define(version: 2020_05_18_200713) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -227,6 +227,14 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sub_service_request_id"
+    t.integer "line_item_id"
+    t.string "action"
+    t.boolean "synched", default: false
+    t.index ["sub_service_request_id"], name: "index_fulfillment_synchronizations_on_sub_service_request_id"
+  end
+
   create_table "fulfillments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.string "timeframe"
@@ -244,16 +252,9 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
 
   create_table "human_subjects_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.string "pro_number"
-    t.string "irb_of_record"
-    t.string "submission_type"
-    t.date "initial_irb_approval_date"
-    t.date "irb_approval_date"
-    t.date "irb_expiration_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.boolean "approval_pending"
     t.string "nct_number"
     t.index ["protocol_id"], name: "index_human_subjects_info_on_protocol_id"
   end
@@ -267,8 +268,8 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "catalog_overlord"
     t.string "credentials_other"
@@ -324,6 +325,27 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
+  end
+
+  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "human_subjects_info_id"
+    t.string "pro_number"
+    t.string "irb_of_record"
+    t.string "submission_type"
+    t.date "initial_irb_approval_date"
+    t.date "irb_approval_date"
+    t.date "irb_expiration_date"
+    t.boolean "approval_pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
+  end
+
+  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "irb_record_id"
+    t.bigint "study_phase_id"
+    t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"
+    t.index ["study_phase_id"], name: "index_irb_records_study_phases_on_study_phase_id"
   end
 
   create_table "line_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -387,6 +409,7 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.bigint "other_user_id"
     t.boolean "read_by_originator"
     t.boolean "read_by_other_user"
+    t.boolean "shared"
     t.index ["originator_id"], name: "index_notifications_on_originator_id"
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end
@@ -414,6 +437,7 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
+    t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
   end
@@ -626,13 +650,6 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.string "guarantor_phone"
     t.string "guarantor_email"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
-  end
-
-  create_table "protocols_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "protocol_id", null: false
-    t.bigint "study_phase_id", null: false
-    t.index ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id"
-    t.index ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id"
   end
 
   create_table "question_responses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -899,6 +916,7 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
+    t.boolean "synch_to_fulfillment"
     t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
@@ -951,6 +969,8 @@ ActiveRecord::Schema.define(version: 2019_10_31_190917) do
     t.datetime "deleted_at"
     t.boolean "access_empty_protocols", default: false
     t.boolean "billing_manager"
+    t.boolean "allow_credit"
+    t.boolean "hold_emails", default: true
     t.index ["identity_id"], name: "index_super_users_on_identity_id"
     t.index ["organization_id"], name: "index_super_users_on_organization_id"
   end

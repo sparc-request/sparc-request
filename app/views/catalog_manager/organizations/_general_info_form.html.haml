@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,6 +47,11 @@
       .col-sm-9
         = f.check_box :process_ssrs, { checked: organization.process_ssrs, disabled: false, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
 
+    .form-group.survey_alert_container
+      = f.label :survey_completion_alerts, t(:catalog_manager)[:organization_form][:survey_completion_alerts], class: 'col-sm-3 control-label'
+      .col-sm-9
+        = f.check_box :survey_completion_alerts, { checked: organization.survey_completion_alerts, data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+
   - if ['Institution','Provider'].include?(organization.type) && current_user.catalog_overlord?
     .form-group
       = f.label :css_class, t(:catalog_manager)[:organization_form][:css_class], class: 'col-sm-3 control-label'
@@ -80,6 +85,14 @@
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'
       .col-sm-9
         = f.select :tag_list, options_from_collection_for_select(tags, :name, :humanized_name, organization.tags.pluck(:name)), {}, class: 'form-control selectpicker', multiple: true, data: { none_selected_text: t(:constants)[:prompts][:none] }
+  .form-group.shareable-link{ class: organization.is_available ? '' : 'hidden' }
+    = label_tag :share_link, t(:catalog_manager)[:shared_form][:share_link], class: 'col-sm-3 control-label'
+    .col-sm-9
+      .input-group
+        %span.input-group-btn
+          %button.btn.btn-default.copy-to-clipboard{ type: 'button', title: t(:actions)[:copy_clipboard][:action], data: { toggle: 'tooltip', target: 'share_link' } }
+            %span.glyphicon.glyphicon-copy
+        = text_field_tag :share_link, organization.direct_link, class: 'form-control', readonly: true
 
   %hr
   .pull-right

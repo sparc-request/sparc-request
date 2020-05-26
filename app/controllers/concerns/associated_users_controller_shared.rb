@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,6 @@ module AssociatedUsersControllerShared
     before_action :find_protocol_role,  only:   [:edit, :destroy]
     before_action :find_protocol,       except: [:update_professional_organizations]
     before_action :find_identity,       only:   [:new, :edit]
-    before_action :find_epic_user,      only:   [:new, :edit], if: :validate_epic_user?
   end
 
   def index
@@ -35,15 +34,25 @@ module AssociatedUsersControllerShared
   end
 
   def new
-    respond_to :js
-
     if params[:identity_id] # if user selected
+      @identity = Identity.find_or_create(params[:identity_id])
+
       @protocol_role = @protocol.project_roles.new(identity_id: @identity.id)
 
-      unless @protocol_role.unique_to_protocol?
+      if use_and_validate_epic_users?
+        @epic_user = EpicUser.for_identity(@identity)
+
+        if @epic_user.nil?
+          @protocol_role.errors.add(:base, :epic_api_down)
+        end
+      end
+
+      unless @protocol_role.unique_to_protocol? && @protocol_role.errors.empty?
         @errors = @protocol_role.errors
       end
     end
+
+    respond_to :js
   end
 
   def create
@@ -60,6 +69,12 @@ module AssociatedUsersControllerShared
   end
 
   def edit
+    @identity = @protocol_role.identity
+
+    if use_and_validate_epic_users?
+      @epic_user = EpicUser.for_identity(@identity)
+    end
+
     respond_to :js
   end
 
@@ -121,12 +136,9 @@ module AssociatedUsersControllerShared
     end
   end
 
-  def find_epic_user
-    @epic_user = EpicUser.for_identity(@identity)
-  end
 
-  def validate_epic_user?
-    Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.selected_for_epic? && @identity
+  def use_and_validate_epic_users?
+    Setting.get_value("use_epic") && Setting.get_value("validate_epic_users") && @protocol.try(:selected_for_epic?) && @identity
   end
 
   def is_epic?

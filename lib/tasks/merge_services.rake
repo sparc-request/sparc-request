@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -65,12 +65,12 @@ task :merge_services, [:services_list] => :environment do |t, args|
         # If li shouldn't belong to ssr.
         if process_ssrs_parent.id != ssr.organization_id
           # Create/find SubServiceRequest for li.
-          dest_ssr = ssr.service_request.sub_service_requests.
-            where(status: ssr.status).
-            find_or_create_by(organization_id: process_ssrs_parent.id)
+          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization: process_ssrs_parent, status: ssr.status)
+            dest_ssr = ssr.service_request.sub_service_requests.create(
+              organization: process_ssrs_parent,
+              status:       ssr.status
+            )
 
-          # Is this probably a newly created SSR?
-          if !dest_ssr.ssr_id && !dest_ssr.service_requester_id && !dest_ssr.owner_id
             # Move over old SSR attributes.
             old_attributes = ssr.attributes
             # ! needed, since only it will return the _other_ attributes.
@@ -79,11 +79,10 @@ task :merge_services, [:services_list] => :environment do |t, args|
             dest_ssr.assign_attributes(copy_over_attributes, without_protection: true)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
-            ssr.service_request.ensure_ssr_ids
           end
 
           # Move li.
-          li.update!(sub_service_request_id: dest_ssr.id)
+          li.update!(sub_service_request: dest_ssr)
         end
       end # ssr.line_items.each
     end # ssrs.each

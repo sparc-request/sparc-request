@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -227,6 +227,7 @@ class Service < ApplicationRecord
   end
 
   #This method is only used for the service pricing report
+  #Uh... it's also used directly above in "current_pricing_map," which is used many places."
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
 
@@ -333,7 +334,7 @@ class Service < ApplicationRecord
   end
 
   def direct_link
-    "#{Setting.get_value('root_url')}/services/#{id}"
+    "#{ENV.fetch('ROOT_URL')}/services/#{id}"
   end
 
   private

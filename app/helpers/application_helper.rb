@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,21 +44,14 @@ module ApplicationHelper
   end
 
   def format_phone(phone)
-    if phone.present?
+    if phone.present? && phone.match(DataTypeValidator::PHONE_REGEXP)
       phone.gsub!(/[^0-9#]/, '')
 
-      formatted = ""
-      begin
-        formatted += "(#{phone.first(3)})"
-        formatted += " #{phone.from(3).to(2)}"
-        formatted += "-#{phone.from(6).to(3)}"
-        formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.include?('#')
-      rescue
-      end
-
-      return formatted
+      formatted = "(#{phone.first(3)}) #{phone.from(3).to(2)}-#{phone.from(6).to(3)}"
+      formatted += phone.from(10).gsub('#', " #{I18n.t('constants.phone.extension')} ") if phone.length > 10
+      formatted
     else
-      return phone
+      ""
     end
   end
 

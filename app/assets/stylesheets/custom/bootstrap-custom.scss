@@ -1,4 +1,4 @@
-// Copyright © 2011-2019 MUSC Foundation for Research Development~
+// Copyright © 2011-2020 MUSC Foundation for Research Development~
 // All rights reserved.~
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -151,7 +151,6 @@
 
     &.callout-right {
       border-right-width: .25rem;
-      text-align: right;
     }
 
     &:not(.callout-right) {
@@ -402,13 +401,43 @@ form, .form {
   .list-group-item.list-group-item-#{$color}[data-toggle=collapse] {
     transition: $btn-transition;
 
-    &:hover {
+    &.hover {
       background-color: theme-color-level($color, -8) !important;
     }
 
-    &.active, &:active, &:focus {
+    &.active {
       background-color: theme-color-level($color, -6) !important;
       color: theme-color-level($color, 6) !important;
+    }
+  }
+}
+
+.list-group {
+  &.list-group-flush {
+    .list-group-item:first-child {
+      border: 0;
+    }
+
+    .list-group-item:not(:first-child) {
+      border-bottom: 0;
+    }
+  }
+
+  &.list-group-blend {
+    .list-group-item {
+      border: 1px solid transparent;
+
+      .nav-link {
+        border-radius: 0;
+      }
+
+      &:not(.active) {
+        background: none;
+
+        &:hover {
+          background: theme-color-level('light', 0.5);
+        }
+      }
     }
   }
 }
@@ -629,7 +658,7 @@ nav.navbar {
         padding: 1rem 1.5rem !important;
         border-right: 0 !important;
         border-bottom: 1px solid theme-color-level('light', 1);
-        justify-content: right;
+        justify-content: left;
       }
     }
 

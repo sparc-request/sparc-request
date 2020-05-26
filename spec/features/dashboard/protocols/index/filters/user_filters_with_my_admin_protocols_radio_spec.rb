@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,11 +29,11 @@ RSpec.describe "User filters using \"My Admin Protocols\"", js: :true do
     organization    = create(:organization)
     @protocol       = create(:study_without_validations, primary_pi: jug2)
     @sr             = create(:service_request_without_validations, protocol: @protocol)
-                      create(:sub_service_request, service_request: @sr, organization: organization)
+                      create(:sub_service_request, protocol: @protocol, service_request: @sr, organization: organization)
     admin_org       = create(:organization)
     @admin_protocol = create(:study_without_validations, primary_pi: jug2)
     @admin_sr       = create(:service_request_without_validations, protocol: @admin_protocol)
-                      create(:sub_service_request, service_request: @admin_sr, organization: admin_org)
+                      create(:sub_service_request, protocol: @admin_protocol, service_request: @admin_sr, organization: admin_org)
 
     create(:service_provider, identity: jug2, organization: admin_org)
 

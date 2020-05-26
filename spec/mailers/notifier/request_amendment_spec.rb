@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -247,7 +247,6 @@ RSpec.describe Notifier do
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request, @report)
         end
 
-        # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
         it 'should display admin intro message, link, conclusion, and should not display acknowledgments' do
           request_amendment_intro(@mail)
         end
@@ -406,7 +405,6 @@ RSpec.describe Notifier do
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request, @report)
         end
 
-        # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
         it 'should display admin intro message, link, conclusion, and should not display acknowledgments' do
           request_amendment_intro(@mail)
         end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,8 +29,8 @@ RSpec.describe ServiceRequest, type: :model do
       sr  = create(:service_request_without_validations, protocol: protocol)
       ssr = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       sr.reload
-      expect_any_instance_of(SubServiceRequest).to receive(:update_status_and_notify).with('get_a_cost_estimate', identity).and_return(ssr.id)
-      expect(sr.update_status('get_a_cost_estimate', identity)).to eq([ssr.id])
+      expect_any_instance_of(SubServiceRequest).to receive(:update_status_and_notify).with('awaiting_pi_approval', identity).and_return(ssr.id)
+      expect(sr.update_status('awaiting_pi_approval', identity)).to eq([ssr.id])
     end
 
     context 'ServiceRequest has been submitted prior' do
@@ -59,9 +59,9 @@ RSpec.describe ServiceRequest, type: :model do
       end
 
       it 'should update the status but not submitted_at' do
-        sr.update_status('get_a_cost_estimate', identity)
+        sr.update_status('awaiting_pi_approval', identity)
         sr.reload
-        expect(sr.status).to eq('get_a_cost_estimate')
+        expect(sr.status).to eq('awaiting_pi_approval')
         expect(sr.submitted_at).to be_nil
       end
     end

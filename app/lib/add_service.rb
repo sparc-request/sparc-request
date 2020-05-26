@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,8 +29,7 @@ class AddService
 
   def generate_new_service_request
     @service_request.save
-    new_line_items = @service_request.create_line_items_for_service(service: @service, optional: true, recursive_call: false ) || []
-    create_sub_service_requests(new_line_items)
+    @service_request.create_line_items_for_service(service: @service, requester: @requester) || []
   end
 
   def confirm_new_request?
@@ -39,44 +38,6 @@ class AddService
 
   def duplicate_service?
     @service_request.line_items.incomplete.where(service: @service).any?
-  end
-
-  private
-
-  def create_sub_service_requests(new_line_items)
-    @service_request.reload
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    new_line_items.each do |li|
-      ssr = find_or_create_sub_service_request(li, @service_request)
-      li.update_attribute(:sub_service_request_id, ssr.id)
-      if @service_request.status == 'first_draft'
-        ssr.update_attribute(:status, 'first_draft')
-      elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
-        ssr.update_attribute(:status, 'draft')
-      end
-    end
-    @service_request.ensure_ssr_ids
-  end
-
-  def find_or_create_sub_service_request(line_item, service_request)
-    organization = line_item.service.process_ssrs_organization
-    service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && !ssr.is_complete?
-        return ssr
-      end
-    end
-    sub_service_request = service_request.sub_service_requests.create(
-      organization: organization, service_requester: @requester
-    )
-    service_request.ensure_ssr_ids
-
-    sub_service_request
-  end
-
-  def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-
-    sub_service_request.audit_report(@requester, previously_submitted_at, Time.now.utc)[:line_items].any?
   end
 end
 

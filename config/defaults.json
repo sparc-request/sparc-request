@@ -61,7 +61,7 @@
   },
   {
     "key":            "contact_us_cc",
-    "value":          "sparcrequest@gmail.com",
+    "value":          "success@musc.edu",
     "friendly_name":  "Contact Us CC",
     "description":    "This is the email(s) that will be CCed in help messages.",
     "group":          "",
@@ -81,7 +81,7 @@
   },
   {
     "key":            "contact_us_mail_to",
-    "value":          "success@musc.edu",
+    "value":          "SPARCRequest@musc.edu",
     "friendly_name":  "Contact Us Mail-To",
     "description":    "This is the email that help messages will be sent to.",
     "group":          "",
@@ -851,7 +851,7 @@
   },
   {
     "key":            "updatable_statuses",
-    "value":          "[\"first_draft\", \"draft\", \"get_a_cost_estimate\", \"awaiting_pi_approval\"]",
+    "value":          "[\"first_draft\", \"draft\", \"awaiting_pi_approval\"]",
     "friendly_name":  "Updatable Statuses",
     "description":    "This defines the statuses that a SubServiceRequest can be updated from. Any other statuses are considered \"un-updatable\".",
     "group":          "",
@@ -1044,6 +1044,16 @@
     "value":          "",
     "friendly_name":  "Post to slack when delayed job monitor rake task runs",
     "description":    "If this is set to a slack webhook url, the rake task will post delayed job status updates every hour or whatever the current config/schedule.rb is.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "epic_user_api_error_slack_webhook",
+    "value":          "",
+    "friendly_name":  "Epic User API Error Slack Webhook.",
+    "description":    "If this is set to a Slack webhook url, then a slack notification will be posted when a user encountered an error connecting to the Epic user interface.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -167,10 +167,6 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => email_from, :subject => subject)
   end
 
-  def obtain_research_pricing service_provider, service_request
-
-  end
-
   def provide_feedback feedback
     @feedback = feedback
 
@@ -195,7 +191,7 @@ class Notifier < ActionMailer::Base
 
   def notify_for_epic_user_approval protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
@@ -204,7 +200,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_final_review protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     email_to = @primary_pi.email
     subject = "#{@protocol.id} - Epic Rights User Approval"
@@ -214,7 +210,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
     @protocol       = protocol
-    @primary_pi     = @protocol.primary_principal_investigator
+    @primary_pi     = @protocol.primary_pi
     @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"
@@ -286,8 +282,6 @@ class Notifier < ActionMailer::Base
 
   def email_title(status, protocol, ssr)
     email_status = case status
-    when 'get_a_cost_estimate'
-      "Get Cost Estimate"
     when 'request_amendment'
       "Amendment Submitted"
     when 'ssr_destroyed'

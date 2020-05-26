@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -230,10 +230,10 @@ resetRmidFields = () ->
   $('#protocol_research_master_id').parents('.form-group').removeClass('is-valid is-invalid')
   $('#protocol_short_title').val('').prop('readonly', false)
   $('#protocol_title').val('').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_pro_number').val('').prop('readonly', false)
-  $('#protocol_human_subjects_info_attributes_initial_irb_approval_date').prop('readonly', false).datetimepicker('clear')
-  $('#protocol_human_subjects_info_attributes_irb_approval_date').prop('readonly', false).datetimepicker('clear')
-  $('#protocol_human_subjects_info_attributes_irb_expiration_date').prop('readonly', false).datetimepicker('clear')
+  if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+    $('#protocol_research_types_info_attributes_human_subjects').click()
+    $('#protocol_research_master_id').click()
+  $('#irbRecords .irb-record').remove()
 
 fundingSource             = ""
 potentialFundingSource    = ""
@@ -263,7 +263,7 @@ toggleFundingSource = (val) ->
 
       toggleFederalFields(potentialFundingSource)
       toggleFundingSourceOther(potentialFundingSource)
-    else
+    else if val == 'funded'
       potentialFundingSource    = $('#protocol_potential_funding_source').val()
       potentialFundingStartDate = $('#protocol_potential_funding_start_date').val()
 
@@ -279,7 +279,14 @@ toggleFundingSource = (val) ->
 
       toggleFederalFields(fundingSource)
       toggleFundingSourceOther(fundingSource)
-
+    else
+      $('#fundingSourceContainer').addClass('d-none')
+      $('#potentialFundingSourceContainer').addClass('d-none')
+      $('#fundingSourceOtherContainer').addClass('d-none')
+      $('#fundingRfaContainer').addClass('d-none')
+      $('#fundingStartDateContainer').addClass('d-none')
+      $('#potentialFundingStartDateContainer').addClass('d-none')
+      $('#federalGrantInformation').addClass('d-none')
     $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
 
 
@@ -352,8 +359,13 @@ determineStudyType = () ->
     ans7: ""
   }
 
-  answersArray  = Object.values(answers)
-  hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
+  ##IE requires it to be done this way:
+  answersArray = Object.keys(answers).map((key) -> answers[key])
+  hasNilValue   = $.inArray('', Object.keys(answers).map((key) -> answers[key])) < 5
+
+  ##The original way below is better, but unsupported by IE:
+  # answersArray  = Object.values(answers)
+  # hasNilValue   = $.inArray('', Object.values(answersArray)) < 5
 
   if answersArray[0] == 'true' || !hasNilValue
     $.ajax

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -70,7 +70,7 @@ class Funding::ServicesController < ApplicationController
       documents.each do |d|
         ssr = d.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first
         p = ssr.protocol
-        csv << [ssr.display_id, p.primary_principal_investigator.last_name_first, p.primary_principal_investigator.try(:professional_org_lookup, 'institution'), p.short_title, d.document_file_name.humanize, d.document_updated_at.strftime('%D %l:%M %p'), PermissibleValue.get_value('status', ssr.status)]
+        csv << [ssr.display_id, p.primary_pi.last_name_first, p.primary_pi.try(:professional_org_lookup, 'institution'), p.short_title, d.document_file_name.humanize, d.document_updated_at.strftime('%D %l:%M %p'), PermissibleValue.get_value('status', ssr.status)]
       end
     end
   end

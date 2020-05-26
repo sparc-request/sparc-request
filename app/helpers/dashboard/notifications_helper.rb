@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,10 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::NotificationsHelper
-  def notification_subject_line(notification)
+  def notification_subject_line(notification, table=nil)
     protocol = notification.sub_service_request_id.blank? ? '' : "[#{notification.sub_service_request.display_id}] - "
     subject = notification.subject.present? ? notification.subject : t(:dashboard)[:messages][:index][:no_subject]
     body    = notification.messages.length > 0 ? notification.messages.last.body : ""
+    if table && notification.messages.where(to: current_user).length > 0
+      if table == 'inbox'
+        body = notification.messages.where(to: current_user).last.body
+      else
+        body = notification.messages.where(from: current_user).last.body
+      end
+    end
 
     if controller_name == 'notifications'
       content_tag :div, class: 'd-flex flex-column' do

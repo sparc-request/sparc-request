@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 - if Setting.get_value("use_indirect_cost")
   %tr.bg-light.max-total-direct-per-patient
-    %th{ colspan: tab == 'template' ? 27 : 25 }
+    %th{ colspan: 28 }
       = t(:calendars)[:pppv][:totals][:maximum_direct]
     - visit_groups.each do |vg|
       %th.text-center{ colspan: 3, title: currency_converter(vg.per_patient_subtotals), data: { toggle: 'tooltip' } }

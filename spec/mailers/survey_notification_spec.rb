@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,6 +23,7 @@ require 'rails_helper'
 RSpec.describe SurveyNotification do
 
   let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
+  let(:su)        { create(:identity, email: 'super.user@test.com') }
   let(:org)       { create(:organization) }
   let(:ssr)       { create(:sub_service_request_without_validations, organization: org, protocol: protocol, service_request: service_request, owner: build(:identity)) }
   let(:protocol)  { create(:protocol_without_validations, type: "Study") }
@@ -43,13 +44,13 @@ RSpec.describe SurveyNotification do
       expect(mail).to have_subject("System Satisfaction Survey Completed in SPARCRequest")
     end
 
-    #ensure that the receiver is correct
-    it 'should render the receiver email' do
+    #ensure that the sender is correct
+    it 'should render the sender email' do
       expect(mail).to deliver_from(identity.email)
     end
 
-    #ensure that the sender is correct
-    it 'should render the sender email' do
+    #ensure that the receiver is correct
+    it 'should render the receiver email' do
       expect(mail).to deliver_to(Setting.get_value("admin_mail_to"))
     end
 
@@ -119,6 +120,41 @@ RSpec.describe SurveyNotification do
 
     it 'should contain the SCTR grant citation paragraph' do
       expect(mail.body.include?("id='sctr-grant-citation'")).to eq(true)
+    end
+  end
+
+  before :each do
+    org.update_attributes(survey_completion_alerts: true)
+  end
+
+  describe 'service system satisfaction survey completed ' do
+    context 'and Survey Alert is checked for the organization' do
+      let(:super_user) { create(:super_user, identity: su, organization: org, access_empty_protocols: true) }
+      let(:survey)    { create(:system_survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
+      let(:response)   { create(:response, identity: identity, survey: survey, respondable: ssr) }
+      let(:mail)       { SurveyNotification.service_survey_completed(response, ssr, super_user) }
+
+
+      #ensure that the subject is correct
+      it 'should render the subject' do
+        expect(mail).to have_subject("Service Survey Completed in SPARCRequest")
+      end
+
+      #ensure that the sender is correct
+      it 'should render the sender email' do
+        expect(mail).to deliver_from(identity.email)
+      end
+
+      #ensure that the receiver is correct
+      it 'should render the receiver email' do
+        expect(mail).to deliver_to(su.email)
+      end
+
+      #ensure that the e-mail contains a link to view the survey results
+      it 'should contain the survey response link' do
+        survey_link_path = "surveyor/responses/#{response.id}"
+        expect(mail.body.include?(survey_link_path)).to eq(true)
+      end
     end
   end
 end

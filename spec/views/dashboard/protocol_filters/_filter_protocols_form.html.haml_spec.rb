@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -46,16 +46,12 @@ RSpec.describe 'dashboard/protocol_filters/_filter_protocols_form', type: :view 
       render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: jug2, protocol_filters: [], reset_filterrific_url: '', admin: false
     end
 
-    it 'should not show "My Protocols" radio' do
-      expect(response).not_to have_content('My Protocols')
+    it 'should show "All Protocols" radio' do
+      expect(response).to have_selector(:label, text: I18n.t('dashboard.protocol_filters.all_protocols'))
     end
 
     it 'should not show "My Admin Protocols" radio' do
-      expect(response).not_to have_content('My Admin Protocols')
-    end
-
-    it 'should show "Organization" select' do
-      expect(response).to have_content('Organization')
+      expect(response).to_not have_selector(:label, text: I18n.t('dashboard.protocol_filters.my_admin_protocols'))
     end
   end
 
@@ -64,12 +60,12 @@ RSpec.describe 'dashboard/protocol_filters/_filter_protocols_form', type: :view 
       render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: jug2, protocol_filters: [], reset_filterrific_url: '', admin: true
     end
 
-    it 'should show "My Protocols" radio' do
-      expect(response).to have_selector('label', text: 'My Protocols')
+    it 'should show "My Admin Protocols" radio' do
+      expect(response).to have_selector(:label, text: 'My Admin Protocols')
     end
 
-    it 'should show "My Admin Protocols" radio' do
-      expect(response).to have_selector('label', text: 'My Admin Protocols')
+    it 'should not show "All Protocols" radio' do
+      expect(response).to_not have_selector(:label, text: I18n.t('dashboard.protocol_filters.all_protocols'))
     end
   end
 end

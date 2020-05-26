@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,10 +23,8 @@ module NotifierHelper
     case status
     when 'ssr_destroyed'
       render "notifier/deleted_all_services_from_cart"
-    when 'get_a_cost_estimate'
-      render "notifier/welcome"
     when 'submitted'
-      render "notifier/welcome_for_submitted_status"
+      render "notifier/welcome"
     when 'request_amendment'
       render "notifier/request_amendment"
     end

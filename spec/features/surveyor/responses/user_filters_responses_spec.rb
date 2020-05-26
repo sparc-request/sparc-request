@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -223,7 +223,6 @@ RSpec.describe 'User filters responses', js: true do
         scenario 'and sees both complete and incomplete responses' do
           @other_form     = create(:form, surveyable: @organization, title: 'Formula One', active: true)
           other_response  = create(:response, survey: @other_form)
-          ssr             = create(:sub_service_request, organization: @organization)
 
           bootstrap_select '#filterrific_of_type', Form.name
           find('#filterrific_include_incomplete').click

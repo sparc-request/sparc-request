@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,12 +21,13 @@
 .accordion#institutionAccordion
   - institutions.includes(providers: :programs).select{ |inst| inst.is_available != false }.each_with_index do |i, index|
     - locked = locked_ids.include?(i.id)
+    - expand = (@institution.present? && @institution == i) || (@institution.nil? && index == 0)
 
     .card.institution{ id: "institution#{i.id} " }
       .card-header.p-0{ id: "institution#{i.id}Header" }
-        %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), index == 0 ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
+        %button.institution-link.org-link.btn.btn-block{ class: [css_class(i), expand ? '' : 'collapsed', locked ? 'locked' : ''], type: 'button', data: { toggle: 'collapse', target: "#institution#{i.id}Collapse", id: i.id }, aria: { expanded: 'true', controls: "institution#{i.id}Collapse" } }
           %h6.d-flex.align-items-start.mb-0
             = organization_name_display(i, locked, i.providers.any?)
-      .collapse{ class: index == 0 ? 'show' : '', id: "institution#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }
+      .collapse{ class: expand ? 'show' : '', id: "institution#{i.id}Collapse", data: { parent: '#institutionAccordion' }, aria: { labelledby: "institution#{i.id}Header" } }
         .card-body
           = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, i: i

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -39,6 +39,10 @@ module V1
     root 'human_subjects_info', 'human_subjects_info'
   end
 
+  class IrbRecordShallow < Shallow
+    root 'irb_record', 'irb_record'
+  end
+
   class IdentityShallow < Shallow
     root 'identities', 'identity'
   end
@@ -49,6 +53,10 @@ module V1
 
   class LineItemsVisitShallow < Shallow
     root 'line_items_visits', 'line_items_visit'
+  end
+
+  class OrganizationShallow < Shallow
+    root 'organizations', 'organization'
   end
 
   class ProcessSsrsOrganizationShallow < Shallow

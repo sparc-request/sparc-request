@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,9 +29,9 @@ RSpec.describe SubServiceRequest, type: :model do
     context "constants.yml mapping present" do
 
       it "should return the value from constants.yml" do
-        sub_service_request = create(:sub_service_request, status: "get_a_cost_estimate")
+        sub_service_request = create(:sub_service_request, status: "awaiting_pi_approval")
 
-        expect(sub_service_request.formatted_status).to eq("Get a Cost Estimate")
+        expect(sub_service_request.formatted_status).to eq("Awaiting Requester Response")
       end
     end
 

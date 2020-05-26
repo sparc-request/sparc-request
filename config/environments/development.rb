@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,14 +27,11 @@ SparcRails::Application.configure do
   config.cache_classes = false
 
   # Do not eager load code on boot.
-  config.eager_load = true
+  config.eager_load = false
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
-
-  # Don't care if the mailer can't send
-  config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
@@ -43,26 +40,20 @@ SparcRails::Application.configure do
   config.assets.compile = true
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
 
-  config.after_initialize do
-    # Need to do this after initialization so that the database is loaded
-    begin
-      new_options = { host: Setting.get_value("root_url") }
-      config.action_mailer.default_url_options = new_options
+  # Print deprecation notices to the Rails logger.
+  config.active_support.deprecation = :log
 
-      # By the time we run ActionMailer has already copied the options
-      # from config so we need to override here to really make the change
-      # We only set the default_url_options to keep the settings consistent
-      ActionMailer::Base.default_url_options = new_options
-    rescue
-      puts "WARNING: Database does not exist, restart server after database has been created and populated, to set mailer default url options from database."
-    end
-  end
+  # Raise an error on page load if there are pending migrations.
+  config.active_record.migration_error = :page_load
 
-  config.log_level = :debug
+  # Highlight code that triggered database queries in logs.
+  config.active_record.verbose_query_logs = true
 
   # Stuff to do on each request
   config.to_prepare do

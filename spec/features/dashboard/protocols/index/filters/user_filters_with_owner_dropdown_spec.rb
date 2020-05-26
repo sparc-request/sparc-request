@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,10 +29,10 @@ RSpec.describe "User selects owners and filters", js: :true do
     organization    = create(:organization)
     owned_protocol  = create(:study_without_validations, primary_pi: jug2)
     owned_sr        = create(:service_request_without_validations, protocol: owned_protocol)
-                      create(:sub_service_request, service_request: owned_sr, organization: organization, owner: jug2)
+                      create(:sub_service_request, protocol: owned_protocol, service_request: owned_sr, organization: organization, owner: jug2)
     other_protocol  = create(:study_without_validations, primary_pi: jug2)
     other_sr        = create(:service_request_without_validations, protocol: other_protocol)
-                      create(:sub_service_request, service_request: other_sr, organization: organization)
+                      create(:sub_service_request, protocol: other_protocol, service_request: other_sr, organization: organization)
 
     create(:service_provider, identity: jug2, organization: organization)
 

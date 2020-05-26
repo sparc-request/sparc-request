@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,17 @@ module Surveyor::ResponsesHelper
     end
   end
 
+  def protocol_link(response)
+    display_id = response.try(:respondable).try(:display_id)
+    protocol_id = response.try(:respondable).try(:protocol_id)
+
+    if protocol_id
+      link_to((display_id || protocol_id), dashboard_protocol_path(protocol_id), target: :_blank)
+    else
+      'N/A'
+    end
+  end
+
   def response_options(response, accessible_surveys)
     # See https://www.pivotaltracker.com/story/show/157749896 for scenarios
     view_permissions =
@@ -50,7 +61,7 @@ module Surveyor::ResponsesHelper
       if response.completed?
         false
       else
-        current_user.is_site_admin? || accessible_surveys.include?(response.survey)
+        response.respondable_type == "SubServiceRequest" && (current_user.is_site_admin? || accessible_surveys.include?(response.survey))
       end
 
     content_tag(:div,
@@ -99,7 +110,7 @@ module Surveyor::ResponsesHelper
       link_to(
         icon('fas', 'reply'),
         surveyor_response_resend_survey_path(response), method: :put, remote: true,
-        class: ['btn btn-info resend-survey', permissions ? '' : 'disabled'],
+        class: ['btn btn-success resend-survey', permissions ? '' : 'disabled'],
         title: I18n.t('surveyor.responses.tooltips.resend'),
         data: { response_id: response.id, toggle: 'tooltip', placement: 'top', container: 'body'}
       )

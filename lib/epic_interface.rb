@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,38 +22,24 @@ require 'savon'
 require 'securerandom'
 require 'builder'
 
+# Override the Savon WSA headers to work for Epic
 module Savon
-  # The Savon client by default does not allow adding new soap headers
-  # except via the global configuration.  This monkey patch allows adding
-  # soap headers via local (per-message) configuration.
-  class LocalOptions < Options
-    def soap_header(header)
-      @options[:soap_header] = header
-    end
-  end
-
   class Header
-    def header
-      @header ||= build_header
-    end
-
-    def build_header
-      header = {}
-      header.update(@globals.include?(:soap_header) ? @globals[:soap_header] : {})
-      header.update(@locals.include?(:soap_header) ? @locals[:soap_header] : {})
-      return header
-    end
-  end
-
-  # We also need to be able to grab the configured endpoint and put it
-  # into the wsa:To header.
-  class Client
-    def endpoint
-      return @globals[:endpoint] || @wsdl.endpoint
+    def build_wsa_header
+       return '' unless @globals[:use_wsa_headers]
+       convert_to_xml({
+         'wsa:Action' => "#{@globals[:namespace]}:#{@locals[:soap_action]}",
+         'wsa:To' => @globals[:endpoint],
+         'wsa:MessageID' => "urn:uuid:#{SecureRandom.uuid}",
+         attributes!: {
+          'wsa:MessageID' => {
+            "xmlns:wsa" => "http://schemas.xmlsoap.org/ws/2004/08/addressing"
+          }
+         }
+       })
     end
   end
 end
-
 
 # Use this class to send protocols (studies/projects) along with their
 # associated billing calendars to Epic via an InterConnect server.
@@ -67,7 +53,7 @@ class EpicInterface
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
-    logger = ActiveSupport::Logger.new(logfile)
+    @logger = ActiveSupport::Logger.new(logfile)
 
     @config = config
     @errors = {}
@@ -75,17 +61,15 @@ class EpicInterface
     @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
 
-    # TODO: I'm not really convinced that Savon is buying us very much
-    # other than some added complexity, but it's working, so no point in
-    # pulling it out.
-    #
     # We must set namespace_identifier to nil here, in order to prevent
     # Savon from prepending a wsdl: prefix to the
     # RetrieveProtocolDefResponse tag and to force it to set an xmlns
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
-        logger: logger,
+        log: true,
+        logger: @logger,
+        log_level: :debug,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
@@ -93,23 +77,10 @@ class EpicInterface
         namespace: @namespace,
         endpoint: @config['epic_endpoint'],
         wsdl: @config['epic_wsdl'],
-        headers: {
-        },
-        soap_header: {
-        },
+        use_wsa_headers: true,
         namespaces: {
           'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
         })
-  end
-
-  def soap_header(msg_type)
-    soap_header = {
-      'wsa:Action' => "#{@namespace}:#{msg_type}",
-      'wsa:MessageID' => "uuid:#{SecureRandom.uuid}",
-      'wsa:To' => @client.endpoint,
-    }
-
-    return soap_header
   end
 
   # Send the given SOAP action to the server along with the given
@@ -122,10 +93,10 @@ class EpicInterface
       action = action.snakecase.to_sym
     end
 
+    @logger.info "\nSOAP Action: #{action} ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     begin
       return @client.call(
           action,
-          soap_header: soap_header(action),
           message: message)
     rescue Savon::Error => error
       raise Error.new(error.to_s)
@@ -134,6 +105,10 @@ class EpicInterface
 
   # Send a full study to the Epic InterConnect server.
   def send_study(study)
+    # Preload associations to improve performance
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+
     message = full_study_message(study)
     call('RetrieveProtocolDefResponse', message)
 
@@ -142,6 +117,10 @@ class EpicInterface
 
   # Send a study creation to the Epic InterConnect server.
   def send_study_creation(study)
+    # Preload associations to improve performance
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
 
@@ -233,7 +212,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -244,10 +223,9 @@ class EpicInterface
   end
 
   def emit_irb_number(xml, study)
-    irb_number = study.human_subjects_info.try(:pro_number)
-    irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
+    irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
-    if !irb_number.blank? then
+    if !irb_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
@@ -440,6 +418,8 @@ class EpicInterface
   end
 
   def emit_procedures(xml, study, arm, visit_group, cycle)
+    livs = arm.line_items_visits
+
     arm.line_items.each do |line_item|
       # We want to skip line items contained in a service request that is still in first draft
       next if ['first_draft', 'draft'].include?(line_item.sub_service_request.status)
@@ -461,8 +441,8 @@ class EpicInterface
         next
       end
 
-      liv = LineItemsVisit.for(arm, line_item)
-      visit = Visit.for(liv, visit_group)
+      liv = livs.detect{ |liv| liv.line_item_id == line_item.id }
+      visit = liv.visits.detect{ |v| v.visit_group_id == visit_group.id }
 
       # TODO: we don't know if this is right or not
       billing_modifiers = [

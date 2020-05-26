@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ FactoryBot.define do
     process_ssrs  { false }
     is_available  { true }
     use_default_statuses { true }
+    survey_completion_alerts { false }
     order         { 1 }
 
     trait :ctrc do
@@ -68,6 +69,10 @@ FactoryBot.define do
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
+    end
+
+    trait :survey_completion_alerts do
+      survey_completion_alerts {false}
     end
 
     transient do

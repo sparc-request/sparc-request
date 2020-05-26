@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -95,7 +95,6 @@ RSpec.describe Identity, type: :model do
   end
 
   describe "rights" do
-
     let!(:user)                 {create(:identity, ldap_uid: 'slickwilly@musc.edu')}
     let!(:user2)                {create(:identity, ldap_uid: 'superfly@musc.edu')}
     let!(:catalog_manager)      {create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
@@ -104,7 +103,7 @@ RSpec.describe Identity, type: :model do
     let!(:clinical_provider)    {create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     let!(:ctrc_provider)        {create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, ssr_id: '0002')}
+    let!(:request)              {create(:sub_service_request, service_request: service_request, organization: core)}
 
     describe "permission methods" do
 

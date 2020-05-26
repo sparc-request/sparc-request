@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,9 +38,9 @@ class ProtocolsController < ApplicationController
         @protocol.project_roles.new(identity: current_user, role: 'general-access-user', project_rights: 'approve')
       end
 
-      @protocol.next_ssr_id = @service_request.sub_service_requests.order(:ssr_id).last.ssr_id.to_i + 1
+      @protocol.service_requests << @service_request
+      @service_request.sub_service_requests.each{ |ssr| @protocol.sub_service_requests << ssr }
       @protocol.save
-      @service_request.update_attribute(:protocol, @protocol)
       @service_request.update_status('draft', current_user)
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic
@@ -70,6 +70,12 @@ class ProtocolsController < ApplicationController
         @service_request.update_status('draft', current_user)
       end
 
+      if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
+        if EpicQueue.where(protocol_id: @protocol.id).size == 0
+          EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
+        end
+      end
+      
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -142,7 +148,7 @@ class ProtocolsController < ApplicationController
     epic_queue = EpicQueue.find params[:eq_id]
     epic_queue.update_attribute(:attempted_push, true)
     # removed 12/23/13 per request by Lane
-    #if current_user != @protocol.primary_principal_investigator then
+    #if current_user != @protocol.primary_pi then
     #  raise ArgumentError, "User is not primary PI"
     #end
 

@@ -33,7 +33,7 @@ module ServiceCalendarHelper
 
   # Only one time fees for now
   def in_fulfillment?(line_item)
-    if line_item.service.one_time_fee
+    if line_item.service.one_time_fee && Setting.get_value("fulfillment_contingent_on_catalog_manager") 
       return (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
     else
       return false

@@ -227,6 +227,7 @@ class Service < ApplicationRecord
   end
 
   #This method is only used for the service pricing report
+  #Uh... it's also used directly above in "current_pricing_map," which is used many places."
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
 

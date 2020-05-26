@@ -44,21 +44,21 @@ class ProtocolsReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
-    attrs["Research Master ID"] = "service_request.try(:protocol).try(:research_master_id)"
-    attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
-    attrs["Protocol Title"] = "service_request.try(:protocol).try(:title)"
-    attrs["Number of Requests"] = "service_request.try(:protocol).try(:sub_service_requests).try(:count)"
-    attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
+    attrs["Protocol ID"]              = "service_request.try(:protocol).try(:id)"
+    attrs["Research Master ID"]       = "service_request.try(:protocol).try(:research_master_id)"
+    attrs["Protocol Short Title"]     = "service_request.try(:protocol).try(:short_title)"
+    attrs["Protocol Title"]           = "service_request.try(:protocol).try(:title)"
+    attrs["Number of Requests"]       = "service_request.try(:protocol).try(:sub_service_requests).try(:length)"
+    attrs["Funding Source"]           = "service_request.try(:protocol).try(:funding_source)"
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
-    attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
-    attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
-    attrs["Study Phase"] = "service_request.try(:protocol).try{study_phases.map(&:phase).join(', ')}"
+    attrs["Sponsor Name"]             = "service_request.try(:protocol).try(:sponsor_name)"
+    attrs["Financial Account"]        = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
 
-    attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
-    attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number).try{prepend(' ')}"
-    attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
-    attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
+    attrs["NCT #"]                = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
+    attrs["PRO #"]                = "service_request.try(:protocol).try{irb_records.first}.try(:pro_number).try{prepend(' ')}"
+    attrs["IRB of Record"]        = "service_request.try(:protocol).try{irb_records.first}.try(:irb_of_record)"
+    attrs["Study Phase"]          = "service_request.try(:protocol).try{irb_records.first}.try{study_phases.map(&:phase).join(', ')}"
+    attrs["IRB Expiration Date"]  = "service_request.try(:protocol).try{irb_records.first}.try(:irb_expiration_date).try(:strftime, '%D')"
 
     attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"
     attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_pi).try(:first_name)"
@@ -106,7 +106,7 @@ class ProtocolsReport < ReportingModule
 
   # Other tables to include
   def includes
-    [:organization, { service_request: { protocol: [:project_roles, :study_phases, :human_subjects_info, :investigational_products_info, primary_pi: { professional_organization: { parent: { parent: :parent } } }] } }, { line_items: :service }]
+    [:organization, { service_request: { protocol: [:sub_service_requests, :project_roles, :billing_managers, :coordinators, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }] } }, { line_items: :service }]
   end
 
   # Conditions

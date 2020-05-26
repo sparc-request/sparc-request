@@ -429,7 +429,11 @@ class Protocol < ApplicationRecord
   end
 
   def coordinator_emails
-    coordinators.pluck(:email).join(', ')
+    if self.coordinators.loaded?
+      coordinators.map(&:email).join(', ')
+    else
+      coordinators.pluck(:email).join(', ')
+    end
   end
 
   def emailed_associated_users

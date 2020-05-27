@@ -63,7 +63,7 @@ module OnCoreEndpointHelper
                     "@code": "PROTOCOLNO"
                   },
                   "value": {
-                    "@value": study.id
+                    "@value": "STUDY#{study.id}"
                   }
                 }
               },
@@ -92,7 +92,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.id}.BLD",
+                    "@extension": "STUDY#{study.id}.BLD",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
@@ -431,7 +431,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.id}.Biomarker",
+                    "@extension": "STUDY#{study.id}.Biomarker",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
@@ -799,7 +799,7 @@ module OnCoreEndpointHelper
       { "protocolDef":
         { "plannedStudy": {
             "id": {
-              "@extension": study.id,
+              "@extension": "STUDY#{study.id}",
               "@root": "1.2.5.2.3.4"
             },
             "title": "null",
@@ -830,7 +830,7 @@ module OnCoreEndpointHelper
                     "@code": "PROTOCOLNO"
                   },
                   "value": {
-                    "@value": study.id
+                    "@value": "STUDY#{study.id}"
                   }
                 }
               },
@@ -859,7 +859,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.id}.BLD",
+                    "@extension": "STUDY#{study.id}.BLD",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
@@ -1072,7 +1072,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.id}.Biomarker",
+                    "@extension": "STUDY#{study.id}.Biomarker",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
@@ -1311,7 +1311,7 @@ module OnCoreEndpointHelper
       { "protocolDef": {
             "plannedStudy": {
               "id": {
-                "@extension": study.id,
+                "@extension": "STUDY#{study.id}",
                 "@root": "1.2.5.2.3.4"
               },
               "title": "A Phase 2 Trial of Nivolumab Plus Ipilimumab, Ipilimumab Alone, or Cabazitaxel ",
@@ -1343,7 +1343,7 @@ module OnCoreEndpointHelper
                       "@code": "PROTOCOLNO"
                     },
                     "value": {
-                      "value": study.id
+                      "@value": "STUDY#{study.id}"
                     }
                   }
                 },

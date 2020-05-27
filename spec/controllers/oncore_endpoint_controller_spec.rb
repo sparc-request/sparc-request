@@ -66,7 +66,7 @@ RSpec.describe OncoreEndpointController do
 
     it 'should render a SOAP fault if there is an error' do
       begin
-        @client.call(:retrieve_protocol_def_response, message: crpc_message(@study, "nonexistant_rmid"))
+        @client.call(:retrieve_protocol_def_response, message: crpc_message(@study, "nonexistant_id"))
       rescue Savon::Error => error
         expect(error.instance_of?(Savon::SOAPFault)).to eq(true)
       end

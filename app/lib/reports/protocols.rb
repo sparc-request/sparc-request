@@ -135,9 +135,12 @@ class ProtocolsReport < ReportingModule
       ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
 
-    if args[:service_requests_original_submitted_date_from] and args[:service_requests_original_submitted_date_to]
-      submitted_at = DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
-    end
+    submitted_at = 
+      if args[:service_requests_original_submitted_date_from] && args[:service_requests_original_submitted_date_to]
+        DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+      else
+        self.default_options['Date Range'][:from]..self.default_options['Date Range'][:to]
+      end
 
     query             = { service_requests: { submitted_at: submitted_at } }
     query[:services]  = { organization_id: service_organization_ids } if service_organization_ids.any?

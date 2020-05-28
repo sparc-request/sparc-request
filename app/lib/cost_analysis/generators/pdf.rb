@@ -69,7 +69,7 @@ module CostAnalysis
 
       def render_header
         @doc.bounding_box([0,@doc.y], :width => 700, :height => 50) do
-          @doc.text "CRU Protocol#: #{@study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
+          @doc.text "#{@study_information.header_for(:protocol_number)}: #{@study_information.protocol_number}", :align => :left, :valign => :center, :size => 16
           @doc.text @study_information.enrollment_period, :align => :right, :valign => :top
           @study_information.primary_investigators.each do |pi|
             @doc.text pi.name, :align => :right, :valign => :bottom
@@ -278,7 +278,7 @@ module CostAnalysis
 
         @otf_tables.each do |otf_table|
           grand_total_data << {
-              :category => "One Time Fees",
+              :category => OtfTable::HEADER_LABEL,
               :total => otf_table.total,
               :total_as_money => otf_table.total_as_money
             }

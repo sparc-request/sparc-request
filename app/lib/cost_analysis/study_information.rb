@@ -33,6 +33,7 @@ module CostAnalysis
     attr_accessor :protocol_number, :enrollment_period, :short_title, :study_title, :funding_source, :target_enrollment, :contacts
 
     def initialize(protocol)
+      
       @protocol_number = protocol.id
       @enrollment_period = "#{protocol.start_date.strftime("%m/%d/%Y")} - #{protocol.end_date.strftime("%m/%d/%Y")}"
       @short_title = protocol.short_title
@@ -42,11 +43,17 @@ module CostAnalysis
       
       @contacts = protocol.project_roles.map do |au|
         ProjectContact.new(au.role, au.identity.full_name, au.identity.email)
+
       end
     end
 
     def header_for(field)
-      HEADERS[field]
+
+      if field == :protocol_number
+        I18n.t 'activerecord.attributes.protocol.id'
+      else
+        HEADERS[field]
+      end
     end
 
     def primary_investigators

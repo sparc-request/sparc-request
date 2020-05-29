@@ -231,9 +231,4 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def line_item_in_fulfillment?(line_item)
     (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
   end
-
-  def sort_synchs(raw_synchs)
-    synchs_for_destroy = raw_synchs.select{|x| x.action == 'destroy'}
-
-  end
 end

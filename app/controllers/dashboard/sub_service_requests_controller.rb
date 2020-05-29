@@ -101,14 +101,17 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       if synch.action == 'destroy'
         Shard::Fulfillment::LineItem.where(sparc_id: synch.line_item_id).first.destroy
       else
-        line_item = LineItem.find(synch.line_item_id)
-        cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
-        cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: sub_service_request.id).first
-        if synch.action == 'create'
-          cwf_protocol.line_items.create(sparc_id: line_item.id, protocol_id: cwf_protocol.id, service_id: line_item.service_id, quantity_requested: line_item.quantity)
-        elsif synch.action == 'update'
-          if line_item_in_fulfillment?(line_item)
-            cwf_line_item.update_attributes(quantity_requested: line_item.quantity)
+        # Need to ignore any line item that was first created/updated then destroyed in the same synch cycle
+        line_item = LineItem.where(id: synch.line_item_id).first
+        if line_item
+          cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
+          cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: sub_service_request.id).first
+          if synch.action == 'create'
+            cwf_protocol.line_items.create(sparc_id: line_item.id, protocol_id: cwf_protocol.id, service_id: line_item.service_id, quantity_requested: line_item.quantity)
+          elsif synch.action == 'update'
+            if line_item_in_fulfillment?(line_item)
+              cwf_line_item.update_attributes(quantity_requested: line_item.quantity)
+            end
           end
         end
       end
@@ -227,5 +230,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def line_item_in_fulfillment?(line_item)
     (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
+  end
+
+  def sort_synchs(raw_synchs)
+    synchs_for_destroy = raw_synchs.select{|x| x.action == 'destroy'}
+
   end
 end

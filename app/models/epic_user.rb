@@ -32,12 +32,15 @@ class EpicUser < ActiveResource::Base
   def self.for_identity(identity)
     begin
       get(:viewuser, userid: identity.ldap_uid.split('@').first)
-    rescue
+    rescue => e
       epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
 
       if epic_error_webhook.present?
         notifier = Slack::Notifier.new(epic_error_webhook)
         message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
+        message += "\n```#{e.class}\n"
+        message += "#{e.message}\n"
+        message += "#{e.backtrace[0..5]}```"
         notifier.ping(message)
       end
 

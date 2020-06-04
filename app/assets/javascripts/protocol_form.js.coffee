@@ -155,7 +155,8 @@ $(document).ready ->
       $('label[for=protocol_study_type_questions]').removeClass('required')
       setRequiredFields()
       hideStudyTypeQuestion($(certificateOfConfidence))
-      showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+      if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+        showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'

@@ -28,6 +28,7 @@ RSpec.describe 'User edits study type questions', js: true do
 
   context 'Using Epic' do
     stub_config("use_epic", true)
+    stub_config("use_confidentiality_questions", true)
 
     before :each do
       visit new_dashboard_protocol_path(type: Study.name)
@@ -63,6 +64,7 @@ RSpec.describe 'User edits study type questions', js: true do
 
   context 'Not Using Epic' do
     stub_config("use_epic", false)
+    stub_config("use_confidentiality_questions", true)
 
     before :each do
       visit new_dashboard_protocol_path(type: Study.name)

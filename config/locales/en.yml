@@ -804,6 +804,10 @@ en:
         primary_pi:
           note: "If you are not the Primary PI you will be added as a general access user and you may change your role later"
         study_type_note: "Note: %{note}"
+      confidentiality_epic_questions:
+        header: "Confidentiality and Epic Questions"
+      confidentiality_questions:
+        header: "Confidentiality Questions"
       financial_information:
         header: "Financial Information"
         guarantor_header: "Guarantor Information"

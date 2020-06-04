@@ -880,6 +880,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "use_confidentiality_questions",
+    "value":          "true",
+    "friendly_name":  "Use Confidentiality Questions",
+    "description":    "This determines whether the application will display Confidentiality Questions section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "use_epic",
     "value":          "false",
     "friendly_name":  "Use Epic",

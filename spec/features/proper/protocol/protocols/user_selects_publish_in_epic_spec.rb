@@ -36,6 +36,7 @@ RSpec.describe 'User edits study type questions', js: true do
 
   context 'Using Epic' do
     stub_config("use_epic", true)
+    stub_config("use_confidentiality_questions", true)
 
     before :each do
       visit new_protocol_path(type: Study.name)

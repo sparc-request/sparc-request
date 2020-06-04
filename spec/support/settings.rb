@@ -27,6 +27,7 @@ def populate_settings_before_suite
     SettingsPopulator.new().populate
 
     Setting.find_by_key("use_epic").update_attribute(:value, true)
+    Setting.find_by_key("use_confidentiality_questions").update_attribute(:value, true)
     Setting.find_by_key("use_ldap").update_attribute(:value, false)
     Setting.find_by_key("use_funding_module").update_attribute(:value, true)
     Setting.find_by_key("suppress_ldap_for_user_search").update_attribute(:value, true)

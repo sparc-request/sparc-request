@@ -20,6 +20,7 @@
 
 class EpicUser < ActiveResource::Base
   self.site = Setting.get_value('epic_user_endpoint')
+  self.ssl_options = {verify_mode: OpenSSL::SSL::VERIFY_NONE}
   #https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=anc63
   #{"UserID"=>"anc63", "IsExist"=>false}
   #{"UserID"=>"wed3", "UserName"=>"Wei Ding", "IsExist"=>true, "IsActive"=>true, "IsBlocked"=>false, "IsPasswordChangeRequired"=>false}

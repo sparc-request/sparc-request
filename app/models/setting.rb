@@ -44,6 +44,12 @@ class Setting < ApplicationRecord
     end
   end
 
+  def self.set_value!(key, value)
+    setting = Setting.find_by_key(key)
+    setting.value = value
+    setting.save!
+  end
+
   def value=(val)
     RequestStore.store[:settings_map][key][:value] = val.to_s if RequestStore.store[:settings_map] && RequestStore.store[:settings_map][key]
     
@@ -88,12 +94,22 @@ class Setting < ApplicationRecord
   end
 
   def value_matches_type
-    errors.add(:value, 'does not match the provided data type') unless
-      data_type == get_type(read_attribute(:value))
+    errors.add(:value, "does not match the provided data type. #{key} expected #{data_type} but was #{get_type(read_attribute(:value))}") unless
+      valid_type(data_type, get_type(read_attribute(:value)))
   end
 
   def parent_value_matches_parent_data_type
     errors.add(:parent_value, 'does not match the parent\'s data type') unless
-      parent.data_type == get_type(read_attribute(:parent_value))
+      valid_type(parent.data_type, get_type(read_attribute(:parent_value)))
+  end
+
+  def valid_type(must_be_data_type, current_data_type)
+    if must_be_data_type == current_data_type
+      true
+    elsif must_be_data_type == "string" && current_data_type == "url"
+      true
+    else
+      false
+    end
   end
 end

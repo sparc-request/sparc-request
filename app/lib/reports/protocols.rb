@@ -138,8 +138,6 @@ class ProtocolsReport < ReportingModule
     submitted_at_start  = (args[:service_requests_original_submitted_date_from].present?  ? DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y") : self.default_options['Date Range'][:from]).utc
     submitted_at_end    = (args[:service_requests_original_submitted_date_to].present?    ? DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59").to_datetime : self.default_options['Date Range'][:to]).utc
 
-    binding.pry
-
     query             = { service_requests: { submitted_at: submitted_at_start..submitted_at_end } }
     query[:services]  = { organization_id: service_organization_ids } if service_organization_ids.any?
 

@@ -110,7 +110,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
             cwf_protocol.line_items.create(sparc_id: line_item.id, protocol_id: cwf_protocol.id, service_id: line_item.service_id, quantity_requested: line_item.quantity)
           elsif synch.action == 'update'
             if line_item_in_fulfillment?(line_item)
-              cwf_line_item.update_attributes(quantity_requested: line_item.quantity)
+              cwf_line_item.update_attributes(quantity_requested: line_item.quantity, service_id: line_item.service_id)
             end
           end
         end

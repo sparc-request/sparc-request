@@ -33,7 +33,7 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.3.2'
+gem 'grape', '1.3.3'
 gem 'grape-entity', '~> 0.8.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -120,7 +120,7 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.3'
+  gem 'webdrivers', '~> 4.4'
   gem 'webmock'
 end
 

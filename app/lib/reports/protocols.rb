@@ -30,7 +30,7 @@ class ProtocolsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "2012-03-01".to_datetime, :to => DateTime.now},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -135,14 +135,10 @@ class ProtocolsReport < ReportingModule
       ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
 
-    submitted_at = 
-      if args[:service_requests_original_submitted_date_from] && args[:service_requests_original_submitted_date_to]
-        DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
-      else
-        self.default_options['Date Range'][:from]..self.default_options['Date Range'][:to]
-      end
+    submitted_at_start  = (args[:service_requests_original_submitted_date_from].present?  ? DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y") : self.default_options['Date Range'][:from]).utc
+    submitted_at_end    = (args[:service_requests_original_submitted_date_to].present?    ? DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59").to_datetime : self.default_options['Date Range'][:to]).utc
 
-    query             = { service_requests: { submitted_at: submitted_at } }
+    query             = { service_requests: { submitted_at: submitted_at_start..submitted_at_end } }
     query[:services]  = { organization_id: service_organization_ids } if service_organization_ids.any?
 
     if ssr_organization_ids.any? || args[:status]

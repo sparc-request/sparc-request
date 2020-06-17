@@ -143,8 +143,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def approval_history
     #For Approval History Bootstrap Table
-    service_request = @sub_service_request.service_request
-    @approvals = [service_request.approvals, @sub_service_request.approvals].flatten
+    @approvals = @sub_service_request.approvals
   end
 
   def subsidy_history

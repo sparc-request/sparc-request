@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_18_200713) do
+ActiveRecord::Schema.define(version: 2020_06_17_134540) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
   end
 
   create_table "approvals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "service_request_id"
     t.bigint "identity_id"
     t.datetime "approval_date"
     t.datetime "created_at", null: false
@@ -45,7 +44,6 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.string "approval_type", default: "Resource Approval"
     t.bigint "sub_service_request_id"
     t.index ["identity_id"], name: "index_approvals_on_identity_id"
-    t.index ["service_request_id"], name: "index_approvals_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_approvals_on_sub_service_request_id"
   end
 
@@ -227,7 +225,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.integer "line_item_id"
     t.string "action"
@@ -327,7 +325,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
-  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
     t.string "pro_number"
     t.string "irb_of_record"
@@ -341,7 +339,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
   end
 
-  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
     t.bigint "irb_record_id"
     t.bigint "study_phase_id"
     t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"

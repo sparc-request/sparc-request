@@ -31,7 +31,7 @@ class Notifier < ActionMailer::Base
     mail(to: email, cc: cc, from: @identity.email, subject: t('devise.mailer.new_account.subject'))
   end
 
-  def notify_user(project_role, service_request, approval, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
+  def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @deleted_ssrs = deleted_ssrs

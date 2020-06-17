@@ -86,7 +86,6 @@ SparcRails::Application.routes.draw do
     get :document_management
     get :review
     get :confirmation
-    get :approve_changes
     get :system_satisfaction_survey
 
     put :save_and_exit

@@ -119,7 +119,8 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
+    # rmid is optional on Projects
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info? && self.is_a?(Study)
   end
 
   def has_human_subject_info?

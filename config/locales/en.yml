@@ -755,7 +755,7 @@ en:
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
     rmid:
-      note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+      note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
       validated: "Updated to corresponding Research Master ID %{title}"
       errors:
         server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
@@ -797,7 +797,7 @@ en:
       information:
         header: "General Information"
         rmid:
-          note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+          note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
           error:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"

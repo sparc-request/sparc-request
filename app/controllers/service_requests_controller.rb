@@ -114,7 +114,7 @@ class ServiceRequestsController < ApplicationController
         @protocol = @service_request.protocol
         @service_request.previous_submitted_at = @service_request.submitted_at
 
-        perform_fulfillment_synch_check(@service_request)
+        perform_fulfillment_synch_check(@service_request) if Setting.get_value("fulfillment_contingent_on_catalog_manager")
 
         if @service_request.should_push_to_epic?
           # Send a notification to Lane et al to create users in Epic.  Once

@@ -31,7 +31,6 @@ class ServiceRequest < ApplicationRecord
   has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
-  has_many :approvals, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   has_many :arms, through: :protocol

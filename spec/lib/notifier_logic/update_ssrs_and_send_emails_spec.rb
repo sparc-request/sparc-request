@@ -70,7 +70,7 @@ RSpec.describe NotifierLogic do
         end
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, nil, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, logged_in_user, nil, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -163,7 +163,7 @@ RSpec.describe NotifierLogic do
         audit = { :line_items => @deleted_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, audit, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, logged_in_user, audit, anything, false)
       end
 
       it 'should NOT notify service providers' do
@@ -318,7 +318,7 @@ RSpec.describe NotifierLogic do
         audit = { :line_items => @added_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, audit, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, logged_in_user, audit, anything, false)
       end
 
       it 'should notify service providers (initial submission email)' do
@@ -403,7 +403,7 @@ RSpec.describe NotifierLogic do
         audit = { :line_items => @added_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, audit, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, logged_in_user, audit, anything, false)
       end
 
       it 'should notify service providers' do
@@ -492,7 +492,7 @@ RSpec.describe NotifierLogic do
         audit = { :line_items => @deleted_li }
         project_role = @sr.protocol.project_roles.first
         NotifierLogic.new(@sr, logged_in_user).update_ssrs_and_send_emails
-        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, false, logged_in_user, audit, anything, false)
+        expect(Notifier).to have_received(:notify_user).with(project_role, @sr, logged_in_user, audit, anything, false)
       end
 
       it 'should notify service providers' do

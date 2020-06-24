@@ -23,10 +23,10 @@ require 'generate_request_grant_billing_pdf'
 class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
-  before_action :initialize_service_request,      except: [:approve_changes]
+  before_action :initialize_service_request
   before_action :validate_step,                   only:   [:navigate, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
   before_action :setup_navigation,                only:   [:navigate, :catalog, :protocol, :service_details, :service_subsidy, :document_management, :review, :confirmation]
-  before_action :authorize_identity,              except: [:approve_changes, :show]
+  before_action :authorize_identity,              except: [:show]
   before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service]
   before_action :find_locked_org_ids,             only:   [:catalog]
   before_action :find_linked_entity,              only:   [:catalog]
@@ -173,17 +173,6 @@ class ServiceRequestsController < ApplicationController
     respond_to :js
   end
 
-  def approve_changes
-    @service_request = ServiceRequest.find params[:id]
-    @approval = @service_request.approvals.where(id: params[:approval_id]).first
-    @previously_approved = true
-
-    if @approval and @approval.identity.nil?
-      @approval.update_attributes(identity_id: current_user.id, approval_date: Time.now)
-      @previously_approved = false
-    end
-  end
-
   def system_satisfaction_survey
     @survey   = SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).first
     @forward  = params[:forward]
@@ -309,7 +298,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # If a service request's ssr is in work fulfillment and a line item has been 
+  # If a service request's ssr is in work fulfillment and a line item has been
   # added (exists in sparc but not in fulfillment) then that ssr should be synched
   # to fulfillment
   def perform_fulfillment_synch_check(service_request)
@@ -319,7 +308,7 @@ class ServiceRequestsController < ApplicationController
 
       if (ssr.imported_to_fulfillment? && cwf_protocol && line_item.service.one_time_fee)
         cwf_ssr_service_ids = cwf_protocol.line_items.map{|x| x.service_id}
-        if !cwf_ssr_service_ids.include?(line_item.service_id) 
+        if !cwf_ssr_service_ids.include?(line_item.service_id)
           ssr.synch_to_fulfillment = true
           FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: line_item.id, action: 'create')
           ssr.save(validate: false)

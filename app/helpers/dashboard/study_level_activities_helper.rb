@@ -37,7 +37,11 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def sla_in_fulfillment?(line_item)
-    (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
+    if Setting.get_value("fulfillment_contingent_on_catalog_manager")
+      (Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0) ? true : false
+    else
+      false
+    end
   end
 
   def sla_cost_display(line_item)
@@ -74,9 +78,13 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def delete_sla_button(line_item)
-    fulfillment_line_items = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id)
-    if (fulfillment_line_items.size > 0) && (fulfillment_line_items.first.fulfillments.size > 0)
-      content_tag :div, icon('fas', 'trash-alt'), class: 'btn btn-light', title: t('actions.delete_disabled'), data: { toggle: 'tooltip', confirm_swal: 'true' }    
+    if Setting.get_value("fulfillment_contingent_on_catalog_manager")
+      fulfillment_line_items = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id)
+      if (fulfillment_line_items.size > 0) && (fulfillment_line_items.first.fulfillments.size > 0)
+        content_tag :div, icon('fas', 'trash-alt'), class: 'btn btn-light', title: t('actions.delete_disabled'), data: { toggle: 'tooltip', confirm_swal: 'true' }    
+      else
+        link_to icon('fas', 'trash-alt'), dashboard_study_level_activity_path(line_item, ssrid: line_item.sub_service_request_id), remote: true, method: :delete, class: 'btn btn-danger', title: t('actions.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
+      end
     else
       link_to icon('fas', 'trash-alt'), dashboard_study_level_activity_path(line_item, ssrid: line_item.sub_service_request_id), remote: true, method: :delete, class: 'btn btn-danger', title: t('actions.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' }
     end

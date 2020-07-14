@@ -1024,7 +1024,7 @@ en:
     description: "Brief Description"
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
-    epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    epic_notice: "*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met."
     epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
     link: "HERE"
     name: "User Name"

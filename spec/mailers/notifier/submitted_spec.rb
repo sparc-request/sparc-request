@@ -27,6 +27,7 @@ RSpec.describe Notifier do
   fake_login_for_each_test
 
   let(:identity) { jug2 }
+  stub_config("use_epic", true)
 
   ############# WITHOUT NOTES #########################
   context 'without notes' do
@@ -107,7 +108,7 @@ RSpec.describe Notifier do
           assert_notification_email_tables_for_user
         end
 
-        it 'should not have a submission reminder' do
+        it 'should have a submission reminder' do
           does_have_a_submission_reminder(@mail.body.parts.first.body)
         end
       end
@@ -238,7 +239,7 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_user
       end
 
-      it 'should not have a submission reminder' do
+      it 'should have a submission reminder' do
         does_have_a_submission_reminder(@mail.body.parts.first.body)
       end
     end

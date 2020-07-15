@@ -263,6 +263,7 @@ SparcRails::Application.routes.draw do
 
       member do
         get :display_requests
+        get :request_access
         patch :archive
         patch :update_protocol_type
       end

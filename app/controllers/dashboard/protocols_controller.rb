@@ -210,6 +210,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     recipient = Identity.find(params[:recipient_id])
     ProtocolMailer.with(recipient: recipient, protocol: @protocol, requester: current_user).request_access_email.deliver
 
+    flash[:success] = t('dashboard.protocols.table.request_sent', protocol_id: @protocol.id)
+
     respond_to :js
   end
 

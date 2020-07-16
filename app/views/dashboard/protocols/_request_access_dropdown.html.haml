@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .dropdown.no-caret
-  %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'left', title: t("protocols.tooltips.request_access") } }
+  %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'left', title: t("dashboard.protocols.table.tooltips.request_access") } }
     %button.btn.btn-secondary.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }<
       = Protocol.human_attribute_name(:requests)
       = icon('fas', 'exclamation-circle ml-1')

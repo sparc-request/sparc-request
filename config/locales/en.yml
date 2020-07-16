@@ -707,7 +707,7 @@ en:
   # MAILERS #
   ###########
   mailers:
-    greeting: "Dear %{name}"
+    greeting: "Dear %{name},"
     protocol_mailer:
       archive_email:
         archive:

@@ -200,7 +200,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     ssrs_to_be_displayed = @protocol.sub_service_requests.where.not(status: Setting.get_value('finished_statuses') << 'draft')
     (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
-      ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver #This should be deliver_later
+      ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
     
     respond_to :js
@@ -208,7 +208,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def request_access
     recipient = Identity.find(params[:recipient_id])
-    ProtocolMailer.with(recipient: recipient, protocol: @protocol, requester: current_user).request_access_email.deliver_later
+    ProtocolMailer.with(recipient: recipient, protocol: @protocol, requester: current_user).request_access_email.deliver
 
     respond_to :js
   end

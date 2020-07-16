@@ -19,9 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .dropdown.no-caret
-  %button.btn.btn-secondary.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }<
-    = Protocol.human_attribute_name(:requests)
-    = icon('fas', 'exclamation-circle ml-1')
-  .dropdown-menu{ aria: { labelledby: 'newProtocolButton' } }
-    - protocol.project_roles.includes(:identity).order("identities.first_name", "identities.last_name").each do |pr|
-      = link_to display_authorized_user(pr), request_access_dashboard_protocol_path(protocol, recipient_id: pr.identity.id), remote: true, class: 'dropdown-item'
+  %div.tooltip-wrapper{ data: { toggle: 'tooltip', placement: 'left', title: t("protocols.tooltips.request_access") } }
+    %button.btn.btn-secondary.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' }, aria: { haspopup: 'true', expanded: 'false' } }<
+      = Protocol.human_attribute_name(:requests)
+      = icon('fas', 'exclamation-circle ml-1')
+    .dropdown-menu{ aria: { labelledby: 'newProtocolButton' } }
+      - protocol.project_roles.includes(:identity).order("identities.first_name", "identities.last_name").each do |pr|
+        = link_to display_authorized_user(pr), request_access_dashboard_protocol_path(protocol, recipient_id: pr.identity.id), remote: true, class: 'dropdown-item'

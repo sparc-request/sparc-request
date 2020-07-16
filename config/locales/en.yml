@@ -841,7 +841,7 @@ en:
       pro_number: "Institutional Review Board (IRB) Unique Identifier."
       recruitment_end_date: "When your %{protocol_type} is estimated to stop recruiting participants."
       recruitment_start_date: "When your %{protocol_type} is estimated to start recruiting participants."
-      request_access: "Request access to Protocol"
+      request_access: "Request access to this protocol"
       short_title: "An abbreviated form of the title used to identify your Study/Project."
       sponsor_name: "Specify name of the entity funding the Study/Project."
       start_date: "Estimated start date for your %{protocol_type} (used by service providers to prioritize)"

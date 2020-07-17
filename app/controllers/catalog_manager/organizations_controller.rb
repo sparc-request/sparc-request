@@ -235,6 +235,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @using_defaults = @organization.use_default_statuses
   end
 
+  def set_registrar_enabled
+    @patient_registrar_enabled = (@organization.process_ssrs && @organization.all_child_services.where(is_available: true, one_time_fee: false).any?)
+  end
 
   # ================ Imported from OrganizationUpdater ========================
 

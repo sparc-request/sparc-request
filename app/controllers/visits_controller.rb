@@ -42,6 +42,12 @@ class VisitsController < ApplicationController
 
     if @visit.update_attributes(visit_params)
       @visit.sub_service_request.set_to_draft unless @in_admin
+      if visit_params[:set_all_insurance] == '1'
+        insurance_qty = visit_params[:insurance_billing_qty].to_i
+        @visit_group.visits.each do |visit|
+          visit.update_attributes(insurance_billing_qty: insurance_qty)
+        end
+      end
     else
       @errors = @visit.errors
     end
@@ -76,7 +82,8 @@ class VisitsController < ApplicationController
     params.require(:visit).permit(
       :research_billing_qty,
       :insurance_billing_qty,
-      :effort_billing_qty
+      :effort_billing_qty,
+      :set_all_insurance
     )
   end
 end

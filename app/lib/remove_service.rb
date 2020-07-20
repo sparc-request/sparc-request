@@ -50,11 +50,10 @@ class RemoveService
       @service_request.line_items.where(service: @line_item.service.related_services).update_all(optional: true)
       @line_item.destroy
 
+      @ssr.update_attribute(:status, 'draft') unless ['first_draft', 'draft'].include?(@ssr.status)
       if @ssr.line_items.empty?
         NotifierLogic.new(@service_request, @current_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
         @ssr.destroy
-      else
-        @ssr.update_attribute(:status, 'draft') unless @ssr.status == 'first_draft'
       end
 
       @service_request.reload

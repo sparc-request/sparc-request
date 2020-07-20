@@ -24,6 +24,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
     @clinical_provider = ClinicalProvider.new(clinical_provider_params)
     @identity = Identity.find(@clinical_provider.identity_id)
     @organization = @clinical_provider.organization
+    set_registrar_enabled(@organization)
     @fulfillment_rights = fulfillment_rights(@organization.id)
 
     if @clinical_provider.save
@@ -41,6 +42,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
     @clinical_provider = ClinicalProvider.find_by(clinical_provider_params)
     @identity = Identity.find(@clinical_provider.identity_id)
     @organization = @clinical_provider.organization
+    set_registrar_enabled(@organization)
     @fulfillment_rights = fulfillment_rights(@organization.id)
 
     if @clinical_provider.destroy

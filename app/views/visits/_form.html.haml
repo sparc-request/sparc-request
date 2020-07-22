@@ -43,8 +43,8 @@
           .form-group.col-4.mb-0
             = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
-          .form-group.col-4{style: 'margin-top:10px;'}
-            = f.label 'Set all visits in column to indicated insurance quantity.'
+          .form-group.col-4{ id: 'select-t-qty' }
+            = f.label t(:calendars)[:pppv][:visits][:select_all_t]
             = f.check_box :set_all_insurance
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }

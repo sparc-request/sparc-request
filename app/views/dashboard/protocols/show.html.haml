@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = render 'protocols/summary', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
-= render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin
+= render 'associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit, admin: @admin, malformed_project_role: @malformed_project_role
 = render "protocols/milestones", protocol: @protocol
 - if @protocol.has_clinical_services?
   = render 'dashboard/calendar_structure/table', protocol: @protocol

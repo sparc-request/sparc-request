@@ -131,6 +131,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      epic_user_error: "You have a user without valid epic rights (%{user_name}), assigned to have epic EMR access on this protocol"
       new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'

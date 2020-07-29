@@ -26,6 +26,9 @@
   .collapse#authorizedUsers{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
     #associatedUsersTableToolbar
       - if in_dashboard?
+        - if @malformed_project_role
+          #epic_rights_error_alert.alert.alert-danger.float-right
+            = raw(t('dashboard.protocols.epic_user_error', user_name: @malformed_project_role.identity.full_name))
         = new_authorized_user_button(protocol_id: protocol.id, permission: permission_to_edit || admin)
       - elsif !in_review?
         = new_authorized_user_button(srid: service_request.id)

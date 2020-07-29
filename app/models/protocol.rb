@@ -540,6 +540,14 @@ class Protocol < ApplicationRecord
     project_roles.reload
   end
 
+  def check_epic_user_rights
+    project_roles.includes(:identity).where(epic_access: true).detect do |project_role|
+      epic_user = EpicUser.for_identity(project_role.identity)
+
+      (epic_user.nil? or !EpicUser.is_active?(epic_user))
+    end
+  end
+
   # Returns true if there is a push to epic in progress, false
   # otherwise.  If no push has been initiated, return false.
   def push_to_epic_in_progress?

@@ -18,39 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ProtocolMailer < ActionMailer::Base
-  helper ApplicationHelper
-  helper NotifierHelper
-
-  default from: Setting.get_value("no_reply_from")
-
-  # https://www.pivotaltracker.com/story/show/161483270
-  def archive_email
-    @recipient            = params[:recipient]
-    @protocol             = params[:protocol]
-    @archiver             = params[:archiver]
-    @action               = params[:action]
-    @service_request      = @protocol.service_requests.first
-
-    send_email(@recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
-  end
-
-  def request_access_email
-    @recipient            = params[:recipient]
-    @protocol             = params[:protocol]
-    @requester             = params[:requester]
-    @service_request      = @protocol.service_requests.first
-
-    send_email(@recipient,
-               t("mailers.protocol_mailer.request_access_email.subject", requester: @requester.full_name, protocol_id: @protocol.id),
-               @requester)
-  end
-
-  private
-
-  def send_email(recipient, subject, cc=nil)
-    @send_to = recipient
-
-    mail(to: recipient.email, subject: subject, cc: cc.try(:email))
-  end
-end
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")

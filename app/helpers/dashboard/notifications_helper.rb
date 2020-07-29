@@ -49,11 +49,11 @@ module Dashboard::NotificationsHelper
     end
   end
 
-  def display_authorized_user(project_role, ssr)
+  def display_authorized_user(project_role, ssr=nil)
     content_tag :span do
       raw(
         content_tag(:strong, display_user_role(project_role), class: 'mr-2') + "#{project_role.identity.full_name}" + 
-        (project_role.identity_id == ssr.service_requester_id ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1') : '')
+        (project_role.identity_id == ssr.try(:service_requester_id) ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1') : '')
       )
     end
   end

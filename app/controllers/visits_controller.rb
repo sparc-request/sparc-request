@@ -42,11 +42,8 @@ class VisitsController < ApplicationController
 
     if @visit.update_attributes(visit_params)
       @visit.sub_service_request.set_to_draft unless @in_admin
-      if visit_params[:set_all_insurance] == '1'
-        insurance_qty = visit_params[:insurance_billing_qty].to_i
-        @visit_group.visits.each do |visit|
-          visit.update_attributes(insurance_billing_qty: insurance_qty)
-        end
+      if params[:set_all_insurance] == '1'
+        @visit_group.visits.update_all(insurance_billing_qty: visit_params[:insurance_billing_qty].to_i)
       end
     else
       @errors = @visit.errors

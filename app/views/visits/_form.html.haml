@@ -34,16 +34,16 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-row
-          .form-group.col-4.mb-0
+          .form-group.col-4
             = f.label :research_billing_qty, class: 'required'
             = f.text_field :research_billing_qty, class: 'form-control'
-          .form-group.col-4.mb-0
+          .form-group.col-4
             = f.label :insurance_billing_qty, class: 'required'
             = f.text_field :insurance_billing_qty, class: 'form-control'
-          .form-group.col-4.mb-0
+          .form-group.col-4
             = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
-          .form-group.col-4{ id: 'select-t-qty' }
+          .form-group.col-4
             = f.label t(:calendars)[:pppv][:visits][:select_all_t]
             = f.check_box :set_all_insurance
       .modal-footer

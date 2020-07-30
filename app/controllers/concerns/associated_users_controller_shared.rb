@@ -60,6 +60,7 @@ module AssociatedUsersControllerShared
 
     creator         = AssociatedUserCreator.new(project_role_params, current_user)
     @protocol_role  = creator.protocol_role
+    @permission_to_edit = @protocol_role.can_edit?
 
     if creator.successful?
       flash[:success] = t('authorized_users.created')

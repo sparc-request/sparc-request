@@ -33,8 +33,8 @@ $('#rmidContainer').append("<%= j render 'protocols/form/rmid_server_down' %>")
 <% else %>
 $('#protocol_research_master_id').parents('.form-group').addClass('is-valid')
 
-$('#protocol_short_title').val("<%= @rmid_record['short_title'] %>").prop('readonly', true)
-$('#protocol_title').val("<%= @rmid_record['long_title'] %>").prop('readonly', true)
+$('#protocol_short_title').val("<%= j @rmid_record['short_title'].html_safe %>").prop('readonly', true)
+$('#protocol_title').val("<%= j @rmid_record['long_title'].html_safe %>").prop('readonly', true)
 
 <% if @rmid_record['eirb_validated'] %>
 if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')

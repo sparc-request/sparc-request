@@ -21,16 +21,28 @@
 (function($) {
   $.extend($.fn.selectpicker.Constructor.Defaults, { counter: false });
 
-  var render = $.fn.selectpicker.Constructor.prototype.render;
+  var render          = $.fn.selectpicker.Constructor.prototype.render,
+      createDropdown  = $.fn.selectpicker.Constructor.prototype.createDropdown;
 
   $.fn.selectpicker.Constructor.prototype.render = function() {
     if (this.options.counter && this.$button.find('.bootstrap-select-badge').length === 0) {
       var badgeContext  = this.$button.hasClass('btn-light') ? 'badge-secondary' : 'badge-light';
-      var count         = this.$element.find("option:not([value=''])").length
-      this.$button.find('.filter-option-inner').append(`<span class='badge badge-pill ${badgeContext} ml-1'>${count}</span>`)
+      var count         = this.$element.find("option:not([value=''])").length;
+      this.$button.find('.filter-option-inner').append(`<span class='badge badge-pill ${badgeContext} ml-1'>${count}</span>`);
     }
 
     render.apply(this);
+  };
+
+  // Related to https://www.pivotaltracker.com/story/show/172977589
+  // bootstrap-select doesn't properly take into account the `flip` option telling dropsdowns not to auto-flip to fit the screen
+  $.fn.selectpicker.Constructor.prototype.createDropdown = function() {
+    var $newElement = createDropdown.apply(this),
+        $button     = $newElement.find('button');
+
+    if (this.options.flip === false) $button.data('flip', false);
+
+    return $newElement;
   };
 
 })(jQuery);

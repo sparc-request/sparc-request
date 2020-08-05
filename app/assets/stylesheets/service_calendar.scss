@@ -26,6 +26,7 @@
 }
 
 #serviceCalendar .service-calendar-container {
+
   &:not(:last-of-type) {
     @extend .border-bottom;
     border-bottom-left-radius: 0;

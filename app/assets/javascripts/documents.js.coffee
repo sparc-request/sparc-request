@@ -28,3 +28,11 @@ $(document).ready ->
   $(document).on 'change', '#document_document', -> 
    fileName = $(this).val().split('\\').pop()
    $(this).next('.custom-file-label').addClass("selected").html(fileName)
+
+  $(document).on 'change', '#document_share_all', ->
+    if $(this).prop('checked')
+      $('#org_ids').parents('.form-group').addClass('d-none')
+      $('#org_ids').prop('disabled', true).selectpicker('refresh')
+    else
+      $('#org_ids').parents('.form-group').removeClass('d-none')
+      $('#org_ids').prop('disabled', false).selectpicker('refresh')

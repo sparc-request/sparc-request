@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_17_134540) do
+ActiveRecord::Schema.define(version: 2020_08_05_132132) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 2020_06_17_134540) do
     t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
+    t.boolean "share_all"
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 

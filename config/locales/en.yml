@@ -84,6 +84,7 @@ en:
         document: "Document"
         document_updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
+        share_all: "Share with all providers"
       form:
         respondable_id: "SRID"
         surveyable: "Association"
@@ -572,14 +573,18 @@ en:
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
-    supported_types: "Supported File Types:<br>%{file_types}"
-    providers: "%{provider_count} Service Providers"
+    form:
+      supported_types: "Supported File Types:<br>%{file_types}"
+      select_type: "Please Select Type"
+      select_providers: "Choose Service Providers"
+    table:
+      providers: "%{provider_count} Service Providers"
+      all_providers: "All Service Providers on this %{protocol_type}"
     tooltips:
       new: "Visible to Authorized Users and selected Service Providers"
-      access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
+      access: "Share this document with all current and future service providers on this %{protocol_type} or choose which providers this document should be shared with"
       add_document: "Upload document(s) in repository"
-    select_type: "Please Select Type"
-    delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
+      share_all: "Share this document with all current and future service providers on this %{protocol_type}"
 
   ###############
   # ERROR PAGES #

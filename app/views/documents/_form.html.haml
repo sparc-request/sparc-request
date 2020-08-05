@@ -31,23 +31,28 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-group
-          = f.label :doc_type, class: 'required'
-          = f.select :doc_type, options_for_select(PermissibleValue.get_inverted_hash('document_type'), document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'selectpicker'
-        .form-group#doc-type-other-field{ class: document.doc_type == 'other' ? '' : 'd-none' }
-          = f.label :doc_type_other, t('constants.prompts.please_specify'), class: 'required'
-          = f.text_field :doc_type_other, class: 'form-control'
-        .form-group
           = f.label :document, class: 'required'
           .custom-file
             = f.file_field :document, class: 'custom-file-input'
-            = f.label :document, document.document_file_name, class: 'custom-file-label text-truncate'
+            = f.label :document, document.document_file_name || 'No file selected', class: 'custom-file-label text-truncate'
           %small.form-text.text-muted
-            = raw t('documents.supported_types', file_types: document_file_types_as_string)
-        - document_orgs = document_org_access_collection(document)
-        - unless document_orgs.empty?
-          .form-group
-            = f.label :org_ids, title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip' }
-            = select_tag :org_ids, document_orgs, class: 'selectpicker', multiple: true, data: { actions_box: 'true' }
+            = raw t('documents.form.supported_types', file_types: document_file_types_as_string)
+        .form-row
+          .form-group.col
+            = f.label :doc_type, class: 'required'
+            = f.select :doc_type, options_for_select(PermissibleValue.get_inverted_hash('document_type'), document.doc_type), { prompt: t('documents.form.select_type') }, class: 'selectpicker'
+          .form-group.col#doc-type-other-field{ class: document.doc_type == 'other' ? '' : 'd-none' }
+            = f.label :doc_type_other, t('constants.prompts.please_specify'), class: 'required'
+            = f.text_field :doc_type_other, class: 'form-control'
+        .form-row
+          .form-group.col-4
+            = f.label :org_ids, title: t('documents.tooltips.access', protocol_type: document.protocol.model_name.human), data: { toggle: 'tooltip' }
+            .custom-control.custom-checkbox.mt-2.mb-1
+              = f.check_box :share_all, class: 'custom-control-input'
+              = f.label :share_all, class: 'custom-control-label',title: t('documents.tooltips.share_all', protocol_type: document.protocol.model_name.human), data: { toggle: 'tooltip' }
+          .form-group.col-8{ class: document.share_all? ? 'd-none' : '' }
+            %label &nbsp;
+            = select_tag :org_ids, options_from_collection_for_select(document.protocol.organizations.distinct.order(:name), :id, :name, document.sub_service_requests.pluck(:organization_id)), class: 'selectpicker', multiple: true, disabled: document.share_all?, data: { actions_box: 'true', none_selected_text: t('documents.form.select_providers') }
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

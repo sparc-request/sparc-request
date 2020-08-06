@@ -50,8 +50,7 @@
             .custom-control.custom-checkbox.mt-2.mb-1
               = f.check_box :share_all, class: 'custom-control-input'
               = f.label :share_all, class: 'custom-control-label',title: t('documents.tooltips.share_all', protocol_type: document.protocol.model_name.human), data: { toggle: 'tooltip' }
-          .form-group.col-8{ class: document.share_all? ? 'd-none' : '' }
-            %label &nbsp;
+          .form-group.col-8.align-items-end{ class: document.share_all? ? 'd-none' : 'd-flex' }
             = select_tag :org_ids, options_from_collection_for_select(document.protocol.organizations.distinct.order(:name), :id, :name, document.sub_service_requests.pluck(:organization_id)), class: 'selectpicker', multiple: true, disabled: document.share_all?, data: { actions_box: 'true', none_selected_text: t('documents.form.select_providers') }
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }

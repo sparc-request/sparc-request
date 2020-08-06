@@ -28,6 +28,6 @@ FactoryBot.define do
     document_updated_at   { Time.now }
     created_at            { Time.now }
     updated_at            { Time.now }
-    share_all             { true }
+    share_all             { false }
   end
 end

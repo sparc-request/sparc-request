@@ -658,7 +658,7 @@ class Protocol < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

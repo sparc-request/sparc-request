@@ -228,6 +228,9 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
 
+    resources :oncore_records, only: [:index]
+    get "/protocols/:protocol_id/oncore_records", to: "oncore_records#history", as: :protocol_oncore_records
+
     resource :protocol_merge do
       put :perform_protocol_merge
     end

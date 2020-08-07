@@ -103,6 +103,20 @@ en:
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
         shared: "Share this message with super users of your group and overlords."
 
+    ###################
+    # ONCORE ENDPOINT #
+    ###################
+    oncore:
+      log:
+        header: "OnCore CRPC Push Log"
+        protocol: "Protocol"
+        PIs: "PI(s)"
+        calendar_version: "Calendar Version"
+        created_at: "Last Push Date"
+        status: "Status"
+        history: "Push History"
+        history_title: "Protocol #%{protocol_id} CRPC Push History"
+
     ######################
     #  PROTOCOL FILTERS  #
     ######################

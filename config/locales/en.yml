@@ -665,6 +665,7 @@ en:
       navigation:
         short_interaction: "Short Interaction"
         epic_queue: "Epic Queue"
+        oncore_log: "OnCore Log"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"

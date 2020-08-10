@@ -22,6 +22,12 @@ $ ->
   if $('#serviceCalendar').length
     adjustCalendarHeaders()
 
+  $(document).on('mouseenter', '.editable', ->
+    $(this).find('a').addClass('active')
+  ).on('mouseleave', '.editable', ->
+    $(this).find('a').removeClass('active')
+  )
+
   #########################
   # Load Tab on Page Load #
   #########################

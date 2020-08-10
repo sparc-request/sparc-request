@@ -42,11 +42,14 @@ html {
 }
 
 #contentContainer {
+  margin-bottom: calc(#{$grid-gutter-width} / 2);
+}
+
+#contentContainer, #siteFooter {
   position: relative;
-  width: 90%;
-  padding-bottom: 200px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  padding-left: calc(5% + #{$grid-gutter-width} / 2);
+  padding-right: calc(5% + #{$grid-gutter-width} / 2);
   display: flex;
   flex-wrap: wrap;
   flex: 1 0;

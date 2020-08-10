@@ -675,11 +675,15 @@ en:
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2020 MUSC Foundation for Research Development"
-      links:
-        about: "About"
-        sctr:
-          text: "SCTR"
+      github: "GitHub"
+      about:
+        header: "About"
+        about_sparc: "About SPARCRequest"
+        about_sctr:
+          text: "About SCTR"
           url: "http://sctr.musc.edu"
+      links:
+        header: "Useful Links"
         contact: "Contact Us"
         listserv:
           text: "Listserv"
@@ -700,6 +704,13 @@ en:
           question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
+      browsers:
+        header: "Supported Browsers"
+        chrome: "Chrome"
+        firefox: "Firefox"
+        safari: "Safari"
+        edge: "Edge"
+        ie11: "Internet Explorer 11+"
     back_to_top: "Go to Top"
 
   ##############

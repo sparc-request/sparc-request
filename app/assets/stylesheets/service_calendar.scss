@@ -99,10 +99,6 @@
       &:hover {
         cursor: pointer;
         background: theme-color('light');
-
-        a {
-          @extend .active;
-        }
       }
     }
 

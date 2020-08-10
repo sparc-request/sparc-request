@@ -25,27 +25,50 @@ RSpec.feature 'User wants to add a document', js: true do
   fake_login_for_each_test
 
   before :each do
-    @protocol       = create(:study_federally_funded, primary_pi: jug2)
-    organization    = create(:organization)
-    service_request = create(:service_request_without_validations, protocol: @protocol)
-                      create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: @protocol)
+    @protocol = create(:study_federally_funded, primary_pi: jug2)
+    @org      = create(:organization)
+    sr        = create(:service_request_without_validations, protocol: @protocol)
+    @ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: @org, status: 'draft', protocol: @protocol)
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
   end
 
-  it 'should add the new document' do
-    click_link I18n.t('documents.new')
-    wait_for_javascript_to_finish
+  context 'selecting share with all providers' do
+    it 'should add the new document' do
+      click_link I18n.t('documents.new')
+      wait_for_javascript_to_finish
 
-    bootstrap_select '#document_doc_type', 'Budget'
-    attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt'), make_visible: true
+      bootstrap_select '#document_doc_type', 'Budget'
+      attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt'), make_visible: true
 
-    click_button I18n.t('actions.upload')
-    wait_for_javascript_to_finish
+      click_button I18n.t('actions.upload')
+      wait_for_javascript_to_finish
 
-    expect(@protocol.reload.documents.count).to eq(1)
-    expect(@protocol.documents.first.doc_type).to eq('budget')
-    expect(@protocol.documents.first.sub_service_requests.to_a).to eq([@protocol.sub_service_requests.first])
+      expect(@protocol.reload.documents.count).to eq(1)
+      expect(@protocol.documents.first.share_all).to eq(true)
+      expect(@protocol.documents.first.sub_service_requests.count).to eq(0)
+    end
+  end
+
+  context 'selecting to share with individual providers' do
+    it 'should add the new document' do
+      click_link I18n.t('documents.new')
+      wait_for_javascript_to_finish
+
+      bootstrap_select '#document_doc_type', 'Budget'
+      attach_file 'document_document', File.expand_path('spec/fixtures/files/text_document.txt'), make_visible: true
+
+      find('#document_share_all + label').click
+      bootstrap_select '#org_ids', @org.name
+      find('.modal-title').click
+
+      click_button I18n.t('actions.upload')
+      wait_for_javascript_to_finish
+
+      expect(@protocol.reload.documents.count).to eq(1)
+      expect(@protocol.documents.first.share_all).to eq(false)
+      expect(@protocol.documents.first.sub_service_requests.to_a).to eq([@ssr])
+    end
   end
 end

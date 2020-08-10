@@ -18,48 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::EpicQueuesHelper
-  def format_pis(protocol)
-    protocol.principal_investigators.map(&:full_name).join(', ')
-  end
+class Dashboard::OncoreRecordsController < Dashboard::BaseController
+  before_action :authorize_oncore_endpoint_access
 
-  def epic_queue_delete_button(epic_queue)
-    link_to icon('fas', 'trash-alt'), dashboard_epic_queue_path(epic_queue.id), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' }
-  end
-
-  def epic_queue_send_button(epic_queue)
-    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic mr-1', data: { permission: 'true' }
-  end
-
-  def epic_queue_actions(epic_queue)
-    content_tag :div, class: 'd-flex justify-content-center' do
-      raw([
-        epic_queue_send_button(epic_queue),
-        epic_queue_delete_button(epic_queue)
-      ].join(''))
+  def index
+    respond_to do |format|
+      format.html
+      format.json {
+        @oncore_records = OncoreRecord.most_recent_push_per_protocol.eager_load(protocol: [:primary_pi, :principal_investigators])
+      }
     end
   end
 
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-    else
-      ''
+  # Shows all OnCore Records for a particular protocol
+  def history
+    respond_to do |format|
+      format.js {
+        @protocol_id = params[:protocol_id]
+      }
+      format.json {
+        @oncore_records = OncoreRecord.where(protocol_id: params[:protocol_id])
+      }
     end
   end
 
-  def format_epic_queue_created_at(epic_queue)
-    created_at = epic_queue.created_at
-    created_at.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-  end
+  private
 
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
+  # Check to see if the user has access to view OnCore records
+  def authorize_oncore_endpoint_access
+    unless Setting.get_value("oncore_endpoint_access").include?(current_user.ldap_uid)
+      authorization_error('You do not have OnCore Endpoint access.')
     end
   end
 end

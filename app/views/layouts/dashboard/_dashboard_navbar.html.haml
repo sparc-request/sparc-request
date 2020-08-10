@@ -32,6 +32,10 @@
         = link_to dashboard_epic_queues_path, class: 'btn btn-info ml-1' do
           = icon('fas', 'eye mr-2')
           = t('layout.dashboard.navigation.epic_queue')
+      - if Setting.get_value('use_oncore') && Setting.get_value('oncore_endpoint_access').include?(current_user.ldap_uid)
+        = link_to dashboard_oncore_records_path, class: 'btn btn-info-alt text-white ml-1' do
+          = icon('fas', 'eye mr-2')
+          = t('layout.dashboard.navigation.oncore_log')
       - if current_user.catalog_overlord?
         = link_to new_dashboard_protocol_merge_path, remote: true, class: 'btn btn-warning ml-1' do
           = icon('far', 'object-ungroup mr-2')

@@ -18,48 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::EpicQueuesHelper
-  def format_pis(protocol)
-    protocol.principal_investigators.map(&:full_name).join(', ')
-  end
+require 'rails_helper'
 
-  def epic_queue_delete_button(epic_queue)
-    link_to icon('fas', 'trash-alt'), dashboard_epic_queue_path(epic_queue.id), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' }
-  end
+RSpec.describe OncoreRecord, type: :model do
 
-  def epic_queue_send_button(epic_queue)
-    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic mr-1', data: { permission: 'true' }
-  end
+  it { is_expected.to belong_to(:protocol) }
 
-  def epic_queue_actions(epic_queue)
-    content_tag :div, class: 'd-flex justify-content-center' do
-      raw([
-        epic_queue_send_button(epic_queue),
-        epic_queue_delete_button(epic_queue)
-      ].join(''))
-    end
-  end
+  describe 'scopes' do
+    describe '#most_recent_push_per_protocol' do
+      it 'should return the most recent OncoreRecord for each protocol' do
+        study1 = create(:study_federally_funded)
+        study2 = create(:study_federally_funded)
+        ocr1   = create(:oncore_record, protocol_id: study1.id, calendar_version: 1)
+        ocr2   = create(:oncore_record, protocol_id: study1.id, calendar_version: 2)
+        ocr3   = create(:oncore_record, protocol_id: study2.id, calendar_version: 1)
 
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-    else
-      ''
-    end
-  end
-
-  def format_epic_queue_created_at(epic_queue)
-    created_at = epic_queue.created_at
-    created_at.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-  end
-
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
+        expect(OncoreRecord.most_recent_push_per_protocol.count).to eq(2)
+      end
     end
   end
 end

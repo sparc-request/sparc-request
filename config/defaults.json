@@ -650,6 +650,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "oncore_endpoint_access",
+    "value":          "[]",
+    "friendly_name":  "OnCore Endpoint Access",
+    "description":    "This is a list of users who will have full access to the OnCore functionality in SPARC.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
     "key":            "queue_epic",
     "value":          "false",
     "friendly_name":  "Queue Epic",
@@ -968,6 +978,16 @@
     "version":        "",
     "parent_key":     "use_news_feed",
     "parent_value":   "true"
+  },
+    {
+    "key":            "use_oncore",
+    "value":          "false",
+    "friendly_name":  "Use OnCore",
+    "description":    "This determines whether the application will use OnCore integration.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   },
   {
     "key":            "use_redcap_api",

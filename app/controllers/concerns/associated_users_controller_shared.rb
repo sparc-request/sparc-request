@@ -60,6 +60,7 @@ module AssociatedUsersControllerShared
 
     creator         = AssociatedUserCreator.new(project_role_params, current_user)
     @protocol_role  = creator.protocol_role
+    @permission_to_edit = @protocol_role.can_edit?
 
     if creator.successful?
       flash[:success] = t('authorized_users.created')
@@ -95,7 +96,7 @@ module AssociatedUsersControllerShared
   def destroy
     respond_to :js
 
-    @permission_to_edit = @protocol_roles.none?{ |pr| pr.identity_id == current_user.id } && !current_user.catalog_overlord?
+    @permission_to_edit = @protocol_roles.none?{ |pr| pr.identity_id == current_user.id } || current_user.catalog_overlord?
     @protocol_roles.each{ |pr| EpicQueueManager.new(@protocol, current_user, pr).create_epic_queue }
     Notifier.notify_primary_pi_for_epic_user_removal(@protocol, @protocol_roles).deliver if is_epic?
     @protocol.email_about_change_in_authorized_user(@protocol_roles, "destroy")

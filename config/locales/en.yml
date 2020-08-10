@@ -444,6 +444,8 @@ en:
         third_party: "T"
         percent: "%"
         edit_billing_modal: "Edit Billing Quantities"
+      visits:
+        select_all_t: "Set all visits in column to indicated insurance quantity."
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -668,6 +670,7 @@ en:
       navigation:
         short_interaction: "Short Interaction"
         epic_queue: "Epic Queue"
+        oncore_log: "OnCore Log"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"

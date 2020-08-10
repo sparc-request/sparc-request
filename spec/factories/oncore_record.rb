@@ -18,48 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::EpicQueuesHelper
-  def format_pis(protocol)
-    protocol.principal_investigators.map(&:full_name).join(', ')
-  end
-
-  def epic_queue_delete_button(epic_queue)
-    link_to icon('fas', 'trash-alt'), dashboard_epic_queue_path(epic_queue.id), remote: true, method: :delete, class: 'btn btn-danger', data: { confirm_swal: 'true' }
-  end
-
-  def epic_queue_send_button(epic_queue)
-    link_to icon('fas', 'hand-point-right'), push_to_epic_protocol_path(epic_queue.protocol.id, eq_id: epic_queue.id), remote: true, method: :get, class: 'btn btn-success push-to-epic mr-1', data: { permission: 'true' }
-  end
-
-  def epic_queue_actions(epic_queue)
-    content_tag :div, class: 'd-flex justify-content-center' do
-      raw([
-        epic_queue_send_button(epic_queue),
-        epic_queue_delete_button(epic_queue)
-      ].join(''))
-    end
-  end
-
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-    else
-      ''
-    end
-  end
-
-  def format_epic_queue_created_at(epic_queue)
-    created_at = epic_queue.created_at
-    created_at.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-  end
-
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
-    end
+FactoryBot.define do
+  factory :oncore_record do
+    status       { rand(2) == 1 ? 'success' : 'failure' }
+    created_at   { Time.now }
+    updated_at   { Time.now }
   end
 end

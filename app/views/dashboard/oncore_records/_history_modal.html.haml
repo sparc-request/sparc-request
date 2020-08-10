@@ -20,33 +20,21 @@
 
 .modal-dialog{ role: 'document' }
   .modal-content
-    = form_for visit, remote: true do |f|
-      = hidden_field_tag :srid, service_request.try(:id)
-      = hidden_field_tag :ssrid, sub_service_request.try(:id)
-      = hidden_field_tag :tab, 'billing_strategy'
-      = hidden_field_tag :page, params[:page]
-      .modal-header
-        %h3.modal-title<
-          = t(:calendars)[:pppv][:header_fields][:edit_billing_modal]
-          %small.text-muted
-            = visit.service.display_service_name
-        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-          %span{ aria: { hidden: 'true' } } &times;
-      .modal-body
-        .form-row
-          .form-group.col-4
-            = f.label :research_billing_qty, class: 'required'
-            = f.text_field :research_billing_qty, class: 'form-control'
-          .form-group.col-4
-            = f.label :insurance_billing_qty, class: 'required'
-            = f.text_field :insurance_billing_qty, class: 'form-control'
-          .form-group.col-4
-            = f.label :effort_billing_qty, class: 'required'
-            = f.text_field :effort_billing_qty, class: 'form-control'
-          .form-group.col-4
-            = f.label :set_all_insurance, t(:calendars)[:pppv][:visits][:select_all_t]
-            = check_box_tag :set_all_insurance
-      .modal-footer
-        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-          = t('actions.close')
-        = f.submit t('actions.submit'), class: 'btn btn-primary'
+    .modal-header
+      %h3.modal-title
+        = t("dashboard.oncore.log.history_title", protocol_id: protocol_id)
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      %table.table-interactive.protocol-oncore-records-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', pagination: 'true', url: dashboard_protocol_oncore_records_path(protocol_id) } }
+        %thead.bg-light
+          %tr
+            %th{data: { field: 'calendar_version', align: 'left', sortable: 'false' } }
+              = t(:dashboard)[:oncore][:log][:calendar_version]
+            %th{data: { field: 'created_at', align: 'left', sortable: 'true' } }
+              = t(:dashboard)[:oncore][:log][:created_at]
+            %th{data: { field: 'status', align: 'left', sortable: 'true' } }
+              = t(:dashboard)[:oncore][:log][:status]
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

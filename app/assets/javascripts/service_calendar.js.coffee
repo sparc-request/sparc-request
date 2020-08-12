@@ -51,7 +51,7 @@ $ ->
 
   # Various calendar links
   $(document).on 'click keyup', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
-    if !$(this).hasClass('.visit-group')
+    if !$(this).hasClass('visit-group')
       hideVisitGroupPopover()
     # Click or press <return> to open
     if ((event.type == 'click' && event.target.tagName != 'A') || (event.type == 'keyup' && event.keyCode == 13)) && $(this).hasClass('editable') && $link = $(this).find('a:not(.disabled)')

@@ -43,9 +43,10 @@
           .form-group.col-4
             = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
-          .form-group.col-4
-            = f.label :set_all_insurance, t(:calendars)[:pppv][:visits][:select_all_t]
-            = check_box_tag :set_all_insurance
+        .form-group.mb-0
+          .custom-control.custom-checkbox
+            = check_box_tag :set_all_insurance, true, false, class: 'custom-control-input'
+            = label_tag :set_all_insurance, t(:calendars)[:pppv][:visits][:select_all_t], class: 'custom-control-label'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

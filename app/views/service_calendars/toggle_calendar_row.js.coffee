@@ -20,6 +20,7 @@
 
 # Replace checkbox
 $("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, editable: true %>")
+$("#toggleRow<%= @line_items_visit.id %>").trigger('focus')
 
 # Replace Column checkboxes
 <% @visit_groups.each do |vg| %>

@@ -26,7 +26,6 @@
 }
 
 #serviceCalendar .service-calendar-container {
-
   &:not(:last-of-type) {
     @extend .border-bottom;
     border-bottom-left-radius: 0;
@@ -74,17 +73,31 @@
       vertical-align: middle;
       padding: 0.5rem 0.25rem;
     }
+
+    th.visit-group {
+      vertical-align: bottom;
+    }
   }
 
-  .visit-group-select .dropdown-menu {
-    li:not(.active) .vg-page-header {
-      @extend .bg-light;
+  .visit-group-select {
+    .dropdown-toggle {
+      &:focus {
+        background: darken(theme-color('light'), 10%);
+        border-color: darken(theme-color('light'), 12.5%) !important;
+        outline: 0 !important;
+      }
     }
 
-    .vg-page-header {
-      @extend .border-top;
-      @extend .border-bottom;
-      @extend .font-weight-bold;
+    .dropdown-menu {
+      li:not(.active) .vg-page-header {
+        @extend .bg-light;
+      }
+
+      .vg-page-header {
+        @extend .border-top;
+        @extend .border-bottom;
+        @extend .font-weight-bold;
+      }
     }
   }
 
@@ -96,9 +109,10 @@
     &.editable {
       transition: $btn-transition;
 
-      &:hover {
+      &:hover, &:focus, &.active {
         cursor: pointer;
-        background: theme-color('light');
+        background: theme-color-level('light', 0.5);
+        outline: 0;
       }
     }
 
@@ -113,6 +127,22 @@
     .visit-quantity {
       transform: scale(1.5);
       cursor: pointer;
+    }
+  }
+}
+
+.visit-group-popover {
+  .change-visit-btn {
+    margin-top: -0.5rem;
+
+    &:first-of-type {
+      margin-left: -0.75rem;
+      margin-right: 0.75rem;
+    }
+
+    &:last-of-type {
+      margin-left: 0.75rem;
+      margin-right: -0.75rem;
     }
   }
 }

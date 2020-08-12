@@ -22,6 +22,19 @@
   $.extend($.fn.modal.Constructor.Default, { backdrop: 'static' });
 
   $(document).ready( function() {
+    // Allow popovers to be closed via an optional close button
+    $(document).on('click', '.popover .close', event => {
+      event.preventDefault();
+      $(event.target).parents('.popover').popover('hide').popover('dispose');
+    })
+
+    // Allow popovers to be closed via the <esc> key
+    $(document).on('keyup', 'body', event => {
+      if (event.keyCode == 27 && $('.popover').length)
+        $('.popover').popover('hide').popover('dispose')
+        $('.tooltip').tooltip('hide')
+    })
+
     $(document).on('hide.bs.popover', '[data-toggle="popover"][data-trigger="hover"]', event => {
       var $this = $(event.target);
 

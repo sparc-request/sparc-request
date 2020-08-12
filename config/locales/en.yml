@@ -943,6 +943,8 @@ en:
       arm: "Arm"
       visit: "Visit"
       move_note: "Note: Consecutive visits will also have their days changed."
+      previous: "Edit previous visit - %{name}"
+      next: "Edit next visit - %{name}"
 
 
 

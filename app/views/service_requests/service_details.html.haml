@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
+.w-100
   = render '/service_requests/navigation/steps'
   = render '/service_requests/navigation/header'
   - if @errors && (@service_request.previously_submitted? || request_referrer_action != 'protocol')
@@ -27,4 +27,7 @@
   .card
     .card-body.px-0.pb-0
       = render 'service_calendars/tabs', service_request: @service_request, page: @page, pages: @pages
+
+-# Moved the form_tag to allow <return> interactions on the service calendar
+= form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceRequestForm', class: 'w-100' do
   = render 'service_requests/navigation/footer'

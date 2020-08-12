@@ -115,6 +115,14 @@
       justify-content: center;
     }
   }
+
+  &.btn-white {
+    background: white;
+
+    &:hover {
+      background: theme-color('light');
+    }
+  }
 }
 
 ////////////
@@ -688,6 +696,13 @@ nav.navbar {
 ///////////////
 /// Popover ///
 ///////////////
+
+.popover {
+  .popover-header {
+    @include clearfix;
+    font-size: 1.5rem;
+  }
+}
 
 @include media-breakpoint-up(md) {
   .popover {

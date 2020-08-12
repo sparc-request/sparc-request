@@ -58,7 +58,7 @@ $ ->
 
   # Smooth scroll anchors with hash
   $(document).on 'click', "a[href^='#']:not(data-toggle)", (event) ->
-    if !$(this).data('toggle')
+    if !$(this).data('toggle') && $(this).attr('href') != '#'
       event.preventDefault()
       $('html, body').animate({ scrollTop: $(this.hash).offset().top }, 'slow')
 
@@ -213,7 +213,7 @@ $ ->
 
 (exports ? this).initializeTooltips = () ->
   $('.tooltip').tooltip('hide')
-  $('[data-toggle=tooltip]').tooltip({ delay: { show: 500 }, animation: false })
+  $('[data-toggle=tooltip]').tooltip({ delay: { show: 250 }, animation: false })
 
 (exports ? this).initializePopovers = () ->
   $('[data-toggle=popover]').popover()

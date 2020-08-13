@@ -64,6 +64,18 @@ class ProtocolsController < ApplicationController
     @errors = @protocol.errors
   end
 
+  def edit_billing
+    @protocol = Protocol.find(params[:id].to_i)
+
+    respond_to :js
+  end
+
+  def update_billing
+    @protocol = Protocol.find(params[:id].to_i)
+    @protocol.all_research = params[@protocol.type.downcase][:all_research]
+    @protocol.save(validate: false)
+  end
+
   def update
     if @protocol.update_attributes(protocol_params)
       if @service_request.status == 'first_draft'

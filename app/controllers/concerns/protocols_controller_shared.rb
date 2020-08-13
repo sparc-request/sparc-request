@@ -104,7 +104,6 @@ module ProtocolsControllerShared
       :study_type_question_group_id,
       :title,
       :type,
-      :all_research,
       :udak_project_number,
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
       human_subjects_info_attributes: [

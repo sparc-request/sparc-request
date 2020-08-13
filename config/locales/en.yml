@@ -772,7 +772,7 @@ en:
   protocols:
     new: "New %{protocol_type}"
     edit: "Edit %{protocol_type} Information"
-    edit_billing: "Set Default Billing"
+    edit_billing: "Set Default Billing Designation"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
     rmid:

@@ -37,7 +37,6 @@
               %label.btn.btn-default{style: 'border-radius: 0 4px 4px 0;'}
                 = f.radio_button :all_research, 'false', {checked: !f.object.all_research, class: 'hidden'}
                 = 'Third Party (Insurance) Coverage (T)'
-              / = f.radio_button :all_research, '', {checked: true, class: 'hidden'}
       .modal-footer
         %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
         %input#create_service_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

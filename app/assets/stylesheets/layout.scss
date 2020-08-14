@@ -29,6 +29,8 @@ html {
 
   body {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     opacity: 0;
     transition: 0.5s opacity ease-in-out;
   }
@@ -43,6 +45,7 @@ html {
 
 #contentContainer {
   margin-bottom: calc(#{$grid-gutter-width} / 2);
+  flex: 1 auto;
 }
 
 #contentContainer, #siteFooter {

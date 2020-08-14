@@ -43,6 +43,10 @@ html {
   }
 }
 
+#flashContainer {
+  flex: 0;
+}
+
 #contentContainer {
   margin-bottom: calc(#{$grid-gutter-width} / 2);
   flex: 1 auto;

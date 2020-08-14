@@ -71,9 +71,9 @@ class ProtocolsController < ApplicationController
   end
 
   def update_billing
-    @protocol = Protocol.find(params[:id].to_i)
-    @protocol.all_research = params[@protocol.type.downcase][:all_research]
-    @protocol.save(validate: false)
+    protocol = Protocol.find(params[:id].to_i)
+    protocol.all_research = params[@protocol.type.downcase][:all_research]
+    protocol.save(validate: false)
   end
 
   def update

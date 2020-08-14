@@ -20,7 +20,7 @@
 
 class OncoreProtocol
   include HTTParty
-  base_uri 'This will come from settings'
+  base_uri Setting.get_value('oncore_api')
 
   attr_accessor :auth, :protocol_no, :title, :short_title, :library, :department, :organizational_unit, :protocol_type
 

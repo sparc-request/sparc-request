@@ -18,9 +18,61 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Token < ApplicationRecord
-  audited
+class Admin::ApplicationsController < Doorkeeper::ApplicationsController
+  layout 'admin/application'
 
-  belongs_to :service_request
-  belongs_to :identity
+  before_action :set_application, only: [:edit, :update, :destroy, :regenerate_secret]
+
+  def index
+    respond_to do |format|
+      format.html
+      format.js
+      format.json {
+        @applications = Doorkeeper.config.application_model.ordered_by(:created_at)
+      }
+    end
+  end
+
+  def create
+    respond_to :js
+    @application = Doorkeeper.config.application_model.new(application_params)
+
+    if @application.save
+      render json: { id: @application.id }, status: :ok
+    else
+      @errors = @application.errors
+
+      render status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    respond_to :html
+  end
+
+  def update
+    respond_to :js
+
+    if @application.update_attributes(application_params)
+      flash.now[:success] = t('admin.applications.updated')
+    else
+      @errors = @application.errors
+    end
+  end
+
+  def destroy
+    respond_to :js
+
+    @application.destroy
+    flash.now[:alert] = t('admin.applications.deleted')
+  end
+
+  def regenerate_secret
+    respond_to :js
+
+    @application.renew_secret
+    @application.save(validate: false)
+    flash.now[:success] = t('admin.applications.updated')
+    render action: :update
+  end
 end

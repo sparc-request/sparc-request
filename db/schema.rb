@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_161558) do
+ActiveRecord::Schema.define(version: 2020_08_14_162116) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -33,6 +33,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "applications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "domain"
+    t.text "token_ciphertext"
+    t.datetime "created_at", null: false
+    t.bigint "created_by"
+    t.datetime "updated_at", null: false
+    t.index ["created_by"], name: "index_applications_on_created_by"
   end
 
   create_table "approvals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -70,12 +81,12 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "auditable_id"
+  create_table "audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "auditable_id"
     t.string "auditable_type"
-    t.bigint "associated_id"
+    t.integer "associated_id"
     t.string "associated_type"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -226,7 +237,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.integer "line_item_id"
     t.string "action"
@@ -326,7 +337,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
-  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
     t.string "pro_number"
     t.string "irb_of_record"
@@ -340,7 +351,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
   end
 
-  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "irb_record_id"
     t.bigint "study_phase_id"
     t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"
@@ -359,7 +370,6 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "units_per_quantity", default: 1
-    t.index ["service_id"], name: "index_line_items_on_service_id"
     t.index ["service_request_id"], name: "index_line_items_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id"
   end
@@ -413,7 +423,62 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end
 
-  create_table "oncore_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "oauth_access_grants", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "resource_owner_id", null: false
+    t.bigint "application_id", null: false
+    t.string "token", null: false
+    t.integer "expires_in", null: false
+    t.text "redirect_uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "revoked_at"
+    t.string "scopes", default: "", null: false
+    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
+    t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
+    t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
+  end
+
+  create_table "oauth_access_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "application_id"
+    t.string "ip_address", null: false
+    t.string "status", null: false
+    t.text "failure_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_oauth_access_requests_on_application_id"
+  end
+
+  create_table "oauth_access_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "resource_owner_id"
+    t.bigint "application_id", null: false
+    t.bigint "access_request_id", null: false
+    t.string "token", null: false
+    t.string "refresh_token"
+    t.integer "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.string "scopes"
+    t.string "previous_refresh_token", default: "", null: false
+    t.index ["access_request_id"], name: "index_oauth_access_tokens_on_access_request_id"
+    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
+    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
+    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
+    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
+  end
+
+  create_table "oauth_applications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.string "uid", null: false
+    t.string "secret", null: false
+    t.text "redirect_uri"
+    t.string "scopes", default: "", null: false
+    t.boolean "confidential", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "oncore_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "protocol_id"
     t.integer "calendar_version"
     t.string "status"
@@ -445,6 +510,8 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
+    t.string "primary_ontology_tag"
+    t.string "secondary_ontology_tag"
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
@@ -803,6 +870,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.integer "order"
     t.text "description"
     t.boolean "is_available", default: true
+    t.boolean "share_externally", default: true
     t.decimal "service_center_cost", precision: 12, scale: 4
     t.string "cpt_code"
     t.string "charge_code"
@@ -905,6 +973,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
   create_table "sub_service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "organization_id"
+    t.string "organization_shard", default: "musc"
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
@@ -925,7 +994,6 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
     t.boolean "synch_to_fulfillment"
-    t.index ["organization_id"], name: "index_sub_service_requests_on_organization_id"
     t.index ["owner_id"], name: "index_sub_service_requests_on_owner_id"
     t.index ["protocol_id"], name: "index_sub_service_requests_on_protocol_id"
     t.index ["service_request_id"], name: "index_sub_service_requests_on_service_request_id"
@@ -1068,6 +1136,11 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
   end
 
   add_foreign_key "editable_statuses", "organizations"
+  add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_requests", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "options", "questions"
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"

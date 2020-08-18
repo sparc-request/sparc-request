@@ -43,8 +43,22 @@ html {
   }
 }
 
-#flashContainer {
+subheader#siteSubheader {
+  margin-top: -1rem;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  border-bottom: $border-width solid $border-color;
+  background: white;
   flex: 0;
+}
+
+#flashContainer {
+  position: fixed;
+  width: 90%;
+  top: 1rem;
+  z-index: 1041;
+  left: 1rem;
+  right: 1rem;
 }
 
 #contentContainer {
@@ -52,7 +66,7 @@ html {
   flex: 1 auto;
 }
 
-#contentContainer, #siteFooter {
+#siteSubheader, #contentContainer, #siteFooter {
   position: relative;
   width: 100%;
   padding-left: calc(5% + #{$grid-gutter-width} / 2);
@@ -78,7 +92,7 @@ html {
 
 @media (max-width: 1679.98px) {
   html {
-    font-size: 75%;
+    font-size: 80%;
   }
 }
 
@@ -89,7 +103,7 @@ html {
 }
 
 @media (max-width: 3839.98px) {
-  #siteHeader .container-fluid, #siteNav .container-fluid, #dashboardNav .container-fluid, #contentContainer, #siteFooter .container-fluid {
+  #siteHeader .container-fluid, #siteNav .container-fluid, #siteSubheader, #contentContainer, #siteFooter {
     max-width: 1920px;
   }
 }

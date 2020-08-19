@@ -20,7 +20,7 @@
 
 SparcRails::Application.routes.draw do
   use_doorkeeper do
-    controllers applications: 'admin/applications'
+    controllers applications: 'admin/applications', tokens: 'admin/tokens'
   end
 
   ####################

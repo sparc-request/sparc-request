@@ -37,27 +37,12 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[5.2]
       column: :application_id
     )
 
-    create_table :oauth_access_requests do |t|
-      t.references  :application
-      t.string      :ip_address,      null: false
-      t.string      :status,          null: false
-      t.text        :failure_reason
-      t.timestamps                    null: false
-    end
-
-    add_foreign_key(
-      :oauth_access_requests,
-      :oauth_applications,
-      column: :application_id
-    )
-
     create_table :oauth_access_tokens do |t|
       t.references :resource_owner, index: true
 
       # Remove `null: false` if you are planning to use Password
       # Credentials Grant flow that doesn't require an application.
       t.references :application,    null: false
-      t.references :access_request, null: false
 
       # If you use a custom token generator you may need to change this column
       # from string to text, so that it accepts tokens larger than 255
@@ -95,6 +80,26 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[5.2]
       :oauth_access_tokens,
       :oauth_applications,
       column: :application_id
+    )
+
+    create_table :oauth_access_requests do |t|
+      t.references  :application
+      t.references  :access_token
+      t.string      :ip_address,      null: false
+      t.string      :status,          null: false
+      t.text        :failure_reason
+      t.timestamps                    null: false
+    end
+
+    add_foreign_key(
+      :oauth_access_requests,
+      :oauth_applications,
+      column: :application_id
+    )
+    add_foreign_key(
+      :oauth_access_requests,
+      :oauth_access_tokens,
+      column: :access_token_id
     )
 
     # Uncomment below to ensure a valid reference to the resource owner's table

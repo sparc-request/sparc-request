@@ -21,6 +21,7 @@
 class Admin::ApplicationsController < Doorkeeper::ApplicationsController
   layout 'admin/application'
 
+  before_action :authorize_site_admin
   before_action :set_application, only: [:edit, :update, :destroy, :regenerate_secret]
 
   def index

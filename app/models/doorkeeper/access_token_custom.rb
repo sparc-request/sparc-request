@@ -21,5 +21,5 @@
 class Doorkeeper::AccessTokenCustom < ApplicationRecord
   include ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessToken
 
-  belongs_to :access_request, class_name: "Doorkeeper::AccessRequest"
+  has_one :access_request, foreign_key: :access_token_id, class_name: "Doorkeeper::AccessRequest"
 end

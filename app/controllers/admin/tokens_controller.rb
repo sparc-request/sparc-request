@@ -18,13 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Doorkeeper::AccessRequest < ApplicationRecord
-  self.table_name = "#{table_name_prefix}oauth_access_requests#{table_name_suffix}"
+class Admin::TokensController < Doorkeeper::TokensController
+  def create
+    @received_at = DateTime.now
+    # Force the use of client_credentials authentication
+    params[:grant_type] = 'client_credentials'
+    headers.merge!(authorize_response.headers)
+    if @authorize_response.is_a?(Doorkeeper::OAuth::ErrorResponse)
+      create_access_request(status: 'failed', error: @authorize_response.body[:error_description])
+    else
+      create_access_request(status: 'success')
+    end
+    render json: authorize_response.body,
+           status: authorize_response.status
+  rescue Doorkeeper::Errors::DoorkeeperError => e
+    create_access_request(status: 'failed', error: get_error_response_from_exception(e).body[:error_description])
+    handle_token_exception(e)
+  end
 
-  belongs_to :application, class_name: Doorkeeper.config.application_class.to_s
-  belongs_to :access_token, class_name: Doorkeeper.config.access_token_class.to_s, optional: true
+  private
 
-  validates :ip_address,
-            :status,
-            presence: true
+  def create_access_request(args={ status: 'success' })
+    Doorkeeper::AccessRequest.create(
+      application_id:   Doorkeeper.config.application_model.by_uid(params[:client_id]).try(:id),
+      access_token_id:  @authorize_response.try(:token).try(:id),
+      ip_address:       request.remote_ip,
+      status:           args[:status],
+      failure_reason:   args[:error] ? args[:error] : nil,
+      created_at:       @received_at
+    )
+  end
 end

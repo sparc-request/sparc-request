@@ -439,18 +439,19 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
 
   create_table "oauth_access_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "application_id"
+    t.bigint "access_token_id"
     t.string "ip_address", null: false
     t.string "status", null: false
     t.text "failure_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["access_token_id"], name: "index_oauth_access_requests_on_access_token_id"
     t.index ["application_id"], name: "index_oauth_access_requests_on_application_id"
   end
 
   create_table "oauth_access_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "resource_owner_id"
     t.bigint "application_id", null: false
-    t.bigint "access_request_id", null: false
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
@@ -458,7 +459,6 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.datetime "created_at", null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
-    t.index ["access_request_id"], name: "index_oauth_access_tokens_on_access_request_id"
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
@@ -1138,6 +1138,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_requests", "oauth_access_tokens", column: "access_token_id"
   add_foreign_key "oauth_access_requests", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"

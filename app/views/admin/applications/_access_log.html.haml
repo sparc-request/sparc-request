@@ -25,11 +25,11 @@
   %table.table-interactive#accessLogTable{ data: { toggle: 'table', url: admin_application_access_requests_path(application, format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', page_size: '25', sort_name: 'access_time', sort_order: 'desc' } }
     %thead.bg-light
       %tr
-        %th{ data: { field: 'ip_address', sortable: 'true' } }
+        %th.w-20{ data: { field: 'ip_address', sortable: 'true' } }
           = Doorkeeper::AccessRequest.human_attribute_name(:ip_address)
-        %th{ data: { field: 'access_time', sortable: 'true', sorter: 'dateSorter' } }
+        %th.w-20{ data: { field: 'access_time', sortable: 'true', sorter: 'dateSorter' } }
           = Doorkeeper::AccessRequest.human_attribute_name(:created_at)
-        %th{ data: { field: 'status', sortable: 'true' } }
+        %th.w-20{ data: { field: 'status', sortable: 'true' } }
           = Doorkeeper::AccessRequest.human_attribute_name(:status)
-        %th{ data: { field: 'failure_reason', sortable: 'true' } }
+        %th.w-40{ data: { field: 'failure_reason', sortable: 'true' } }
           = Doorkeeper::AccessRequest.human_attribute_name(:failure_reason)

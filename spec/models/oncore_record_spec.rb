@@ -18,16 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :document do
-    doc_type              { 'other' }
-    doc_type_other        { Faker::Lorem.word }
-    document_file_name    { Faker::Lorem.word + '.docx' }
-    document_content_type { 'application/msword' }
-    document_file_size    { Random.rand(100000) }
-    document_updated_at   { Time.now }
-    created_at            { Time.now }
-    updated_at            { Time.now }
-    share_all             { false }
+require 'rails_helper'
+
+RSpec.describe OncoreRecord, type: :model do
+
+  it { is_expected.to belong_to(:protocol) }
+
+  describe 'scopes' do
+    describe '#most_recent_push_per_protocol' do
+      it 'should return the most recent OncoreRecord for each protocol' do
+        study1 = create(:study_federally_funded)
+        study2 = create(:study_federally_funded)
+        ocr1   = create(:oncore_record, protocol_id: study1.id, calendar_version: 1)
+        ocr2   = create(:oncore_record, protocol_id: study1.id, calendar_version: 2)
+        ocr3   = create(:oncore_record, protocol_id: study2.id, calendar_version: 1)
+
+        expect(OncoreRecord.most_recent_push_per_protocol.count).to eq(2)
+      end
+    end
   end
 end

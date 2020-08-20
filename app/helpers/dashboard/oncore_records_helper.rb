@@ -18,16 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :document do
-    doc_type              { 'other' }
-    doc_type_other        { Faker::Lorem.word }
-    document_file_name    { Faker::Lorem.word + '.docx' }
-    document_content_type { 'application/msword' }
-    document_file_size    { Random.rand(100000) }
-    document_updated_at   { Time.now }
-    created_at            { Time.now }
-    updated_at            { Time.now }
-    share_all             { false }
+module Dashboard::OncoreRecordsHelper
+  def format_push_date(date)
+    # Use the epic queues date format
+    date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
+  end
+
+  def protocol_oncore_history_button(protocol_id)
+    link_to icon('fas', 'history'), dashboard_protocol_oncore_records_path(protocol_id), remote: true, method: :get, class: 'btn btn-info protocol-oncore-history'
   end
 end

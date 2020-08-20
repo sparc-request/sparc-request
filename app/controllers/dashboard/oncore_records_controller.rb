@@ -18,16 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :document do
-    doc_type              { 'other' }
-    doc_type_other        { Faker::Lorem.word }
-    document_file_name    { Faker::Lorem.word + '.docx' }
-    document_content_type { 'application/msword' }
-    document_file_size    { Random.rand(100000) }
-    document_updated_at   { Time.now }
-    created_at            { Time.now }
-    updated_at            { Time.now }
-    share_all             { false }
+class Dashboard::OncoreRecordsController < Dashboard::BaseController
+  before_action :authorize_oncore_endpoint_access
+
+  def index
+    respond_to do |format|
+      format.html
+      format.json {
+        @oncore_records = OncoreRecord.most_recent_push_per_protocol.eager_load(protocol: [:primary_pi, :principal_investigators])
+      }
+    end
+  end
+
+  # Shows all OnCore Records for a particular protocol
+  def history
+    respond_to do |format|
+      format.js {
+        @protocol_id = params[:protocol_id]
+      }
+      format.json {
+        @oncore_records = OncoreRecord.where(protocol_id: params[:protocol_id])
+      }
+    end
+  end
+
+  private
+
+  # Check to see if the user has access to view OnCore records
+  def authorize_oncore_endpoint_access
+    unless Setting.get_value("oncore_endpoint_access").include?(current_user.ldap_uid)
+      authorization_error('You do not have OnCore Endpoint access.')
+    end
   end
 end

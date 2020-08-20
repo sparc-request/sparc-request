@@ -19,11 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::EpicQueuesHelper
-
-  def format_protocol(protocol)
-    link_to "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}", dashboard_protocol_path(protocol)
-  end
-
   def format_pis(protocol)
     protocol.principal_investigators.map(&:full_name).join(', ')
   end

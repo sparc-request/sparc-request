@@ -47,16 +47,34 @@ RSpec.describe Document, type: :model do
   end
 
   describe '#all_organizations' do
-    it 'should return SSR organizations and their trees' do
-      document = create(:document)
-      org1     = create(:organization)
-      org2     = create(:organization, parent: org1)
-      ssr1     = create(:sub_service_request_without_validations, organization: org1)
-      ssr2     = create(:sub_service_request_without_validations, organization: org2)
-      
-      document.sub_service_requests = [ssr1, ssr2]
+    context 'share_all is true' do
+      it 'should return SSR organizations and their trees' do
+        org1      = create(:organization)
+        org2      = create(:organization)
+        org3      = create(:organization, parent: org1)
+        protocol  = create(:study_federally_funded)
+        document  = create(:document, share_all: true, protocol: protocol)
+        ssr1      = create(:sub_service_request_without_validations, organization: org3, protocol: protocol)
+        ssr2      = create(:sub_service_request_without_validations, organization: org2, protocol: protocol)
+        
+        expect(document.reload.all_organizations.sort_by(&:id)).to eq([org1, org2, org3])
+      end
+    end
 
-      expect(document.reload.all_organizations).to eq([org1, org2])
+    context 'share_all is false' do
+      it 'should return all protocol SSR organizations and their trees' do
+        org1      = create(:organization)
+        org2      = create(:organization)
+        org3      = create(:organization, parent: org1)
+        protocol  = create(:study_federally_funded)
+        document  = create(:document, share_all: false, protocol: protocol)
+        ssr1      = create(:sub_service_request_without_validations, organization: org3, protocol: protocol)
+        ssr2      = create(:sub_service_request_without_validations, organization: org2, protocol: protocol)
+
+        document.sub_service_requests = [ssr1]
+
+        expect(document.reload.all_organizations.sort_by(&:id)).to eq([org1, org3])
+      end
     end
   end
 end

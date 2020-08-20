@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :oncore_records,               dependent: :destroy
   has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_many :identities,                   through: :project_roles
@@ -658,7 +659,7 @@ class Protocol < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

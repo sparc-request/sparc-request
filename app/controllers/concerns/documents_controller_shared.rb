@@ -35,7 +35,7 @@ module DocumentsControllerShared
   def new
     respond_to :js
 
-    @document = @protocol.documents.new
+    @document = @protocol.documents.new(share_all: true)
   end
 
   def create
@@ -101,8 +101,8 @@ module DocumentsControllerShared
       :document,
       :doc_type,
       :doc_type_other,
-      :sub_service_requests,
-      :protocol_id
+      :protocol_id,
+      :share_all
     )
   end
 end

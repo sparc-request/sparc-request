@@ -19,15 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do
-  factory :document do
-    doc_type              { 'other' }
-    doc_type_other        { Faker::Lorem.word }
-    document_file_name    { Faker::Lorem.word + '.docx' }
-    document_content_type { 'application/msword' }
-    document_file_size    { Random.rand(100000) }
-    document_updated_at   { Time.now }
-    created_at            { Time.now }
-    updated_at            { Time.now }
-    share_all             { false }
+  factory :oncore_record do
+    status       { rand(2) == 1 ? 'success' : 'failure' }
+    created_at   { Time.now }
+    updated_at   { Time.now }
   end
 end

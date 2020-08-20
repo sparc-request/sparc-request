@@ -52,6 +52,17 @@ RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
     end
   end
 
+  context 'OnCore configuration turned on' do
+    stub_config("use_oncore", true)
+    stub_config("oncore_endpoint_access", ['jug2'])
+
+    it 'should display view OnCore Log button' do
+      render 'layouts/dashboard/dashboard_navbar', current_user: @user
+
+      expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.oncore_log'))
+    end
+  end
+
   context 'short interaction turned on' do
     stub_config('use_short_interaction', true)
 

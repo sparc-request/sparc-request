@@ -46,7 +46,7 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: dbc4c09799294739753e7dd32bbb08853a1d8cc2
+  revision: 889739a96c04574f4da74e8fdaf4bd95ac16d194
   specs:
     acts_as_list (1.0.1)
       activerecord (>= 4.2)
@@ -192,7 +192,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     connection_pool (2.2.3)
     countries (3.0.0)
       i18n_data (~> 0.8.0)

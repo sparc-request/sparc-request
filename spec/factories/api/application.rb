@@ -3,7 +3,7 @@
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-# 1. Redistributions of source code must retain the above copyright notice, `list of conditions and the following disclaimer.
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
 # 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
 # disclaimer in the documentation and/or other materials provided with the distribution.
@@ -18,33 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-en:
-  admin:
-    applications:
-      new: "New Application"
-      updated: "Application updated successfully!"
-      deleted: "Application deleted!"
-      form:
-        header: "Application Details"
-        subtext:
-          description: "Max 255 characters"
-      access_log:
-        header: "Access Log"
-        statuses:
-          failed: "Failed"
-          success: "Success"
-          token_given: "Token Given"
-      table:
-        header: "SPARC API Applications"
-      confirms:
-        destroy:
-          title: "Delete this application?"
-          text: "Your external application will be un-registered and will not be able to access the SPARC API.<br><br>This action cannot be undone."
-        regenerate:
-          title: "Regenerate %{secret_label}?"
-          text: "Your external application must be updated with the new secret in order to access the SPARC API.<br><br>This action cannot be undone."
-
-    navigation:
-      applications: "Applications"
-      permissible_values: "Permissible Values"
-      settings: "Settings"
+FactoryBot.define do  
+  factory :api_application do
+    name          { "#{Faker::Lorem.word} App"}
+    uid           { Faker::String.random(length: 16) }
+    secret        { Faker::String.random(length: 16) }
+    confidential  { true }
+  end
+end

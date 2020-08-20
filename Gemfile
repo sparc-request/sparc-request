@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'actionpack'
 gem 'activerecord-import' # Use this more! In particular for arms/calendar creation
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage

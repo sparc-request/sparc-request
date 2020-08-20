@@ -26,6 +26,7 @@ module SPARCCWF
 
     class APIv1 < Grape::API
       include Grape::Extensions::Hashie::Mash::ParamBuilder
+      use ActionDispatch::RemoteIp
 
       require_relative 'validators_v1.rb'
       require_relative 'shared_params_v1.rb'

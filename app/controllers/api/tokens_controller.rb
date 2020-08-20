@@ -18,16 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Admin::TokensController < Doorkeeper::TokensController
+class API::TokensController < Doorkeeper::TokensController
   def create
-    @received_at = DateTime.now
     # Force the use of client_credentials authentication
     params[:grant_type] = 'client_credentials'
     headers.merge!(authorize_response.headers)
     if @authorize_response.is_a?(Doorkeeper::OAuth::ErrorResponse)
       create_access_request(status: 'failed', error: @authorize_response.body[:error_description])
     else
-      create_access_request(status: 'success')
+      create_access_request(status: 'token_given')
     end
     render json: authorize_response.body,
            status: authorize_response.status
@@ -38,14 +37,13 @@ class Admin::TokensController < Doorkeeper::TokensController
 
   private
 
-  def create_access_request(args={ status: 'success' })
+  def create_access_request(args={ status: 'token_given' })
     Doorkeeper::AccessRequest.create(
       application_id:   Doorkeeper.config.application_model.by_uid(params[:client_id]).try(:id),
       access_token_id:  @authorize_response.try(:token).try(:id),
       ip_address:       request.remote_ip,
       status:           args[:status],
-      failure_reason:   args[:error] ? args[:error] : nil,
-      created_at:       @received_at
+      failure_reason:   args[:error] ? args[:error] : nil
     )
   end
 end

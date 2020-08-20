@@ -132,7 +132,7 @@ Doorkeeper.configure do
   #
   # You can not enable this option together with +hash_token_secrets+.
   #
-  # reuse_access_token
+  reuse_access_token
 
   # In case you enabled `reuse_access_token` option Doorkeeper will try to find matching
   # token using `matching_token_for` Access Token API that searches for valid records
@@ -486,4 +486,26 @@ Doorkeeper.configure do
   # WWW-Authenticate Realm (default: "Doorkeeper").
   #
   # realm "Doorkeeper"
+end
+
+module Doorkeeper
+  module Rails
+    module Helpers
+      def doorkeeper_authorize!(*scopes)
+        @_doorkeeper_scopes = scopes.presence || Doorkeeper.config.default_scopes
+        valid_doorkeeper_token?
+        # Log access requests when a token is received by the Grape API
+        if @doorkeeper_token
+          Doorkeeper::AccessRequest.create(
+            application_id:   @doorkeeper_token.application_id,
+            access_token_id:  @doorkeeper_token.id,
+            ip_address:       env['action_dispatch.remote_ip'],
+            status:           valid_doorkeeper_token? ? 'success' : 'failed',
+            failure_reason:   valid_doorkeeper_token? ? nil : doorkeeper_error.description
+          )
+        end
+        doorkeeper_render_error unless valid_doorkeeper_token?
+      end
+    end
+  end
 end

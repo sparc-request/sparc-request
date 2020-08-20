@@ -19,8 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module ApiAuthenticationHelper
-
-  def http_login username=Setting.get_value('remote_service_notifier_username'), password=Setting.get_value('remote_service_notifier_password')
+  def http_login
     @env ||= {}
 
     @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)

@@ -19,8 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  use_doorkeeper do
-    controllers applications: 'admin/applications', tokens: 'admin/tokens'
+  #################
+  ### API Setup ###
+  #################
+
+  mount API::Base => '/api'
+
+  use_doorkeeper scope: 'api' do
+    controllers applications: 'admin/applications',
+                tokens: 'api/tokens'
   end
 
   ####################
@@ -367,8 +374,6 @@ SparcRails::Application.routes.draw do
       end
     end
   end
-
-  mount API::Base => '/'
 
   root to: 'service_requests#catalog'
 

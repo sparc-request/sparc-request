@@ -623,6 +623,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionpack
   activerecord-import
   activerecord-nulldb-adapter
   activerecord-session_store

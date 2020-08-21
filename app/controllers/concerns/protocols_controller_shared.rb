@@ -63,6 +63,7 @@ module ProtocolsControllerShared
     end
 
     params.require(:protocol).permit(
+      :all_research_billing,
       :archived,
       :arms_attributes,
       :billing_business_manager_static_email,

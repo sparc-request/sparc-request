@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for protocol, url: update_billing_protocol_path, remote: true do |f|
+    = form_for protocol, as: :protocol, url: update_billing_protocol_path, remote: true do |f|
       .modal-header
         %h3.modal-title<
           = t(:protocols)[:form][:header][:edit_billing]
@@ -28,15 +28,15 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-group.multi_toggle
-          = label_tag 'all_research','', class: 'col-sm-4 control-label'
+          = label_tag 'all_research_billing','', class: 'col-sm-4 control-label'
           .col-sm-7
             .btn-group{ role: 'group'}
-              %label.btn.btn-default
-                = f.radio_button :all_research, 'true', {checked: f.object.all_research, class: 'hidden'}
+              %label.btn
+                = f.radio_button :all_research_billing, 'true', {checked: f.object.all_research_billing, class: 'hidden'}
                 = 'Research Coverage (R)'
-              %label.btn.btn-default{style: 'border-radius: 0 4px 4px 0;'}
-                = f.radio_button :all_research, 'false', {checked: !f.object.all_research, class: 'hidden'}
+              %label.btn{style: 'border-radius: 0 4px 4px 0;'}
+                = f.radio_button :all_research_billing, 'false', {checked: !f.object.all_research_billing, class: 'hidden'}
                 = 'Third Party (Insurance) Coverage (T)'
       .modal-footer
-        %button.btn.btn-default{data: {dismiss: 'modal'}, type: 'button'} Close
+        %button.btn{data: {dismiss: 'modal'}, type: 'button'} Close
         %input#create_service_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

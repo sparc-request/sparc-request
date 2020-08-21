@@ -657,7 +657,7 @@ ActiveRecord::Schema.define(version: 2020_08_13_152415) do
     t.string "guarantor_contact"
     t.string "guarantor_phone"
     t.string "guarantor_email"
-    t.boolean "all_research", default: true
+    t.boolean "all_research_billing", default: true
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 

@@ -28,4 +28,24 @@ RSpec.configure do |config|
     stub_request(:get, "https://sparcrequest.atlassian.net/wiki").
      to_return(status: 200, body: "")
   end
+
+  config.before(:each) do
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
+    to_return(status: 201)
+  end
+
+  config.before(:each, remote_service: :unavailable) do
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
+    to_return(status: 500)
+  end
+
+  config.before(:each) do |config|
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols.json").
+      to_return(status: 201)
+  end
+
+  config.before(:each) do |config|
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token.json").
+      to_return(status: 200, body: { access_token: "some_token_value", expires_in: "300", token_type: "Bearer" }.to_json)
+  end
 end

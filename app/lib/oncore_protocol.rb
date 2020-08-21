@@ -53,7 +53,7 @@ class OncoreProtocol
                                   protocolType: self.protocol_type
                                 })
     else
-      auth_response
+      return auth_response
     end
   end
 
@@ -66,10 +66,9 @@ class OncoreProtocol
                                 grant_type: 'client_credentials'
                               })
     if response.success?
-      token = response['access_token']
-      self.auth = "Bearer " + token
-    else
-      response
+      self.auth = "Bearer " + JSON.parse(response)['access_token']
     end
+
+    return response
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_161558) do
+ActiveRecord::Schema.define(version: 2020_08_13_152415) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -226,7 +226,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.integer "line_item_id"
     t.string "action"
@@ -326,7 +326,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
-  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
     t.string "pro_number"
     t.string "irb_of_record"
@@ -340,7 +340,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
   end
 
-  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "irb_records_study_phases", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "irb_record_id"
     t.bigint "study_phase_id"
     t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"
@@ -413,7 +413,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end
 
-  create_table "oncore_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "oncore_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "protocol_id"
     t.integer "calendar_version"
     t.string "status"
@@ -657,6 +657,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_161558) do
     t.string "guarantor_contact"
     t.string "guarantor_phone"
     t.string "guarantor_email"
+    t.boolean "all_research_billing", default: true
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 

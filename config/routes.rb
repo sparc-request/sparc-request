@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,12 +28,14 @@ SparcRails::Application.routes.draw do
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/shibboleth' }
 
     elsif Setting.get_value("use_cas_only")
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/cas' }
     else
       devise_for :identities,
@@ -86,7 +88,6 @@ SparcRails::Application.routes.draw do
     get :document_management
     get :review
     get :confirmation
-    get :approve_changes
     get :system_satisfaction_survey
 
     put :save_and_exit
@@ -119,6 +120,8 @@ SparcRails::Application.routes.draw do
   resources :projects, controller: :protocols, except: [:index, :show, :destroy]
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
+
+  resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
 
   resources :associated_users, except: [:show] do
     collection do
@@ -225,6 +228,9 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
 
+    resources :oncore_records, only: [:index]
+    get "/protocols/:protocol_id/oncore_records", to: "oncore_records#history", as: :protocol_oncore_records
+
     resource :protocol_merge do
       put :perform_protocol_merge
     end
@@ -262,6 +268,7 @@ SparcRails::Application.routes.draw do
 
       member do
         get :display_requests
+        get :request_access
         patch :archive
         patch :update_protocol_type
       end
@@ -295,6 +302,7 @@ SparcRails::Application.routes.draw do
       member do
         put :push_to_epic
         put :resend_surveys
+        put :synch_to_fulfillment
         get :change_history_tab
         get :status_history
         get :approval_history

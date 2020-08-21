@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,6 @@
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        - ssrs = service_request.sub_service_requests.select{ |ssr| ['draft', 'awaiting_pi_approval'].include?(ssr.status) }
         %table#ssrsSubmissionTable{ data: { toggle: 'table', click_to_select: 'true' } }
           %thead.bg-light
             %th.d-none
@@ -41,7 +40,7 @@
             %th.text-center
               = ServiceRequest.human_attribute_name(:previously_submitted)
           %body
-            - ssrs.each do |ssr|
+            - service_request.sub_service_requests.where(status: Setting.get_value('updatable_statuses')).each do |ssr|
               %tr
                 %td.d-none
                   = ssr.id

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -63,7 +63,7 @@ RSpec.describe 'Notifications index', js: true do
     end
     context "Queued protocol header" do
       it "should display formatted protocol name" do
-        create(:protocol, :without_validations, identity: user)
+        create(:protocol, :without_validations)
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
         wait_for_javascript_to_finish
@@ -73,7 +73,7 @@ RSpec.describe 'Notifications index', js: true do
 
     context "PI(s) header" do
       it "should display PI name" do
-        create(:protocol, :without_validations, identity: user)
+        create(:protocol, :without_validations)
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
         wait_for_javascript_to_finish
@@ -88,7 +88,7 @@ RSpec.describe 'Notifications index', js: true do
 
     context "Last Queue Date header" do
       it "should display Last Queue Date" do
-        create(:protocol, :without_validations, identity: user)
+        create(:protocol, :without_validations)
         protocol.update_attribute(:last_epic_push_time, Date.current)
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
@@ -102,7 +102,7 @@ RSpec.describe 'Notifications index', js: true do
 
     context "Last Queue Status header" do
       it "should display Last Queue Status" do
-        create(:protocol, :without_validations, identity: user)
+        create(:protocol, :without_validations)
         protocol.update_attribute(:last_epic_push_status, 'failed')
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page

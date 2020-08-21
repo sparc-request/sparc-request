@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,9 +40,15 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
 
   def create
     @line_item = @service_request.line_items.new(line_item_params)
+    ssr = @line_item.sub_service_request
 
     if @line_item.save
       flash[:success] = t('dashboard.sub_service_requests.study_level_activities.created')
+      if @line_item.service.one_time_fee && ssr.imported_to_fulfillment?
+        FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: @line_item.id, action: 'create')
+        ssr.synch_to_fulfillment = true
+        ssr.save(validate: false)
+      end
     else
       @errors = @line_item.errors
     end
@@ -58,6 +64,12 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
 
   def update
     if @line_item.update_attributes(line_item_params)
+      ssr = @line_item.sub_service_request
+      if @line_item.service.one_time_fee && ssr.imported_to_fulfillment?
+        FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: @line_item.id, action: 'update')
+        ssr.synch_to_fulfillment = true
+        ssr.save(validate: false)
+      end
       flash[:success] = t('dashboard.sub_service_requests.study_level_activities.updated')
     else
       @errors = @line_item.errors
@@ -65,8 +77,18 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def destroy
-    @line_item.destroy
-    flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.destroyed')
+    if !has_cwf_fulfillments?(@line_item)
+      ssr = @line_item.sub_service_request
+      if @line_item.service.one_time_fee && ssr.imported_to_fulfillment? 
+        FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: @line_item.id, action: 'destroy')
+        ssr.synch_to_fulfillment = true
+        ssr.save(validate: false)
+      end
+      @line_item.destroy
+      flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.destroyed')
+    else
+      flash[:alert] = t('dashboard.sub_service_requests.study_level_activities.not_destroyed')
+    end
   end
 
   private
@@ -100,5 +122,14 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
 
   def find_line_item
     @line_item = LineItem.find(params[:id])
+  end
+
+  def has_cwf_fulfillments?(line_item)
+    cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
+    if cwf_line_item
+      return (cwf_line_item.fulfillments.size > 0) ? true : false
+    else
+      return false
+    end
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,6 +59,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:id])
     @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
+    set_registrar_enabled(@organization)
     set_status_variables
 
     respond_to do |format|
@@ -68,6 +69,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
+    set_registrar_enabled(@organization)
     @user_rights  = user_rights(@organization.id)
     @fulfillment_rights = fulfillment_rights(@organization.id)
     set_status_variables
@@ -116,6 +118,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @organization = Organization.find(params[:organization_id])
     @new_fr_identity = Identity.find_or_create(params[:new_fr_identity_id])
     @fulfillment_rights = fulfillment_rights(@organization_id)
+    set_registrar_enabled(@organization)
   end
 
   def remove_fulfillment_rights_row
@@ -234,7 +237,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     end
     @using_defaults = @organization.use_default_statuses
   end
-
 
   # ================ Imported from OrganizationUpdater ========================
 

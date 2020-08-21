@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -133,7 +133,7 @@ module Dashboard
     end
 
     def self.build_visits_select(arm, page, url)
-      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url, dropup_auto: 'false' }
+      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url, dropup_auto: 'false', size: 10, flip: 'false' }
     end
 
     def self.visits_select_options(arm, cur_page=1)

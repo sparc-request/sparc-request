@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ task update_copyright: :environment do
   files_updated_to_have_a_copyright = []
   file_with_other_variation_of_copyright_updated = []
 
-  Dir.glob(Rails.root + '**/*{.rb,.haml,.coffee,.example,.rake,.ru,.js,.erb,.scss,.sass,.css}') do |file|
+  Dir.glob(Rails.root + '**/*{.rb,.haml,.coffee,.example,.rake,.ru,.js,.erb,.scss,.sass,.css}').reject{ |f| f['node_modules']}.each do |file|
 
     ### Query that most files will have ###
     query = "Copyright © 2011-#{copyright_year_needing_to_be_updated} MUSC Foundation for Research Development"

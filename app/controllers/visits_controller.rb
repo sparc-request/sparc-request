@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,6 +42,9 @@ class VisitsController < ApplicationController
 
     if @visit.update_attributes(visit_params)
       @visit.sub_service_request.set_to_draft unless @in_admin
+      if params[:set_all_insurance] == '1'
+        @visit_group.visits.update_all(insurance_billing_qty: visit_params[:insurance_billing_qty].to_i)
+      end
     else
       @errors = @visit.errors
     end
@@ -76,7 +79,8 @@ class VisitsController < ApplicationController
     params.require(:visit).permit(
       :research_billing_qty,
       :insurance_billing_qty,
-      :effort_billing_qty
+      :effort_billing_qty,
+      :set_all_insurance
     )
   end
 end

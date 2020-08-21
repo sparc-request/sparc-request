@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -54,6 +54,7 @@ module SPARCCWF
         :project_roles,
         :arms,
         :human_subjects_infos,
+        :irb_records,
         :line_items,
         :line_items_visits,
         :organizations,
@@ -82,6 +83,8 @@ module SPARCCWF
           end
 
           get do
+            Setting.preload_values
+
             find_objects(published_resource_to_s, params)
             if @objects
               present @objects, with: presenter(published_resource_to_s, params[:depth])
@@ -100,6 +103,8 @@ module SPARCCWF
             end
 
             get do
+              Setting.preload_values
+
               find_object(published_resource_to_s, params[:id])
 
               present @object, with: presenter(published_resource_to_s, params[:depth])

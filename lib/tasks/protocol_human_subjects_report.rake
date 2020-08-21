@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -48,7 +48,7 @@ namespace :reports do
 
       protocols.each do |protocol|
         next unless has_pppv_services(protocol)
-        csv << ([protocol.id, protocol.try(:primary_principal_investigator).try(:full_name), hsi_formatter(protocol), hsi_fields_formatter(protocol)].flatten)
+        csv << ([protocol.id, protocol.try(:primary_pi).try(:full_name), hsi_formatter(protocol), hsi_fields_formatter(protocol)].flatten)
       end
     end
   end

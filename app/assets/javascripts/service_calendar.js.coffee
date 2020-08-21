@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,12 @@
 $ ->
   if $('#serviceCalendar').length
     adjustCalendarHeaders()
+
+  $(document).on('mouseenter', '.editable', ->
+    $(this).find('a').addClass('active')
+  ).on('mouseleave', '.editable', ->
+    $(this).find('a').removeClass('active')
+  )
 
   #########################
   # Load Tab on Page Load #

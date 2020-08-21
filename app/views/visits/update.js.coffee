@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -42,8 +42,10 @@ $('#effectiveCost').replaceWith("<%= j render 'dashboard/sub_service_requests/ef
 $('#displayCost').replaceWith("<%= j render 'dashboard/sub_service_requests/displayed_cost', sub_service_request: @sub_service_request %>")
 <% end %>
 
-# Replace Visit
-$(".visit-<%= @visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", service_request: @service_request, sub_service_request: @sub_service_request, visit: @visit, line_items_visit: @line_items_visit, page: @page, editable: true %>')
+# Replace Visits
+<% @visit_group.visits.each do |visit| %>
+$(".visit-<%= visit.id %>:visible").html('<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_visit_input", service_request: @service_request, sub_service_request: @sub_service_request, visit: visit, line_items_visit: visit.line_items_visit, page: @page, editable: true %>')
+<% end %>
 
 # Replace Per Patient / Study Totals
 $(".visit-<%= @visit.id %>:visible").siblings('.total-per-patient').replaceWith("<%= j render 'service_calendars/master_calendar/pppv/total_per_patient', liv: @line_items_visit %>")

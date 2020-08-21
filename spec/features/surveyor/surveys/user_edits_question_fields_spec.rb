@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -208,6 +208,9 @@ RSpec.describe 'User edits question fields', js: true do
         expect(page).to have_no_selector('.question')
         expect(@section.questions.count).to eq(0)
       end
+
+      # Spec below is ausing 99% of random Travis failures, and since we are ignoring it failing... it literally serves no purpose.
+      # We need to circle back and figure out why it randomly fails.
 
       context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
@@ -419,10 +422,12 @@ RSpec.describe 'User edits question fields', js: true do
         expect(@section.questions.count).to eq(0)
       end
 
+      ##Same as above, spec needs fixed
       context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true, depender: @option)
+
 
           visit surveyor_surveys_path
           wait_for_javascript_to_finish

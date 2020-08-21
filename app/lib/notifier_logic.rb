@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@ class NotifierLogic
   def initialize(service_request, current_user, ssrids=[])
     @service_request = service_request
     @current_user = current_user
+    @ssrids = ssrids
     @destroyed_ssrs_needing_notification = destroyed_ssr_that_needs_a_request_amendment_email
     @created_ssrs_needing_notification = @service_request.created_ssrs_since_previous_submission(ssrids)
     @ssrs_updated_from_un_updatable_status = ssrs_that_have_been_updated_from_a_un_updatable_status(ssrids)
@@ -46,7 +47,7 @@ class NotifierLogic
     # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
     @service_request.previous_submitted_at = @service_request.submitted_at
-    @to_notify = @service_request.update_status('submitted', @current_user)
+    @to_notify = @service_request.update_status('submitted', @current_user, @ssrids)
     @service_request.update_arm_minimum_counts
     send_request_amendment_email_evaluation
     send_initial_submission_email
@@ -117,19 +118,11 @@ class NotifierLogic
   end
 
   def send_user_notifications(request_amendment: false, admin_delete_ssr: false, deleted_ssr: nil)
-    # Does an approval need to be created?  Check that the user
-    # submitting has approve rights.
 
     if request_amendment
       audit_report = authorized_user_audit_report
     else
       audit_report = nil
-    end
-
-    if @service_request.protocol.project_roles.where(identity: @current_user).where.not(project_rights: "approve").any?
-      approval = @service_request.approvals.create
-    else
-      approval = false
     end
 
     deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
@@ -138,11 +131,11 @@ class NotifierLogic
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
       if admin_delete_ssr # Users get an Deletion Email upon SSR deletion from Dashboard --> Admin Edit, otherwise deleted SSR is included in the Request Amendment Email
-        Notifier.notify_user(project_role, @service_request, approval, @current_user, audit_report, deleted_ssr, admin_delete_ssr).deliver
+        Notifier.notify_user(project_role, @service_request, @current_user, audit_report, deleted_ssr, admin_delete_ssr).deliver
       elsif request_amendment && audit_report.present? # Request Amendment Email
-        Notifier.delay.notify_user(project_role, @service_request, approval, @current_user, audit_report, deleted_ssrs, admin_delete_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @current_user, audit_report, deleted_ssrs, admin_delete_ssr)
       elsif !request_amendment # Initial Submission Email
-        Notifier.delay.notify_user(project_role, @service_request, approval, @current_user, audit_report, nil, admin_delete_ssr)
+        Notifier.delay.notify_user(project_role, @service_request, @current_user, audit_report, nil, admin_delete_ssr)
       end
     end
   end

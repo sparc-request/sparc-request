@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,26 +21,35 @@
 <% if @errors.any? %>
 $('#protocol_research_master_id').parents('.form-group').addClass('is-invalid')
 
-<% if @protocol.rmid_server_down %>
-$('#protocol_research_master_id').val('').prop('disabled', true)
-$('#rmidContainer').append("<%= j render 'protocols/form/rmid_server_down' %>")
-<% else %>
 AlertSwal.fire(
   type: 'error'
   title: "<%= Protocol.human_attribute_name(:research_master_id) %>"
   html: "<%= @errors.join('<br>').html_safe %>"
 )
-<% end %>
+
+<% elsif @protocol.rmid_server_down %>
+$('#protocol_research_master_id').val('').prop('disabled', true)
+$('#rmidContainer').append("<%= j render 'protocols/form/rmid_server_down' %>")
 <% else %>
 $('#protocol_research_master_id').parents('.form-group').addClass('is-valid')
 
-$('#protocol_short_title').val("<%= @rmid_record['short_title'] %>").prop('readonly', true)
-$('#protocol_title').val("<%= @rmid_record['long_title'] %>").prop('readonly', true)
+$('#protocol_short_title').val("<%= j @rmid_record['short_title'].html_safe %>").prop('readonly', true)
+$('#protocol_title').val("<%= j @rmid_record['long_title'].html_safe %>").prop('readonly', true)
 
 <% if @rmid_record['eirb_validated'] %>
-$('#protocol_human_subjects_info_attributes_pro_number').val("<%= @rmid_record['eirb_pro_number'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_initial_irb_approval_date').val("<%= @rmid_record['date_initially_approved'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_irb_approval_date').val("<%= @rmid_record['date_approved'] %>").prop('readonly', true)
-$('#protocol_human_subjects_info_attributes_irb_expiration_date').val("<%= @rmid_record['date_expiration'] %>").prop('readonly', true)
+if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+  $('#protocol_research_types_info_attributes_human_subjects').click()
+  $('#protocol_research_master_id').click()
+
+if $('.primary-irb').length
+  $.ajax
+    method: 'PUT'
+    dataType: 'script'
+    url: "<%= irb_records_path(irb_record: { id: @protocol.irb_records.first, pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
+else
+  $.ajax
+    method: 'POST'
+    dataType: 'script'
+    url: "<%= irb_records_path(irb_record: { pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
 <% end %>
 <% end %>

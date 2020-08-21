@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,13 +20,14 @@
 
 FactoryBot.define do
   factory :document do
-    doc_type             { 'other' }
-    doc_type_other       { Faker::Lorem.word }
-    document_file_name   { Faker::Lorem.word + '.docx' }
-    document_content_type{ 'application/msword' }
-    document_file_size   { Random.rand(100000) }
-    document_updated_at  { Time.now }
-    created_at           { Time.now }
-    updated_at           { Time.now }
+    doc_type              { 'other' }
+    doc_type_other        { Faker::Lorem.word }
+    document_file_name    { Faker::Lorem.word + '.docx' }
+    document_content_type { 'application/msword' }
+    document_file_size    { Random.rand(100000) }
+    document_updated_at   { Time.now }
+    created_at            { Time.now }
+    updated_at            { Time.now }
+    share_all             { false }
   end
 end

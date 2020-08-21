@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -64,6 +64,15 @@ $ ->
           in_work_fulfillment: 1
       success: ->
         refreshFulfillmentButton()
+
+  $(document).on 'click', '#synchToFulfillment:not(.disabled)', ->
+    $(this).prop('disabled', true)
+    $.ajax
+      type: 'PUT'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/#{getSSRId()}/synch_to_fulfillment"
+      # success: ->
+      #   refreshFulfillmentButton()
 
   $(document).on 'click', '#pushToEpic:not(.disabled)', ->
     $(this).prop('disabled', true)

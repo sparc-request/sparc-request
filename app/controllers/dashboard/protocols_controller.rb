@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,7 +21,7 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
   include ProtocolsControllerShared
 
-  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :request_access]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
@@ -94,6 +94,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
+        if Setting.get_value("use_epic") && @protocol.selected_for_epic && Setting.get_value("validate_epic_users")
+          @malformed_project_role = @protocol.check_epic_user_rights
+        end
       }
       format.js
       format.xlsx {
@@ -162,6 +165,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
 
       if @protocol.update_attributes(protocol_params)
+        if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
+          if EpicQueue.where(protocol_id: @protocol.id).size == 0
+            EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
+          end
+        end
+        
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
       else
         @errors = @protocol.errors
@@ -197,6 +206,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
     
+    respond_to :js
+  end
+
+  def request_access
+    recipient = Identity.find(params[:recipient_id])
+    ProtocolMailer.with(recipient: recipient, protocol: @protocol, requester: current_user).request_access_email.deliver
+
+    flash[:success] = t('dashboard.protocols.table.request_sent', protocol_id: @protocol.id)
+
     respond_to :js
   end
 

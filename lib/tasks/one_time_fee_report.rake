@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -77,7 +77,7 @@ namespace :data do
         status = PermissibleValue.get_value('status', ssr.status)
         protocol_id = ssr.protocol_id
         short_title = ssr.protocol.short_title
-        pi = ssr.protocol.try(:primary_principal_investigator).try(:full_name)
+        pi = ssr.protocol.try(:primary_pi).try(:full_name)
         owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
 
         ssr.line_items.each do |li|

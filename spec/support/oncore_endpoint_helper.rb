@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -22,9 +22,9 @@ module OnCoreEndpointHelper
   # Return an example CRPC message with 2 arms, 3 VISITS (not SPARC Visits), and 2 Procedures
   # VISITS are most similar to Visit Groups and Procedures are most like Line Item Visits
   # Visit groups are on days 1, 5 and 10, with day 10 having a window and a window after of 3 days.
-  def crpc_message(study, bad_rmid=nil)
-    service1 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 1", eap_id: "0000")
-    service2 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 2", cpt_code: "0000")
+  def crpc_message(study, bad_id=nil)
+    service1 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 1", eap_id: "9999")
+    service2 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 2", cpt_code: "9999")
     day1      = Date.new(2000,1,1)
     day5      = Date.new(2000,1,5)
     day10     = Date.new(2000,1,10)
@@ -32,7 +32,7 @@ module OnCoreEndpointHelper
       { "protocolDef":
         { "plannedStudy": {
             "id": {
-              "@extension": bad_rmid.nil? ? study.research_master_id : bad_rmid,
+              "@extension": bad_id.nil? ? study.id : bad_id,
               "@root": "1.2.5.2.3.4"
             },
             "title": "null",
@@ -63,7 +63,7 @@ module OnCoreEndpointHelper
                     "@code": "PROTOCOLNO"
                   },
                   "value": {
-                    "@value": study.research_master_id
+                    "@value": "STUDY#{study.id}"
                   }
                 }
               },
@@ -92,7 +92,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.BLD",
+                    "@extension": "STUDY#{study.id}.BLD",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
@@ -431,7 +431,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.Biomarker",
+                    "@extension": "STUDY#{study.id}.Biomarker",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
@@ -791,12 +791,527 @@ module OnCoreEndpointHelper
       }
   end
 
+  def crpc_message_without_procedures(study)
+    day1      = Date.new(2000,1,1)
+    day5      = Date.new(2000,1,5)
+    day10     = Date.new(2000,1,10)
+    return crpc_message = 
+      { "protocolDef":
+        { "plannedStudy": {
+            "id": {
+              "@extension": "STUDY#{study.id}",
+              "@root": "1.2.5.2.3.4"
+            },
+            "title": "null",
+            "subjectOf": [
+              {
+                "studyCharacteristic": {
+                  "code": {
+                    "@code": "STAT"
+                  },
+                  "value": {
+                    "@value": "OPEN TO ACCRUAL"
+                  }
+                }
+              },
+              {
+                "studyCharacteristic": {
+                  "code": {
+                    "@code": "STATDT"
+                  },
+                  "value": {
+                    "@value": "20200212"
+                  }
+                }
+              },
+              {
+                "studyCharacteristic": {
+                  "code": {
+                    "@code": "PROTOCOLNO"
+                  },
+                  "value": {
+                    "@value": "STUDY#{study.id}"
+                  }
+                }
+              },
+              {
+                "studyCharacteristic": {
+                  "code": {
+                    "@code": "ST"
+                  },
+                  "value": {
+                    "@value": "Bas"
+                  }
+                }
+              },
+              {
+                "studyCharacteristic": {
+                  "code": {
+                    "@code": "DEPT"
+                  },
+                  "value": {
+                    "@value": "DERMATOLOGY"
+                  }
+                }
+              }
+            ],
+            "component4": [
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "STUDY#{study.id}.BLD",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
+                  "code": {
+                    "@code": "CELL",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component1": [
+                    {
+                      "sequenceNumber": {
+                        "@value": "1"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1434",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "BLD, Screening Visit",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "BLD.9844",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "BLD, Screening Visit, SV"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": day1.strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": day1.strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "sequenceNumber": {
+                        "@value": "2"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1435",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "BLD, Baseline",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "BLD.9845",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "BLD, Baseline, BL"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": day5.strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": day5.strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "sequenceNumber": {
+                        "@value": "3"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1436",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "BLD, Treatment",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "BLD.9846",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "BLD, Treatment, 1"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": (day10 - 3.days).strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": (day10 + 3.days).strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "BLD.9844",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "BLD, Screening Visit, SV",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": day1.strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": day1.strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day1.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "BLD.9845",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "BLD, Baseline, BL",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": day5.strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": day5.strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day5.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "BLD.9846",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "BLD, Treatment, 1",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": (day10 - 3.days).strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": (day10 + 3.days).strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day10.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "STUDY#{study.id}.Biomarker",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
+                  "code": {
+                    "@code": "CELL",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component1": [
+                    {
+                      "sequenceNumber": {
+                        "@value": "1"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1434",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "Biomarker, Screening Visit",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "Biomarker.9844",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "Biomarker, Screening Visit, SV"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": day1.strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": day1.strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "sequenceNumber": {
+                        "@value": "2"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1435",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "Biomarker, Baseline",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "Biomarker.9845",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "Biomarker, Baseline, BL"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": day5.strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": day5.strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "sequenceNumber": {
+                        "@value": "3"
+                      },
+                      "timePointEventDefinition": {
+                        "id": {
+                          "@extension": "1436",
+                          "@root": "1.2.3.4.8.2"
+                        },
+                        "title": "Biomarker, Treatment",
+                        "code": {
+                          "@code": "CYCLE",
+                          "@codeSystem": "1.2.3.4.8.2"
+                        },
+                        "component1": [
+                          {
+                            "sequenceNumber": {
+                              "@value": "1"
+                            },
+                            "timePointEventDefinition": {
+                              "id": {
+                                "@extension": "Biomarker.9846",
+                                "@root": "1.2.3.4.8.2"
+                              },
+                              "title": "Biomarker, Treatment, 1"
+                            }
+                          }
+                        ],
+                        "effectiveTime": {
+                          "low": {
+                            "@value": (day10 - 3.days).strftime('%Y%m%d')
+                          },
+                          "high": {
+                            "@value": (day10 + 3.days).strftime('%Y%m%d')
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "Biomarker.9844",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "Biomarker, Screening Visit, SV",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": day1.strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": day1.strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day1.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "Biomarker.9845",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "Biomarker, Baseline, BL",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": day5.strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": day5.strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day5.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "timePointEventDefinition": {
+                  "id": {
+                    "@extension": "Biomarker.9846",
+                    "@root": "1.2.3.4.8.2"
+                  },
+                  "title": "Biomarker, Treatment, 1",
+                  "code": {
+                    "@code": "VISIT",
+                    "@codeSystem": "1.2.3.4.8.2"
+                  },
+                  "component2": {
+                    "encounter": {
+                      "effectiveTime": {
+                        "low": {
+                          "@value": (day10 - 3.days).strftime('%Y%m%d')
+                        },
+                        "high": {
+                          "@value": (day10 + 3.days).strftime('%Y%m%d')
+                        }
+                      },
+                      "activityTime": {
+                        "@value": day10.strftime('%Y%m%d')
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "component2": [
+              {
+                "arm": {
+                  "id": {
+                    "@extension": "1.BLD"
+                  },
+                  "title": "BLD: Arm BLD"
+                }
+              },
+              {
+                "arm": {
+                  "id": {
+                    "@extension": "1.Biomarker"
+                  },
+                  "title": "Biomarker: Arm Biomarker"
+                }
+              }
+            ]
+          }
+        }
+      }
+  end
+
   def rpe_message(study)
     return rpe_message = 
       { "protocolDef": {
             "plannedStudy": {
               "id": {
-                "@extension": study.research_master_id,
+                "@extension": "STUDY#{study.id}",
                 "@root": "1.2.5.2.3.4"
               },
               "title": "A Phase 2 Trial of Nivolumab Plus Ipilimumab, Ipilimumab Alone, or Cabazitaxel ",
@@ -828,7 +1343,7 @@ module OnCoreEndpointHelper
                       "@code": "PROTOCOLNO"
                     },
                     "value": {
-                      "value": study.research_master_id
+                      "@value": "STUDY#{study.id}"
                     }
                   }
                 },

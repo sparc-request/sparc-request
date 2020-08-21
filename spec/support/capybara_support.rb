@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -173,7 +173,7 @@ module CapybaraSupport
     arm = create(:arm, protocol_id: project.id, subject_count: 2, visit_count: 10)
 
 
-    survey = create(:system_survey, 
+    survey = create(:system_survey,
       title: "System Satisfaction survey",
       description: nil,
       access_code: "system-satisfaction-survey",
@@ -296,8 +296,7 @@ module CapybaraSupport
     when 'user'
       xls = " "
       project_role = sr.protocol.project_roles.select{ |role| role.project_rights != 'none' and !role.identity.email.blank? }[0]
-      approval = service_request.approvals.create
-      return Notifier.notify_user(project_role,sr,xls,approval,user)
+      return Notifier.notify_user(project_role,sr,xls,user)
 
     when 'admin'
       xls = " "

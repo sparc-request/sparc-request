@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
 .form-row#rmidContainer
   .form-group.col-12.mb-0
     %h5
-      = raw t('protocols.rmid.note', rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
+      = raw t('protocols.rmid.note', protocol_type: protocol.model_name.human, rmid_url: Setting.get_value("research_master_link"), rmid_field: Protocol.human_attribute_name(:research_master_id))
   .form-group.col-6.mb-0
     = f.label :research_master_id
     = f.text_field :research_master_id, class: 'form-control research-master-field', disabled: rmid_server_down

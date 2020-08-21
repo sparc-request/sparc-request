@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@ namespace :file do
       print(*args)
       STDIN.gets.strip
     end
-    
+
     def file_prepend(file, str, prefix, postfix)
       f = File.open(file, "r+")
       lines = f.readlines
@@ -49,7 +49,7 @@ namespace :file do
       missing_copyright = []
 
       files.each do |f|
-        if File.readlines(f, :encoding => 'ISO-8859-1').grep(/2011 MUSC Foundation for Research Development/).empty?
+        if File.readlines(f, :encoding => 'ISO-8859-1').grep(/2011-2020 MUSC Foundation for Research Development/).empty?
           missing_copyright << f
         end
       end
@@ -59,7 +59,7 @@ namespace :file do
 
     # The copyright header needed for each file
     # # and ~ are keys to replace for different comment styles
-    header = "# Copyright \u00A9 2011 MUSC Foundation for Research Development~\n"
+    header = "# Copyright \u00A9 2011-2020 MUSC Foundation for Research Development~\n"
     header += "# All rights reserved.~\n\n"
     header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"
     header += "# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~\n\n"

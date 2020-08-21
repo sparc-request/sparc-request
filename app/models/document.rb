@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,6 +47,10 @@ class Document < ApplicationRecord
   end
 
   def all_organizations
-    sub_service_requests.map(&:org_tree).flatten.uniq
+    if self.share_all?
+      self.protocol.sub_service_requests.map(&:org_tree).flatten.uniq
+    else
+      self.sub_service_requests.map(&:org_tree).flatten.uniq
+    end
   end
 end

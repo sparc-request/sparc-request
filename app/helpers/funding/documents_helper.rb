@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -21,11 +21,11 @@
 module Funding::DocumentsHelper
  
   def display_pi(ssr)
-    ssr.protocol.primary_principal_investigator.last_name_first
+    ssr.protocol.primary_pi.last_name_first
   end
 
   def display_pi_institution(ssr)
-    ssr.protocol.primary_principal_investigator.try(:professional_org_lookup, 'institution')
+    ssr.protocol.primary_pi.try(:professional_org_lookup, 'institution')
   end
 
   def display_actions(ssr)

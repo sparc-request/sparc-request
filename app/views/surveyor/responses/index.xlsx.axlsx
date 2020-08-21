@@ -1,4 +1,4 @@
-# Copyright © 2011-2018 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -77,7 +77,7 @@ bold              = wb.styles.add_style alignment: { horizontal: :left, vertical
 header_style      = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left, vertical: :center, wrap_text: true}
 sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left, vertical: :center, wrap_text: true }
 
-@responses.includes(:question_responses).order("surveys.title, surveys.version").group_by(&:survey).each do |survey, responses|
+@responses.sort_by{|response| [response.survey.title, response.survey.version]}.group_by(&:survey).each do |survey, responses|
   version = "v#{survey.version}"
   wb.add_worksheet(name: "#{survey.full_title.truncate(30 - version.length).gsub(/[\[\]\:\/\\\?\*]/, "-")} #{version}") do |sheet|
     sheet.add_row survey_header(survey), style: header_style
@@ -88,7 +88,7 @@ sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', ali
     if @type == 'Form'
       sheet.add_row ["Association", survey.surveyable.organization_hierarchy], style: [bold]
     end
-      
+
     sheet.add_row []
 
     sheet.add_row ["Total Responses:", responses.count], style: [bold, default]
@@ -98,7 +98,7 @@ sub_header_style  = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', ali
     sheet.add_row responses_header(survey), style: header_style
 
     sheet.add_row responses_subheader(survey), style: sub_header_style
-    
+
     responses.each do |response|
       sheet.add_row question_response_row(survey, response), style: default
     end

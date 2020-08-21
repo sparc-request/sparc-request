@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -59,7 +59,7 @@ namespace :data do
       if ssr.service_request.protocol && (ssr.organization_id == core.id) && (ssr.created_at.to_date > 2012-03-01)
         past_statuses = ssr.past_status_lookup
         dates = extract_status_dates(ssr)
-        pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)
+        pi = ssr.service_request.protocol.try(:primary_pi).try(:full_name)
         owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
 
         row = [ssr.service_request.protocol.id, full_ssr_id(ssr), ssr.service_request.protocol.short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, dates[0], dates[1]]

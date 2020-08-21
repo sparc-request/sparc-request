@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,18 +20,18 @@
 
 class StudyTypeFinder
 
-	def initialize(study, answers=nil)
-		@study = study
+  def initialize(study, answers=nil)
+    @study = study
     @answers = answers
-		@study_type = nil
-	end
+    @study_type = nil
+  end
 
-	def study_type
+  def study_type
     if @study.nil?
       study_type = determine_study_type(3, @answers)
-		elsif @study.study_type_answers.present?
+    elsif @study.study_type_answers.present?
       study_type = determine_study_type(@study.version_type, collect_answers(@study))
-  	end
+    end
     study_type
   end
 

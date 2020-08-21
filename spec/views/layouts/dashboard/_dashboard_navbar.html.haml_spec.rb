@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -49,6 +49,17 @@ RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
       render 'layouts/dashboard/dashboard_navbar', current_user: @user
 
       expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.epic_queue'))
+    end
+  end
+
+  context 'OnCore configuration turned on' do
+    stub_config("use_oncore", true)
+    stub_config("oncore_endpoint_access", ['jug2'])
+
+    it 'should display view OnCore Log button' do
+      render 'layouts/dashboard/dashboard_navbar', current_user: @user
+
+      expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.oncore_log'))
     end
   end
 

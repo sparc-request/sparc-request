@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,12 +27,12 @@ class Notification < ApplicationRecord
 
   has_many :messages
 
-  def self.belonging_to(identity_id, sub_service_request_id=nil)
+  def self.belonging_to(identity, sub_service_request_id=nil)
     notifications = Notification.arel_table
 
     of_ssr(sub_service_request_id).
-      where(notifications[:other_user_id].eq(identity_id).
-        or(notifications[:originator_id].eq(identity_id)))
+      where(notifications[:other_user_id].eq(identity.id).
+        or(notifications[:originator_id].eq(identity.id)))
   end
 
   def self.of_ssr(ssr_id=nil)
@@ -43,25 +43,42 @@ class Notification < ApplicationRecord
     end
   end
 
-  def self.in_inbox_of(identity_id, sub_service_request_id=nil)
+  def self.in_inbox_of(identity, sub_service_request_id=nil)
     of_ssr(sub_service_request_id).
-    belonging_to(identity_id).
+    belonging_to(identity).
       joins(:messages).
-      where(messages: { to: identity_id })
+      where(messages: { to: identity.id })
   end
 
-  def self.in_sent_of(identity_id, sub_service_request_id=nil)
-    of_ssr(sub_service_request_id).
-    belonging_to(identity_id).
-      joins(:messages).
-      where(messages: { from: identity_id })
+  def self.shared_with(identity, sub_service_request_id=nil)
+    notifications = of_ssr(sub_service_request_id).
+                      where(shared: true).
+                      where.not(
+                        originator: identity,
+                        other_user: identity
+                      )
+
+    if identity.catalog_overlord?
+      notifications
+    else
+      notifications.joins(:sub_service_request).where(
+        sub_service_requests: { organization: Organization.authorized_for_super_user(identity.id) }
+      )
+    end
   end
 
-  def self.unread_by(identity_id)
+  def self.in_sent_of(identity, sub_service_request_id=nil)
+    of_ssr(sub_service_request_id).
+    belonging_to(identity).
+      joins(:messages).
+      where(messages: { from: identity.id })
+  end
+
+  def self.unread_by(identity)
     notifications = Notification.arel_table
 
-    where(notifications[:originator_id].eq(identity_id).and(notifications[:read_by_originator].eq(false)).
-      or(notifications[:other_user_id].eq(identity_id).and(notifications[:read_by_other_user].eq(false))))
+    where(notifications[:originator_id].eq(identity.id).and(notifications[:read_by_originator].eq(false)).
+      or(notifications[:other_user_id].eq(identity.id).and(notifications[:read_by_other_user].eq(false))))
   end
 
   def read_by?(user)

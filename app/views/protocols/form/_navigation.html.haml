@@ -28,9 +28,9 @@
       %nav.flex-column#protocolNavigation
         - if Setting.get_value('research_master_enabled')
           = link_to Protocol.human_attribute_name(:research_master_id), '#protocolHeader', class: 'nav-link h5 mb-0'
+        = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5 mb-0'
         - if protocol.is_a?(Study) && (use_epic || Setting.get_value('use_confidentiality_questions'))
           = link_to t("protocols.form.confidentiality#{use_epic ? '_epic' : ''}_questions.header"), '#confidentialityEpicQuestions', class: 'nav-link h5 mb-0'
-        = link_to t('protocols.form.information.header'), '#protocolInformation', class: 'nav-link h5 mb-0'
         = link_to t('protocols.form.financial_information.header'), '#financialInformation', class: 'nav-link h5 mb-0'
         - if protocol.is_a?(Study)
           = link_to t('protocols.form.research_involving.header'), '#researchInvolving', class: 'nav-link h5 mb-0'

@@ -36,6 +36,12 @@ module ProtocolsHelper
     end
   end
 
+  def edit_protocol_billing_button(protocol)
+    link_to edit_billing_protocol_path(protocol), remote: true, method: :get, class: 'btn btn-warning mr-1 edit-protocol', title: t('protocols.tooltips.edit_billing'), data: { toggle: 'tooltip' } do
+      icon('far', 'edit mr-2') + t('protocols.edit_billing')
+    end
+  end
+
   def archive_protocol_button(protocol, opts={})
     unless in_dashboard? && !opts[:permission]
       link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn archive-protocol', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { toggle: 'tooltip' } do

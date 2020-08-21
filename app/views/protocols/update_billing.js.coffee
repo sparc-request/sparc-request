@@ -18,22 +18,4 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- hide_calendar = !(sub_service_request ? sub_service_request : service_request).has_per_patient_per_visit_services?
-
-.col-12.mb-3#serviceCalendarHeader
-  - if in_dashboard?
-    = new_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab)
-    - unless hide_calendar
-      = delete_clinical_line_item_button(ssrid: sub_service_request.id, tab: tab)
-  - unless hide_calendar || service_request.protocol.locked?
-    = new_arm_button(srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab)
-  - unless in_dashboard?
-    .w-100.mt-3#billingLabels{ class: tab == 'billing_strategy' ? '' : 'd-none' }
-      %ul.list-unstyled.mb-0
-        %li.font-weight-bold
-          = t('proper.service_details.legend.research')
-        %li.font-weight-bold
-          = t('proper.service_details.legend.third_party')
-        %li.font-weight-bold
-          = t('proper.service_details.legend.effort')
-      = edit_protocol_billing_button(service_request.protocol)
+$('#modalContainer').modal('hide')

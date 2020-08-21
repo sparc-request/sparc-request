@@ -269,6 +269,7 @@ SparcRails::Application.routes.draw do
       member do
         get :display_requests
         get :request_access
+        get :push_to_oncore
         patch :archive
         patch :update_protocol_type
       end
@@ -284,6 +285,7 @@ SparcRails::Application.routes.draw do
           member do
             put :update_protocol_type
             get :display_requests
+            get :push_to_oncore
             patch :archive
           end
         end

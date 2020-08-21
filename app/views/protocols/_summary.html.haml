@@ -30,6 +30,7 @@
         = notes_button(protocol, protocol_id: protocol.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
         = protocol_details_button(protocol)
         = edit_protocol_button(protocol, permission: permission_to_edit || admin)
+        = push_to_oncore_button(protocol)
         = archive_protocol_button(protocol, permission: permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol))
       - else
         = notes_button(protocol, srid: service_request.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')

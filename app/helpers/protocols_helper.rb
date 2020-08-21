@@ -36,6 +36,16 @@ module ProtocolsHelper
     end
   end
 
+  def push_to_oncore_button(protocol)
+    # Do not display outside the dashboard, on Projects, if OnCore isn't in use, or if the user does not have OnCore access
+    if in_dashboard? && protocol.is_a?(Study) &&
+       Setting.get_value('use_oncore') && Setting.get_value('oncore_endpoint_access').include?(current_user.ldap_uid)
+      link_to push_to_oncore_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-info-alt text-white mr-1 oncore-push-protocol', title: t('protocols.summary.tooltips.edit'), data: { toggle: 'tooltip' } do
+        icon('fas', 'sync mr-2') + t('protocols.summary.oncore.push_to_oncore', protocol_type: protocol.model_name.human)
+      end
+    end
+  end
+
   def archive_protocol_button(protocol, opts={})
     unless in_dashboard? && !opts[:permission]
       link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn archive-protocol', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { toggle: 'tooltip' } do

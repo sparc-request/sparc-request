@@ -25,7 +25,7 @@ class OncoreProtocol
   attr_accessor :auth, :protocol_no, :title, :short_title, :library, :department, :organizational_unit, :protocol_type
 
   def initialize(study)
-    self.protocol_no         = "STUDY" + study.id
+    self.protocol_no         = "STUDY#{study.id}"
     self.title               = study.title
     self.short_title         = study.short_title
     self.library             = "Non-Oncology" #default
@@ -35,43 +35,41 @@ class OncoreProtocol
   end
 
   def create_oncore_protocol
-    self.authenticate
-
+    auth_response = self.authenticate
+    if auth_response.success?
     # Assumes that the push will fail if it already exists in OnCore, need to confirm
-    response = HTTParty.post('/oncore-api/rest/protocols.json',
-                              headers: {
-                                'Content-Type' => 'application/json',
-                                'Authorization' => self.auth
-                              },
-                              body: {
-                                protocolNo: self.protocol_no,
-                                title: self.title,
-                                short_title: self.short_title,
-                                library: self.library,
-                                department: self.department,
-                                organizationalUnit: self.organizational_unit,
-                                protocolType: self.protocol_type
-                              })
-    unless response.success?
-      raise response.response
+      response = self.class.post('/oncore-api/rest/protocols.json',
+                                headers: {
+                                  'Content-Type' => 'application/json',
+                                  'Authorization' => self.auth
+                                },
+                                body: {
+                                  protocolNo: self.protocol_no,
+                                  title: self.title,
+                                  short_title: self.short_title,
+                                  library: self.library,
+                                  department: self.department,
+                                  organizationalUnit: self.organizational_unit,
+                                  protocolType: self.protocol_type
+                                })
+    else
+      auth_response
     end
   end
 
-  private
-
   def authenticate
-    response = HTTParty.post('/forte-platform-web/api/oauth/token.json',
+    response = self.class.post('/forte-platform-web/api/oauth/token.json',
                               headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' },
                               body: {
-                                client_id: Env.fetch('oncore_client_id'),
-                                client_secret: Env.fetch('oncore_client_secret'),
+                                client_id: ENV.fetch('oncore_client_id'),
+                                client_secret: ENV.fetch('oncore_client_secret'),
                                 grant_type: 'client_credentials'
                               })
     if response.success?
       token = response['access_token']
       self.auth = "Bearer " + token
     else
-      raise response.response
+      response
     end
   end
 end

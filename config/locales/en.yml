@@ -790,6 +790,10 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
+      oncore:
+        push_to_oncore: "Push to OnCore"
+        pushed_to_oncore: "Study Pushed to OnCore!"
+        error: "Unable to push Study to OnCore"
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"

@@ -404,7 +404,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    pdfkit (0.8.4.2)
+    pdfkit (0.8.4.3.2)
     prawn (2.3.0)
       pdf-core (~> 0.8.1)
       ttfunk (~> 1.6)
@@ -697,7 +697,7 @@ DEPENDENCIES
   paperclip (~> 6.1)
   parallel_tests
   pdf-inspector
-  pdfkit (= 0.8.4.2)
+  pdfkit (= 0.8.4.3.2)
   prawn (= 2.3.0)
   prawn-table
   premailer-rails

@@ -25,8 +25,11 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
 
   def self.enqueue(object_id, object_class, action)
     job = new(object_id, object_class, action)
+    protocol = Protocol.find(object_id)
 
-    Delayed::Job.enqueue job, queue: 'remote_service_notifier'
+    if protocol.sub_service_requests.any? && protocol.fulfillment_protocols.any?
+      Delayed::Job.enqueue job, queue: 'remote_service_notifier'
+    end
   end
 
   def perform

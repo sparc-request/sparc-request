@@ -21,14 +21,16 @@
 FactoryBot.define do
 
   factory :clinical_provider do
-    identity {nil}
-    organization {nil}
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
 
     trait :with_identity_and_organization do
       identity
       organization
     end
 
+    factory :clinical_provider_without_validations, traits: [:without_validations]
     factory :clinical_provider_with_identity_and_organization, traits: [:with_identity_and_organization]
   end
 end

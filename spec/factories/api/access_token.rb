@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do  
-  factory :api_access_token do
-    application
-    token       { Faker::String.random(length: 16) }
+  factory :api_access_token, class: Doorkeeper.config.access_token_model.to_s do
+    token       { Faker::Alphanumeric.alphanumeric(number: 16) }
+    expires_in  { 7200 }
+    scopes      { 'public' }
   end
 end

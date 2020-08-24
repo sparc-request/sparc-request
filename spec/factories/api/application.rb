@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do  
-  factory :api_application do
+  factory :api_application, class: Doorkeeper.config.application_model.to_s do
     name          { "#{Faker::Lorem.word} App"}
-    uid           { Faker::String.random(length: 16) }
-    secret        { Faker::String.random(length: 16) }
+    uid           { Faker::Alphanumeric.alphanumeric(number: 16) }
+    secret        { Faker::Alphanumeric.alphanumeric(number: 16) }
     confidential  { true }
   end
 end

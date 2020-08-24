@@ -510,8 +510,6 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
-    t.string "primary_ontology_tag"
-    t.string "secondary_ontology_tag"
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
     t.index ["parent_id"], name: "index_organizations_on_parent_id"
@@ -870,7 +868,6 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.integer "order"
     t.text "description"
     t.boolean "is_available", default: true
-    t.boolean "share_externally", default: true
     t.decimal "service_center_cost", precision: 12, scale: 4
     t.string "cpt_code"
     t.string "charge_code"
@@ -973,7 +970,6 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "sub_service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "organization_id"
-    t.string "organization_shard", default: "musc"
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"

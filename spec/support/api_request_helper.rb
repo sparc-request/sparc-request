@@ -18,14 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module ApiAuthenticationHelper
-  def http_login
-    @env ||= {}
+module APIHelper
+  def send_api_update_request(args={})
+    resource  = args[:resource]
+    id        = args[:id]
+    params    = args[:params] || {}
+    token     = args[:token] || create(:api_access_token, application: create(:api_application)).token
 
-    @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+    put "/api/v1/#{resource}/#{id}.json", params: params.merge(access_token: token)
+  end
+
+  def send_api_get_request(args={})
+    resource  = args[:resource]
+    id        = args[:id]
+    ids       = args[:ids]
+    depth     = args[:depth]
+    params    = args[:params] || {}
+    token     = args[:token] || create(:api_access_token, application: create(:api_application)).token
+
+    params.merge!(ids: ids) if ids
+    params.merge!(depth: depth) if depth
+
+    if id
+      get "/api/v1/#{resource}/#{id}.json", params: params.merge(access_token: token)
+    else
+      get "/api/v1/#{resource}.json", params: params.merge(access_token: token)
+    end
   end
 end
 
 RSpec.configure do |config|
-  config.include ApiAuthenticationHelper, type: :request
+  config.include APIHelper, type: :request
 end

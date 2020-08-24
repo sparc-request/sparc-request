@@ -30,7 +30,7 @@ module RemotelyNotifiable
 
   def remote_service_callback_url
     if self.persisted?
-      "#{Setting.get_value("remote_service_notifier_protocol")}://#{Setting.get_value("host")}/#{Setting.get_value("current_api_version")}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
+      "#{Setting.get_value("remote_service_notifier_protocol")}://#{Setting.get_value("host")}/api/#{Setting.get_value("current_api_version")}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
     end
   end
 

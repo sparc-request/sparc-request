@@ -21,112 +21,65 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/protocol/:id.json' do
-
-    before do
-      @protocol = build(:protocol)
-      @protocol.save validate: false
-    end
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Protocol root object' do
-          expect(response.body).to include('"protocol":')
-        end
-      end
-    end
+  describe 'GET /api/v1/protocol/:id.json' do
+    let!(:protocol) { create(:protocol_without_validations) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'protocols', id: protocol.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'shallow') }
-
-      it 'should respond with a single shallow protocol' do
-        expect(response.body).to eq("{\"protocol\":{\"sparc_id\":#{@protocol.id},\"callback_url\":\"https://127.0.0.1:5000/v1/protocols/#{@protocol.id}.json\"}}")
+      it 'should respond with a shallow protocol' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['protocol']).to eq({
+          'sparc_id'      => protocol.id,
+          'callback_url'  => protocol.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'protocols', id: protocol.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'full') }
-
-      it 'should respond with a Protocol' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:protocol).attributes.
-                                keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email'].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-        expect(parsed_body['protocol'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an protocol and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['protocol']).to eq(
+          protocol.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at','study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email').
+          merge({
+            'sparc_id'                      => protocol.id,
+            'callback_url'                  => protocol.remote_service_callback_url,
+            'start_date'                    => protocol.start_date.to_s(:iso8601),
+            'end_date'                      => protocol.end_date.to_s(:iso8601),
+            'funding_start_date'            => protocol.funding_start_date.to_s(:iso8601),
+            'potential_funding_start_date'  => protocol.potential_funding_start_date.to_s(:iso8601),
+            'indirect_cost_rate'            => protocol.indirect_cost_rate.to_f.to_s
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'protocols', id: protocol.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of protocols and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:protocol).attributes.
-                                keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
-                                sort
-
-        expect(parsed_body['protocol'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an protocol and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['protocol']).to eq(
+          protocol.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at', 'study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email').
+          merge({
+            'sparc_id'                      => protocol.id,
+            'callback_url'                  => protocol.remote_service_callback_url,
+            'start_date'                    => protocol.start_date.to_s(:iso8601),
+            'end_date'                      => protocol.end_date.to_s(:iso8601),
+            'funding_start_date'            => protocol.funding_start_date.to_s(:iso8601),
+            'potential_funding_start_date'  => protocol.potential_funding_start_date.to_s(:iso8601),
+            'indirect_cost_rate'            => protocol.indirect_cost_rate.to_f.to_s,
+            'arms'                          => [],
+            'project_roles'                 => [],
+            'service_requests'              => [],
+            'human_subjects_info'           => nil
+          })
+        )
       end
     end
-
-    context 'request for :shallow record with a bogus ID' do
-
-     before { cwf_sends_api_get_request_for_resource('protocols', -1, 'shallow') }
-
-     it 'should respond with a 404 and JSON content type' do
-       expect(response.status).to eq(404)
-       expect(response.content_type).to eq('application/json')
-       parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['protocol']).to eq(nil)
-       expect(parsed_body['error']).to eq("Protocol not found for id=-1")
-     end
-   end
-
-   context 'request for :full record with a bogus ID' do
-
-    before { cwf_sends_api_get_request_for_resource('protocols', -1, 'full') }
-
-    it 'should respond with a 404 and JSON content type' do
-      expect(response.status).to eq(404)
-      expect(response.content_type).to eq('application/json')
-      parsed_body         = JSON.parse(response.body)
-      expect(parsed_body['protocol']).to eq(nil)
-      expect(parsed_body['error']).to eq("Protocol not found for id=-1")
-    end
-  end
-
-    context 'request for :full_with_shallow_reflections record with a bogus ID' do
-
-      before { cwf_sends_api_get_request_for_resource('protocols', -1, 'full_with_shallow_reflections') }
-
-      it 'should respond with a 404 and JSON content type' do
-        expect(response.status).to eq(404)
-        expect(response.content_type).to eq('application/json')
-        parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['protocol']).to eq(nil)
-        expect(parsed_body['error']).to eq("Protocol not found for id=-1")
-      end
-    end
-
   end
 end

@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryBot.define do  
-  factory :api_access_request do
+  factory :api_access_request, class: 'Doorkeeper::AccessRequest' do
     application
     access_token
     ip_address    { Faker::Internet.ip_v4_address }

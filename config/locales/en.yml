@@ -454,8 +454,6 @@ en:
         third_party: "T"
         percent: "%"
         edit_billing_modal: "Edit Billing Quantities"
-      visits:
-        select_all_t: "Set all visits in column to indicated insurance quantity."
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
@@ -784,6 +782,7 @@ en:
   protocols:
     new: "New %{protocol_type}"
     edit: "Edit %{protocol_type} Information"
+    edit_billing: "Set Default Billing Designation"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
     rmid:
@@ -822,6 +821,7 @@ en:
       header:
         new: "Start a New %{protocol_type}"
         edit: "Edit an Existing %{protocol_type}"
+        edit_billing: "Choose a Default Billing Type"
       navigation:
         header:
           new: "New %{protocol_type}"
@@ -875,6 +875,7 @@ en:
       start_date: "Estimated start date for your %{protocol_type} (used by service providers to prioritize)"
       study_type_questions: "Information needed to determine confidentiality of patients/protocols."
       title: "Full title of your Study/Project."
+      edit_billing: "You can choose your default billing here. (Research or Insurance)"
 
   ########################
   # NOT APPROVED WARNING #

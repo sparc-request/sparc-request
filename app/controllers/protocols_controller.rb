@@ -23,7 +23,7 @@ class ProtocolsController < ApplicationController
 
   before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
   before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
-  before_action :find_protocol,               only: [:show, :edit, :update]
+  before_action :find_protocol,               only: [:show, :edit, :update, :edit_billing, :update_billing]
 
   def show
     respond_to :js
@@ -62,6 +62,10 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
+  end
+
+  def update_billing
+    @protocol.update_attributes(protocol_params)
   end
 
   def update

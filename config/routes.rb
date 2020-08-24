@@ -120,7 +120,9 @@ SparcRails::Application.routes.draw do
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
+      get :edit_billing
       patch :update_protocol_type
+      patch :update_billing
     end
   end
 

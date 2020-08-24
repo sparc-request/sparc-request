@@ -798,6 +798,7 @@ en:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
         edit: "Quick access to edit protocol information"
+        push_to_oncore: "Create Study in OnCore"
         archive: "Ability to hide study from all Authorized User dashboards"
         unarchive: "Click to reveal on all associated Authorized User dashboards"
     view_details:

@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 - if action_name == 'edit'
-  - disable_left = visit_group.position % VisitGroup.per_page == 1
-  - disable_right = visit_group.position % VisitGroup.per_page == 0
+  - disable_left = visit_group.position % VisitGroup.per_page == 1 || visit_group.higher_item.nil?
+  - disable_right = visit_group.position % VisitGroup.per_page == 0 || visit_group.lower_item.nil?
 
 = form_for visit_group, remote: true, html: { class: 'w-100' } do |f|
   = f.hidden_field :arm_id

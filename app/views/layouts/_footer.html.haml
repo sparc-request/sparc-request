@@ -33,7 +33,7 @@
             = t('layout.footer.github')
       .col-2.offset-2
         %h5.mb-2
-          = t('layouts.footer.about.header')
+          = t('layout.footer.about.header')
         %ul.list-unstyled.mb-0
           %li.mb-1
             = link_to t('layout.footer.about.about_sparc'), Setting.get_value("about_sparc_url"), target: :_blank, class: 'text-white'
@@ -41,7 +41,7 @@
             = link_to t('layout.footer.about.about_sctr.text'), t('layout.footer.about.about_sctr.url'), target: :_blank, class: 'text-white'
       .col-2
         %h5.mb-2
-          = t('layouts.footer.links.header')
+          = t('layout.footer.links.header')
         %ul.list-unstyled.mb-0
           %li.mb-1
             = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'text-white'

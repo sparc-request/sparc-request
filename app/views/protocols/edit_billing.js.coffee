@@ -18,26 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if in_dashboard?
-  - url = protocol.new_record? ? dashboard_protocols_path : dashboard_protocol_path
-- else
-  - url = protocol.new_record? ? protocols_path : protocol_path
-.w-100.position-relative
-  = render 'protocols/form/navigation', protocol: protocol
-  %main.col-8.mx-auto
-    = form_for (in_dashboard? ? [:dashboard, protocol] : protocol), url: url, as: :protocol, remote: true, html: { autocomplete: 'off', id: 'protocolForm' } do |f|
-      = hidden_field_tag :srid, @service_request.try(:id)
-      = f.hidden_field :type
-      = f.hidden_field :requester_id, value: current_user.id
-
-      = render 'protocols/form/header', f: f, protocol: protocol
-      = render 'protocols/form/protocol_information', f: f, protocol: protocol
-      - if protocol.is_a?(Study) && (Setting.get_value("use_epic") || Setting.get_value("use_confidentiality_questions"))
-        = render 'protocols/form/confidentiality_epic_questions', f: f, protocol: protocol
-      = render 'protocols/form/financial_information', f: f, protocol: protocol
-
-      - if protocol.is_a?(Study)
-        = render 'protocols/form/research_involving', f: f, protocol: protocol
-        = render 'protocols/form/other_details', f: f, protocol: protocol
-
-      = render 'protocols/form/footer', f: f
+$("#modalContainer").html("<%= escape_javascript(render( 'protocols/form/protocol_billing_form', protocol: @protocol )) %>")
+$("#modalContainer").modal('show')

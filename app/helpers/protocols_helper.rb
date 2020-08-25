@@ -36,6 +36,12 @@ module ProtocolsHelper
     end
   end
 
+  def edit_protocol_billing_button(protocol)
+    link_to edit_billing_protocol_path(protocol), remote: true, method: :get, class: 'btn btn-warning mr-1 edit-protocol', title: t('protocols.tooltips.edit_billing'), data: { toggle: 'tooltip' } do
+      icon('far', 'edit mr-2') + t('protocols.edit_billing')
+    end
+  end
+
   def push_to_oncore_button(protocol)
     # Do not display outside the dashboard, on Projects, if OnCore isn't in use, or if the user does not have OnCore access
     if in_dashboard? && protocol.is_a?(Study) &&

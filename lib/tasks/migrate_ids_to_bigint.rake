@@ -20,56 +20,46 @@
 
 desc "convert ID column to bigint"
 task :migrate_ids_to_bigint => :environment do
-  db_models, db_habtms = map_models_to_tablenames
-  non_ar_tables = (ActiveRecord::Base.connection.tables - db_models.keys - db_habtms)
+  db_models = map_models_to_tablenames
+  non_ar_tables = (ApplicationRecord.connection.tables - db_models.keys)
   references = Hash.new{ |h, k| h[k] = [] }
   foreign_keys = Hash.new{ |h, k| h[k] = [] }
-  ActiveRecord::Base.transaction do
+  ApplicationRecord.transaction do
 
     db_models.each do |table_name, model|
-      fks = ActiveRecord::Base.connection.foreign_keys(table_name)
+      fks = ApplicationRecord.connection.foreign_keys(table_name)
       foreign_keys[table_name] = fks if fks.present?
       references[table_name] = get_references(model) unless get_references(model).empty?
     end
 
     foreign_keys.each do |table_name, fks|
       fks.each do |foreign_key|
-        ActiveRecord::Base.connection.remove_foreign_key table_name, name: foreign_key.name
+        ApplicationRecord.connection.remove_foreign_key table_name, name: foreign_key.name
       end
     end
 
-    db_models.each do |table_name, model|
+    db_models.select{ |table_name, model| model.primary_key.present? }.each do |table_name, model|
       if column_is_integer? model, model.primary_key
         puts "Updating #{table_name}.#{model.primary_key}"
-        ActiveRecord::Base.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true
+        ApplicationRecord.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true
       end
     end
 
     references.each do |table_name, references|
       references.each do |column_name|
         puts "Updating #{table_name}.#{column_name}"
-        ActiveRecord::Base.connection.change_column table_name, column_name, :bigint
+        ApplicationRecord.connection.change_column table_name, column_name, :bigint
       end
     end
 
     foreign_keys.each do |table_name, fks|
       fks.each do |foreign_key|
-        ActiveRecord::Base.connection.add_foreign_key table_name, foreign_key.to_table, column: foreign_key.column, primary_key: foreign_key.primary_key
-      end
-    end
-
-    db_habtms.each do |table_name|
-      columns = ActiveRecord::Base.connection.columns(table_name)
-      columns.each do |column|
-        if column.type == :integer
-          puts "Updating #{table_name}.#{column.name}"
-          ActiveRecord::Base.connection.change_column table_name, column.name, :bigint
-        end
+        ApplicationRecord.connection.add_foreign_key table_name, foreign_key.to_table, column: foreign_key.column, primary_key: foreign_key.primary_key
       end
     end
 
     non_ar_tables.each do |table_name|
-      sql_result = ActiveRecord::Base.connection.exec_query("SHOW COLUMNS FROM #{table_name}")
+      sql_result = ApplicationRecord.connection.exec_query("SHOW COLUMNS FROM #{table_name}")
       key_index = sql_result.columns.find_index("Key")
       type_index = sql_result.columns.find_index("Type")
       name_index = sql_result.columns.find_index("Field")
@@ -77,7 +67,7 @@ task :migrate_ids_to_bigint => :environment do
       reference_columns.each do |column|
         if column[type_index] == "int(11)"
           puts "Updating #{table_name}.#{column[name_index]}"
-          ActiveRecord::Base.connection.change_column table_name, column[name_index], :bigint
+          ApplicationRecord.connection.change_column table_name, column[name_index], :bigint
         end
       end
     end
@@ -85,12 +75,13 @@ task :migrate_ids_to_bigint => :environment do
 end
 
 def map_models_to_tablenames
-  tables = ActiveRecord::Base.connection.tables
-  models = ActiveRecord::Base.descendants
-  db_habtms = models.map{ |model| model.reflect_on_all_associations(:has_and_belongs_to_many) }.compact.flatten.map{ |reflection| reflection.join_table }.uniq
-  db_models = models.group_by(&:table_name).slice(*tables).except(*db_habtms)
+  SparcRails::Application.eager_load! unless SparcRails::Application.config.cache_classes
+
+  tables = ApplicationRecord.connection.tables
+  models = ApplicationRecord.descendants
+  db_models = models.group_by(&:table_name).slice(*tables)
   db_models.each{ |table_name, models| db_models[table_name] = models.first }
-  return db_models, db_habtms
+  return db_models
 end
 
 def get_references model
@@ -101,5 +92,5 @@ def get_references model
 end
 
 def column_is_integer? model, name
-  model.columns_hash[name].type == :integer
+  model.columns_hash[name].sql_type == 'integer(11)'
 end

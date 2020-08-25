@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class DocumentGrouping < ApplicationRecord
-  audited
+class DocumentSubServiceRequest < ApplicationRecord
+  self.table_name = 'documents_sub_service_requests'
 
-  belongs_to :service_request
-  has_many :documents, :dependent => :destroy
+  belongs_to :document
+  belongs_to :sub_service_request
 end

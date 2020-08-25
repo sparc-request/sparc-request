@@ -39,11 +39,15 @@ task :migrate_ids_to_bigint => :environment do
     end
 
     db_models.each do |table_name, model|
-      ActiveRecord::Base.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true if column_is_integer? model, model.primary_key
+      if column_is_integer? model, model.primary_key
+        puts "Updating #{table_name}.#{model.primary_key}"
+        ActiveRecord::Base.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true
+      end
     end
 
     references.each do |table_name, references|
       references.each do |column_name|
+        puts "Updating #{table_name}.#{column_name}"
         ActiveRecord::Base.connection.change_column table_name, column_name, :bigint
       end
     end
@@ -57,7 +61,10 @@ task :migrate_ids_to_bigint => :environment do
     db_habtms.each do |table_name|
       columns = ActiveRecord::Base.connection.columns(table_name)
       columns.each do |column|
-        ActiveRecord::Base.connection.change_column table_name, column.name, :bigint if column.type == :integer
+        if column.type == :integer
+          puts "Updating #{table_name}.#{column.name}"
+          ActiveRecord::Base.connection.change_column table_name, column.name, :bigint
+        end
       end
     end
 
@@ -68,15 +75,16 @@ task :migrate_ids_to_bigint => :environment do
       name_index = sql_result.columns.find_index("Field")
       reference_columns = sql_result.rows.select{ |row| row[key_index].present? }
       reference_columns.each do |column|
-        ActiveRecord::Base.connection.change_column table_name, column[name_index], :bigint if column[type_index] == "int(11)"
+        if column[type_index] == "int(11)"
+          puts "Updating #{table_name}.#{column[name_index]}"
+          ActiveRecord::Base.connection.change_column table_name, column[name_index], :bigint
+        end
       end
     end
   end
 end
 
 def map_models_to_tablenames
-  Rails.application.eager_load!
-
   tables = ActiveRecord::Base.connection.tables
   models = ActiveRecord::Base.descendants
   db_habtms = models.map{ |model| model.reflect_on_all_associations(:has_and_belongs_to_many) }.compact.flatten.map{ |reflection| reflection.join_table }.uniq

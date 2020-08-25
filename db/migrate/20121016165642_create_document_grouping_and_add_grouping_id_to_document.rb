@@ -20,6 +20,8 @@
 
 class CreateDocumentGroupingAndAddGroupingIdToDocument < ActiveRecord::Migration[4.2]
   class DocumentGroupings < ActiveRecord::Base
+    belongs_to :service_request
+    has_many :documents, dependent: :destroy
   end
 
   def up

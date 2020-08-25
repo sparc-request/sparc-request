@@ -2,8 +2,6 @@
 
 class CreateDoorkeeperTables < ActiveRecord::Migration[5.2]
   def change
-    Identity.reset_column_information
-
     create_table :oauth_applications do |t|
       t.string  :name,        null: false
       t.string  :description

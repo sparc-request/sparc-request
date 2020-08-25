@@ -39,6 +39,8 @@ task :migrate_ids_to_bigint => :environment do
     end
 
     db_models.select{ |table_name, model| model.primary_key.present? }.each do |table_name, model|
+      puts table_name
+      puts column_is_integer? model, model.primary_key
       if column_is_integer? model, model.primary_key
         puts "Updating #{table_name}.#{model.primary_key}"
         ApplicationRecord.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true
@@ -92,5 +94,5 @@ def get_references model
 end
 
 def column_is_integer? model, name
-  model.columns_hash[name].sql_type == 'integer(11)'
+  model.columns_hash[name].sql_type == 'int(11)'
 end

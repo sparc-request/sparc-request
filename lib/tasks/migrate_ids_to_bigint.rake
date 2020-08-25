@@ -21,11 +21,16 @@
 desc "convert ID column to bigint"
 task :migrate_ids_to_bigint => :environment do
   db_models = map_models_to_tablenames
+
   non_ar_tables = (ApplicationRecord.connection.tables - db_models.keys)
   references = Hash.new{ |h, k| h[k] = [] }
   foreign_keys = Hash.new{ |h, k| h[k] = [] }
-  ApplicationRecord.transaction do
 
+  # Reset schemas before making modifications to ensure
+  # proper columns are used
+  db_models.values.each(&:reset_column_information)
+
+  ApplicationRecord.transaction do
     db_models.each do |table_name, model|
       fks = ApplicationRecord.connection.foreign_keys(table_name)
       foreign_keys[table_name] = fks if fks.present?
@@ -51,6 +56,9 @@ task :migrate_ids_to_bigint => :environment do
         ApplicationRecord.connection.change_column table_name, column_name, :bigint
       end
     end
+
+    # Reset schemas before adding foreign keys back
+    db_models.values.each(&:reset_column_information)
 
     foreign_keys.each do |table_name, fks|
       fks.each do |foreign_key|
@@ -79,7 +87,6 @@ def map_models_to_tablenames
 
   tables = ApplicationRecord.connection.tables
   models = ApplicationRecord.descendants
-  models.each(&:reset_column_information)
   db_models = models.group_by(&:table_name).slice(*tables)
   db_models.each{ |table_name, models| db_models[table_name] = models.first }
   return db_models

@@ -39,8 +39,6 @@ task :migrate_ids_to_bigint => :environment do
     end
 
     db_models.select{ |table_name, model| model.primary_key.present? }.each do |table_name, model|
-      puts table_name
-      puts column_is_integer? model, model.primary_key
       if column_is_integer? model, model.primary_key
         puts "Updating #{table_name}.#{model.primary_key}"
         ApplicationRecord.connection.change_column table_name, model.primary_key, :bigint, auto_increment: true
@@ -81,6 +79,7 @@ def map_models_to_tablenames
 
   tables = ApplicationRecord.connection.tables
   models = ApplicationRecord.descendants
+  models.each(&:reset_column_information)
   db_models = models.group_by(&:table_name).slice(*tables)
   db_models.each{ |table_name, models| db_models[table_name] = models.first }
   return db_models

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -66,6 +66,7 @@ en:
         user: "User"
         date: "Date"
         message: "Message"
+        shared_text: "This message chain is being shared with administrators"
       new:
         header: "New Message to "
 
@@ -85,6 +86,7 @@ en:
         service_providers: "Service Providers"
         inbox: "Inbox"
         sent: "Sent"
+        shared: "Shared"
         mark_as_unread: "Mark as Unread"
         mark_as_read: "Mark as Read"
         from: "From"
@@ -99,6 +101,21 @@ en:
       tooltips:
         table_button: "Send correspondence related to this request to Service Providers or Authorized Users"
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
+        shared: "Share this message with super users of your group and overlords."
+
+    ###################
+    # ONCORE ENDPOINT #
+    ###################
+    oncore:
+      log:
+        header: "OnCore CRPC Push Log"
+        protocol: "Protocol"
+        PIs: "PI(s)"
+        calendar_version: "Calendar Version"
+        created_at: "Last Push Date"
+        status: "Status"
+        history: "Push History"
+        history_title: "Protocol #%{protocol_id} CRPC Push History"
 
     ######################
     #  PROTOCOL FILTERS  #
@@ -128,6 +145,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      epic_user_error: "The PI of this study (%{user_name}) does not have Epic rights; please contact Epic Research team for training and access."
       new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'
@@ -139,12 +157,14 @@ en:
       table:
         header: "Protocols"
         short_title: "Short Title"
+        request_sent: "Request to access protocol %{protocol_id} sent!"
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
+          request_access: "Request access to this protocol"
 
       service_requests:
         header: "Requests - %{status} - %{date}"
@@ -170,7 +190,7 @@ en:
           end_date: "Project/Study estimated end date (used by service providers to prioritize)"
           recruitment_start_date: "When your Project/Study is estimated to start recruiting participants"
           recruitment_end_date: "When your Project/Study is estimated to stop recruiting participants"
-    
+
     ####################
     #  PROTOCOL MERGE  #
     ####################
@@ -190,6 +210,7 @@ en:
         merged_does_not_exist: "Protocol to be merged ID does not exist"
         one_calendar: "Only one protocol may have a calendar to be merged"
         cannot_merge: "Protocol to be merged has already been pushed to SPARCFulfillment and can't be merged"
+        split_notify_error: "One or more of the requests are under the same split/notify and can't be merged"
       success: "Protocol merge successful"
 
     #####################
@@ -226,7 +247,7 @@ en:
         status:
           header: "Status"
           menu_header: "Change Request Status"
-        owner: 
+        owner:
           header: "Owner"
           menu_header: "Change Request Owner"
           not_available: "Not available in %{status} status"
@@ -242,6 +263,7 @@ en:
           in_fulfillment: "In Fulfillment"
           pending: "Pending"
           send_to_fulfillment: "Push to Fulfillment"
+          synch_to_fulfillment: "Sync to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog"
         surveys:
           header: "Surveys"
@@ -271,6 +293,7 @@ en:
         created: "Non-clinical Service Added!"
         updated: "Non-clinical Service Updated!"
         destroyed: "Non-clinical Service Removed!"
+        not_destroyed: "This service has fulfillments in SPARCFulfillment and can not be deleted"
         fulfillments:
           header: "Fulfillments - %{service}"
           new: "Add Fulfillment"

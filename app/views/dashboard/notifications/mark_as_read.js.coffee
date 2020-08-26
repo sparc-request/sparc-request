@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,4 +23,5 @@ $('#notification_count').text(<%= @unread_notification_count_for_ssr %>)
 <% end %>
 
 $('#messagesBadge').text(<%= @unread_notification_count %>)
-$('.notifications-table').bootstrapTable 'refresh'
+$('.mark-read-unread').addClass('d-none')
+$('.notifications-table').bootstrapTable('refresh')

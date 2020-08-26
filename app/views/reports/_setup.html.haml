@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
       = hidden_field_tag 'report[type]', report.class.name
       .modal-header
         %h3.modal-title
-          = report.title
+          = t('reporting.report_header', report_name: report.title)
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body

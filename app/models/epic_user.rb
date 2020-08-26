@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,6 +20,10 @@
 
 class EpicUser < ActiveResource::Base
   self.site = Setting.get_value('epic_user_endpoint')
+
+  ##SSL options can be added here:
+  # self.ssl_options = {verify_mode: OpenSSL::SSL::VERIFY_NONE}
+
   #https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=anc63
   #{"UserID"=>"anc63", "IsExist"=>false}
   #{"UserID"=>"wed3", "UserName"=>"Wei Ding", "IsExist"=>true, "IsActive"=>true, "IsBlocked"=>false, "IsPasswordChangeRequired"=>false}
@@ -32,12 +36,15 @@ class EpicUser < ActiveResource::Base
   def self.for_identity(identity)
     begin
       get(:viewuser, userid: identity.ldap_uid.split('@').first)
-    rescue
+    rescue => e
       epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
 
       if epic_error_webhook.present?
         notifier = Slack::Notifier.new(epic_error_webhook)
         message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
+        message += "\n```#{e.class}\n"
+        message += "#{e.message}\n"
+        message += "#{e.backtrace[0..5]}```"
         notifier.ping(message)
       end
 

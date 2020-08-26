@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -252,10 +252,6 @@ class LineItem < ApplicationRecord
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
     end
-  end
-
-  def should_push_to_epic?
-    return self.service.send_to_epic
   end
 
   ### audit reporting methods ###

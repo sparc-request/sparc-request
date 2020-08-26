@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -45,6 +45,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :subsidies
   has_many :responses, as: :respondable, dependent: :destroy
   has_and_belongs_to_many :documents
+  has_many :fulfillment_synchronizations, dependent: :destroy
 
   has_many :line_items_visits, through: :line_items
   has_many :services, through: :line_items
@@ -123,10 +124,6 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
-  end
-
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"
@@ -158,7 +155,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def display_id
-    return "#{protocol.try(:id)}-#{ssr_id || 'DRAFT'}"
+    return "#{protocol_id}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?
@@ -414,7 +411,7 @@ class SubServiceRequest < ApplicationRecord
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-    primary_pi = protocol.primary_principal_investigator
+    primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
@@ -535,7 +532,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

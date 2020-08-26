@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
     @clinical_provider = ClinicalProvider.new(clinical_provider_params)
     @identity = Identity.find(@clinical_provider.identity_id)
     @organization = @clinical_provider.organization
+    set_registrar_enabled(@organization)
     @fulfillment_rights = fulfillment_rights(@organization.id)
 
     if @clinical_provider.save
@@ -41,6 +42,7 @@ class CatalogManager::ClinicalProvidersController < CatalogManager::AppControlle
     @clinical_provider = ClinicalProvider.find_by(clinical_provider_params)
     @identity = Identity.find(@clinical_provider.identity_id)
     @organization = @clinical_provider.organization
+    set_registrar_enabled(@organization)
     @fulfillment_rights = fulfillment_rights(@organization.id)
 
     if @clinical_provider.destroy

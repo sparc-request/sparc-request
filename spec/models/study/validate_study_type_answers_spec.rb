@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ RSpec.describe Protocol, type: :model do
   build_study_type_answers()
 
   stub_config("use_epic", true)
+  stub_config("use_confidentiality_questions", true)
   
   describe 'should validate study_type_answers for study' do
     it 'should not add errors if the first answer is true' do

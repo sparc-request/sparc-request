@@ -1,4 +1,4 @@
--# Copyright © 2011-2019 MUSC Foundation for Research Development
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,26 +18,61 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%footer.d-flex.w-100#siteFooter
-  .container-fluid.d-flex.flex-column.align-items-center.justify-content-center.p-3
-    .d-flex.mb-3
-      %nav.flex-column.nav.px-5
-        = link_to t('layout.footer.links.about'), Setting.get_value("about_sparc_url"), target: :_blank, class: 'mb-1'
-        = link_to t('layout.footer.links.sctr.text'), t('layout.footer.links.sctr.url'), target: :_blank, class: 'mb-0'
-      %nav.flex-column.nav.px-5
-        = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'mb-1'
-        = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'mb-0'
-      %nav.flex-column.nav.px-5
-        - if Setting.get_value('use_faq_link')
-          = link_to t('layout.footer.links.faqs.text'), Setting.get_value("faq_url"), target: :_blank, class: 'mb-1'
-        - else
-          = link_to t('layout.footer.links.faqs.text'), faqs_pages_path, remote: true, class: 'mb-1'
-        - if Setting.get_value("use_feedback_link")
-          = link_to t('layout.footer.links.feedback'), Setting.get_value("feedback_link"), target: :_blank
-        - else
-          = link_to t('layout.footer.links.feedback'), new_feedback_path, remote: true
-    %span.d-flex.align-items-center.text-muted.mb-3
-      = t('layout.footer.version', version: ENV['sparc_version'])
-      = link_to icon('fab', 'github fa-lg'), 'https://github.com/sparc-request/sparc-request', remote: true, class: 'text-muted ml-1'
-    %span.text-muted.text-center
-      = raw t('layout.footer.copyright')
+%footer.container-fluid.text-white#siteFooter
+  .w-100
+    .row
+      .col-4.col-xs-12.d-flex.flex-column.justify-content-between
+        %div
+          %p.mb-1
+            = t('layout.footer.copyright').html_safe
+          %p.mb-0
+            = t('layout.footer.version', version: ENV['sparc_version'])
+        %p.mb-0
+          = link_to 'https://github.com/sparc-request/sparc-request', target: :_blank, class: 'text-white' do
+            = icon('fab', 'github fa-lg')
+            = t('layout.footer.github')
+      .col-2.offset-2
+        %h5.mb-2
+          = t('layout.footer.about.header')
+        %ul.list-unstyled.mb-0
+          %li.mb-1
+            = link_to t('layout.footer.about.about_sparc'), Setting.get_value("about_sparc_url"), target: :_blank, class: 'text-white'
+          %li.mb-0
+            = link_to t('layout.footer.about.about_sctr.text'), t('layout.footer.about.about_sctr.url'), target: :_blank, class: 'text-white'
+      .col-2
+        %h5.mb-2
+          = t('layout.footer.links.header')
+        %ul.list-unstyled.mb-0
+          %li.mb-1
+            = link_to t('layout.footer.links.contact'), new_contact_form_path, remote: true, class: 'text-white'
+          %li.mb-1
+            = mail_to Setting.get_value("listserv_mail_to"), t('layout.footer.links.listserv.text'), subject: t('layout.footer.links.listserv.subject'), class: 'text-white'
+          %li.mb-1
+            - if Setting.get_value('use_faq_link')
+              = link_to t('layout.footer.links.faqs.text'), Setting.get_value("faq_url"), target: :_blank, class: 'text-white'
+            - else
+              = link_to t('layout.footer.links.faqs.text'), faqs_pages_path, remote: true, class: 'text-white'
+          %li.mb-0
+            - if Setting.get_value("use_feedback_link")
+              = link_to t('layout.footer.links.feedback'), Setting.get_value("feedback_link"), target: :_blank, class: 'text-white'
+            - else
+              = link_to t('layout.footer.links.feedback'), new_feedback_path, remote: true, class: 'text-white'
+      .col-2
+        %h5.mb-2
+          = t('layout.footer.browsers.header')
+        %ul.list-unstyled.mb-0
+          %li.mb-1
+            = image_tag "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/512px-Google_Chrome_icon_%28September_2014%29.svg.png", alt: "Chrome icon", width: 18
+            = t('layout.footer.browsers.chrome')
+          %li.mb-1
+            = image_tag "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Firefox_Logo%2C_2017.svg/512px-Firefox_Logo%2C_2017.svg.png", alt: "Firefox icon", width: 18
+            = t('layout.footer.browsers.firefox')
+          %li.mb-1
+            = image_tag "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Safari_browser_logo.svg/128px-Safari_browser_logo.svg.png", alt: "Safari icon", width: 18
+            = t('layout.footer.browsers.safari')
+          %li.mb-1
+            = image_tag "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Microsoft_Edge_logo_%282015%E2%80%932019%29.svg/512px-Microsoft_Edge_logo_%282015%E2%80%932019%29.svg.png", alt: "Edge icon", width: 18
+            = t('layout.footer.browsers.edge')
+          %li
+            = image_tag "https://upload.wikimedia.org/wikipedia/commons/1/1f/Internet_Explorer_10%2B11_computer_icon.png", alt: "IE icon", width: 18
+            = t('layout.footer.browsers.ie11')

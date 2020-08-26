@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -62,6 +62,24 @@ class Form < Survey
     orgs      = Organization.authorized_for_catalog_manager(identity.id)
     services  = Service.where(organization: orgs)
 
+    where(surveyable: orgs).
+    or(where(surveyable: services)).
+    or(where(surveyable: identity))
+  }
+
+  ## for super users, service providers, and site_admins only
+  ## https://www.pivotaltracker.com/n/projects/1918597/stories/167076358
+  scope :for_admin_users, -> (identity) {
+    orgs =
+      if identity.is_site_admin?
+        Organization.all
+      else
+        Organization.authorized_for_super_user(identity.id).or(
+          Organization.authorized_for_service_provider(identity.id))
+      end
+      
+    services = Service.where(organization: orgs)
+    
     where(surveyable: orgs).
     or(where(surveyable: services)).
     or(where(surveyable: identity))

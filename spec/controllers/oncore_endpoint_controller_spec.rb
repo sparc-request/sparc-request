@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,9 +30,10 @@ RSpec.describe OncoreEndpointController do
   before :each do
     @study    = create(:study_federally_funded, research_master_id: 1234, primary_pi: jug2)
     sr        = create(:service_request, protocol: @study)
+    default_service = create(:service_with_process_ssrs_organization, :with_pricing_map, id: 41714, name: "OnCore Procedure Push", cpt_code: "00000")
     @wsdl     = "http://app#{oncore_endpoint_wsdl_path}"
     @client   = Savon.client(wsdl: @wsdl)
-    @crpc_message = crpc_message(@study) # CRPC message with 2 arms, 3 VISITS (not SPARC Visits), and 2 Procedures
+    @crpc_message = crpc_message(@study) # CRPC message with 2 arms, 3 VISITS per arm (not SPARC Visits), and 2 Procedures
     @rpe_message = rpe_message(@study) # RPE message (CRPC message without calendar information)
   end
   
@@ -40,13 +41,18 @@ RSpec.describe OncoreEndpointController do
     it 'should import the service calendar structure' do
       @client.call(:retrieve_protocol_def_response, message: @crpc_message)
       expect(@study.arms.count).to eq(2)
-      expect(@study.line_items.count).to eq(2)
-      expect(@study.line_items_visits.count).to eq(4)
-      expect(@study.visit_groups.count).to eq(6)
-      expect(@study.visits.count).to eq(12)
+      # TODO: Once chargemaster is fixed, it should import procedures/services.
+      # It should not bring in any procedures at the moment, even if they are present
+      # expect(@study.line_items.count).to eq(2)
+      # expect(@study.line_items_visits.count).to eq(4)
+      # expect(@study.visits.count).to eq(12)
+      expect(@study.line_items.count).to eq(1) # Instead, use the temporary default OnCore Push service.
+      expect(@study.line_items_visits.count).to eq(2)
+      expect(@study.visit_groups.count).to eq(6) # Visit groups stays the same
+      expect(@study.visits.count).to eq(6)
     end
 
-    it 'should sets the Visit Group day, window before, and window after' do
+    it 'should set the Visit Group day, window before, and window after' do
       @client.call(:retrieve_protocol_def_response, message: @crpc_message)
       visit_group1 = @study.arms.first.visit_groups[0]
       visit_group3 = @study.arms.first.visit_groups[2]
@@ -60,10 +66,33 @@ RSpec.describe OncoreEndpointController do
 
     it 'should render a SOAP fault if there is an error' do
       begin
-        @client.call(:retrieve_protocol_def_response, message: crpc_message(@study, "nonexistant_rmid"))
+        @client.call(:retrieve_protocol_def_response, message: crpc_message(@study, "nonexistant_id"))
       rescue Savon::Error => error
         expect(error.instance_of?(Savon::SOAPFault)).to eq(true)
       end
+    end
+  end
+
+  describe '#retrieve_protocol_def_response CRPC message without procedures' do
+    it 'should import the service calendar structure' do
+      @client.call(:retrieve_protocol_def_response, message: crpc_message_without_procedures(@study))
+      expect(@study.arms.count).to eq(2)
+      expect(@study.line_items.count).to eq(1)
+      expect(@study.line_items_visits.count).to eq(2)
+      expect(@study.visit_groups.count).to eq(6)
+      expect(@study.visits.count).to eq(6)
+    end
+
+    it 'should set the Visit Group day, window before, and window after' do
+      @client.call(:retrieve_protocol_def_response, message: crpc_message_without_procedures(@study))
+      visit_group1 = @study.arms.first.visit_groups[0]
+      visit_group3 = @study.arms.first.visit_groups[2]
+      expect(visit_group1.day).to eq(1)
+      expect(visit_group1.window_before).to eq(0)
+      expect(visit_group1.window_after).to eq(0)
+      expect(visit_group3.day).to eq(10)
+      expect(visit_group3.window_before).to eq(3)
+      expect(visit_group3.window_after).to eq(3)
     end
   end
 

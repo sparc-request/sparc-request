@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -29,6 +29,7 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
       organization         = build_stubbed(:organization)
       @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization, protocol: protocol)
       @logged_in_user      = build_stubbed(:identity)
+      ActionView::Base.send(:define_method, :current_user) { @logged_in_user }
     end
 
     it "should render dashboard/notifications/_dropdown.html.haml" do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,6 +22,25 @@ require 'savon'
 require 'securerandom'
 require 'builder'
 
+# Override the Savon WSA headers to work for Epic
+module Savon
+  class Header
+    def build_wsa_header
+       return '' unless @globals[:use_wsa_headers]
+       convert_to_xml({
+         'wsa:Action' => "#{@globals[:namespace]}:#{@locals[:soap_action]}",
+         'wsa:To' => @globals[:endpoint],
+         'wsa:MessageID' => "urn:uuid:#{SecureRandom.uuid}",
+         attributes!: {
+          'wsa:MessageID' => {
+            "xmlns:wsa" => "http://schemas.xmlsoap.org/ws/2004/08/addressing"
+          }
+         }
+       })
+    end
+  end
+end
+
 # Use this class to send protocols (studies/projects) along with their
 # associated billing calendars to Epic via an InterConnect server.
 #
@@ -42,17 +61,15 @@ class EpicInterface
     @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
 
-    # TODO: I'm not really convinced that Savon is buying us very much
-    # other than some added complexity, but it's working, so no point in
-    # pulling it out.
-    #
     # We must set namespace_identifier to nil here, in order to prevent
     # Savon from prepending a wsdl: prefix to the
     # RetrieveProtocolDefResponse tag and to force it to set an xmlns
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
+        log: true,
         logger: @logger,
+        log_level: :debug,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
@@ -60,10 +77,7 @@ class EpicInterface
         namespace: @namespace,
         endpoint: @config['epic_endpoint'],
         wsdl: @config['epic_wsdl'],
-        headers: {
-        },
-        soap_header: {
-        },
+        use_wsa_headers: true,
         namespaces: {
           'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
         })
@@ -198,7 +212,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -209,10 +223,9 @@ class EpicInterface
   end
 
   def emit_irb_number(xml, study)
-    irb_number = study.human_subjects_info.try(:pro_number)
-    irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
+    irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
-    if !irb_number.blank? then
+    if !irb_number.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')

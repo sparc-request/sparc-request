@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,7 +30,7 @@ RSpec.describe Dashboard::NotificationsController do
     context 'inbox' do
       before :each do
         allow(Notification).to receive(:in_inbox_of).
-          with(@logged_in_user.id, anything).
+          with(@logged_in_user, anything).
           and_return(Notification.none)
       end
 
@@ -44,7 +44,7 @@ RSpec.describe Dashboard::NotificationsController do
     context 'sent' do
       before :each do
         allow(Notification).to receive(:in_sent_of).
-          with(@logged_in_user.id, anything).
+          with(@logged_in_user, anything).
           and_return(Notification.none)
       end
 

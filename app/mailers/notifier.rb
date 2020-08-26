@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@ class Notifier < ActionMailer::Base
     mail(to: email, cc: cc, from: @identity.email, subject: t('devise.mailer.new_account.subject'))
   end
 
-  def notify_user(project_role, service_request, approval, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
+  def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @deleted_ssrs = deleted_ssrs
@@ -191,7 +191,7 @@ class Notifier < ActionMailer::Base
 
   def notify_for_epic_user_approval protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     subject = "#{@protocol.id} - Epic Rights Approval"
 
@@ -200,7 +200,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_final_review protocol
     @protocol = protocol
-    @primary_pi = @protocol.primary_principal_investigator
+    @primary_pi = @protocol.primary_pi
 
     email_to = @primary_pi.email
     subject = "#{@protocol.id} - Epic Rights User Approval"
@@ -210,7 +210,7 @@ class Notifier < ActionMailer::Base
 
   def notify_primary_pi_for_epic_user_removal(protocol, project_roles)
     @protocol       = protocol
-    @primary_pi     = @protocol.primary_principal_investigator
+    @primary_pi     = @protocol.primary_pi
     @project_roles  = project_roles
 
     subject = "#{@protocol.id} - Epic User Removal"

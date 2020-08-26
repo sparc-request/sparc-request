@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -27,6 +27,7 @@ RSpec.describe Notifier do
   fake_login_for_each_test
 
   let(:identity) { jug2 }
+  stub_config("use_epic", true)
 
   ############# WITHOUT NOTES #########################
   context 'without notes' do
@@ -40,7 +41,7 @@ RSpec.describe Notifier do
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
           @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, [], false)
-          
+
           @service_request.reload
         end
 
@@ -74,7 +75,7 @@ RSpec.describe Notifier do
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
           @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, [], false)
-          
+
           @service_request.reload
         end
 
@@ -93,9 +94,8 @@ RSpec.describe Notifier do
           @project_role         = create(:project_role, identity: identity, project_rights: 'view')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
-          @approval             = create(:approval, service_request: @service_request)
-          @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
-          
+          @mail                 = Notifier.notify_user(@project_role, @service_request, identity)
+
           @service_request.reload
         end
 
@@ -108,7 +108,7 @@ RSpec.describe Notifier do
           assert_notification_email_tables_for_user
         end
 
-        it 'should not have a submission reminder' do
+        it 'should have a submission reminder' do
           does_have_a_submission_reminder(@mail.body.parts.first.body)
         end
       end
@@ -121,9 +121,8 @@ RSpec.describe Notifier do
           @project_role         = create(:project_role, identity: identity, project_rights: 'view')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
-          @approval             = create(:approval, service_request: @service_request)
-          @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
-          
+          @mail                 = Notifier.notify_user(@project_role, @service_request, identity)
+
           @service_request.reload
         end
 
@@ -144,7 +143,7 @@ RSpec.describe Notifier do
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
-          
+
           @service_request.reload
         end
 
@@ -172,7 +171,7 @@ RSpec.describe Notifier do
           @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
-          
+
           @service_request.reload
         end
 
@@ -195,7 +194,7 @@ RSpec.describe Notifier do
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, identity, @sub_service_request, [], false)
-        
+
         @service_request.reload
       end
 
@@ -225,10 +224,9 @@ RSpec.describe Notifier do
         @project_role         = create(:project_role, identity: identity, project_rights: 'view')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
         @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
-        @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
-        @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity)
-      
+        @mail                 = Notifier.notify_user(@project_role, @service_request, identity)
+
         @service_request.reload
       end
 
@@ -241,7 +239,7 @@ RSpec.describe Notifier do
         assert_notification_email_tables_for_user
       end
 
-      it 'should not have a submission reminder' do
+      it 'should have a submission reminder' do
         does_have_a_submission_reminder(@mail.body.parts.first.body)
       end
     end
@@ -257,7 +255,7 @@ RSpec.describe Notifier do
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @mail                 = Notifier.notify_admin(@submission_email, identity, @sub_service_request)
-        
+
         @service_request.reload
       end
 

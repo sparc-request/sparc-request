@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -28,6 +28,21 @@ class SystemSurvey < Survey
     where(associated_surveys: {
       associable: Organization.authorized_for_super_user(identity.id)
     })
+  }
+
+  # forsite admins, super users and/or service providers
+  scope :for, -> (identity) {
+    if identity.is_site_admin?
+      SystemSurvey.all
+    else
+      orgs = Organization.authorized_for_super_user(identity.id).or(
+        Organization.authorized_for_service_provider(identity.id))
+
+      joins(:associated_surveys).
+      where(associated_surveys: {
+        associable: orgs
+      }).distinct
+    end
   }
 
   def system_satisfaction?

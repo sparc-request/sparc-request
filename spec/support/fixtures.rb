@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -85,7 +85,7 @@ def build_study_type_questions
   let!(:stq_research_active_version_3)         { StudyTypeQuestion.create("order"=>4, "question"=>"4. Is it appropriate to display the pink 'Research:Active indicator in the Patient Header for all study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_restrict_sending_version_3)        { StudyTypeQuestion.create("order"=>5, "question"=>"Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => study_type_question_group_version_3.id) }
   let!(:stq_certificate_of_conf_no_epic_version_3)     { StudyTypeQuestion.create("order"=>6, "question"=>"1. Does your Informed Consent provide information to the participant specifically stating their study participation will be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant.)", "friendly_id"=>"certificate_of_conf_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
-  let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
+  let!(:stq_higher_level_of_privacy_no_epic_version_3) { StudyTypeQuestion.create("order"=>7, "question"=>'2. Does your study require a higher level of privacy protection for the participants? (Your study needs "break the glass" functionality because it is collecting sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)', "friendly_id"=>"higher_level_of_privacy_no_epic", "study_type_question_group_id" => study_type_question_group_version_3.id) }
 
 end
 

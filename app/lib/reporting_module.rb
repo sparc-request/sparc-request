@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,16 +36,20 @@ class ReportingModule
   end
 
   def records
-    records ||= self.table.includes(self.includes)
+    @records  ||= self.table.includes(self.includes)
+                    .preload(self.preload)
                     .joins(self.joins(self.params))
                     .where(self.where(self.params))
                     .distinct(self.uniq)
                     .group(self.group)
                     .order(self.order)
-    records
+    @records
   end
 
   def includes
+  end
+
+  def preload
   end
 
   def joins(args={})
@@ -84,20 +88,20 @@ class ReportingModule
     return temp
   end
 
-private
+  private
 
   def report_params
     self.params.permit!.except("type").to_h.map{|k,v| [k.titleize, v]}
   end
 
   def create_report obj
-      create_report_header obj
+    create_report_header obj
 
-      obj.add_row extract_header_row
+    obj.add_row extract_header_row
 
-      self.records.each do |record|
-        obj.add_row extract_row(record)
-      end
+    self.records.each do |record|
+      obj.add_row extract_row(record)
+    end
   end
 
   def create_report_header obj

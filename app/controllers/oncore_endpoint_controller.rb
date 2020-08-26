@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -144,16 +144,15 @@ class OncoreEndpointController < ApplicationController
     :to     => :retrieve_protocol_def
   def retrieve_protocol_def
     begin
-      # find the protocol
-      protocol = find_protocol_by_rmid
+      find_valid_protocol
 
       # Don't try to build calendar information if it doesn't exist (RPE messages don't have calendar info)
-      if !is_rpe_message?
+      unless is_rpe_message?
         # Add arms to the protocol
-        get_arms_from_cells(protocol)
+        get_arms_from_cells
 
         # Build out calendar info (visit groups, line items, line item visits, visits, etc.) from VISIT elements for each arm
-        protocol.arms.each do |arm|
+        @protocol.arms.each do |arm|
           build_calendar_info(arm)
         end
       end
@@ -161,7 +160,7 @@ class OncoreEndpointController < ApplicationController
       # Print params and exception to testing log
       print_params_to_log(e)
       # Render a SOAP fault response for exceptions instead of the default HTML response from Rails
-      render_soap_error(e.message)
+      render_soap_error(e.message, 'soap:Server')
     else
       # Print params to testing log
       print_params_to_log
@@ -173,19 +172,21 @@ class OncoreEndpointController < ApplicationController
 
   private
 
-  def find_protocol_by_rmid
-    # TODO: Filter out any non-numerical characters from RMID
-    rmid = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol RMID as a string
-    if !rmid.nil? && protocol = Protocol.find_by(research_master_id: rmid)
-      return protocol
+  def find_valid_protocol
+    id = oncore_endpoint_params[:plannedStudy][:id][:extension] #protocol ID as a string with the format "STUDY#{id}"
+    id.try(:slice!, "STUDY")
+    if !id.nil? && @protocol = Protocol.find(id)
+      if @protocol.has_clinical_services?
+        raise "Error: SPARC Protocol #{id} has an existing calendar and cannot be overwritten."
+      end
     else
-      raise "Protocol with RMID #{rmid} not found in SPARC."
+      raise "Error: No existing SPARC Protocol with identifier #{id}."
     end
   end
 
   # Creates arms on the protocol and
   # assigns a hash with the structure { SPARC_arm_id => arm_code } since arm_code is used like an ID that isn't stored in SPARC
-  def get_arms_from_cells(protocol)
+  def get_arms_from_cells
     # component4 CELL elements contain arm and visit imformation including calendar and budget version.
     @arm_codes = {}
     oncore_endpoint_params[:plannedStudy][:component4].select{ |c4| c4[:timePointEventDefinition][:code][:code] == "CELL" }.each do |cell|
@@ -194,7 +195,7 @@ class OncoreEndpointController < ApplicationController
       # Remove bad characters from the arm name
       arm_name.gsub!(/[\[\]\*\/\\\?\:]/, '')
 
-      calendar_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[1] # can't do this for arm name because the name can have a :
+      @calendar_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[1] # can't do this for arm name because the name can have a :
 
       budget_version = cell[:timePointEventDefinition][:title].split(/[\s\:]/)[3]
 
@@ -204,7 +205,7 @@ class OncoreEndpointController < ApplicationController
         c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == arm_code
       }.count
 
-      if arm = protocol.arms.create(name: arm_name, subject_count: 1, visit_count: visit_count)
+      if arm = @protocol.arms.create(name: arm_name, subject_count: 1, visit_count: visit_count)
         @arm_codes[arm.id] = arm_code
       end
     end
@@ -213,34 +214,38 @@ class OncoreEndpointController < ApplicationController
   def build_calendar_info(arm)
     # component4 VISIT elements contain visit group information and procedures.
     # VISITS are like visit groups and PROCS are like line item visits, including service information.
-    protocol = arm.protocol
-    service_request = protocol.service_requests.first
+    service_request = @protocol.service_requests.first
 
     oncore_endpoint_params[:plannedStudy][:component4].select{ |c4| 
       c4[:timePointEventDefinition][:code][:code] == "VISIT" && c4[:timePointEventDefinition][:id][:extension].split('.').first == @arm_codes[arm.id]
     }.each_with_index do |oncore_visit, position|
 
-      if position == 0 # procedures are on all VISITs, but we only need to make line items and line items visits once per arm
-        oncore_visit[:timePointEventDefinition][:component1].select{ |c1| c1[:timePointEventDefinition][:code][:code] == "PROC" }.each do |procedure|
-          # get the service from the procedure
-          service_name = procedure[:timePointEventDefinition][:title]
-          service_code = procedure[:timePointEventDefinition][:component2][:procedure][:code][:code] # either eap_id or cpt_code
-          service = Service.where(name: service_name, is_available: true).merge(Service.where(cpt_code: service_code).or(Service.where(eap_id: service_code))).first
-
-          if service.nil?
-            raise "Unable to find service #{service_name} with code #{service_code}"
-          end
-
-          # For each procedure, make a line item on the protocol
-          service_request.create_line_items_for_service(service: service)
+      if position == 0 # procedures are on VISITs, but we only need to make line items and line items visits once per arm
+        # Create line items for a default placeholder service. The ID for this service is XXXXXX
+        service = Service.find(41714)
+        if service.nil?
+          raise "Unable to find the default OnCore Push service."
         end
+        service_request.create_line_items_for_service(service: service)
 
-        # Make a line item visit for all clinical line items on the protocol.
-        service_request.per_patient_per_visit_line_items.each do |li|
-          unless arm.line_items_visits.any?{ |liv| liv.line_item_id == li.id }
-            arm.line_item_visits.create(line_item_id: li.id, subject_count: 1) # assumed subject_count: 1
-          end
-        end
+        # -------------------------------------------------------------------------------------
+        # TODO: get the service from the procedure.
+        # Code for this is temporarily removed until the Chargemaster situation can be figured out. 
+        # This might need to be a conditional case where if there are no procedures, use the default service, otherwise, get the services.
+        # oncore_visit[:timePointEventDefinition][:component1].select{ |c1| c1[:timePointEventDefinition][:code][:code] == "PROC" }.each do |procedure|
+        #   # Get the service from the procedure.
+        #   service_name = procedure[:timePointEventDefinition][:title]
+        #   service_code = procedure[:timePointEventDefinition][:component2][:procedure][:code][:code] # either eap_id or cpt_code
+        #   service = Service.where(name: service_name, is_available: true).merge(Service.where(cpt_code: service_code).or(Service.where(eap_id: service_code))).first
+
+        #   if service.nil?
+        #     raise "Unable to find service #{service_name} with code #{service_code}"
+        #   end
+
+        #   # For each procedure, make a line item on the protocol
+        #   service_request.create_line_items_for_service(service: service)
+        # end
+        # -------------------------------------------------------------------------------------
       end
 
       # create a visit group for each VISIT
@@ -263,7 +268,7 @@ class OncoreEndpointController < ApplicationController
   # The only difference between RPE messages and CRPC messages is that CRPC messages contain calendar information (component4's)
   # and RPE messages do not have any calendar information (no component4 elements).
   def is_rpe_message?
-    oncore_endpoint_params[:plannedStudy][:component4].nil?
+    @is_rpe = oncore_endpoint_params[:plannedStudy][:component4].nil?
   end
 
   # Returns an integer representing the number of days since Jan 1, 2000
@@ -274,10 +279,18 @@ class OncoreEndpointController < ApplicationController
   end
 
   def print_params_to_log(e=nil)
+    if !@is_rpe && @protocol.present?
+      status = e.present? ? "failure" : "success"
+      oncore_record = OncoreRecord.create(protocol_id: @protocol.id, calendar_version: @calendar_version, status: status)
+      timestamp = oncore_record.created_at
+    end
+
+    timestamp ||= DateTime.now
+
     logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")
     logger = ActiveSupport::Logger.new(logfile)
     logger.info "\n----------------------------------------------------------------------------------"
-    logger.info "RetrieveProtocolDefResponse request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
+    logger.info "RetrieveProtocolDefResponse request ---------- Timestamp: #{timestamp.to_formatted_s(:long)}"
     logger.info "Params received by OncoreEndpointController:"
     logger.info JSON.pretty_generate(oncore_endpoint_params.to_h)
     unless e.nil?

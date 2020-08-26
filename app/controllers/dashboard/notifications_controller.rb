@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,9 +36,11 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       format.json{
         @notifications =
           if @table == 'inbox'
-            Notification.in_inbox_of(current_user.id, params[:ssrid])
+            Notification.in_inbox_of(current_user, params[:ssrid])
+          elsif @table == 'shared'
+            Notification.shared_with(current_user, params[:ssrid])
           else
-            Notification.in_sent_of(current_user.id, params[:ssrid])
+            Notification.in_sent_of(current_user, params[:ssrid])
           end.distinct
       }
     end
@@ -65,7 +67,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         @message.save
 
         ssr = @notification.sub_service_request
-        @notifications = Notification.belonging_to(current_user.id, params[:sub_service_request_id])
+        @notifications = Notification.belonging_to(current_user, params[:sub_service_request_id])
 
         UserMailer.notification_received(@recipient, ssr, current_user).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
@@ -95,7 +97,9 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       :originator_id,
       :other_user_id,
       :read_by_originator,
-      :read_by_other_user)
+      :read_by_other_user,
+      :shared
+    )
   end
 
   def message_params

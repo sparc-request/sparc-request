@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@ class AvailableStatus < ApplicationRecord
   scope :alphabetized, -> { all.sort{ |x, y| x.humanize <=> y.humanize } }
 
   def disabled_status?
-    ["Draft", "Get a Cost Estimate", "Submitted"].include?(self.humanize)
+    ["Draft", "Submitted"].include?(self.humanize)
   end
 
   def self.statuses

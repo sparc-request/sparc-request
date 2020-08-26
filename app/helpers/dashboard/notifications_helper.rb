@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,11 +49,11 @@ module Dashboard::NotificationsHelper
     end
   end
 
-  def display_authorized_user(project_role, ssr)
+  def display_authorized_user(project_role, ssr=nil)
     content_tag :span do
       raw(
         content_tag(:strong, display_user_role(project_role), class: 'mr-2') + "#{project_role.identity.full_name}" + 
-        (project_role.identity_id == ssr.service_requester_id ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1') : '')
+        (project_role.identity_id == ssr.try(:service_requester_id) ? content_tag(:small, content_tag(:em, t('dashboard.notifications.table.requester')), class: 'text-primary ml-1') : '')
       )
     end
   end

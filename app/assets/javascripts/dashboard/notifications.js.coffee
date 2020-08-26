@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -62,7 +62,14 @@ $(document).ready ->
             success: ->
               $this.selectpicker('val', '')
 
-  $(document).on 'click', 'button.mark_as_read_unread',  ->
+  $(document).on('check.bs.table check-all.bs.table', '#notificationsinboxTable', ->
+    $('.mark-read-unread').removeClass('d-none')
+  ).on('uncheck.bs.table uncheck-all.bs.table', '#notificationsinboxTable', ->
+    if $('#ssrsSubmissionTable').bootstrapTable('getSelections').length == 0
+      $('.mark-read-unread').addClass('d-none')
+  )
+
+  $(document).on 'click', 'button.mark-read-unread',  ->
     selections = $('.notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
     sub_service_request_id = $(this).data('sub-service-request-id')

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,11 +20,11 @@
 
 module EmailHelpers
   def does_not_have_a_submission_reminder(mail_response)
-    expect(mail_response).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+    expect(mail_response).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met.']"
   end
 
   def does_have_a_submission_reminder(mail_response)
-    expect(mail_response).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+    expect(mail_response).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met.']"
   end
 end
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2020 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -175,14 +175,13 @@ RSpec.describe Notifier do
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @approval             = create(:approval, service_request: @service_request)
 
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -211,14 +210,13 @@ RSpec.describe Notifier do
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @approval             = create(:approval, service_request: @service_request)
 
 
             @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, identity, @report)
           end
 
           it 'should show epic column' do
@@ -333,14 +331,13 @@ RSpec.describe Notifier do
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @approval             = create(:approval, service_request: @service_request)
 
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, identity, @report)
           end
 
           # Expected service provider message is defined under request_amendment_intro
@@ -369,14 +366,13 @@ RSpec.describe Notifier do
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
             @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization, service_requester: service_requester)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
-            @approval             = create(:approval, service_request: @service_request)
 
 
             @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
-            @mail                 = Notifier.notify_user(@project_role, @service_request, @approval, identity, @report)
+            @mail                 = Notifier.notify_user(@project_role, @service_request, identity, @report)
           end
 
           it 'should show epic column' do

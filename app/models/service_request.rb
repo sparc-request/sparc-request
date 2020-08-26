@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,6 @@ class ServiceRequest < ApplicationRecord
   has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
-  has_many :approvals, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   has_many :arms, through: :protocol
@@ -90,9 +89,9 @@ class ServiceRequest < ApplicationRecord
   def create_line_items_for_service(args)
     service           = args[:service]
     requester         = args[:requester]
-    optional          = args[:optional] || true
-    allow_duplicates  = args[:allow_duplicates] || false
-    recursive_call    = args[:recursive_call] || false
+    optional          = args[:optional].nil? ? true : args[:optional]
+    allow_duplicates  = args[:allow_duplicates].nil? ? false : args[:allow_duplicates]
+    recursive_call    = args[:recursive_call].nil? ? false : args[:recursive_call]
 
     # If this service has already been added, then do nothing
     return if !allow_duplicates && self.line_items.incomplete.where(service: service).any?
@@ -140,7 +139,7 @@ class ServiceRequest < ApplicationRecord
   def find_or_create_ssr(organization, requester)
     if (ssr = self.sub_service_requests.where(organization_id: organization.id).reject(&:is_complete?).first)
       if !ssr.first_draft? && ssr.can_be_edited?
-        ssr.update_attribute(:status, 'draft') 
+        ssr.update_attribute(:status, 'draft')
       end
     else
       ssr = self.sub_service_requests.create(
@@ -217,6 +216,10 @@ class ServiceRequest < ApplicationRecord
     end
 
     groupings
+  end
+
+  def has_ssrs_for_resubmission?
+    self.previously_submitted? && self.sub_service_requests.any?{ |ssr| ['draft', 'awaiting_pi_approval'].include?(ssr.status) }
   end
 
   def deleted_ssrs_since_previous_submission(start_time_at_previous_sub_time=false)
@@ -362,12 +365,12 @@ class ServiceRequest < ApplicationRecord
 
   # Returns the SSR ids that need an initial submission email, updates the SR status,
   # and updates the SSR status to new status if appropriate
-  def update_status(new_status, current_user)
+  def update_status(new_status, current_user, ssrids=nil)
     # Do not change the Service Request if it has been submitted
     update_attribute(:status, new_status) unless self.previously_submitted?
     update_attribute(:submitted_at, Time.now) if new_status == 'submitted'
 
-    self.sub_service_requests.map do |ssr|
+    self.sub_service_requests.select{ |ssr| ssrids.blank? || ssrids.include?(ssr.id.to_s) }.map do |ssr|
       ssr.update_status_and_notify(new_status, current_user)
     end.compact
   end
@@ -395,8 +398,14 @@ class ServiceRequest < ApplicationRecord
     self.sub_service_requests.any?(&:eligible_for_subsidy?)
   end
 
-  def should_push_to_epic?
-    return self.line_items.any? { |li| li.should_push_to_epic? }
+  def should_push_to_epic?(ssrids=nil)
+    # https://www.pivotaltracker.com/story/show/156705787
+    Setting.get_value("use_epic") && self.protocol.selected_for_epic? &&
+      if self.previously_submitted?
+        self.line_items.joins(:sub_service_request, :service).where(services: { send_to_epic: true }, sub_service_requests: { id: (ssrids.present? ? ssrids : self.sub_service_requests.ids), status: 'draft' }).any?
+      else
+        self.services.where(send_to_epic: true).any?
+      end
   end
 
   def has_ctrc_clinical_services?

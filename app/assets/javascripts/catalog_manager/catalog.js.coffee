@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -282,7 +282,7 @@ window.initialize_related_services_search = () ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('
-          <div class="service text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
+          <div class="service text-left" data-container="body" data-placement="left" data-toggle="tooltip" data-animation="false" data-html="true" title="{{description}}">
             <div class="w-100">
               <h5 class="service-name no-margin"><span class="text-service">{{type}}</span><span>: {{name}}</span></h5>
             </div>
@@ -302,8 +302,9 @@ window.initialize_related_services_search = () ->
         notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>"
       }
     }
-  )
-  .on('typeahead:select', (event, suggestion) ->
+  ).on('typeahead:render', (event, a, b, c) ->
+    $('.twitter-typeahead [data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
+  ).on('typeahead:select', (event, suggestion) ->
     existing_services = $("[id*='service-relation-id-']").map ->
       return $(this).data('related-service-id')
 

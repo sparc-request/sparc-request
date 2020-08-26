@@ -1,4 +1,4 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development
+# Copyright © 2011-2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -43,7 +43,10 @@ RSpec.describe 'User wants to make a new Project', js: true do
     click_button I18n.t('actions.save')
     wait_for_javascript_to_finish
 
-    expect(Project.count).to eq(1)
-    expect(page).to have_current_path(dashboard_protocol_path(Protocol.last))
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until Project.count == 1
+      expect(Project.count).to eq(1)
+      expect(page).to have_current_path(dashboard_protocol_path(Protocol.last))
+    end
   end
 end

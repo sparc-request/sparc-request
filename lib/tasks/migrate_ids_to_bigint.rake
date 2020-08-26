@@ -77,7 +77,6 @@ task :migrate_ids_to_bigint => :environment do
         if column[type_index] == "int(11)"
           opts = {}
           opts[:auto_increment] = true if column[key_index] == 'PRI' && column[extra_index].include?('auto_increment')
-          binding.pry if table_name == 'sessions'
           puts "Updating #{table_name}.#{column[name_index]}"
           ApplicationRecord.connection.change_column table_name, column[name_index], :bigint, opts
         end

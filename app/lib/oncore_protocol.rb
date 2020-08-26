@@ -30,7 +30,7 @@ class OncoreProtocol
     self.title               = study.title
     self.short_title         = study.short_title
     self.library             = Setting.get_value("oncore_default_library")
-    self.department          = study.primary_pi.professional_organization.try(:department) || "Other" #default to Other if there is no department
+    self.department          = study.primary_pi.professional_organization.try(:department) || Setting.get_value("oncore_default_department")
     self.organizational_unit = Setting.get_value("oncore_default_organizational_unit")
     self.protocol_type       = Setting.get_value("oncore_default_protocol_type")
   end

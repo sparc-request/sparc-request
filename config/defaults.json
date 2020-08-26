@@ -660,6 +660,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "oncore_default_department",
+    "value":          "Other",
+    "friendly_name":  "OnCore Department Default Value",
+    "description":    "Default value for Primary PI's Department field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
     "key":            "oncore_default_library",
     "value":          "Non-Oncology",
     "friendly_name":  "OnCore Library Default Value",

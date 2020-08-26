@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id"
   end
 
-  create_table "delayed_jobs", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "delayed_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", limit: 4294967295, null: false
@@ -890,7 +890,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.index ["organization_id"], name: "index_services_on_organization_id"
   end
 
-  create_table "sessions", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "sessions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
     t.datetime "created_at"
@@ -1083,7 +1083,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "tokens", id: :bigint, default: nil, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "service_request_id"
     t.bigint "identity_id"
     t.string "token"

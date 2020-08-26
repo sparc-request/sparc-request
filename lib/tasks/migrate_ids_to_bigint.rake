@@ -67,15 +67,19 @@ task :migrate_ids_to_bigint => :environment do
     end
 
     non_ar_tables.each do |table_name|
-      sql_result = ApplicationRecord.connection.exec_query("SHOW COLUMNS FROM #{table_name}")
-      key_index = sql_result.columns.find_index("Key")
-      type_index = sql_result.columns.find_index("Type")
-      name_index = sql_result.columns.find_index("Field")
+      sql_result  = ApplicationRecord.connection.exec_query("SHOW COLUMNS FROM #{table_name}")
+      key_index   = sql_result.columns.find_index("Key")
+      type_index  = sql_result.columns.find_index("Type")
+      name_index  = sql_result.columns.find_index("Field")
+      extra_index = sql_result.columns.find_index("Extra")
       reference_columns = sql_result.rows.select{ |row| row[key_index].present? }
       reference_columns.each do |column|
         if column[type_index] == "int(11)"
+          opts = {}
+          opts[:auto_increment] = true if column[key_index] == 'PRI' && column[extra_index].include?('auto_increment')
+          binding.pry if table_name == 'sessions'
           puts "Updating #{table_name}.#{column[name_index]}"
-          ApplicationRecord.connection.change_column table_name, column[name_index], :bigint
+          ApplicationRecord.connection.change_column table_name, column[name_index], :bigint, opts
         end
       end
     end

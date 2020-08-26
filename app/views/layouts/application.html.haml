@@ -39,9 +39,6 @@
     - if content_for(:sub_header)
       %subheader.container-fluid.mb-3#siteSubheader
         = yield(:sub_header)
-      %breadcrumb.container-fluid-mb-3#siteBreadcrumb
-        %ol.list-unstyled.d-flex.h3.p-0.mb-3
-          = yield(:breadcrumb)
     .container-fluid#contentContainer
       - if @protocol
         = hidden_field_tag :protocol_id, @protocol.id, disabled: true

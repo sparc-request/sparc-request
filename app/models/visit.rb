@@ -71,8 +71,13 @@ class Visit < ApplicationRecord
     return self.visit_group.position
   end
 
+  #TODO It does not look like this is being used any longer.  
   def to_be_performed?
     self.research_billing_qty > 0
+  end
+
+  def indicated?
+    (research_billing_qty > 0 || insurance_billing_qty > 0)
   end
 
   ### audit reporting methods ###

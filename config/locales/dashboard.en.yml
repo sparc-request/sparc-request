@@ -169,7 +169,7 @@ en:
       service_requests:
         header: "Requests - %{status} - %{date}"
         view_consolidated: "Consolidated Request"
-        export_consolidated: "Export"
+        export_consolidated: "Budget Template"
         coverage_report: 'Coverage Analysis'
         cost_analysis_report: 'Cost Analysis'
         consolidated_all: "All Requests"

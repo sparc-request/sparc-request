@@ -420,10 +420,15 @@ RSpec.describe 'User edits question fields', js: true do
       end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      ##Same as above, spec needs fixed
+>>>>>>> b81b7886c7f0b27cf8b99ee4e1d8feb022f3cf42
       context 'with options that appear in a dependent selectpicker' do
         scenario 'and sees updated dependent selectpickers' do
           @option    = create(:option, question: @question)
           @question2 = create(:question, section: @section, is_dependent: true, depender: @option)
+<<<<<<< HEAD
 =======
       ##Same as above, spec needs fixed
       # context 'with options that appear in a dependent selectpicker' do
@@ -431,14 +436,20 @@ RSpec.describe 'User edits question fields', js: true do
       #     @option    = create(:option, question: @question)
       #     @question2 = create(:question, section: @section, is_dependent: true)
 >>>>>>> v3.8.0
+=======
+>>>>>>> b81b7886c7f0b27cf8b99ee4e1d8feb022f3cf42
 
-      #     visit surveyor_surveys_path
-      #     wait_for_javascript_to_finish
 
-      #     bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
-      #     wait_for_javascript_to_finish
+          visit surveyor_surveys_path
+          wait_for_javascript_to_finish
+
+          bootstrap_dropdown("#surveyActions#{@form.id}", /Edit/)
+          wait_for_javascript_to_finish
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b81b7886c7f0b27cf8b99ee4e1d8feb022f3cf42
           first('.delete-question').click
           wait_for_javascript_to_finish
           confirm_swal
@@ -450,6 +461,7 @@ RSpec.describe 'User edits question fields', js: true do
           expect(page).to have_no_selector('.select-depender')
         end
       end
+<<<<<<< HEAD
 =======
       #     first('.delete-question').click
       #     wait_for_javascript_to_finish
@@ -463,6 +475,8 @@ RSpec.describe 'User edits question fields', js: true do
       #   end
       # end
 >>>>>>> v3.8.0
+=======
+>>>>>>> b81b7886c7f0b27cf8b99ee4e1d8feb022f3cf42
     end
   end
 end

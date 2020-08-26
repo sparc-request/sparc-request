@@ -48,6 +48,10 @@ module Dashboard::ProtocolsHelper
     content_tag(:div, short_title) + content_tag(:div, (display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))) )
   end
 
+  def format_protocol(protocol)
+    link_to "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}", dashboard_protocol_path(protocol)
+  end
+
   def pis_display(protocol)
     content_tag(:div, class: 'd-flex flex-column align-items-start') do
       if protocol.primary_pi
@@ -66,11 +70,15 @@ module Dashboard::ProtocolsHelper
   end
 
   def display_requests_button(protocol, access)
-    if protocol.sub_service_requests.any? && access
-      link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary protocol-requests') do
-        content_tag :span, class: 'd-flex align-items-center' do
-          raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests_count, class: 'badge badge-pill badge-c badge-light ml-2'))
+    if protocol.sub_service_requests.any?
+      if access
+        link_to(display_requests_dashboard_protocol_path(protocol), remote: true, class: 'btn btn-secondary protocol-requests') do
+          content_tag :span, class: 'd-flex align-items-center' do
+            raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests_count, class: 'badge badge-pill badge-c badge-light ml-2'))
+          end
         end
+      else
+        render "dashboard/protocols/request_access_dropdown.html.haml", protocol: protocol
       end
     end
   end

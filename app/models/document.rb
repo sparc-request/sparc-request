@@ -47,6 +47,10 @@ class Document < ApplicationRecord
   end
 
   def all_organizations
-    sub_service_requests.map(&:org_tree).flatten.uniq
+    if self.share_all?
+      self.protocol.sub_service_requests.map(&:org_tree).flatten.uniq
+    else
+      self.sub_service_requests.map(&:org_tree).flatten.uniq
+    end
   end
 end

@@ -22,7 +22,7 @@ module OnCoreEndpointHelper
   # Return an example CRPC message with 2 arms, 3 VISITS (not SPARC Visits), and 2 Procedures
   # VISITS are most similar to Visit Groups and Procedures are most like Line Item Visits
   # Visit groups are on days 1, 5 and 10, with day 10 having a window and a window after of 3 days.
-  def crpc_message(study, bad_rmid=nil)
+  def crpc_message(study, bad_id=nil)
     service1 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 1", eap_id: "9999")
     service2 = create(:service_with_process_ssrs_organization, :with_pricing_map, name: "Service 2", cpt_code: "9999")
     day1      = Date.new(2000,1,1)
@@ -32,7 +32,7 @@ module OnCoreEndpointHelper
       { "protocolDef":
         { "plannedStudy": {
             "id": {
-              "@extension": bad_rmid.nil? ? study.research_master_id : bad_rmid,
+              "@extension": bad_id.nil? ? study.id : bad_id,
               "@root": "1.2.5.2.3.4"
             },
             "title": "null",
@@ -63,7 +63,7 @@ module OnCoreEndpointHelper
                     "@code": "PROTOCOLNO"
                   },
                   "value": {
-                    "@value": study.research_master_id
+                    "@value": "STUDY#{study.id}"
                   }
                 }
               },
@@ -92,7 +92,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.BLD",
+                    "@extension": "STUDY#{study.id}.BLD",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
@@ -431,7 +431,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.Biomarker",
+                    "@extension": "STUDY#{study.id}.Biomarker",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
@@ -799,7 +799,7 @@ module OnCoreEndpointHelper
       { "protocolDef":
         { "plannedStudy": {
             "id": {
-              "@extension": study.research_master_id,
+              "@extension": "STUDY#{study.id}",
               "@root": "1.2.5.2.3.4"
             },
             "title": "null",
@@ -830,7 +830,7 @@ module OnCoreEndpointHelper
                     "@code": "PROTOCOLNO"
                   },
                   "value": {
-                    "@value": study.research_master_id
+                    "@value": "STUDY#{study.id}"
                   }
                 }
               },
@@ -859,7 +859,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.BLD",
+                    "@extension": "STUDY#{study.id}.BLD",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:BLD: Arm BLD",
@@ -1072,7 +1072,7 @@ module OnCoreEndpointHelper
               {
                 "timePointEventDefinition": {
                   "id": {
-                    "@extension": "#{study.research_master_id}.Biomarker",
+                    "@extension": "STUDY#{study.id}.Biomarker",
                     "@root": "1.2.3.4.8.2"
                   },
                   "title": "Calendar:4 Budget:1 Arm:Biomarker: Arm Biomarker",
@@ -1311,7 +1311,7 @@ module OnCoreEndpointHelper
       { "protocolDef": {
             "plannedStudy": {
               "id": {
-                "@extension": study.research_master_id,
+                "@extension": "STUDY#{study.id}",
                 "@root": "1.2.5.2.3.4"
               },
               "title": "A Phase 2 Trial of Nivolumab Plus Ipilimumab, Ipilimumab Alone, or Cabazitaxel ",
@@ -1343,7 +1343,7 @@ module OnCoreEndpointHelper
                       "@code": "PROTOCOLNO"
                     },
                     "value": {
-                      "value": study.research_master_id
+                      "@value": "STUDY#{study.id}"
                     }
                   }
                 },

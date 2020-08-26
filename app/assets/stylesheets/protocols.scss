@@ -36,7 +36,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 3%;
+  max-width: 17%;
 
   .sticky-top {
     top: 1rem !important;
@@ -62,3 +62,7 @@
 /// Dashboard ///
 /////////////////
 
+#epic_rights_error_alert {
+  padding: 5px;
+  margin-left: 10px;
+}

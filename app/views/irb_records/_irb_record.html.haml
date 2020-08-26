@@ -18,8 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- primary = primary == 'true'
-
 .list-group-item.d-flex.border.flex-column.collapsed.mb-3.irb-record{ class: primary ? 'list-group-item-success primary-irb' : 'list-group-item-info', id: "irb#{index}", data: { toggle: 'collapse', target: "#irb#{index}Collapse" } }
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][pro_number]", irb_record.pro_number
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_of_record]", irb_record.irb_of_record
@@ -39,7 +37,8 @@
     .d-flex.align-items-center
       = link_to edit_irb_records_path(id: irb_record.id, index: index, primary: primary.to_s, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
         = icon('fas', 'edit fa-lg')
-      = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: 'text-danger delete-irb', title: t('irb_records.tooltips.delete'), data: { toggle: 'tooltip' } do
+      - disable_delete = @irb_count && @irb_count > 1 && primary
+      = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: ['delete-irb', disable_delete ? 'text-muted' : 'text-danger'], title: disable_delete ? t('irb_records.tooltips.cant_delete_primary') : t('irb_records.tooltips.delete'), disabled: disable_delete, data: { toggle: 'tooltip' } do
         = icon('fas', 'trash-alt fa-lg')
   .collapse{ id: "irb#{index}Collapse" }
     .w-100.pt-3

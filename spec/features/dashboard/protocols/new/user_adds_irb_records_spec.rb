@@ -70,9 +70,12 @@ RSpec.describe 'User wants to make a new Study with IRB Records', js: true do
     click_button I18n.t('actions.save')
     wait_for_javascript_to_finish
 
-    expect(IrbRecord.count).to eq(1)
-    irb = IrbRecord.first
-    expect(irb.pro_number).to eq('1111111111')
-    expect(irb.irb_of_record).to eq('My IRB Board')
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until IrbRecord.count == 1
+      expect(IrbRecord.count).to eq(1)
+      irb = IrbRecord.first
+      expect(irb.pro_number).to eq('1111111111')
+      expect(irb.irb_of_record).to eq('My IRB Board')
+    end
   end
 end

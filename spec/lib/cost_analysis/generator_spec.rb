@@ -31,6 +31,6 @@ RSpec.describe CostAnalysis::Generator do
     subject.protocol = protocol
     subject.to_pdf(doc)
     pdf_text = PDF::Inspector::Text.analyze(doc.render)
-    expect(pdf_text.strings).to include(match(/CRU Protocol#: [0-9]+/))
+    expect(pdf_text.strings).to include(match(/Protocol ID: [0-9]+/))
   end
 end

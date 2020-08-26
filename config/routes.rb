@@ -28,12 +28,14 @@ SparcRails::Application.routes.draw do
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/shibboleth' }
 
     elsif Setting.get_value("use_cas_only")
       devise_for :identities,
                  controllers: {
                    omniauth_callbacks: 'identities/omniauth_callbacks',
+                   registrations: 'identities/registrations',
                  }, path_names: { sign_in: 'auth/cas' }
     else
       devise_for :identities,
@@ -86,7 +88,6 @@ SparcRails::Application.routes.draw do
     get :document_management
     get :review
     get :confirmation
-    get :approve_changes
     get :system_satisfaction_survey
 
     put :save_and_exit
@@ -108,7 +109,9 @@ SparcRails::Application.routes.draw do
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
+      get :edit_billing
       patch :update_protocol_type
+      patch :update_billing
     end
   end
 
@@ -227,6 +230,9 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: [:index, :destroy]
     resources :epic_queue_records, only: [:index]
 
+    resources :oncore_records, only: [:index]
+    get "/protocols/:protocol_id/oncore_records", to: "oncore_records#history", as: :protocol_oncore_records
+
     resource :protocol_merge do
       put :perform_protocol_merge
     end
@@ -264,6 +270,7 @@ SparcRails::Application.routes.draw do
 
       member do
         get :display_requests
+        get :request_access
         patch :archive
         patch :update_protocol_type
       end

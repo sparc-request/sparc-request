@@ -155,7 +155,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def display_id
-    return "#{protocol.try(:id)}-#{ssr_id || 'DRAFT'}"
+    return "#{protocol_id}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?
@@ -532,7 +532,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

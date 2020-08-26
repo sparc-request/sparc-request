@@ -34,62 +34,78 @@ RSpec.describe 'User edits study type questions', js: true do
               create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
   end
 
-  context 'Using Epic' do
-    stub_config("use_epic", true)
+  context 'Use Confidentiality Questions' do
+    stub_config("use_confidentiality_questions", true)
 
-    before :each do
-      visit new_protocol_path(type: Study.name)
+    context 'Using Epic' do
+      stub_config("use_epic", true)
+
+      before :each do
+        visit new_protocol_path(type: Study.name)
+      end
+
+      context 'Study is selected for Epic' do
+        it 'should show notes for various scenarios' do
+          find("[for='protocol_selected_for_epic_true']").click
+
+          bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
+          wait_for_javascript_to_finish
+
+          expect(page).to have_content('De-identified Research Participant')
+
+          bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
+          bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
+          bootstrap_select '#study_type_answer_epic_inbasket_answer', 'No'
+          bootstrap_select '#study_type_answer_research_active_answer', 'No'
+          bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
+          wait_for_javascript_to_finish
+
+          expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
+        end
+      end
+
+      context 'selects "No" to "Publish Study in Epic"' do
+        context 'Human Subjects is checked' do
+          it 'should show certificate of confidentiality questions without Epic language' do
+            find("[for='protocol_selected_for_epic_false']").click
+            wait_for_javascript_to_finish
+
+            find('#protocol_research_types_info_attributes_human_subjects + label').click
+            wait_for_javascript_to_finish
+
+            expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5], normalize_ws: true)
+
+            bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+            wait_for_javascript_to_finish
+
+            expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
+          end
+        end
+      end
     end
 
-    it 'should show notes for various scenarios' do
-      find("[for='protocol_selected_for_epic_true']").click
+    context 'Not Using Epic' do
+      stub_config("use_epic", false)
 
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'Yes'
-      wait_for_javascript_to_finish
+      before :each do
+        visit new_protocol_path(type: Study.name)
+      end
 
-      expect(page).to have_content('De-identified Research Participant')
+      it 'should show questions but not notes' do
+        bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+        expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
 
-      bootstrap_select '#study_type_answer_certificate_of_conf_answer', 'No'
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_answer', 'No'
-      bootstrap_select '#study_type_answer_epic_inbasket_answer', 'No'
-      bootstrap_select '#study_type_answer_research_active_answer', 'No'
-      bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
-
-      find("[for='protocol_selected_for_epic_false']").click
-
-      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5], normalize_ws: true)
-
-      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
-    end
-  end
-
-  context 'Not Using Epic' do
-    stub_config("use_epic", false)
-
-    before :each do
-      visit new_protocol_path(type: Study.name)
-    end
-
-    it 'should show questions but not notes' do
-      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
-      expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
-
-      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
-      wait_for_javascript_to_finish
-      expect(page).not_to have_selector('#study_type_note')
-      bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'Yes'
-      wait_for_javascript_to_finish
-      expect(page).not_to have_selector('#study_type_note')
-      bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'No'
-      wait_for_javascript_to_finish
-      expect(page).not_to have_selector('#study_type_note')
+        bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'Yes'
+        wait_for_javascript_to_finish
+        expect(page).not_to have_selector('#studyTypeNote')
+        bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
+        bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'Yes'
+        wait_for_javascript_to_finish
+        expect(page).not_to have_selector('#studyTypeNote')
+        bootstrap_select '#study_type_answer_higher_level_of_privacy_no_epic_answer', 'No'
+        wait_for_javascript_to_finish
+        expect(page).not_to have_selector('#studyTypeNote')
+      end
     end
   end
 end

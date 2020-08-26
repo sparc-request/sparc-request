@@ -7,6 +7,8 @@ module CostAnalysis
     end
 
     class OtfTable
+        HEADER_LABEL = "Non-clinical Services"
+
         attr_accessor :line_items
 
         include ActionView::Helpers::NumberHelper
@@ -52,7 +54,7 @@ module CostAnalysis
             col_labels = get_col_labels
             
             table = TableWithGroupHeaders.new
-            table.add_column_labels(title_row("One Time Fees", col_labels.length))
+            table.add_column_labels(title_row(HEADER_LABEL, col_labels.length))
             table.add_column_labels(col_labels)
 
             ssr_ids.each do |ssr_id|

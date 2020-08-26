@@ -114,24 +114,26 @@ class ServicePricingReport < ReportingModule
     end
 
     if params[:rate_types]
+      service_pricing_date = Date.strptime(params[:services_pricing_date], "%m/%d/%Y")
+
       if params[:rate_types].include?("full_rate")
-        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f) rescue 'N/A'"
+        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").full_rate.to_f) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("federal_rate")
-        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:federal]) rescue 'N/A'"
+        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").true_rate_hash(\"#{service_pricing_date}\", Organization.find(organization_id))[:federal]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("corporate_rate")
-        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:corporate]) rescue 'N/A'"
+        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").true_rate_hash(\"#{service_pricing_date}\", Organization.find(organization_id))[:corporate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("other_rate")
-        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:other]) rescue 'N/A'"
+        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").true_rate_hash(\"#{service_pricing_date}\", Organization.find(organization_id))[:other]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("member_rate")
-        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", Organization.find(organization_id))[:member]) rescue 'N/A'"
+        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").true_rate_hash(\"#{service_pricing_date}\", Organization.find(organization_id))[:member]) rescue 'N/A'"
       end
 
     end
@@ -143,8 +145,9 @@ class ServicePricingReport < ReportingModule
 
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
-  # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
-  # def includes => other tables to include
+  # includes, preload, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
+  # def includes => other tables to include for where queries
+  # def preload => other tables to eager load
   # def where => conditions for query
   # def uniq => return distinct records
   # def group => group by this attribute (including table name is always a safe bet, ex. identities.id)

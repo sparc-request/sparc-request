@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_18_200713) do
+ActiveRecord::Schema.define(version: 2020_08_13_152415) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -36,7 +36,6 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
   end
 
   create_table "approvals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.bigint "service_request_id"
     t.bigint "identity_id"
     t.datetime "approval_date"
     t.datetime "created_at", null: false
@@ -45,7 +44,6 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.string "approval_type", default: "Resource Approval"
     t.bigint "sub_service_request_id"
     t.index ["identity_id"], name: "index_approvals_on_identity_id"
-    t.index ["service_request_id"], name: "index_approvals_on_service_request_id"
     t.index ["sub_service_request_id"], name: "index_approvals_on_sub_service_request_id"
   end
 
@@ -168,6 +166,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
+    t.boolean "share_all"
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
@@ -414,6 +413,15 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end
 
+  create_table "oncore_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "protocol_id"
+    t.integer "calendar_version"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_oncore_records_on_protocol_id"
+  end
+
   create_table "options", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "question_id"
     t.text "content", null: false
@@ -649,6 +657,7 @@ ActiveRecord::Schema.define(version: 2020_05_18_200713) do
     t.string "guarantor_contact"
     t.string "guarantor_phone"
     t.string "guarantor_email"
+    t.boolean "all_research_billing", default: true
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 

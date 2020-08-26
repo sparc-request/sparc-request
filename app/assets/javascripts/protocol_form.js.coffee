@@ -74,10 +74,16 @@ $(document).ready ->
       $('#protocol_research_master_id').siblings('label').addClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
+      if $('#protocol_selected_for_epic_false').prop('checked')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
+        hideStudyTypeQuestion($(certificateOfConfidence))
+        showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', true)
+      if $('#protocol_selected_for_epic_false').prop('checked')
+        $('#studyTypeQuestionsContainer').addClass('d-none')
     setRequiredFields()
 
   $(document).on 'keyup', '#protocol_investigational_products_info_attributes_ind_number', ->
@@ -143,19 +149,22 @@ $(document).ready ->
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
 
-    if $('#studyTypeQuestionsContainer').hasClass('d-none')
-      $('#studyTypeQuestionsContainer').removeClass('d-none')
-
     if $(this).val() == 'true'
       $('label[for=protocol_study_type_questions]').addClass('required')
+      if $('#studyTypeQuestionsContainer').hasClass('d-none')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
       setRequiredFields()
       hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
       showStudyTypeQuestion($(certificateOfConfidence))
-    else
+    else if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+      if $('#studyTypeQuestionsContainer').hasClass('d-none')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
       $('label[for=protocol_study_type_questions]').removeClass('required')
       setRequiredFields()
       hideStudyTypeQuestion($(certificateOfConfidence))
       showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+    else
+      $('#studyTypeQuestionsContainer').addClass('d-none')
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'
@@ -329,6 +338,7 @@ toggleFundingSourceOther = (val) ->
 
     $('#fundingSourceOtherContainer').addClass('d-none')
     $('#protocol_funding_source_other').val('')
+
 
 certificateOfConfidence       = '#study_type_answer_certificate_of_conf_answer'
 higherLevelOfPrivacy          = '#study_type_answer_higher_level_of_privacy_answer'

@@ -598,10 +598,6 @@ nav.navbar {
 
       &.dropdown {
         &:hover {
-          .dropdown-toggle {
-            @extend .active;
-          }
-
           .dropdown-menu {
             display: block;
           }
@@ -786,6 +782,10 @@ nav.navbar {
       @extend .is-invalid;
     }
   }
+}
+
+a.text-white:hover {
+  color: #ccc !important;
 }
 
 .sticky-top {

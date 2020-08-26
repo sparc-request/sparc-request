@@ -31,7 +31,6 @@ class ServiceRequest < ApplicationRecord
   has_many :per_patient_per_visit_line_items, -> { joins(:service).where(services: { one_time_fee: false }) }, class_name: "LineItem"
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
-  has_many :approvals, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   has_many :arms, through: :protocol
@@ -90,9 +89,9 @@ class ServiceRequest < ApplicationRecord
   def create_line_items_for_service(args)
     service           = args[:service]
     requester         = args[:requester]
-    optional          = args[:optional] || true
-    allow_duplicates  = args[:allow_duplicates] || false
-    recursive_call    = args[:recursive_call] || false
+    optional          = args[:optional].nil? ? true : args[:optional]
+    allow_duplicates  = args[:allow_duplicates].nil? ? false : args[:allow_duplicates]
+    recursive_call    = args[:recursive_call].nil? ? false : args[:recursive_call]
 
     # If this service has already been added, then do nothing
     return if !allow_duplicates && self.line_items.incomplete.where(service: service).any?
@@ -140,7 +139,7 @@ class ServiceRequest < ApplicationRecord
   def find_or_create_ssr(organization, requester)
     if (ssr = self.sub_service_requests.where(organization_id: organization.id).reject(&:is_complete?).first)
       if !ssr.first_draft? && ssr.can_be_edited?
-        ssr.update_attribute(:status, 'draft') 
+        ssr.update_attribute(:status, 'draft')
       end
     else
       ssr = self.sub_service_requests.create(

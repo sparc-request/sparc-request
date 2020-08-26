@@ -22,6 +22,10 @@ a, .btn-link {
   outline: none !important;
   text-decoration: none !important;
   @include transition($btn-transition);
+
+  &.active {
+    color: $link-hover-color;
+  }
 }
 
 span[data-toggle=tooltip]:not(.tooltip-wrapper), label[data-toggle=tooltip],

@@ -27,17 +27,6 @@ class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
       pv.update_attribute(:default, false)
     end
 
-    if s = Setting.find_by_key('updatable_statuses')
-      # This should be an array but for some reason on Travis
-      # it's being treated as the raw string value
-      if s.value.is_a?(String)
-        statuses = s.value.gsub("\"get_a_cost_estimate\",", "")
-      else
-        statuses = s.value.reject{ |status| status == 'get_a_cost_estimate' }
-      end
-      s.update_attribute(:value, statuses)
-    end
-
     AvailableStatus.joins(:organization).where(status: 'get_a_cost_estimate', organizations: { use_default_statuses: true }).update_all(selected: false)
     EditableStatus.joins(:organization).where(status: 'get_a_cost_estimate', organizations: { use_default_statuses: true }).update_all(selected: false)
 
@@ -71,11 +60,6 @@ class RemoveGetACostEstimateDefault < ActiveRecord::Migration[5.2]
   def down
     if pv = PermissibleValue.find_by_key('get_a_cost_estimate')
       pv.update_attribute(:default, true)
-    end
-
-    if s = Setting.find_by_key('updatable_statuses')
-      statuses = s.value.append('get_a_cost_estimate')
-      s.update_attribute(:value, statuses)
     end
   end
 end

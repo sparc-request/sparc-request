@@ -227,6 +227,7 @@ class Service < ApplicationRecord
   end
 
   #This method is only used for the service pricing report
+  #Uh... it's also used directly above in "current_pricing_map," which is used many places."
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
 
@@ -325,7 +326,7 @@ class Service < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

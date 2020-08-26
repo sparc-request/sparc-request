@@ -35,11 +35,22 @@ class ProtocolMailer < ActionMailer::Base
     send_email(@recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
   end
 
+  def request_access_email
+    @recipient            = params[:recipient]
+    @protocol             = params[:protocol]
+    @requester             = params[:requester]
+    @service_request      = @protocol.service_requests.first
+
+    send_email(@recipient,
+               t("mailers.protocol_mailer.request_access_email.subject", requester: @requester.full_name, protocol_id: @protocol.id),
+               @requester)
+  end
+
   private
 
-  def send_email(recipient, subject)
+  def send_email(recipient, subject, cc=nil)
     @send_to = recipient
 
-    mail(to: recipient.email, subject: subject)
+    mail(to: recipient.email, subject: subject, cc: cc.try(:email))
   end
 end

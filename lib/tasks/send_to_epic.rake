@@ -25,7 +25,7 @@ task send_to_epic: :environment do
   epic_queues.each do |eq|
     begin
       eq.protocol.push_to_epic(EPIC_INTERFACE, eq.user_change? ? 'protocol_update' : 'admin_push', eq.identity_id, true)
-      if p.last_epic_push_status == 'complete'
+      if eq.protocol.last_epic_push_status == 'complete'
         eq.update_attribute(:attempted_push, true)
         eq.destroy
       end

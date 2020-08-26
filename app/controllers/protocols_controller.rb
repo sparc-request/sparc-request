@@ -23,7 +23,7 @@ class ProtocolsController < ApplicationController
 
   before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
   before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
-  before_action :find_protocol,               only: [:show, :edit, :update]
+  before_action :find_protocol,               only: [:show, :edit, :update, :edit_billing, :update_billing]
 
   def show
     respond_to :js
@@ -64,6 +64,10 @@ class ProtocolsController < ApplicationController
     @errors = @protocol.errors
   end
 
+  def update_billing
+    @protocol.update_attributes(protocol_params)
+  end
+
   def update
     if @protocol.update_attributes(protocol_params)
       if @service_request.status == 'first_draft'
@@ -71,7 +75,9 @@ class ProtocolsController < ApplicationController
       end
 
       if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
-        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id)
+        if EpicQueue.where(protocol_id: @protocol.id).size == 0
+          EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
+        end
       end
       
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)

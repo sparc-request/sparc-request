@@ -24,14 +24,14 @@ RSpec.describe 'irb_records/irb_record', type: :view do
   let!(:irb) { build(:irb_record) }
 
   it 'should render hidden fields with the given record index' do
-    render 'irb_records/irb_record', irb_record: irb, primary: 'true', index: 0
+    render 'irb_records/irb_record', irb_record: irb, primary: true, index: 0
 
     expect(response).to have_selector('#protocol_human_subjects_info_attributes_irb_records_attributes_0_pro_number', visible: false)
   end
 
   context 'primary IRB' do
     it 'should have the success contextual class' do
-      render 'irb_records/irb_record', irb_record: irb, primary: 'true', index: 0
+      render 'irb_records/irb_record', irb_record: irb, primary: true, index: 0
 
       expect(response).to have_selector('.irb-record.list-group-item-success.primary-irb')
     end
@@ -39,7 +39,7 @@ RSpec.describe 'irb_records/irb_record', type: :view do
 
   context 'secondary IRB' do
     it 'should have the info contextual class' do
-      render 'irb_records/irb_record', irb_record: irb, primary: 'false', index: 0
+      render 'irb_records/irb_record', irb_record: irb, primary: false, index: 0
 
       expect(response).to have_selector('.irb-record.list-group-item-info:not(.primary-irb)')
     end

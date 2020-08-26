@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :oncore_records,               dependent: :destroy
   has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_many :identities,                   through: :project_roles
@@ -119,7 +120,8 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
+    # rmid is optional on Projects
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info? && self.is_a?(Study)
   end
 
   def has_human_subject_info?
@@ -429,7 +431,11 @@ class Protocol < ApplicationRecord
   end
 
   def coordinator_emails
-    coordinators.pluck(:email).join(', ')
+    if self.coordinators.loaded?
+      coordinators.map(&:email).join(', ')
+    else
+      coordinators.pluck(:email).join(', ')
+    end
   end
 
   def emailed_associated_users
@@ -533,6 +539,14 @@ class Protocol < ApplicationRecord
   def ensure_epic_user
     primary_pi_role.set_epic_rights.save
     project_roles.reload
+  end
+
+  def check_epic_user_rights
+    project_roles.includes(:identity).where(epic_access: true).detect do |project_role|
+      epic_user = EpicUser.for_identity(project_role.identity)
+
+      (epic_user.nil? or !EpicUser.is_active?(epic_user))
+    end
   end
 
   # Returns true if there is a push to epic in progress, false
@@ -645,7 +659,7 @@ class Protocol < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change
@@ -655,7 +669,7 @@ class Protocol < ApplicationRecord
   def validate_existing_rmid
     rmid = Protocol.get_rmid(self.research_master_id)
 
-    if self.research_master_id.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty? 
+    if self.research_master_id.present? && rmid.present? && rmid['status'] == 404 && self.errors[:research_master_id].empty?
       self.errors.add(:base, I18n.t('protocols.rmid.errors.not_found', rmid: self.research_master_id, rmid_link: Setting.get_value('research_master_link')))
     end
   end

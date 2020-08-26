@@ -43,10 +43,10 @@
     $(document).on('click', 'table.table-interactive tbody tr', event => {
       el = event.target
 
-      if (el.tagName == 'tr' && $(el).find('a').length) {
-        window.location = $(el).find('a').first().attr('href');
-      } else if (el.tagName != 'a' && $(el).parents('tr').find('a').length) {
-        window.location = $(el).parents('tr').find('a').first().attr('href');
+      if (el.tagName == 'tr' && $(el).find('a:not(.dropdown-item)').length) {
+        window.location = $(el).find('a:not(.dropdown-item)').first().attr('href');
+      } else if (el.tagName != 'a' && $(el).parents('tr').find('a:not(.dropdown-item)').length) {
+        window.location = $(el).parents('tr').find('a:not(.dropdown-item)').first().attr('href');
       }
     })
   })

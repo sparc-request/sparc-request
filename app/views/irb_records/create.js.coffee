@@ -28,8 +28,8 @@ $("[name='irb_record[<%= attr.to_s %>]']").parents('.form-group').removeClass('i
 <% end %>
 <% end %>
 <% else %>
-$('#irbRecords').append("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] %>")
-$('#newIrbRecord').replaceWith("<%= j render 'irb_records/new_irb_record', protocol: @protocol, index: params[:index].to_i + 1, primary: 'false' %>")
+$('#irbRecords').append("<%= j render 'irb_records/irb_record', protocol: @protocol, irb_record: @irb_record, index: params[:index], primary: params[:primary] == 'true' %>")
+$('#newIrbRecord').replaceWith("<%= j render 'irb_records/new_irb_record', protocol: @protocol, index: params[:index].to_i + 1, primary: false %>")
 
 <% if params[:primary] == 'false' %>
 $('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').

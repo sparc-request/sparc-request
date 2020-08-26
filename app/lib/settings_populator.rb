@@ -81,9 +81,6 @@ class SettingsPopulator
       'header_link_2_dashboard',
       'header_link_2_proper',
       'host',
-      'remote_service_notifier_host',
-      'remote_service_notifier_path',
-      'remote_service_notifier_protocol',
       'root_url'
     ]
   end

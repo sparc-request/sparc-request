@@ -40,8 +40,16 @@ class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
   private
 
   def url
-    protocol, host = ENV.fetch('ROOT_URL').split('://')
-    "#{protocol}://#{Setting.get_value("remote_service_notifier_username")}:#{Setting.get_value("remote_service_notifier_password")}@#{host}/#{Setting.get_value('current_api_version')}/notifications.json"
+    [
+      Setting.get_value("remote_service_notifier_protocol"),
+      '://',
+      Setting.get_value("remote_service_notifier_username"),
+      ':',
+      Setting.get_value("remote_service_notifier_password"),
+      '@',
+      Setting.get_value("remote_service_notifier_host"),
+      Setting.get_value("remote_service_notifier_path")
+    ].join
   end
 
   def params

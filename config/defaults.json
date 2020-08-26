@@ -650,10 +650,40 @@
     "parent_value":   "true"
   },
   {
+    "key":            "remote_service_notifier_host",
+    "value":          "127.0.0.1:5001",
+    "friendly_name":  "Remote Service Notifier",
+    "description":    "This is the host domain of the SPARCFulfillment API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "remote_service_notifier_password",
     "value":          "",
     "friendly_name":  "Remote Service Notifier Password",
     "description":    "This is the authentication password of the SPARCFulfillment API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_path",
+    "value":          "/v1/notifications.json",
+    "friendly_name":  "Remote Service Notifier Path",
+    "description":    "This is the URL path of the SPARCFulfillment API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "remote_service_notifier_protocol",
+    "value":          "https",
+    "friendly_name":  "Remote Service Notifier Protocol",
+    "description":    "This is the HTTP protocol (HTTP/HTTPS) of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

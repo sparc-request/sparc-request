@@ -25,13 +25,14 @@ class OncoreProtocol
   attr_accessor :auth, :protocol_no, :title, :short_title, :library, :department, :organizational_unit, :protocol_type
 
   def initialize(study)
+    # Use default values for fields that do not correlate to SPARC values
     self.protocol_no         = "STUDY#{study.id}"
     self.title               = study.title
     self.short_title         = study.short_title
-    self.library             = "Non-Oncology" #default
+    self.library             = Setting.get_value("oncore_default_library")
     self.department          = study.primary_pi.professional_organization.try(:department) || "Other" #default to Other if there is no department
-    self.organizational_unit = "MUSC Enterprise" #default
-    self.protocol_type       = "Treatment" #default
+    self.organizational_unit = Setting.get_value("oncore_default_organizational_unit")
+    self.protocol_type       = Setting.get_value("oncore_default_protocol_type")
   end
 
   def create_oncore_protocol

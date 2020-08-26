@@ -660,6 +660,36 @@
     "parent_value":   "true"
   },
   {
+    "key":            "oncore_default_library",
+    "value":          "Non-Oncology",
+    "friendly_name":  "OnCore Library Default Value",
+    "description":    "Default value for Library field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_organizational_unit",
+    "value":          "MUSC Enterprise",
+    "friendly_name":  "OnCore Organizational Unit Default Value",
+    "description":    "Default value for Organizational Unit when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_protocol_type",
+    "value":          "Treatment",
+    "friendly_name":  "OnCore Protocol Type Default Value",
+    "description":    "Default value for Protocol Type when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
     "key":            "oncore_endpoint_access",
     "value":          "[]",
     "friendly_name":  "OnCore Endpoint Access",

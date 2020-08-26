@@ -19,11 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Surveyor::BaseController < ApplicationController
-  protect_from_forgery
-  helper_method :current_user
-
   before_action :authenticate_identity!
-  before_action :set_highlighted_link
 
   protected
 
@@ -33,16 +29,12 @@ class Surveyor::BaseController < ApplicationController
 
   def authorize_survey_builder_access
     # If SystemSurvey-specific actions, verify the user is a Site Admin
-    if params[:type] && params[:type] == 'SystemSurvey' && !user_has_survey_access?
+    if params[:type] && params[:type] == 'SystemSurvey' && !current_user.is_site_admin?
       raise ActionController::RoutingError.new('Not Found')
     # If any other actions, verify the user is a Site Admin, Super User, Service Provider, or Catalog Manager
-    elsif !user_has_survey_access? && !user_has_form_access?
+    elsif !current_user.is_site_admin? && !user_has_form_access?
       raise ActionController::RoutingError.new('Not Found')
     end
-  end
-
-  def user_has_survey_access?
-    current_user.is_site_admin?
   end
 
   def user_has_form_access?

@@ -26,7 +26,6 @@ $ ->
   initialize_org_search()
   initialize_glyphicon()
 
-
   $(document).on 'change','#show_available_only', ->
     show_available_only = $(this).prop('checked')
     $.ajax
@@ -65,9 +64,9 @@ $ ->
         organization_id: organization_id
 
 
-##############################################
-########## Accordion Ajax Functions ##########
-##############################################
+  ##############################################
+  ########## Accordion Ajax Functions ##########
+  ##############################################
 
   $(document).on 'click', '.load_program_accordion .glyphicon-folder-close', ->
     program_id = $(this).parent().data('org-id')

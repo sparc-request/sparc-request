@@ -21,72 +21,52 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/visit/:id.json' do
-
-    before do
-      @visit = build(:visit)
-      @visit.save validate: false
-    end
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resource('visits', @visit.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Protocol root object' do
-          expect(response.body).to include('"visit":')
-        end
-      end
-    end
+  describe 'GET /api/v1/visit/:id.json' do
+    let!(:visit) { create(:visit_without_validations) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'visits', id: visit.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('visits', @visit.id, 'shallow') }
-
-      it 'should respond with a single shallow visit' do
-        expect(response.body).to eq("{\"visit\":{\"sparc_id\":#{@visit.id},\"callback_url\":\"https://127.0.0.1:5000/v1/visits/#{@visit.id}.json\"}}")
+      it 'should respond with a shallow visit' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['visit']).to eq({
+          'sparc_id'      => visit.id,
+          'callback_url'  => visit.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'visits', id: visit.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('visits', @visit.id, 'full') }
-
-      it 'should respond with a Protocol' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:visit).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['visit'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an visit and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['visit']).to eq(
+          visit.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'      => visit.id,
+            'callback_url'  => visit.remote_service_callback_url
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'visits', id: visit.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('visits', @visit.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of visits and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:visit).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items_visit', 'visit_group').
-                                sort
-
-        expect(parsed_body['visit'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an visit and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['visit']).to eq(
+          visit.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'          => visit.id,
+            'callback_url'      => visit.remote_service_callback_url,
+            'line_items_visit'  => nil,
+            'visit_group'       => nil
+          })
+        )
       end
     end
   end

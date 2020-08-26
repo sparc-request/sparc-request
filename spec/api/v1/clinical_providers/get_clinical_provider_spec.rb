@@ -21,69 +21,52 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/clinical_provider/:id.json' do
-
-    before { @clinical_provider = create(:clinical_provider_with_identity_and_organization) }
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resource('clinical_providers', @clinical_provider.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a ClinicalProvider root object' do
-          expect(response.body).to include('"clinical_provider":')
-        end
-      end
-    end
+  describe 'GET /api/v1/clinical_provider/:id.json' do
+    let!(:clinical_provider) { create(:clinical_provider_without_validations) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'clinical_providers', id: clinical_provider.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('clinical_providers', @clinical_provider.id, 'shallow') }
-
-      it 'should respond with a single shallow clinical_provider' do
-        expect(response.body).to eq("{\"clinical_provider\":{\"sparc_id\":#{@clinical_provider.id},\"callback_url\":\"https://127.0.0.1:5000/v1/clinical_providers/#{@clinical_provider.id}.json\"}}")
+      it 'should respond with a shallow clinical_provider' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['clinical_provider']).to eq({
+          'sparc_id'      => clinical_provider.id,
+          'callback_url'  => clinical_provider.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'clinical_providers', id: clinical_provider.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('clinical_providers', @clinical_provider.id, 'full') }
-
-      it 'should respond with a ClinicalProvider' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:clinical_provider).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['clinical_provider'].keys.sort).to eq(expected_attributes)
+      it 'should respond with a clinical_provider and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['clinical_provider']).to eq(
+          clinical_provider.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'      => clinical_provider.id,
+            'callback_url'  => clinical_provider.remote_service_callback_url
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'clinical_providers', id: clinical_provider.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('clinical_providers', @clinical_provider.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of clinical_providers and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:clinical_provider).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'identity', 'organization').
-                                sort
-
-        expect(parsed_body['clinical_provider'].keys.sort).to eq(expected_attributes)
+      it 'should respond with a clinical_providers and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['clinical_provider']).to eq(
+          clinical_provider.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'          => clinical_provider.id,
+            'callback_url'      => clinical_provider.remote_service_callback_url,
+            'identity'          => nil,
+            'organization'      => nil
+          })
+        )
       end
     end
   end

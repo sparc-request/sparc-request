@@ -30,7 +30,7 @@ module RemotelyNotifiable
 
   def remote_service_callback_url
     if self.persisted?
-      "#{ENV.fetch('ROOT_URL')}/#{Setting.get_value("current_api_version")}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
+      "#{ENV.fetch('ROOT_URL')}/api/#{Setting.get_value("current_api_version")}/#{self.class.to_s.pluralize.underscore}/#{self.id}.json"
     end
   end
 

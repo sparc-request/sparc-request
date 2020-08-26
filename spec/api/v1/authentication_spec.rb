@@ -21,60 +21,25 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
+  let!(:protocol) { create(:protocol_without_validations) }
 
   describe 'authentication' do
-
-    before do
-      @protocol = build(:protocol)
-      @protocol.save validate: false
-    end
-
     context 'success' do
-
-      before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'shallow') }
+      before { send_api_get_request(resource: 'protocols', id: protocol.id) }
 
       it 'should allow the request' do
         expect(response.code).to eq('200')
+        expect(JSON.parse(response.body)).to have_key('protocol')
       end
     end
 
     context 'failure' do
-
-      context 'bad username' do
-
-        before do
-          bad_username = 'bad_username'
-
-          http_login(bad_username, Setting.get_value("remote_service_notifier_password"))
-
-          get "/v1/protocols/#{@protocol.id}.json", headers: @env
-        end
+      context 'invalid token' do
+        before { send_api_get_request(resource: 'protocols', id: protocol.id, token: 'asd123') }
 
         it 'should not allow the request' do
           expect(response.code).to eq('401')
-        end
-
-        it 'should not respond' do
-          expect(response.body).to be_empty
-        end
-      end
-
-      context 'bad password' do
-
-        before do
-          bad_password = 'bad_password'
-
-          http_login(Setting.get_value("remote_service_notifier_username"), bad_password)
-
-          get "/v1/protocols/#{@protocol.id}.json", headers: @env
-        end
-
-        it 'should not allow the request' do
-          expect(response.code).to eq('401')
-        end
-
-        it 'should not respond' do
-          expect(response.body).to be_empty
+          expect(JSON.parse(response.body)).to have_key('error')
         end
       end
     end

@@ -39,7 +39,6 @@
     }
 
     .fixed-table-toolbar, .fixed-table-pagination {
-      @extend .border-top;
       padding: 0 1rem;
 
       &> * {
@@ -49,6 +48,10 @@
       .columns {
         margin-left: 5px;
       }
+    }
+
+    .fixed-table-pagination {
+      border-top: $border-width solid $border-color;
     }
 
     .fixed-table-loading {

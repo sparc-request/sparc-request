@@ -19,6 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
+  #################
+  ### API Setup ###
+  #################
+
+  mount API::Base => '/api'
+
+  use_doorkeeper scope: 'api' do
+    controllers applications: 'admin/applications',
+                tokens: 'api/tokens'
+  end
+
   ####################
   ### Devise Setup ###
   ####################
@@ -174,6 +185,18 @@ SparcRails::Application.routes.draw do
 
   match 'services/:service_id' => 'service_requests#catalog', via: [:get]
   match 'organizations/:organization_id' => 'service_requests#catalog', via: [:get]
+
+  namespace :admin do
+    resources :applications, only: [:index, :new, :create, :edit, :update, :destroy] do
+      member do
+        get :regenerate_secret
+      end
+
+      resources :access_requests, only: [:index]
+    end
+
+    root to: 'applications#index'
+  end
 
   ##### sparc-services routes brought in and name-spaced
   namespace :catalog_manager do
@@ -353,8 +376,6 @@ SparcRails::Application.routes.draw do
       end
     end
   end
-
-  mount API::Base => '/'
 
   root to: 'service_requests#catalog'
 

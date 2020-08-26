@@ -21,109 +21,59 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/irb_records/:id.json' do
-
-    before do
-      @irb_record = create(:irb_record)
-    end
-
-    context 'response params' do
-      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a irb_record root object' do
-          expect(response.body).to include('"irb_record":')
-        end
-      end
-    end
+  describe 'GET /api/v1/irb_record/:id.json' do
+    let!(:irb_record) { irb = create(:irb_record_without_validations)}
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'irb_records', id: irb_record.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'shallow') }
-
-      it 'should respond with a single shallow irb_record' do
-        expect(response.body).to eq("{\"irb_record\":{\"sparc_id\":#{@irb_record.id},\"callback_url\":\"https://127.0.0.1:5000/v1/irb_records/#{@irb_record.id}.json\"}}")
+      it 'should respond with a shallow irb_record' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['irb_record']).to eq({
+          'sparc_id'      => irb_record.id,
+          'callback_url'  => irb_record.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'irb_records', id: irb_record.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'full') }
-
-      it 'should respond with an IrbRecord' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:irb_record).attributes.
-                                keys.
-                                reject{ |key| ['id','created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'study_phase_values').
-                                sort
-
-        expect(parsed_body['irb_record'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an irb_record and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['irb_record']).to eq(
+          irb_record.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'                  => irb_record.id,
+            'callback_url'              => irb_record.remote_service_callback_url,
+            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_s(:db),
+            'irb_approval_date'         => irb_record.irb_approval_date.to_s(:db),
+            'irb_expiration_date'       => irb_record.irb_expiration_date.to_s(:db),
+            'study_phase_values'        => []
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'irb_records', id: irb_record.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('irb_records', @irb_record.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of irb_record and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:irb_record).attributes.
-                                keys.
-                                reject{ |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'study_phase_values', 'human_subjects_info').
-                                sort
-
-        expect(parsed_body['irb_record'].keys.sort).to eq(expected_attributes)
-      end
-    end
-
-    context 'request for :shallow record with a bogus ID' do
-
-     before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'shallow') }
-
-     it 'should respond with a 404 and JSON content type' do
-       expect(response.status).to eq(404)
-       expect(response.content_type).to eq('application/json')
-       parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['irb_record']).to eq(nil)
-       expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
-     end
-   end
-
-   context 'request for :full record with a bogus ID' do
-
-    before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'full') }
-
-    it 'should respond with a 404 and JSON content type' do
-      expect(response.status).to eq(404)
-      expect(response.content_type).to eq('application/json')
-      parsed_body         = JSON.parse(response.body)
-      expect(parsed_body['irb_record']).to eq(nil)
-      expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
-    end
-  end
-
-    context 'request for :full_with_shallow_reflections record with a bogus ID' do
-
-      before { cwf_sends_api_get_request_for_resource('irb_records', -1, 'full_with_shallow_reflections') }
-
-      it 'should respond with a 404 and JSON content type' do
-        expect(response.status).to eq(404)
-        expect(response.content_type).to eq('application/json')
-        parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['irb_record']).to eq(nil)
-        expect(parsed_body['error']).to eq("IrbRecord not found for id=-1")
+      it 'should respond with an irb_record and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['irb_record']).to eq(
+          irb_record.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'                  => irb_record.id,
+            'callback_url'              => irb_record.remote_service_callback_url,
+            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_s(:db),
+            'irb_approval_date'         => irb_record.irb_approval_date.to_s(:db),
+            'irb_expiration_date'       => irb_record.irb_expiration_date.to_s(:db),
+            'study_phase_values'        => [],
+            'human_subjects_info'       => nil
+          })
+        )
       end
     end
   end

@@ -78,12 +78,12 @@ class Dashboard::Breadcrumber
 
   def protocol_label_and_url
     protocol_id = @crumbs[:protocol_id]
-    protocol_id ? ["(#{protocol_id}) " + Protocol.find(protocol_id).try(:short_title), "/dashboard/protocols/#{protocol_id}"] : nil
+    protocol_id ? [("(#{protocol_id}) " + Protocol.find(protocol_id).short_title).truncate(50), "/dashboard/protocols/#{protocol_id}"] : nil
   end
 
   def ssr_label_and_url
     sub_service_request_id = @crumbs[:sub_service_request_id]
-    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).label, "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
+    sub_service_request_id ? [SubServiceRequest.find(sub_service_request_id).label.truncate(50), "/dashboard/sub_service_requests/#{sub_service_request_id}"] : nil
   end
 
   def notifications_label_and_url

@@ -19,10 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class CleanUpFirstDraftEditableStatuses < ActiveRecord::Migration[5.1]
-
-  class EditableStatus < ApplicationRecord
-  end
-
   def change
     # first_draft was removed from EditableStatuses because it is not present in AVAILABLE_STATUSES
     EditableStatus.where(status: 'first_draft').destroy_all

@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'actionpack'
 gem 'activerecord-import' # Use this more! In particular for arms/calendar creation
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
@@ -27,6 +28,7 @@ gem 'deep_cloneable', '~> 3.0.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.7'
+gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
 gem 'execjs'

@@ -24,6 +24,7 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
   ActiveRecord::Base.transaction do
     service = Service.find(args[:service_id])
     dest_org = Organization.find(args[:organization_id])
+    puts dest_org.inspect
     # service will now belong to SSR's with this organization:
     dest_org_process_ssrs = dest_org.process_ssrs_parent
 
@@ -44,20 +45,27 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
         else
           # Find a destination SSR for service. Use an existing one
           # or create one if necessary.
-          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization: process_ssrs_parent, status: ssr.status)
+          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization_id: dest_org_process_ssrs.id, status: ssr.status)
             dest_ssr = ssr.service_request.sub_service_requests.create(
-              organization: process_ssrs_parent,
-              status:       ssr.status
+              organization_id: dest_org_process_ssrs.id,
+              status:       ssr.status,
+              service_request_id: ssr.service_request_id,
+              owner_id: ssr.owner_id,
+              ssr_id: ssr.ssr_id,
+              created_at: ssr.created_at,
+              in_work_fulfillment: ssr.in_work_fulfillment,
+              service_requester_id: ssr.service_requester_id,
+              submitted_at: ssr.submitted_at,
+              protocol_id: ssr.protocol_id,
+              imported_to_fulfillment: ssr.imported_to_fulfillment,
+              synch_to_fulfillment: ssr.synch_to_fulfillment
             )
 
-            # Move over old SSR attributes.
-            old_attributes = ssr.attributes
-            # ! needed, since only it will return the _other_ attributes.
-            copy_over_attributes = old_attributes.
-              slice!(*%w(id ssr_id organization_id org_tree_display status))
-            dest_ssr.assign_attributes(copy_over_attributes, without_protection: true)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
+            puts "Created new ssr with id of #{dest_ssr.id}"
+            puts "Old ssr is #{ssr.id}"
+            puts "-" * 100
           end
           # Move LineItems.
           ssr.line_items.where(service: service).each do |li|

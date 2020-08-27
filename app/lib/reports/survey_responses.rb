@@ -43,6 +43,7 @@ class SurveyResponseReport < ReportingModule
     attrs["SRID"] = "respondable.is_a?(ServiceRequest) ? respondable.id : respondable.try(:display_id)"
     attrs["User ID"] = :identity_id
     attrs["User Name"] = "identity.try(:full_name)"
+    attrs["User Email"] = "identity.try(:email)"
     attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
     if params[:system_survey_id]

@@ -28,10 +28,13 @@ $("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('
 <% end %>
 <% end %>
 <% else %>
+$(".visit-group-<%= @visit_group.id %>").popover('dispose')
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
 
 adjustCalendarHeaders()
 
-$('#modalContainer').modal('hide')
+$(".visit-group-<%= @visit_group.id %>").trigger('focus')
+
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% end %>

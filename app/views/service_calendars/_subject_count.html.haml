@@ -20,7 +20,7 @@
 
 - editable = editable && !(service_request.protocol.locked? || merged)
 
-%td.subject-count.text-center{ colspan: 2, class: editable ? 'editable' : '', title: number_with_delimiter(liv.subject_count, delimiter: ','), data: { toggle: 'tooltip' } }
+%td.subject-count.text-center{ colspan: 2, tabindex: 0, class: editable ? 'editable' : '', title: number_with_delimiter(liv.subject_count, delimiter: ','), data: { toggle: 'tooltip' } }
   - if editable
     = link_to number_with_delimiter(liv.subject_count, delimiter: ','), edit_line_items_visit_path(liv, srid: service_request.try(:id), ssrid: sub_service_request.try(:id), field: 'subject_count', page: page, tab: tab), remote: true
   - else

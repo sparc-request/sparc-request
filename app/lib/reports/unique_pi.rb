@@ -60,11 +60,13 @@ class UniquePiReport < ReportingModule
 
     attrs["Unique PI Last Name"] = :last_name
     attrs["Unique PI First Name"] = :first_name
+    attrs["Email"] = :email
     attrs["Institution"] = "try(:professional_org_lookup, 'institution')"
     attrs["College"]     = "try(:professional_org_lookup, 'college')"
     attrs["Department"]  = "try(:professional_org_lookup, 'department')"
     attrs["Division"]    = "try(:professional_org_lookup, 'division')"
-
+    attrs["ERA Commons Name"] = :era_commons_name
+    attrs["orcid"] = :orcid
     attrs
   end
 

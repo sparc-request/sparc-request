@@ -19,3 +19,5 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $('#modalContainer').modal('hide')
+
+$("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: nil, tab: @tab, merged: false, consolidated: false, pages: @pages, page: @page %>").addClass('active show')

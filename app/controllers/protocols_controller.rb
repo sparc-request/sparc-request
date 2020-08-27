@@ -65,7 +65,18 @@ class ProtocolsController < ApplicationController
   end
 
   def update_billing
-    @protocol.update_attributes(protocol_params)
+    @protocol.all_research_billing = protocol_params[:all_research_billing]
+    @protocol.save(validate: false)
+    @service_request = @protocol.service_requests.first
+    @tab = 'billing_strategy'
+    setup_calendar_pages
+    research_billing = @protocol.all_research_billing
+    @protocol.visits.each do |visit|
+      if visit.indicated? 
+        unit_minimum = visit.service.displayed_pricing_map.unit_minimum
+        visit.update_attributes(research_billing_qty: research_billing ? unit_minimum : 0, insurance_billing_qty: research_billing ? 0 : unit_minimum)
+      end
+    end
   end
 
   def update

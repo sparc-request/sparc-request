@@ -158,13 +158,14 @@ en:
         header: "Protocols"
         short_title: "Short Title"
         request_sent: "Request to access protocol %{protocol_id} sent!"
+        request_access: "Request Access"
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
-          request_access: "Request access to this protocol"
+          request_access: "Request access to this protocol from a selected authorized user"
 
       service_requests:
         header: "Requests - %{status} - %{date}"

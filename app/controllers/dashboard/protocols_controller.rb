@@ -21,7 +21,7 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
   include ProtocolsControllerShared
 
-  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :request_access]
+  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
@@ -188,6 +188,20 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = controller.instance_variable_get(:@protocol)
 
     flash[:success] = t('protocols.change_type.updated')
+
+    respond_to :js
+  end
+
+  def push_to_oncore
+    if @protocol.is_a?(Study)
+      oncore_protocol = OncoreProtocol.new(@protocol)
+      response = oncore_protocol.create_oncore_protocol
+      if response.success?
+        flash[:success] = I18n.t('protocols.summary.oncore.pushed_to_oncore')
+      else
+        @http_error = "#{response.code}: #{response.message}"
+      end
+    end
 
     respond_to :js
   end

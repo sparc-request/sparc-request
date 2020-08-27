@@ -17,53 +17,44 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+require 'rails_helper'
 
-class ProfessionalOrganization < ApplicationRecord
-  # In order from most general to least.
-  ORG_TYPES = ['institution', 'college', 'department', 'division'].freeze
-  audited
+RSpec.describe 'User pushes a study to OnCore', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  belongs_to :parent, class_name: "ProfessionalOrganization"
+  stub_config("use_oncore", true)
+  stub_config("oncore_endpoint_access", ['jug2'])
 
-  scope :institutions, -> {
-    where(org_type: 'institution')
-  }
+  let(:auth_path) { "/forte-platform-web/api/oauth/token.json" }
+  let(:create_protocol_path) { "/oncore-api/rest/protocols.json" }
 
-  scope :colleges, -> {
-    where(org_type: 'college')
-  }
+  before :each do
+    study = create(:study_federally_funded, primary_pi: jug2)
 
-  scope :departments, -> {
-    where(org_type: 'department')
-  }
-
-  scope :divisions, -> {
-    where(org_type: 'division')
-  }
-
-  # Returns collection like [greatgrandparent, grandparent, parent].
-  def parents
-    parent ? (parent.parents + [parent]) : []
+    visit dashboard_protocol_path(study)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.summary.oncore.push_to_oncore')
+    wait_for_javascript_to_finish
   end
 
-  scope :institutions, -> { where(org_type: 'institution').order(:name) }
-
-  # Returns collection like [greatgrandparent, grandparent, parent, self].
-  def parents_and_self
-    parents + [self]
+  context 'OnCore servers accessible' do
+    it 'should contact OnCore servers twice' do
+      # Once to authenticate, once to create the study in OnCore
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+      expect(a_request(:post, Setting.get_value("oncore_api")+create_protocol_path)).to have_been_made.once
+    end
   end
 
-  def children
-    ProfessionalOrganization.where(parent_id: id)
-  end
+  context 'OnCore servers inaccessible', remote_service: :unavailable do
+    it 'should contact OnCore servers once' do
+      # Authenticate once
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+    end
 
-  def self_and_siblings
-    ProfessionalOrganization.where(parent_id: parent_id)
-  end
-
-  def department
-    return self.parent if self.org_type == 'division'
-    return self if self.org_type == 'department'
-    return nil
+    it 'should display HTTP error' do
+      expect(page).to have_content(I18n.t('protocols.summary.oncore.error'))
+      expect(page).to have_content('500:')
+    end
   end
 end

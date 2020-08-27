@@ -637,6 +637,12 @@ class Protocol < ApplicationRecord
     self.funding_source_based_on_status == 'industry'
   end
 
+  def push_to_oncore
+    # POST /protocols.json
+    oncore_protocol = OncoreProtocol.new(self)
+    oncore_protocol.create_oncore_protocol
+  end
+
   #############
   ### FORMS ###
   #############

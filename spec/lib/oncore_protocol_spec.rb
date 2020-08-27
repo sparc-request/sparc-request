@@ -18,13 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
+require "rails_helper"
 
-  config.before(:each) do
-    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 201)
+RSpec.describe OncoreProtocol do
+
+  let(:auth_path) { "/forte-platform-web/api/oauth/token.json" }
+  let(:create_protocol_path) { "/oncore-api/rest/protocols.json" }
+
+  before :each do
+    pi = create(:identity)
+    study = create(:study_federally_funded, primary_pi: pi)
+    @oncore_protocol = OncoreProtocol.new(study)
   end
 
-  config.before(:each, remote_service: :unavailable) do
-    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 500)
+  describe '#create_oncore_protocol' do
+    it 'should send a POST request to OnCore twice' do
+      @oncore_protocol.create_oncore_protocol
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+      expect(a_request(:post, Setting.get_value("oncore_api")+create_protocol_path)).to have_been_made.once
+    end
+  end
+
+  describe '#authenticate' do
+    it 'should send a POST request to OnCore once' do
+      @oncore_protocol.authenticate
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+    end
+
+    it 'should set the auth token' do
+      @oncore_protocol.authenticate
+      expect(@oncore_protocol.auth).to eq("Bearer some_token_value")
+    end
   end
 end

@@ -43,8 +43,6 @@ RSpec.describe ProtocolsHelper, type: :helper do
     end
   end
 
-
-
   describe '#edit_protocol_button' do
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
@@ -73,7 +71,36 @@ RSpec.describe ProtocolsHelper, type: :helper do
     end
   end
 
+  describe '#push_to_oncore_button' do
+    before(:each) {
+      ActionView::Base.send(:define_method, :current_user) { FactoryBot.create(:identity, ldap_uid: "id@musc.edu") }
+      allow(helper).to receive(:in_dashboard?).and_return(true)
+    }
 
+    context 'with OnCore' do
+      stub_config("use_oncore", true)
+
+      context 'with permissions' do
+        stub_config("oncore_endpoint_access", ["id@musc.edu"])
+        it 'should render the button' do
+          expect(helper).to receive(:link_to).with(push_to_oncore_dashboard_protocol_path(protocol), any_args)
+          helper.push_to_oncore_button(protocol)
+        end
+      end
+
+      context 'without permissions' do
+        it 'should not render the button' do
+          expect(helper.push_to_oncore_button(protocol)).to be_nil
+        end
+      end
+    end
+
+    context 'without OnCore' do
+      it 'should not render the button' do
+        expect(helper.push_to_oncore_button(protocol)).to be_nil
+      end
+    end
+  end
 
   describe '#archive_protocol_button' do
     before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }

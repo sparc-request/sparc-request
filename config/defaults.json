@@ -650,6 +650,56 @@
     "parent_value":   ""
   },
   {
+    "key":            "oncore_api",
+    "value":          "https://youroncoreserver.yourinstitution.tld",
+    "friendly_name":  "OnCore API URL",
+    "description":    "The URL for your institution's OnCore API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_department",
+    "value":          "Other",
+    "friendly_name":  "OnCore Department Default Value",
+    "description":    "Default value for Primary PI's Department field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_library",
+    "value":          "Non-Oncology",
+    "friendly_name":  "OnCore Library Default Value",
+    "description":    "Default value for Library field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_organizational_unit",
+    "value":          "MUSC Enterprise",
+    "friendly_name":  "OnCore Organizational Unit Default Value",
+    "description":    "Default value for Organizational Unit when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_protocol_type",
+    "value":          "Treatment",
+    "friendly_name":  "OnCore Protocol Type Default Value",
+    "description":    "Default value for Protocol Type when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
     "key":            "oncore_endpoint_access",
     "value":          "[]",
     "friendly_name":  "OnCore Endpoint Access",

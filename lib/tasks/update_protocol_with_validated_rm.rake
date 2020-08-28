@@ -51,9 +51,11 @@ namespace :data do
         protocol_to_update.rmid_validated = true
         protocol_to_update.save(validate: false)
 
-        if protocol_to_update.has_human_subject_info?
+        if protocol_to_update.has_human_subject_info? && protocol_to_update.human_subjects_info.irb_records.any?
           protocol_to_update
             .human_subjects_info
+            .irb_records
+            .first
             .update_attributes(
               pro_number:                 vrm['eirb_pro_number'],
               initial_irb_approval_date:  vrm['date_initially_approved'],

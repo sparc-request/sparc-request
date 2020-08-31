@@ -66,7 +66,7 @@ class UniquePiReport < ReportingModule
     attrs["Department"]  = "try(:professional_org_lookup, 'department')"
     attrs["Division"]    = "try(:professional_org_lookup, 'division')"
     attrs["ERA Commons Name"] = :era_commons_name
-    attrs["orcid"] = :orcid
+    attrs["ORCID"] = :orcid
     attrs
   end
 

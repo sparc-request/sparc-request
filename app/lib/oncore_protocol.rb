@@ -52,7 +52,7 @@ class OncoreProtocol
                                   department: self.department,
                                   organizationalUnit: self.organizational_unit,
                                   protocolType: self.protocol_type
-                                })
+                                }.to_json)
     else
       return auth_response
     end
@@ -65,7 +65,7 @@ class OncoreProtocol
                                 client_id: ENV.fetch('oncore_client_id'),
                                 client_secret: ENV.fetch('oncore_client_secret'),
                                 grant_type: 'client_credentials'
-                              })
+                              }.to_json)
     if response.success?
       self.auth = "Bearer " + JSON.parse(response)['access_token']
     end

@@ -18,66 +18,79 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc 'Moves a Service to another Organization'
+desc 'Moves a Service or Services to another Organization'
 
-task :move_service, [:service_id, :organization_id] => :environment do |t, args|
+task move_service: :environment do
   ActiveRecord::Base.transaction do
-    service = Service.find(args[:service_id])
-    dest_org = Organization.find(args[:organization_id])
-    puts dest_org.inspect
-    # service will now belong to SSR's with this organization:
-    dest_org_process_ssrs = dest_org.process_ssrs_parent
+    services = Service.find(34054, 34055, 34056)
+    destination_org = Organization.find(350)
+    count = 0
 
-    puts "Moving `#{service.name}` to `#{dest_org.name}`"
+    doxy_ssrs_created = CSV.open("tmp/doxy_ssrs.csv", "w")
+    doxy_ssrs_created << ['Original SSR', 'New SSR', 'Protocol ID']
 
-    service.service_requests.each do |sr|
-      # SSR's that contain LineItems that need to be moved
-      ssrs = sr.sub_service_requests.
-        where.not(organization: dest_org_process_ssrs).
-        joins(:line_items).
-        where(line_items: { service_id: service.id })
+    services.each do |service|
 
-      ssrs.each do |ssr|
-        if ssr_contains_just_this_service?(ssr, service)
+      puts "Moving `#{service.name}` to `#{destination_org.name}`"
+
+      sub_service_requests = service.sub_service_requests
+
+      sub_service_requests.each do |ssr|
+        if just_line_items_for_our_services?(ssr, services)
           # Don't really need to move anything. Just move the SSR
-          # to another Organization.
-          ssr.update!(organization_id: dest_org_process_ssrs.id)
+          # to the new organization.
+          puts "Nothing to move for SSR #{ssr.id}."
+          ssr.organization_id = destination_org.id
+          ssr.save(validate: false)
         else
-          # Find a destination SSR for service. Use an existing one
-          # or create one if necessary.
-          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization_id: dest_org_process_ssrs.id, status: ssr.status)
-            dest_ssr = ssr.service_request.sub_service_requests.create(
-              organization_id: dest_org_process_ssrs.id,
-              status:       ssr.status,
-              service_request_id: ssr.service_request_id,
-              owner_id: ssr.owner_id,
-              ssr_id: ssr.ssr_id,
-              created_at: ssr.created_at,
-              in_work_fulfillment: ssr.in_work_fulfillment,
-              service_requester_id: ssr.service_requester_id,
-              submitted_at: ssr.submitted_at,
-              protocol_id: ssr.protocol_id,
+          # We know now we have a mixed bag and will need a new sub service request
+          # for the line items belonging to our service. We'll leave the other line items
+          # on the original SSR
+          puts "New SSR created."
+          new_ssr = ssr.service_request.sub_service_requests.create(
+              organization_id:         destination_org.id,
+              status:                  ssr.status,
+              service_request_id:      ssr.service_request_id,
+              owner_id:                ssr.owner_id,
+              ssr_id:                  ssr.ssr_id,
+              in_work_fulfillment:     ssr.in_work_fulfillment,
+              service_requester_id:    ssr.service_requester_id,
+              submitted_at:            ssr.submitted_at,
+              protocol_id:             ssr.protocol_id,
               imported_to_fulfillment: ssr.imported_to_fulfillment,
-              synch_to_fulfillment: ssr.synch_to_fulfillment
+              synch_to_fulfillment:    ssr.synch_to_fulfillment
             )
 
-            dest_ssr.save(validate: false)
-            dest_ssr.update_org_tree
-            puts "Created new ssr with id of #{dest_ssr.id}"
-            puts "Old ssr is #{ssr.id}"
+          new_ssr.save(validate: false)
+          new_ssr.update_org_tree
+          if new_ssr.in_work_fulfillment || new_ssr.imported_to_fulfillment
             puts "-" * 100
+            puts "This ssr is in fulfillment. Old = #{ssr.id} new = #{new_ssr.id}"
+            puts "-" * 100
+            count += ssr.line_items.count
+            doxy_ssrs_created << [ssr.id, new_ssr.id, ssr.protocol_id]
           end
-          # Move LineItems.
-          ssr.line_items.where(service: service).each do |li|
-            li.update!(sub_service_request: dest_ssr)
+
+          ssr.line_items.each do |line_item|
+            if services.include?(line_item.service)
+              line_item.sub_service_request_id = new_ssr.id
+              line_item.save(validate: false)
+            end
           end
         end
       end
+      service.update!(organization_id: destination_org.id)
+      puts count
     end
-    service.update!(organization_id: dest_org.id)
   end
 end
 
-def ssr_contains_just_this_service?(ssr, service)
-  ssr.line_items.pluck(:service_id).uniq == [service.id]
+def just_line_items_for_our_services?(ssr, services)
+  ssr.line_items.each do |line_item|
+    if !services.include?(line_item.service)
+      return false
+    end
+  end
+
+  return true
 end

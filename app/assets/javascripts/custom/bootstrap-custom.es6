@@ -22,6 +22,16 @@
   $.extend($.fn.modal.Constructor.Default, { backdrop: 'static' });
 
   $(document).ready( function() {
+    // Prevent form multi-submit during a modal closing
+    // by stopping Rails remote requests during a modal transitioning
+    $(document).on('ajax:beforeSend', '.modal form', event => {
+      $modal = $(event.target).parents('.modal')
+      console.log($modal.data('bs.modal')._isTransitioning)
+      if ($modal.data('bs.modal')._isTransitioning)
+        event.preventDefault()
+        event.stopImmediatePropagation()
+    })
+
     // Allow popovers to be closed via an optional close button
     $(document).on('click', '.popover .close', event => {
       event.preventDefault();

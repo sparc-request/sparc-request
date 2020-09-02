@@ -53,6 +53,7 @@ class OncoreProtocol
                                   organizationalUnit: self.organizational_unit,
                                   protocolType: self.protocol_type
                                 }.to_json)
+      log_request_and_response(response, true)
     else
       return auth_response
     end
@@ -66,10 +67,30 @@ class OncoreProtocol
                                 client_secret: ENV.fetch('oncore_client_secret'),
                                 grant_type: 'client_credentials'
                               }.to_json)
+    log_request_and_response(response)
+
     if response.success?
       self.auth = "Bearer " + JSON.parse(response)['access_token']
     end
 
     return response
+  end
+
+  # Log requests and responses without exposing any authentication information
+  def log_request_and_response(response, show_request_body=false)
+    request = response.request
+
+    # Use the OnCore logger, it's easier than digging through the Rails logger
+    logfile = File.join(Rails.root, '/log/', "OnCore-#{Rails.env}.log")
+    logger = ActiveSupport::Logger.new(logfile)
+
+    logger.info "\n----------------------------------------------------------------------------------"
+    logger.info "OnCore REST request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
+    logger.info "URI: " + request.uri.to_s
+    logger.info "HTTP method: " + request.http_method.to_s
+    if show_request_body
+      logger.info "Request Body:\n" + request.raw_body
+    end
+    logger.info "Response: " + response.to_s
   end
 end

@@ -54,6 +54,7 @@ class OncoreProtocol
                                   protocolType: self.protocol_type
                                 }.to_json)
       log_request_and_response(response, true)
+      return response
     else
       return auth_response
     end

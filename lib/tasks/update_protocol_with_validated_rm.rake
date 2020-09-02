@@ -66,6 +66,62 @@ namespace :data do
       end
       progress_bar.increment!
     end
+
+    validated_ids = validated_research_masters.map{|rmid| rmid['id']}
+
+    protocol_count = Protocol.where(rmid_validated: true).count
+    puts("\n\nChecking Existing validated protocols against current list:")
+    puts("Currently flagged protocols: #{protocol_count}")
+    puts("Number from RMID: #{validated_ids.size}")
+
+    bar2 = ProgressBar.new(protocol_count)
+
+    former_validated_protocols = []
+
+    Protocol.where(rmid_validated: true).find_each do |protocol|
+      unless validated_ids.include?(protocol.research_master_id)
+        protocol.update_attributes(rmid_validated: false)
+        former_validated_protocols << protocol.id
+      end
+
+      bar2.increment!
+    end
+
+    puts("Validated flag removed from: #{former_validated_protocols.size} Protocols")
+    puts("IDs: #{former_validated_protocols}")
+
+    puts ("\n\nChecking non-validated RMID protocols and updated info:")
+    print('Fetching from Research Master API...')
+
+    research_masters = HTTParty.get(
+      "#{Setting.get_value('research_master_api')}research_masters.json",
+      headers:{
+        'Content-Type' => 'application/json',
+        'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
+      }
+    )
+
+    rm_ids = research_masters.map{|rmid| rmid['id']}
+    non_validated_protocol_count = Protocol.where.not(research_master_id: nil).where(rmid_validated: false).count
+
+    puts("Protocols with rmid info: #{non_validated_protocol_count}")
+    puts("Number from RMID: #{research_masters.size}")
+
+    bar3 = ProgressBar.new(non_validated_protocol_count)
+
+    former_rmid_protocols = []
+
+    Protocol.where.not(research_master_id: nil).where(rmid_validated: false).find_each do |non_validated_protocol|
+      unless rm_ids.include?(non_validated_protocol.research_master_id)
+        non_validated_protocol.update_attributes(research_master_id: nil)
+        former_rmid_protocols << non_validated_protocol.id
+      end
+      bar3.increment!
+    end
+
+    puts("Research Master ID removed from: #{former_rmid_protocols.size} Protocols")
+    puts("IDs: #{former_rmid_protocols}")
+
   end
 end
 

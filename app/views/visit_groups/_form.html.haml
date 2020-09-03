@@ -22,7 +22,7 @@
   - disable_left = visit_group.position % VisitGroup.per_page == 1 || visit_group.higher_item.nil?
   - disable_right = visit_group.position % VisitGroup.per_page == 0 || visit_group.lower_item.nil?
 
-= form_for visit_group, remote: true, html: { class: 'w-100' } do |f|
+= form_for visit_group, remote: true, html: { class: 'w-100 visit-group-form' } do |f|
   = f.hidden_field :arm_id
   = hidden_field_tag :arm_id, visit_group.arm_id
   = hidden_field_tag :srid, service_request.try(:id)
@@ -33,8 +33,10 @@
     = hidden_field_tag "pages[#{arm_id}]", page
   .d-flex
     - if action_name == 'edit'
-      = link_to disable_left ? 'javascript:void(0)' : edit_visit_group_path(visit_group.higher_item, srid: @service_request.id), remote: true, class: ['btn btn-white rounded-0 d-flex align-items-center change-visit-btn', disable_left ? 'disabled' : ''], title: disable_left ? '' : t('visit_groups.previous', name: visit_group.higher_item.name), data: { toggle: 'tooltip', placement: 'left' } do
+      %button.btn.btn-white.rounded-0.d-flex.align-items-center.change-visit-btn{ type: 'submit', class: disable_left ? 'disabled' : '', title: disable_left ? '' : t('visit_groups.form.previous', name: visit_group.higher_item.name), data: { toggle: 'tooltip', placement: 'left', new_visit: 'previous' } }
         = icon('fas', 'chevron-left')
+      %button.btn.btn-white.rounded-0.d-flex.align-items-center.order-last.change-visit-btn{ type: 'submit', class: disable_right ? 'disabled' : '', title: disable_right ? '' : t('visit_groups.form.next', name: visit_group.lower_item.name), data: { toggle: 'tooltip', placement: 'right', new_visit: 'next' } }
+        = icon('fas', 'chevron-right')
     .flex-fill
       .form-group{ class: action_name == 'edit' ? 'mb-1' : '' }
         = f.label :name, class: 'required'
@@ -56,7 +58,7 @@
                 = t('visit_groups.form.move_note')
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-1' : '' }
           = f.label :position, class: 'required'
-          = f.select :position, visit_position_options(arm, visit_group), { include_blank: true }, class: 'selectpicker', disabled: visit_group.nil?, data: { style: action_name == 'edit' ? 'btn-sm btn-light dropdown-menu-right' : 'btn-light', size: 10 }
+          = f.select :position, visit_position_options(arm, visit_group), { include_blank: action_name == 'new' }, class: 'selectpicker', disabled: visit_group.nil?, data: { style: action_name == 'edit' ? 'btn-sm btn-light dropdown-menu-right' : 'btn-light', size: 10 }
       .form-row
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-2' : '' }
           = f.label :window_before, class: 'required'
@@ -64,9 +66,6 @@
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-2' : '' }
           = f.label :window_after, class: 'required'
           = f.number_field :window_after, class: ['form-control', action_name == 'edit' ? 'form-control-sm' : ''], min: 0
-    - if action_name == 'edit'
-      = link_to disable_right ? 'javascript:void(0)' : edit_visit_group_path(visit_group.lower_item, srid: @service_request.id), remote: true, class: ['btn btn-white rounded-0 d-flex align-items-center change-visit-btn', disable_right ? 'disabled' : ''], title: disable_right ? '' : t('visit_groups.next', name: visit_group.lower_item.name), data: { toggle: 'tooltip', placement: 'right' } do
-        = icon('fas', 'chevron-right')
   .modal-footer.d-flex.row.border-top.pb-0{ class: action_name == 'edit' ? 'justify-content-between pt-2' : 'pt-3' }
     - if action_name == 'edit'
       = delete_visit_group_button(visit_group, srid: service_request.try(:id), ssrid: sub_service_request.try(:id), tab: tab, page: page, pages: pages)

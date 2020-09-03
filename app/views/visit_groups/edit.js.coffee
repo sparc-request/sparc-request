@@ -22,12 +22,23 @@ $vg       = $(".visit-group-<%= @visit_group.id %>")
 title     = "#{I18n.t("visit_groups.edit")} <a href='#' class='close' data-dismiss='alert'>&times;</a>"
 $content  = $("<%= j render 'form', visit_group: @visit_group, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
 
+# If a different visit popover is already open, close it first
 if $('.visit-group-popover') && !$("form#edit_visit_group_<%= @visit_group.id %>").length
   $('.visit-group-popover').popover('hide')
   $('.visit-group.active').removeClass('active')
 
+# If the visit is already open
+# else open the visit as a popover
 if $(".visit-group-<%= @visit_group.id %>-popover").length
-  $vg.removeClass('active').popover('dispose')
+  # Close the popover if clicking the same visit to close it
+  # Use params[:visit_group] to make sure the popover stays open
+  # when changing the position attribute
+  # else
+  # Re-render the popover with updated content\
+  if <%= params[:visit_group].present? %>
+    $($('.visit-group-popover').data('bs.popover').tip).find('.popover-body').html($content)
+  else
+    $vg.removeClass('active').popover('dispose')
 else
   $vg.popover(
     title:      title

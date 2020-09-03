@@ -30,10 +30,18 @@ $("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('
 <% else %>
 $(".visit-group-<%= @visit_group.id %>").popover('dispose')
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
-
 adjustCalendarHeaders()
 
+# If changing the visit using the chevrons, open the new visit
+# else re-focus the visit for tabbing
+<% if params[:change_visit].present? %>
+$.ajax
+  method:   'GET'
+  dataType: 'script'
+  url:      "<%= edit_visit_group_path(params[:change_visit] == 'next' ? @visit_group.lower_item : @visit_group.higher_item, srid: @service_request.try(:id), ssrid: @sub_service_request.try(:id), tab: @tab, page: @page, pages: @pages) %>"
+<% else %>
 $(".visit-group-<%= @visit_group.id %>").trigger('focus')
+<% end %>
 
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

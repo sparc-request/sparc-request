@@ -26,7 +26,6 @@
     // by stopping Rails remote requests during a modal transitioning
     $(document).on('ajax:beforeSend', '.modal form', event => {
       $modal = $(event.target).parents('.modal')
-      console.log($modal.data('bs.modal')._isTransitioning)
       if ($modal.data('bs.modal')._isTransitioning)
         event.preventDefault()
         event.stopImmediatePropagation()

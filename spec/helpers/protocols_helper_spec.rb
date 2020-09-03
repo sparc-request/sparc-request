@@ -21,7 +21,7 @@
 require 'rails_helper'
 
 RSpec.describe ProtocolsHelper, type: :helper do
-  let!(:protocol) { create(:study_federally_funded) }
+  let!(:protocol) { create(:study_federally_funded, primary_pi: create(:identity)) }
 
   describe '#protocol_details_button' do
     context 'in dashboard' do
@@ -115,6 +115,34 @@ RSpec.describe ProtocolsHelper, type: :helper do
     context 'without permissions' do
       it 'should not render the button' do
         expect(helper.archive_protocol_button(protocol, permission: false)).to be_nil
+      end
+    end
+  end
+
+  describe '#display_requests_button' do
+    context 'with access' do
+      it 'should render Requests button with service requests' do
+        sr = create(:service_request_without_validations, protocol: protocol)
+        create(:sub_service_request_with_organization, service_request: sr, protocol: protocol)
+        expect(helper).to receive(:link_to).with(display_requests_dashboard_protocol_path(protocol), any_args)
+        helper.display_requests_button(protocol, true)
+      end
+
+      it 'should not render any button without service requests' do
+        expect(helper.display_requests_button(protocol, true)).to be_nil
+      end
+    end
+
+    context 'without access' do
+      it 'should render the Request Access button with service requests' do
+        create(:service_request_without_validations, protocol: protocol)
+        expect(helper).to receive(:link_to).with(anything, request_access_dashboard_protocol_path(protocol, recipient_id: 1), any_args)
+        helper.display_requests_button(protocol, false)
+      end
+
+      it 'should render the Request Access button without service requests' do
+        expect(helper).to receive(:link_to).with(anything, request_access_dashboard_protocol_path(protocol, recipient_id: 1), any_args)
+        helper.display_requests_button(protocol, false)
       end
     end
   end

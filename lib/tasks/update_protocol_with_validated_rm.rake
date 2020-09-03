@@ -23,6 +23,7 @@ require 'progress_bar'
 desc 'Updating Protocol with validated Research Master information'
 namespace :data do
   task update_protocol_with_validated_rm: :environment do
+
     print('Fetching from Research Master API...')
     validated_research_masters = HTTParty.get(
       "#{Setting.get_value('research_master_api')}validated_records.json",
@@ -80,7 +81,7 @@ namespace :data do
 
     Protocol.where(rmid_validated: true).find_each do |protocol|
       unless validated_ids.include?(protocol.research_master_id)
-        protocol.update_attributes(rmid_validated: false)
+        protocol.update_attribute(:rmid_validated, false)
         former_validated_protocols << protocol.id
       end
 
@@ -113,7 +114,7 @@ namespace :data do
 
     Protocol.where.not(research_master_id: nil).where(rmid_validated: false).find_each do |non_validated_protocol|
       unless rm_ids.include?(non_validated_protocol.research_master_id)
-        non_validated_protocol.update_attributes(research_master_id: nil)
+        non_validated_protocol.update_attribute(:research_master_id, nil)
         former_rmid_protocols << non_validated_protocol.id
       end
       bar3.increment!
@@ -121,6 +122,17 @@ namespace :data do
 
     puts("Research Master ID removed from: #{former_rmid_protocols.size} Protocols")
     puts("IDs: #{former_rmid_protocols}")
+
+    slack_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+    if slack_webhook.present?
+      notifier = Slack::Notifier.new(slack_webhook)
+      message =  "RMID update has been performed for SPARC in: #{Rails.env}"
+      message += "\nrmid_validated flags removed: #{former_validated_protocols.size}\n"
+      message += "\nProtocol IDs: #{former_validated_protocols}\n"
+      message += "\nresearch_master_ids removed: #{former_rmid_protocols.size}\n"
+      message += "\nProtocol IDs: #{former_rmid_protocols}\n"
+      notifier.ping(message)
+    end
 
   end
 end

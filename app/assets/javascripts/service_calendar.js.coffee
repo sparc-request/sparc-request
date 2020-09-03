@@ -37,6 +37,7 @@ $ ->
 
   $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
     $(this).find('.service-calendar-table thead tr th').css('top', 0)
+    $('.visit-group-popover').popover('dispose')
   ).on('shown.bs.collapse', '.service-calendar-container .collapse', ->
     adjustCalendarHeaders()
   )
@@ -116,6 +117,10 @@ $ ->
       dataType: 'script'
       url: "#{$form.attr('action')}/#{action}"
       data: $form.serialize()
+
+  $(document).on 'click', '.change-visit-btn', (e) ->
+    $form = $(this).parents('form')
+    $form.append("<input type='hidden' name='change_visit' value=#{$(this).data('new-visit')}>")
 
   ################################
   # Calendar Tab Services Toggle #

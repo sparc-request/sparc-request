@@ -31,10 +31,10 @@ RSpec.configure do |config|
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 201)
 
-    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols.json").
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols").
       to_return(status: 201)
 
-    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token.json").
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
       to_return(status: 200, body: { access_token: "some_token_value", expires_in: "300", token_type: "Bearer" }.to_json)
   end
 
@@ -42,7 +42,7 @@ RSpec.configure do |config|
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 500)
 
-    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token.json").
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
       to_return(status: 500)
   end
 end

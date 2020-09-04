@@ -30,7 +30,7 @@ class OncoreProtocol
     self.title               = study.title
     self.short_title         = study.short_title
     self.library             = Setting.get_value("oncore_default_library")
-    self.department          = study.primary_pi.professional_organization.try(:department) || Setting.get_value("oncore_default_department")
+    self.department          = study.primary_pi.professional_organization.try(:department_name) || Setting.get_value("oncore_default_department")
     self.organizational_unit = Setting.get_value("oncore_default_organizational_unit")
     self.protocol_type       = Setting.get_value("oncore_default_protocol_type")
   end
@@ -39,21 +39,22 @@ class OncoreProtocol
     auth_response = self.authenticate
     if auth_response.success?
     # Assumes that the push will fail if it already exists in OnCore, need to confirm
-      response = self.class.post('/oncore-api/rest/protocols.json',
+      response = self.class.post('/oncore-api/rest/protocols',
                                 headers: {
+                                  'Accept' => 'application/json',
                                   'Content-Type' => 'application/json',
                                   'Authorization' => self.auth
                                 },
                                 body: {
                                   protocolNo: self.protocol_no,
                                   title: self.title,
-                                  short_title: self.short_title,
+                                  shortTitle: self.short_title,
                                   library: self.library,
                                   department: self.department,
                                   organizationalUnit: self.organizational_unit,
                                   protocolType: self.protocol_type
                                 }.to_json)
-      log_request_and_response(response, true)
+      log_request_and_response(response)
       return response
     else
       return auth_response
@@ -61,24 +62,23 @@ class OncoreProtocol
   end
 
   def authenticate
-    response = self.class.post('/forte-platform-web/api/oauth/token.json',
+    response = self.class.post('/forte-platform-web/api/oauth/token',
                               headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' },
                               body: {
                                 client_id: ENV.fetch('oncore_client_id'),
                                 client_secret: ENV.fetch('oncore_client_secret'),
                                 grant_type: 'client_credentials'
                               }.to_json)
-    log_request_and_response(response)
 
     if response.success?
-      self.auth = "Bearer " + JSON.parse(response)['access_token']
+      self.auth = "Bearer " + JSON.parse(response.body)['access_token']
     end
 
     return response
   end
 
-  # Log requests and responses without exposing any authentication information
-  def log_request_and_response(response, show_request_body=false)
+  # Log requests and responses without exposing any authentication information in headers
+  def log_request_and_response(response)
     request = response.request
 
     # Use the OnCore logger, it's easier than digging through the Rails logger
@@ -89,9 +89,7 @@ class OncoreProtocol
     logger.info "OnCore REST request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     logger.info "URI: " + request.uri.to_s
     logger.info "HTTP method: " + request.http_method.to_s
-    if show_request_body
-      logger.info "Request Body:\n" + request.raw_body
-    end
-    logger.info "Response: " + response.to_s
+    logger.info "Request Body:\n" + request.raw_body
+    logger.info "Response:\n" + response.to_s
   end
 end

@@ -22,8 +22,8 @@ require "rails_helper"
 
 RSpec.describe OncoreProtocol do
 
-  let(:auth_path) { "/forte-platform-web/api/oauth/token.json" }
-  let(:create_protocol_path) { "/oncore-api/rest/protocols.json" }
+  let(:auth_path) { "/forte-platform-web/api/oauth/token" }
+  let(:create_protocol_path) { "/oncore-api/rest/protocols" }
 
   before :each do
     pi = create(:identity)

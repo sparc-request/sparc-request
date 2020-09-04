@@ -26,8 +26,8 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
   stub_config("use_oncore", true)
   stub_config("oncore_endpoint_access", ['jug2'])
 
-  let(:auth_path) { "/forte-platform-web/api/oauth/token.json" }
-  let(:create_protocol_path) { "/oncore-api/rest/protocols.json" }
+  let(:auth_path) { "/forte-platform-web/api/oauth/token" }
+  let(:create_protocol_path) { "/oncore-api/rest/protocols" }
 
   before :each do
     study = create(:study_federally_funded, primary_pi: jug2)

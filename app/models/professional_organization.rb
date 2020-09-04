@@ -61,9 +61,9 @@ class ProfessionalOrganization < ApplicationRecord
     ProfessionalOrganization.where(parent_id: parent_id)
   end
 
-  def department
-    return self.parent if self.org_type == 'division'
-    return self if self.org_type == 'department'
+  def department_name
+    return self.parent.name if self.org_type == 'division'
+    return self.name if self.org_type == 'department'
     return nil
   end
 end

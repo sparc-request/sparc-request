@@ -27,7 +27,7 @@ module CostAnalysis
             otf_item.quantity_type = line_item.quantity_type
             otf_item.unit_type = line_item.otf_unit_type
             otf_item.units_per_quantity = line_item.units_per_quantity
-            otf_item.total_dollars_per_study = Service.cents_to_dollars(line_item.service.displayed_pricing_map.full_rate * line_item.quantity)
+            otf_item.total_dollars_per_study = Service.cents_to_dollars(line_item.applicable_rate * line_item.quantity)
             otf_item.program_or_core = line_item.service.organization_hierarchy
 
             ssr_id = line_item.sub_service_request.ssr_id

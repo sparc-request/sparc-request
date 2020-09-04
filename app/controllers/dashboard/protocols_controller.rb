@@ -94,7 +94,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
-        if Setting.get_value("use_epic") && @protocol.selected_for_epic && Setting.get_value("validate_epic_users")
+        if Setting.get_value("use_epic") && @protocol.selected_for_epic && Setting.get_value("validate_epic_users") && @protocol.principal_investigators.include?(current_user)
           @malformed_project_role = @protocol.check_epic_user_rights
         end
       }

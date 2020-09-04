@@ -62,8 +62,8 @@ class ProfessionalOrganization < ApplicationRecord
   end
 
   def department
-    return self.parent if self.org_type == 'division'
-    return self if self.org_type == 'department'
+    return self.parent.name if self.org_type == 'division'
+    return self.name if self.org_type == 'department'
     return nil
   end
 end

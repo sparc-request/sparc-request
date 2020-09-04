@@ -41,3 +41,35 @@ th[data-toggle=tooltip] > label, td[data-toggle=tooltip] > label {
   margin-top: calc(#{$input-padding-y} + #{$input-border-width});
   margin-bottom: calc(#{$input-padding-y} + #{$input-border-width});
 }
+
+.copy-action-btn {
+  position: relative;
+  @extend .btn-primary;
+
+  .copy-action-content {
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    .copy-action {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .075s, visibility .075s;
+
+      &.copy-action-alt {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      &.copy-action-hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+  }
+}

@@ -46,20 +46,19 @@
     var type = element.getAttribute('data-type');
     var confirmText = element.getAttribute('data-confirm-text');
     var cancelText = element.getAttribute('data-cancel-text');
-    var customClass = element.getAttribute('data-class');
 
     Swal.fire({
       title: title || I18n.t('confirm.title') || "Are you sure?",
       text: text || (html ? "" : (I18n.t('confirm.text') || "This action cannot be undone.")),
       html: html || "",
-      type: type === null ? 'warning' : type,
+      icon: type === null ? 'warning' : type,
       showCancelButton: true,
       confirmButtonText: confirmText || I18n.t('confirm.confirm') || "Yes",
-      confirmButtonClass: 'btn btn-lg btn-primary mr-1',
       cancelButtonText: cancelText || I18n.t('confirm.cancel') || "No",
-      cancelButtonClass: 'btn btn-lg btn-secondary ml-1',
-      buttonsStyling: false,
-      customClass: customClass || ''
+      customClass: {
+        confirmButton: 'btn btn-lg btn-primary mr-1',
+        cancelButton: 'btn btn-lg btn-secondary ml-1'
+      }
     }).then(result => confirmed(element, result))
   }
 

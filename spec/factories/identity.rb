@@ -82,5 +82,7 @@ FactoryBot.define do
       create_list(:protocol_filter,
         evaluator.protocol_filter_count, identity: identity)
     end
+
+    factory :identity_without_validations, traits: [:without_validations]
   end
 end

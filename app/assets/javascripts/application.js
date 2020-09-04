@@ -90,6 +90,8 @@
 
 //= require service_calendar
 
+//= require admin/applications
+
 //= require dashboard/protocols
 //= require dashboard/notifications
 //= require dashboard/epic_queues

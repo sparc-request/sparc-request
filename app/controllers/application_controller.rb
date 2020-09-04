@@ -232,6 +232,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_site_admin
+    authorization_error unless current_user.is_site_admin?
+  end
+
   def authorize_funding_admin
     redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end

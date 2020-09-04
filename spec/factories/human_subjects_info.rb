@@ -21,5 +21,11 @@
 FactoryBot.define do
   factory :human_subjects_info do
     nct_number { Faker::Number.number(digits: 8).to_s }
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :human_subjects_info_without_validations, traits: [:without_validations]
   end
 end

@@ -18,9 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class DocumentGrouping < ApplicationRecord
-  audited
+<% if @errors %>
+$("[name^='doorkeeper_application']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='doorkeeper_application[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$('.edit_doorkeeper_application').replaceWith("<%= j render 'form', application: @application %>")
 
-  belongs_to :service_request
-  has_many :documents, :dependent => :destroy
-end
+updateUidAndSecret()
+
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+<% end %>

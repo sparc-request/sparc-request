@@ -27,5 +27,4 @@ $(".arm-<%= first_arm.id %>-container .calendar-links-container").html("<%= j re
 $(".arm-<%= @arm.id %>-container").remove()
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 
-
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

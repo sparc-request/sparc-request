@@ -57,18 +57,37 @@
     })
 
     $(document).on('click', '.nav-pills .nav-link:not(.active)', event => {
-      $this = $(event.target)
+      var $this = $(event.target)
       $this.parents('.nav-pills').find('.nav-link.active').removeClass('active');
       $this.addClass('active');
     })
 
     $(document).on('click', 'table.table-interactive tbody tr', event => {
-      el = event.target
+      var el      = event.target,
+          $link,
+          href,
+          remote;
 
       if (el.tagName == 'tr' && $(el).find('a:not(.dropdown-item)').length) {
-        window.location = $(el).find('a:not(.dropdown-item)').first().attr('href');
+        $link   = $(el).find('a:not(.dropdown-item)').first(),
+        href    = $link.attr('href'),
+        remote  = $link.data('remote') || false;
       } else if (el.tagName != 'a' && $(el).parents('tr').find('a:not(.dropdown-item)').length) {
-        window.location = $(el).parents('tr').find('a:not(.dropdown-item)').first().attr('href');
+        $link = $(el).parents('tr').find('a:not(.dropdown-item)').first(),
+        href    = $link.attr('href'),
+        remote  = $link.data('remote') || false;
+      }
+
+      if (href) {
+        if (remote) {
+          $.ajax({
+            type:     'get',
+            dataType: 'script',
+            url:      href
+          })
+        } else {
+          window.location = href;
+        }
       }
     })
   })

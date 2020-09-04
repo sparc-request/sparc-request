@@ -20,7 +20,7 @@
 
 module Shard
   module Fulfillment
-    class Base < ApplicationRecord
+    class Base < ActiveRecord::Base
       self.abstract_class = true
       establish_connection(FULFILLMENT_DB)
 

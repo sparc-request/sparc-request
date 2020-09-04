@@ -18,34 +18,30 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+require 'doorkeeper/grape/helpers'
+
 module SPARCCWF
-
   module V1
-
     require_relative 'entities.rb'
 
     class APIv1 < Grape::API
       include Grape::Extensions::Hashie::Mash::ParamBuilder
+      use ActionDispatch::RemoteIp
 
       require_relative 'validators_v1.rb'
       require_relative 'shared_params_v1.rb'
       require_relative 'helpers_v1.rb'
 
+      helpers Doorkeeper::Grape::Helpers
+      helpers SharedParamsV1
+      helpers HelpersV1
+
       version 'v1', using: :path
       format :json
 
-      http_basic do |username, password|
-
-        begin
-          username == Setting.get_value("remote_service_notifier_username") &&
-            password == Setting.get_value("remote_service_notifier_password")
-        rescue
-          false
-        end
+      before do
+        doorkeeper_authorize!
       end
-
-      helpers SharedParamsV1
-      helpers HelpersV1
 
       published_resources = [
         :organizations,

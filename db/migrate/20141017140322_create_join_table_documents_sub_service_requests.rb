@@ -33,6 +33,11 @@ class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration[4.2]
     has_many :documents, :dependent => :destroy
   end
 
+  class DocumentGrouping < ActiveRecord::Base
+    belongs_to :service_request
+    has_many :documents, dependent: :destroy
+  end
+
   def clean_grouping grouping
     used_created_dates = []
     grouping.documents.each do |doc|

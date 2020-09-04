@@ -236,3 +236,17 @@ $ ->
 
 (exports ? this).getProtocolId = ->
   $("input[name=protocol_id]").val()
+
+(exports ? this).copyToClipboard = (text) ->
+  $input = $('<input>')
+  $input.css(position: 'absolute', top: '-1000px', left: '-1000px')
+  $input.val(text)
+  if $('.modal-dialog').length
+    $('.modal-dialog').append($input)
+    $input.select()
+    document.execCommand('copy')
+  else
+    $('body').append($input)
+    $input.select()
+    document.execCommand('copy')
+  $input.remove()

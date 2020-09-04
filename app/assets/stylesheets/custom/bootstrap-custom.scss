@@ -64,6 +64,8 @@
 //////////////
 
 .btn {
+  line-height: 18px;
+
   &.btn-info, &.btn-warning,
   &.btn-outline-info:hover, &.btn-outline-warning:hover {
     color: white !important;
@@ -734,8 +736,12 @@ nav.navbar {
     }
   }
 
-  &.table-interactive tbody tr:hover {
-    cursor: pointer;
+  &.table-interactive tbody tr {
+    transition: $btn-transition;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &.table-fixed {
@@ -769,33 +775,31 @@ nav.navbar {
 /// Utilities ///
 /////////////////
 
-.form-group, .form-row {
-  &.is-valid {
-    .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
-      border: 1px solid theme-color('success') !important;
-    }
-
-    label {
-      color: theme-color('success');
-    }
-
-    .form-control, .custom-select {
-      @extend .is-valid;
-    }
+.is-valid {
+  .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
+    border: 1px solid theme-color('success') !important;
   }
 
-  &.is-invalid {
-    .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
-      border: 1px solid theme-color('danger') !important;
-    }
+  label {
+    color: theme-color('success');
+  }
 
-    label {
-      color: theme-color('danger');
-    }
+  .form-control, .custom-select {
+    @extend .is-valid;
+  }
+}
 
-    .form-control, .custom-select {
-      @extend .is-invalid;
-    }
+.is-invalid {
+  .bootstrap-select .dropdown-toggle, .toggle, .input-group .input-group-text {
+    border: 1px solid theme-color('danger') !important;
+  }
+
+  label {
+    color: theme-color('danger');
+  }
+
+  .form-control, .custom-select {
+    @extend .is-invalid;
   }
 }
 
@@ -813,4 +817,39 @@ a.text-white:hover {
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
+}
+
+//////////////////////////
+/// Sidebar Navigation ///
+//////////////////////////
+
+.side-navigation {
+  .nav-link {
+    padding: calc(#{$grid-gutter-width} / 2);
+
+    &.active {
+      color: white;
+      background-color: theme-color('primary');
+    }
+
+    &:not(.active):hover {
+      background-color: theme-color('light');
+    }
+  }
+}
+
+//////////////////////////
+/// Form Sticky Navbar ///
+//////////////////////////
+
+.form-navigation {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .sticky-top {
+    top: 1rem !important;
+  }
 }

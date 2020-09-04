@@ -36,7 +36,9 @@
         = Rails.env.capitalize
     = render 'layouts/header', location: @location || 'proper'
     = render 'layouts/navbar'
-    = yield(:sub_header) if content_for(:sub_header)
+    - if content_for(:sub_header)
+      %subheader.container-fluid.mb-3#siteSubheader
+        = yield(:sub_header)
     .container-fluid#contentContainer
       - if @protocol
         = hidden_field_tag :protocol_id, @protocol.id, disabled: true

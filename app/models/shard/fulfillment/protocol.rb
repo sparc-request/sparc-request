@@ -34,7 +34,8 @@ module Shard
       belongs_to :sparc_sub_service_request, class_name: '::SubServiceRequest', foreign_key: :sub_service_request_id
 
       scope :with_pppv_services, -> {
-        includes(line_items: :sparc_service).where(services: { one_time_fee: false })
+        service_ids = Service.where(one_time_fee: false).ids
+        includes(:line_items).where(line_items: { service_id: service_ids })
       }
     end
   end

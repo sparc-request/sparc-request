@@ -20,7 +20,7 @@
 
 <% if @confirm_new_request %>
 ConfirmSwal.fire(
-  type: 'question'
+  icon: 'question'
   title: I18n.t('proper.catalog.new_request.header')
   text: I18n.t('proper.catalog.new_request.warning')
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
@@ -38,7 +38,7 @@ ConfirmSwal.fire(
     window.location = "<%= dashboard_root_path %>"
 <% elsif @duplicate_service %>
 AlertSwal.fire(
-  type: 'error'
+  icon: 'error'
   title: I18n.t('proper.cart.duplicate_service.header')
 )
 <% else %>

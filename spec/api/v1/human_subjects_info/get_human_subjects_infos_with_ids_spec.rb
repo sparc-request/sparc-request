@@ -18,90 +18,63 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/human_subjects_info.json' do
-
-    before do
-      5.times do
-        human_subjects_info = FactoryBot.build(:human_subjects_info)
-        @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
-        @study.save(validate: false)
-      end
-
-      @ids = HumanSubjectsInfo.pluck(:id)
-    end
+  describe 'GET /api/v1/human_subjects_infos.json' do
+    let!(:human_subjects_infos) { create_list(:human_subjects_info_without_validations, 5) }
 
     context 'with ids' do
+      context 'request for :shallow records' do
+        before { send_api_get_request(resource: 'human_subjects_infos', ids: human_subjects_infos.first(4).map(&:id), depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'shallow', @ids.pop(4)) }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
+        it 'should respond with an array of shallow human_subjects_infos' do
           expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a human_subjects_info root object' do
-          expect(response.body).to include('"human_subjects_info":')
-        end
-
-        it 'should respond with an array of human_subjects_info' do
-          parsed_body = JSON.parse(response.body)
-
-          expect(parsed_body['human_subjects_info'].length).to eq(4)
+          expect(JSON.parse(response.body)['human_subjects_infos']).to eq(
+            human_subjects_infos.first(4).map{ |hsi| { 
+              'sparc_id'      => hsi.id,
+              'callback_url'  => hsi.remote_service_callback_url
+            }}
+          )
         end
       end
-    end
 
-    context 'request for :shallow records' do
+      context 'request for :full records' do
+        before { send_api_get_request(resource: 'human_subjects_infos', ids: human_subjects_infos.first(4).map(&:id), depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'shallow', @ids) }
-
-      it 'should respond with an array of :sparc_ids' do
-        parsed_body = JSON.parse(response.body)
-
-        expect(parsed_body['human_subjects_info'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+        it 'should respond with an array of human_subjects_infos and their attributes' do
+          expect(response.status).to eq(200)
+          expect(JSON.parse(response.body)['human_subjects_infos']).to eq(
+            human_subjects_infos.first(4).map{ |hsi| 
+              hsi.attributes.
+              except('id', 'created_at', 'updated_at', 'deleted_at').
+              merge({ 
+                'sparc_id'      => hsi.id,
+                'callback_url'  => hsi.remote_service_callback_url
+              })
+            }
+          )
+        end
       end
-    end
 
-    context 'request for :full records' do
+      context 'request for :full_with_shallow_reflections records' do
+        before { send_api_get_request(resource: 'human_subjects_infos', ids: human_subjects_infos.first(4).map(&:id), depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'full', @ids) }
-
-      it 'should respond with an array of human_subjects_info and their attributes' do
-        parsed_body         = JSON.parse(response.body)
-
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
-      end
-    end
-
-    context 'request for :full_with_shallow_reflections records' do
-
-      before { cwf_sends_api_get_request_for_resources('human_subjects_infos', 'full_with_shallow_reflections', @ids) }
-
-      it 'should respond with an array of human_subjects_info and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'protocol', 'irb_records').
-                                sort
-
-        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        it 'should respond with an array of human_subjects_infos and their attributes and their shallow reflections' do
+          expect(response.status).to eq(200)
+          expect(JSON.parse(response.body)['human_subjects_infos']).to eq(
+            human_subjects_infos.first(4).map{ |hsi| 
+              hsi.attributes.
+              except('id', 'created_at', 'updated_at', 'deleted_at').
+              merge({ 
+                'sparc_id'      => hsi.id,
+                'callback_url'  => hsi.remote_service_callback_url,
+                'irb_records'   => [],
+                'protocol'      => nil
+              })
+            }
+          )
+        end
       end
     end
   end

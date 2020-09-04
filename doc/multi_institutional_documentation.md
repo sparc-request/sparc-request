@@ -193,12 +193,12 @@ Your institution may opt to use the SPARCFunding module to keep track of funding
 #### 2.8 SPARCRequest API
 Your institution may opt to use the SPARCRequest API to communicate with external applications, such as SPARCFulfillment.
 
-- **current_api_version**: This is the current version of the SPARCRequest API.
-- **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.
-- **remote_service_notifier_username**: This is the authentication username of the SPARCRequest API.
-- **remote_service_notifier_password**: This is the authentication password of the SPARCRequest API.
-- **remote_service_notifier_host**: This is the host domain of the SPARCRequest API.
-- **remote_service_notifier_path**: This is the URL path of the SPARCRequest API.
+- **current_api_version**: This is the current version of the SPARCFulfillment API.
+- **remote_service_notifier_protocol**: This is the HTTP protocol (HTTP/HTTPS) of the SPARCFulfillment API.
+- **remote_service_notifier_username**: This is the authentication username of the SPARCFulfillment API.
+- **remote_service_notifier_password**: This is the authentication password of the SPARCFulfillment API.
+- **remote_service_notifier_host**: This is the host domain of the SPARCFulfillment API.
+- **remote_service_notifier_path**: This is the URL path of the SPARCFulfillment API.
 
 #### 2.9 Right Navigation
 

@@ -21,135 +21,35 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'PUT /v1/service/:id.json' do
-
-    before :each do
-      @service = create(:service)
-    end
+  describe 'PUT /api/v1/service/:id.json' do
+    let!(:service) { create(:service_without_validations, :with_pricing_map, :with_process_ssrs_organization) }
 
     context "success" do
-
       context "increment" do
+        before { send_api_update_request(resource: 'services', id: service.id, params: { service: { line_items_count: 1 } }) }
 
-        context 'response params' do
-
-          before do
-            service_params = {
-              service: {
-                line_items_count: 1
-              }
-            }
-
-            cwf_sends_api_put_request_for_resource('services', @service.id, service_params)
-          end
-
-          context 'success' do
-
-            it 'should respond with an HTTP status code of: 200' do
-              expect(response.status).to eq(200)
-            end
-
-            it 'should respond with content-type: application/json' do
-              expect(response.content_type).to eq('application/json')
-            end
-
-            it 'should respond with a Protocol root object' do
-              expect(response.body).to match(/ok/)
-            end
-
-            it "should increment the Service.line_items_count" do
-              expect(@service.reload.line_items_count).to eq(1)
-            end
-          end
+        it "should increment the Service.line_items_count" do
+          expect(response.status).to eq(200)
+          expect(service.reload.line_items_count).to eq(1)
         end
       end
 
       context "decrement" do
+        before { send_api_update_request(resource: 'services', id: service.id, params: { service: { line_items_count: -1 } }) }
 
-        context 'response params' do
-
-          before :each do
-            line_item = create(:line_item_without_validations)
-
-            service_params = {
-              service: {
-                line_items_count: -1
-              }
-            }
-
-            cwf_sends_api_put_request_for_resource('services', @service.id, service_params)
-          end
-
-          context 'success' do
-
-            it 'should respond with an HTTP status code of: 200' do
-              expect(response.status).to eq(200)
-            end
-
-            it 'should respond with content-type: application/json' do
-              expect(response.content_type).to eq('application/json')
-            end
-
-            it 'should respond with a Protocol root object' do
-              expect(response.body).to match(/ok/)
-            end
-
-            it "should increment the Service.line_items_count" do
-              expect(@service.reload.line_items_count).to eq(0)
-            end
-          end
+        it "should decrement the Service.line_items_count" do
+          expect(response.status).to eq(200)
+          expect(service.reload.line_items_count).to eq(0)
         end
       end
     end
 
     context "failure" do
-
-      describe "Service not found" do
-
-        before :each do
-          service_params = {
-            service: {
-              line_items_count: 1
-            }
-          }
-
-          cwf_sends_api_put_request_for_resource('services', 999, service_params)
-        end
-
-        it 'should respond with an HTTP status code of: 404' do
-          expect(response.status).to eq(404)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Protocol root object' do
-          expect(response.body).to match(/not found/)
-        end
-      end
-
-      describe "params[:service][:line_items_count] not present" do
-
-        before :each do
-          service_params = {
-            service: {}
-          }
-
-          cwf_sends_api_put_request_for_resource('services', @service.id, service_params)
-        end
+      context "params[:service][:line_items_count] not present" do
+        before { send_api_update_request(resource: 'services', id: service.id, params: { service: {}}) }
 
         it 'should respond with an HTTP status code of: 400' do
           expect(response.status).to eq(400)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Protocol root object' do
-          expect(response.body).to match(/Bad request/)
         end
       end
     end

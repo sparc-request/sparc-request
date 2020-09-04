@@ -18,27 +18,27 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-const ConfirmSwal = Swal.mixin({
-  title: I18n.t('confirm.title'),
-  text: I18n.t('confirm.text'),
-  type: 'warning',
-  showCloseButton: true,
+const Swal = Swal.mixin({
   showCancelButton: true,
-  confirmButtonText: I18n.t('constants.yes_select'),
-  cancelButtonText: I18n.t('constants.no_select'),
   customClass: {
+    input: 'form-control',
     confirmButton: 'btn-primary',
     cancelButton: 'btn-secondary'
   }
 })
 
+const ConfirmSwal = Swal.mixin({
+  title: I18n.t('confirm.title'),
+  text: I18n.t('confirm.text'),
+  icon: 'warning',
+  showCloseButton: true,
+  confirmButtonText: I18n.t('constants.yes_select'),
+  cancelButtonText: I18n.t('constants.no_select'),
+})
+
 const AlertSwal = Swal.mixin({
-  type: 'info',
+  icon: 'info',
   showCloseButton: true,
   showConfirmButton: false,
-  showCancelButton: true,
   cancelButtonText: I18n.t('actions.close'),
-  customClass: {
-    cancelButton: 'btn-secondary'
-  }
 })

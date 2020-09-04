@@ -18,9 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Token < ApplicationRecord
-  audited
-
-  belongs_to :service_request
-  belongs_to :identity
+FactoryBot.define do  
+  factory :api_access_request, class: 'Doorkeeper::AccessRequest' do
+    application
+    access_token
+    ip_address    { Faker::Internet.ip_v4_address }
+  end
 end

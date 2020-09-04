@@ -20,7 +20,7 @@
 
 - messages = defined?(errors) ? errors : flash
 
-.container-fluid.p-0#flashContainer
+.container-fluid#flashContainer
   - messages.each do |type, message|
     .alert.d-flex.align-items-start.justify-content-between.fade.show{ class: twitterized_type(type) }
       = message

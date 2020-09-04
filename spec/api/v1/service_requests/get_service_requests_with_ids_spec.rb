@@ -21,84 +21,61 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/service_requests.json' do
-
-    before do
-      5.times do
-        service_request = build(:service_request)
-        service_request.save validate: false
-      end
-
-      @sub_service_request_ids = ServiceRequest.pluck(:id)
-    end
+  describe 'GET /api/v1/service_requests.json' do
+    let!(:service_requests) { create_list(:service_request_without_validations, 5) }
 
     context 'with ids' do
+      context 'request for :shallow records' do
+        before { send_api_get_request(resource: 'service_requests', ids: service_requests.first(4).map(&:id), depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resources('service_requests', 'shallow', @sub_service_request_ids.pop(4)) }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
+        it 'should respond with an array of shallow service_requests' do
           expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a ServiceRequests root object' do
-          expect(response.body).to include('"service_requests":')
-        end
-
-        it 'should respond with an array of ServiceRequests' do
-          parsed_body = JSON.parse(response.body)
-
-          expect(parsed_body['service_requests'].length).to eq(4)
+          expect(JSON.parse(response.body)['service_requests']).to eq(
+            service_requests.first(4).map{ |sr| { 
+              'sparc_id'      => sr.id,
+              'callback_url'  => sr.remote_service_callback_url
+            }}
+          )
         end
       end
-    end
 
-    context 'request for :shallow records' do
+      context 'request for :full records' do
+        before { send_api_get_request(resource: 'service_requests', ids: service_requests.first(4).map(&:id), depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resources('service_requests', 'shallow', @sub_service_request_ids) }
-
-      it 'should respond with an array of :sparc_ids' do
-        parsed_body = JSON.parse(response.body)
-
-        expect(parsed_body['service_requests'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+        it 'should respond with an array of service_requests and their attributes' do
+          expect(response.status).to eq(200)
+          expect(JSON.parse(response.body)['service_requests']).to eq(
+            service_requests.first(4).map{ |sr| 
+              sr.attributes.
+              except('id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count").
+              merge({ 
+                'sparc_id'      => sr.id,
+                'callback_url'  => sr.remote_service_callback_url
+              })
+            }
+          )
+        end
       end
-    end
 
-    context 'request for :full records' do
+      context 'request for :full_with_shallow_reflections records' do
+        before { send_api_get_request(resource: 'service_requests', ids: service_requests.first(4).map(&:id), depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resources('service_requests', 'full', @sub_service_request_ids) }
-
-      it 'should respond with an array of service_requests and their attributes' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:service_request).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count"].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['service_requests'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
-      end
-    end
-
-    context 'request for :full_with_shallow_reflections records' do
-
-      before { cwf_sends_api_get_request_for_resources('service_requests', 'full_with_shallow_reflections', @sub_service_request_ids) }
-
-      it 'should respond with an array of service_requests and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:service_request).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count"].include?(key) }.
-                                push('callback_url', 'sparc_id', 'sub_service_requests', 'line_items', 'protocol').
-                                sort
-
-        expect(parsed_body['service_requests'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        it 'should respond with an array of service_requests and their attributes and their shallow reflections' do
+          expect(response.status).to eq(200)
+          expect(JSON.parse(response.body)['service_requests']).to eq(
+            service_requests.first(4).map{ |sr| 
+              sr.attributes.
+              except('id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date', "consult_arranged_date", "pppv_complete_date", "pppv_in_process_date", "subject_count").
+              merge({ 
+                'sparc_id'              => sr.id,
+                'callback_url'          => sr.remote_service_callback_url,
+                'sub_service_requests'  => [],
+                'line_items'            => [],
+                'protocol'              => nil
+              })
+            }
+          )
+        end
       end
     end
   end

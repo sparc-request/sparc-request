@@ -24,10 +24,9 @@ task move_service: :environment do
   ActiveRecord::Base.transaction do
     services = Service.find(34054, 34055, 34056)
     destination_org = Organization.find(350)
-    count = 0
 
     doxy_ssrs_created = CSV.open("tmp/doxy_ssrs.csv", "w")
-    doxy_ssrs_created << ['Original SSR', 'New SSR', 'Protocol ID']
+    doxy_ssrs_created << ['Original SSR', 'New SSR']
 
     services.each do |service|
 
@@ -36,51 +35,55 @@ task move_service: :environment do
       sub_service_requests = service.sub_service_requests
 
       sub_service_requests.each do |ssr|
-        if just_line_items_for_our_services?(ssr, services)
-          # Don't really need to move anything. Just move the SSR
-          # to the new organization.
-          puts "Nothing to move for SSR #{ssr.id}."
-          ssr.organization_id = destination_org.id
-          ssr.save(validate: false)
-        else
-          # We know now we have a mixed bag and will need a new sub service request
-          # for the line items belonging to our service. We'll leave the other line items
-          # on the original SSR
-          puts "New SSR created."
-          new_ssr = ssr.service_request.sub_service_requests.create(
-              organization_id:         destination_org.id,
-              status:                  ssr.status,
-              service_request_id:      ssr.service_request_id,
-              owner_id:                ssr.owner_id,
-              ssr_id:                  ssr.ssr_id,
-              in_work_fulfillment:     ssr.in_work_fulfillment,
-              service_requester_id:    ssr.service_requester_id,
-              submitted_at:            ssr.submitted_at,
-              protocol_id:             ssr.protocol_id,
-              imported_to_fulfillment: ssr.imported_to_fulfillment,
-              synch_to_fulfillment:    ssr.synch_to_fulfillment
-            )
+        protocol = ssr.protocol
+        # Just in case we have any first_draft SSRs with no protocol
+        if protocol
+          if just_line_items_for_our_services?(ssr, services)
+            # Don't really need to move anything. Just move the SSR
+            # to the new organization.
+            puts "Nothing to move for SSR #{ssr.id}."
+            ssr.organization_id = destination_org.id
+            ssr.save(validate: false)
+          else
+            # # We know now we have a mixed bag and will need a new sub service request
+            # # for the line items belonging to our service. We'll leave the other line items
+            # # on the original SSR
+            puts "New SSR created."
+            new_ssr = SubServiceRequest.new(
+                organization_id:         destination_org.id,
+                status:                  ssr.status,
+                service_request_id:      ssr.service_request_id,
+                owner_id:                ssr.owner_id,
+                ssr_id:                  (sprintf '%04d', protocol.next_ssr_id),
+                in_work_fulfillment:     ssr.in_work_fulfillment,
+                service_requester_id:    ssr.service_requester_id,
+                submitted_at:            ssr.submitted_at,
+                protocol_id:             ssr.protocol_id,
+                imported_to_fulfillment: ssr.imported_to_fulfillment,
+                synch_to_fulfillment:    ssr.synch_to_fulfillment
+              )
 
-          new_ssr.save(validate: false)
-          new_ssr.update_org_tree
-          if new_ssr.in_work_fulfillment || new_ssr.imported_to_fulfillment
-            puts "-" * 100
-            puts "This ssr is in fulfillment. Old = #{ssr.id} new = #{new_ssr.id}"
-            puts "-" * 100
-            count += ssr.line_items.count
-            doxy_ssrs_created << [ssr.id, new_ssr.id, ssr.protocol_id]
-          end
+            new_ssr.save(validate: false)
+            protocol.next_ssr_id = protocol.next_ssr_id + 1
+            protocol.save(validate: false)
+            new_ssr.update_org_tree
+            if ssr.in_work_fulfillment || ssr.imported_to_fulfillment
+              puts "-" * 100
+              puts "This ssr is in fulfillment. Old = #{ssr.id} new = #{new_ssr.id}"
+              puts "-" * 100
+              doxy_ssrs_created << [ssr.id, new_ssr.id]
+            end
 
-          ssr.line_items.each do |line_item|
-            if services.include?(line_item.service)
-              line_item.sub_service_request_id = new_ssr.id
-              line_item.save(validate: false)
+            ssr.line_items.each do |line_item|
+              if services.include?(line_item.service)
+                line_item.sub_service_request_id = new_ssr.id
+                line_item.save(validate: false)
+              end
             end
           end
         end
       end
       service.update!(organization_id: destination_org.id)
-      puts count
     end
   end
 end

@@ -73,8 +73,8 @@ class ProtocolsController < ApplicationController
     research_billing = @protocol.all_research_billing
     @protocol.visits.each do |visit|
       if visit.indicated? 
-        unit_minimum = visit.service.displayed_pricing_map.unit_minimum
-        visit.update_attributes(research_billing_qty: research_billing ? unit_minimum : 0, insurance_billing_qty: research_billing ? 0 : unit_minimum)
+        indicated_quantity = determine_quantity(visit, research_billing)
+        visit.update_attributes(research_billing_qty: research_billing ? indicated_quantity : 0, insurance_billing_qty: research_billing ? 0 : indicated_quantity)
       end
     end
   end
@@ -218,5 +218,9 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
+  end
+
+  def determine_quantity(visit, research_billing)
+    research_billing ? visit.insurance_billing_qty : visit.research_billing_qty
   end
 end

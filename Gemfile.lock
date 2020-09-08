@@ -701,7 +701,7 @@ DEPENDENCIES
   paperclip (~> 6.1)
   parallel_tests
   pdf-inspector
-  pdfkit (= 0.8.4.3.2)
+  pdfkit
   prawn (= 2.3.0)
   prawn-table
   premailer-rails

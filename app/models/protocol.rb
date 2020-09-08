@@ -108,7 +108,7 @@ class Protocol < ApplicationRecord
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
-  validates_presence_of :short_title, 
+  validates_presence_of :short_title,
                         :title,
                         :funding_status
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
@@ -542,7 +542,7 @@ class Protocol < ApplicationRecord
   end
 
   def check_epic_user_rights
-    project_roles.includes(:identity).where(epic_access: true).detect do |project_role|
+    principal_investigator_roles.includes(:identity).where(epic_access: true).detect do |project_role|
       epic_user = EpicUser.for_identity(project_role.identity)
 
       (epic_user.nil? or !EpicUser.is_active?(epic_user))

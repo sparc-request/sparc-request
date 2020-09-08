@@ -81,13 +81,13 @@ module Dashboard
         if opts[:show_unchecked]
           arm.line_items_visits.
             eager_load(:visits, :notes).
-            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false })
         else
           arm.line_items_visits.
             eager_load(:visits, :notes).
-            includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
             where.not("research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
@@ -95,7 +95,7 @@ module Dashboard
       else
         (sub_service_request || service_request).line_items_visits.
           eager_load(:visits, :notes).
-          includes(sub_service_request: :organization, line_item: [:admin_rates, :service_request, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+          includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
           where.not(sub_service_requests: { status: statuses_hidden }).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
@@ -114,7 +114,7 @@ module Dashboard
         end
 
       (opts[:merged] && opts[:consolidated] ? service_request : (sub_service_request || service_request)).line_items.
-        eager_load(:admin_rates, :notes, :service_request).
+        eager_load(:admin_rates, :notes, :protocol).
         includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
         where.not(sub_service_requests: { status: statuses_hidden }).
         where(services: { one_time_fee: true }).

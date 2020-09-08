@@ -20,7 +20,7 @@
 
 $vg       = $(".visit-group-<%= @visit_group.id %>")
 title     = "#{I18n.t("visit_groups.edit")} <a href='#' class='close' data-dismiss='alert'>&times;</a>"
-$content  = $("<%= j render 'form', visit_group: @visit_group, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
+$content  = $("<%= j render 'form', visit_group: @visit_group, visit_group_clone: @visit_group_clone, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
 
 # If a different visit popover is already open, close it first
 if $('.visit-group-popover') && !$("form#edit_visit_group_<%= @visit_group.id %>").length

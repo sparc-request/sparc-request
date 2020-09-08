@@ -21,8 +21,9 @@
 %tr.bg-light.max-total-per-patient
   %th{ colspan: 28 }
     = t(:calendars)[:pppv][:totals][:maximum_per_patient]
+
   - visit_groups.each do |vg|
-    - cost = Setting.get_value("use_indirect_cost") ? currency_converter(vg.per_patient_subtotals * (1 + (arm.protocol.indirect_cost_rate.nil? ? 0 : (arm.protocol.indirect_cost_rate / 100)))) : currency_converter(vg.per_patient_subtotals)
+    - cost = Setting.get_value("use_indirect_cost") ? currency_converter(vg.per_patient_subtotals * (1 + (service_request.protocol.indirect_cost_rate.nil? ? 0 : (service_request.protocol.indirect_cost_rate / 100)))) : currency_converter(vg.per_patient_subtotals)
     %th.text-center{ colspan: 3, title: cost, data: { toggle: 'tooltip' } }
       = cost
   - (VisitGroup.per_page - visit_groups.length).times do

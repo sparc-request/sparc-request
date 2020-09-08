@@ -121,7 +121,7 @@
   &.btn-white {
     background: white;
 
-    &:hover {
+    &:enabled:hover, &:enabled:not(.disabled):hover {
       background: theme-color('light');
     }
   }

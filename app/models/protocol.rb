@@ -63,8 +63,8 @@ class Protocol < ApplicationRecord
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
 
-  has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
-  has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity
+  has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
+  has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
 
   has_many :non_principal_investigator_roles, -> { where.not(project_roles: { role: ['pi', 'primary-pi'] }) }, class_name: "ProjectRole", dependent: :destroy
   has_many :non_pi_authorized_users, through: :non_principal_investigator_roles, source: :identity

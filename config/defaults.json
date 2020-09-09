@@ -661,7 +661,7 @@
   },
   {
     "key":            "oncore_default_department",
-    "value":          "Other",
+    "value":          "OTHER",
     "friendly_name":  "OnCore Department Default Value",
     "description":    "Default value for Primary PI's Department field when pushing studies to OnCore.",
     "group":          "",

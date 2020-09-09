@@ -24,11 +24,18 @@ RSpec.describe OncoreProtocol do
 
   let(:auth_path) { "/forte-platform-web/api/oauth/token" }
   let(:create_protocol_path) { "/oncore-api/rest/protocols" }
+  stub_config 'oncore_default_department', 'Other' #force setting to not be all caps to make sure department is capitalized
 
   before :each do
     pi = create(:identity)
     study = create(:study_federally_funded, primary_pi: pi)
     @oncore_protocol = OncoreProtocol.new(study)
+  end
+
+  describe '#initialize' do
+    it 'should upcase the department to match OnCore' do
+      expect(@oncore_protocol.department).to eq("OTHER")
+    end
   end
 
   describe '#create_oncore_protocol' do

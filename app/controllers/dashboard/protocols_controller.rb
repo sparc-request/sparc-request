@@ -199,7 +199,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       if response.success?
         flash[:success] = I18n.t('protocols.summary.oncore.pushed_to_oncore')
       else
-        @http_error = "#{response.code}: #{response.message}"
+        if response['message'].try(:include?, ('already exists'))
+          @error = t('protocols.summary.oncore.already_exists', protocol_id: @protocol.id)
+        else
+          @error = "#{response.code}: #{response.message}"
+        end
       end
     end
 

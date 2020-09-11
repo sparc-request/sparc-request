@@ -38,8 +38,7 @@
       %button.btn.btn-lg.btn-block.btn-outline-primary#outsideUserLogin
         = t('devise.sessions.other_users')
 
-- unless use_cas || use_shib
-  = render 'form', service_request: @service_request
+= render 'form', service_request: @service_request
 - if !cas_only && !shib_only
   = render 'devise/shared/links'
 .form-group.mb-0

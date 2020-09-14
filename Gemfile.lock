@@ -46,9 +46,9 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 889739a96c04574f4da74e8fdaf4bd95ac16d194
+  revision: 4a8ca865f0b95e3c97d7fc3ff80be36b7dc25ee9
   specs:
-    acts_as_list (1.0.1)
+    acts_as_list (1.0.2)
       activerecord (>= 4.2)
 
 GEM
@@ -347,7 +347,7 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.1)
+    minitest (5.14.2)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
     msgpack (1.3.3)

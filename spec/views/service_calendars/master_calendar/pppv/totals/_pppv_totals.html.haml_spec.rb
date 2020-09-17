@@ -35,7 +35,7 @@ RSpec.describe '/service_calendar/master_calendar/pppv/totals/_pppv_totals', typ
     stub_config("use_indirect_cost", true)
     
     it 'should display maximum total direct cost per patient' do
-      render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
+      render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', service_request: @service_request, arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
       expect(response).to have_content('Maximum Total Direct Costs Per Patient')
     end
@@ -43,20 +43,20 @@ RSpec.describe '/service_calendar/master_calendar/pppv/totals/_pppv_totals', typ
 
   context 'indirect cost turned off' do
     it 'should not display maximum total direct cost per patient' do
-      render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
+      render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', service_request: @service_request, arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
       expect(response).to_not have_content('Maximum Total Direct Costs Per Patient')
     end
   end
 
   it 'should display maximum total cost per patient' do
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', service_request: @service_request, arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
 
     expect(response).to have_content('Maximum Total Per Patient')
   end
 
   it 'should not display total cost per arm' do
-    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
+    render "/service_calendars/master_calendar/pppv/totals/pppv_totals", tab: 'calendar', service_request: @service_request, arm: @arm, line_items_visits: @liv, page: '1', visit_groups: @arm.visit_groups
     
     expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm.name}")
   end

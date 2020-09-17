@@ -18,17 +18,17 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- visit_groups = arm.visit_groups.page(page).eager_load(arm: { protocol: :study_type_questions }, visits: { line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] } })
+- visit_groups = arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] })
 
 .card{ class: "service-calendar-container arm-#{arm.id}-container", data: { arm_id: arm.id, page: page } }
-  .card-header.text-white.justify-content-between.sticky-top{ class: arm.protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: ".arm-#{arm.id}-collapse" } }
+  .card-header.text-white.justify-content-between.sticky-top{ class: service_request.protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: ".arm-#{arm.id}-collapse" } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('calendars.pppv.header', arm_name: arm.name)
-      - if arm.protocol.locked?
+      - if service_request.protocol.locked?
         %span{ title: t(:calendar_structure)[:tooltips][:arm_info], data: { toggle: 'tooltip' } }
           = icon('fas', 'lock')
-    - unless merged || consolidated || arm.protocol.locked?
+    - unless merged || consolidated || service_request.protocol.locked?
       .calendar-links-container.d-flex
         = render 'arms/actions', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages
   .collapse.show{ class: "arm-#{arm.id}-collapse" }

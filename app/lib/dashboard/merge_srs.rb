@@ -23,7 +23,7 @@ module Dashboard
   class MergeSrs
 
     def perform_sr_merge
-      ServiceRequest.skip_callback(:save, :after, :set_original_submitted_date)
+      ServiceRequest.skip_callback(:save, :after, :set_original_submitted_date, raise: false)
 
       protocols = Protocol.joins(:service_requests).group('protocols.id').having('count(protocol_id) >= 2').to_a
       protocols.each do |protocol|

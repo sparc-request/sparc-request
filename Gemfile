@@ -68,7 +68,7 @@ gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.3.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 5.0'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.4.3'
 gem 'rails-html-sanitizer' # Check usage

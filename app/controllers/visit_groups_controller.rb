@@ -79,7 +79,7 @@ class VisitGroupsController < ApplicationController
 
     setup_calendar_pages
 
-    @position_changed = @visit_group.position != visit_group_params[:position].to_i
+    @position_changed = @visit_group.position != visit_group_params[:position].to_i + 1
 
     if @visit_group.update_attributes(visit_group_params)
       flash[:success] = t('visit_groups.updated')

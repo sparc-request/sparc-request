@@ -27,7 +27,7 @@ module Dashboard
     extend ActionView::Helpers::NumberHelper
 
     def self.generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
-      page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
+      page = pages[arm.id.to_s].to_i == 0 ? 1 : pages[arm.id.to_s].to_i
 
       path_method = if @merged
         method(:merged_calendar_service_request_service_calendars_path)

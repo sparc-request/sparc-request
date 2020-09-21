@@ -25,8 +25,6 @@
 #   ### Generic Email Settings ###
 #   send_emails_to_real_users:                  "false"
 #   send_authorized_user_emails:                "true"
-#   root_url:                                   "127.0.0.1:3000"
-#   dashboard_link:                             "/dashboard"
 #   admin_mail_to:                              "sparcrequest@gmail.com"
 #   default_mail_to:                            "sparcrequest@gmail.com"
 #   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
@@ -36,9 +34,6 @@
 #   ### Generic Links & URLs ###
 #   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
 #   header_link_1:                              "http://sctr.musc.edu"
-#   header_link_2_proper:                       "127.0.0.1:3000"
-#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
-#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
 #   header_link_3:                              "http://www.musc.edu"
 #   navbar_links:
 #     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
@@ -53,7 +48,6 @@
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
-#   host:                                       "127.0.0.1:3000"
 #   site_admins:                                []
 #   use_indirect_cost:                          "false"
 #   use_separate_audit_database:                "false"
@@ -95,11 +89,8 @@
 
 #   ### API ###
 #   current_api_version:                        "v1"
-#   remote_service_notifier_protocol:           "https"
 #   remote_service_notifier_username:           ""
 #   remote_service_notifier_password:           ""
-#   remote_service_notifier_host:               "127.0.0.1:5001"
-#   remote_service_notifier_path:               "/v1/notifications.json"
 
 #   ### Right Navigation ###
 #   use_feedback_link:                          "false"
@@ -149,8 +140,6 @@
 #   ### Generic Email Settings ###
 #   send_emails_to_real_users:                  "false"
 #   send_authorized_user_emails:                "true"
-#   root_url:                                   "127.0.0.1:3000"
-#   dashboard_link:                             "/dashboard"
 #   admin_mail_to:                              "sparcrequest@gmail.com"
 #   default_mail_to:                            "sparcrequest@gmail.com"
 #   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
@@ -160,9 +149,6 @@
 #   ### Generic Links & URLs ###
 #   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
 #   header_link_1:                              "http://sctr.musc.edu"
-#   header_link_2_proper:                       "127.0.0.1:3000"
-#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
-#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
 #   header_link_3:                              "http://www.musc.edu"
 #   navbar_links:
 #     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
@@ -177,7 +163,6 @@
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
-#   host:                                       "127.0.0.1:3000"
 #   site_admins:                                []
 #   use_indirect_cost:                          "false"
 #   use_separate_audit_database:                "false"
@@ -219,11 +204,8 @@
 
 #   ### API ###
 #   current_api_version:                        "v1"
-#   remote_service_notifier_protocol:           "https"
 #   remote_service_notifier_username:           ""
 #   remote_service_notifier_password:           ""
-#   remote_service_notifier_host:               "127.0.0.1:5001"
-#   remote_service_notifier_path:               "/v1/notifications.json"
 
 #   ### Right Navigation ###
 #   use_feedback_link:                          "false"
@@ -273,8 +255,6 @@
 #   ### Generic Email Settings ###
 #   send_emails_to_real_users:                  "false"
 #   send_authorized_user_emails:                "true"
-#   root_url:                                   "127.0.0.1:3000"
-#   dashboard_link:                             "/dashboard"
 #   admin_mail_to:                              "sparcrequest@gmail.com"
 #   default_mail_to:                            "sparcrequest@gmail.com"
 #   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
@@ -284,9 +264,6 @@
 #   ### Generic Links & URLs ###
 #   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
 #   header_link_1:                              "http://sctr.musc.edu"
-#   header_link_2_proper:                       "127.0.0.1:3000"
-#   header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
-#   header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
 #   header_link_3:                              "http://www.musc.edu"
 #   navbar_links:
 #     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
@@ -301,7 +278,6 @@
 #   finished_statuses:                          ['complete', 'withdrawn']
 
 #   ### Other Generic Settings ###
-#   host:                                       "127.0.0.1:3000"
 #   site_admins:                                []
 #   use_indirect_cost:                          "false"
 #   use_separate_audit_database:                "false"
@@ -343,11 +319,8 @@
 
 #   ### API ###
 #   current_api_version:                        "v1"
-#   remote_service_notifier_protocol:           "https"
 #   remote_service_notifier_username:           ""
 #   remote_service_notifier_password:           ""
-#   remote_service_notifier_host:               "127.0.0.1:5001"
-#   remote_service_notifier_path:               "/v1/notifications.json"
 
 #   ### Right Navigation ###
 #   use_feedback_link:                          "false"
@@ -397,8 +370,6 @@ development:
   ### Generic Email Settings ###
   send_emails_to_real_users:                  "false"
   send_authorized_user_emails:                "true"
-  root_url:                                   "127.0.0.1:3000"
-  dashboard_link:                             "/dashboard"
   admin_mail_to:                              "sparcrequest@gmail.com"
   default_mail_to:                            "sparcrequest@gmail.com"
   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
@@ -408,9 +379,6 @@ development:
   ### Generic Links & URLs ###
   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
   header_link_1:                              "http://sctr.musc.edu"
-  header_link_2_proper:                       "127.0.0.1:3000"
-  header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
-  header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
   header_link_3:                              "http://www.musc.edu"
   navbar_links:
     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
@@ -425,7 +393,6 @@ development:
   finished_statuses:                          ['complete', 'withdrawn']
 
   ### Other Generic Settings ###
-  host:                                       "127.0.0.1:3000"
   site_admins:                                []
   use_indirect_cost:                          "false"
   use_separate_audit_database:                "false"
@@ -467,11 +434,8 @@ development:
 
   ### API ###
   current_api_version:                        "v1"
-  remote_service_notifier_protocol:           "https"
   remote_service_notifier_username:           ""
   remote_service_notifier_password:           ""
-  remote_service_notifier_host:               "127.0.0.1:5001"
-  remote_service_notifier_path:               "/v1/notifications.json"
 
   ### Right Navigation ###
   use_feedback_link:                          "false"
@@ -521,8 +485,6 @@ test:
   ### Generic Email Settings ###
   send_emails_to_real_users:                  "false"
   send_authorized_user_emails:                "true"
-  root_url:                                   "127.0.0.1:3000"
-  dashboard_link:                             "/dashboard"
   admin_mail_to:                              "sparcrequest@gmail.com"
   default_mail_to:                            "sparcrequest@gmail.com"
   listserv_mail_to:                           "hewwe@musc.edu, hutsonk@musc.edu"
@@ -532,9 +494,6 @@ test:
   ### Generic Links & URLs ###
   about_sparc_url:                            "http://academicdepartments.musc.edu/sctr/sparc_request"
   header_link_1:                              "http://sctr.musc.edu"
-  header_link_2_proper:                       "127.0.0.1:3000"
-  header_link_2_dashboard:                    "127.0.0.1:3000/dashboard"
-  header_link_2_catalog:                      "127.0.0.1:3000/catalog_manager"
   header_link_3:                              "http://www.musc.edu"
   navbar_links:
     sparc_request:                            ['SPARCRequest',      '127.0.0.1:3000/']
@@ -549,7 +508,6 @@ test:
   finished_statuses:                          ['complete', 'withdrawn']
 
   ### Other Generic Settings ###
-  host:                                       "127.0.0.1:3000"
   site_admins:                                []
   use_indirect_cost:                          "false"
   use_separate_audit_database:                "false"
@@ -591,11 +549,8 @@ test:
 
   ### API ###
   current_api_version:                        "v1"
-  remote_service_notifier_protocol:           "https"
   remote_service_notifier_username:           ""
   remote_service_notifier_password:           ""
-  remote_service_notifier_host:               "127.0.0.1:5001"
-  remote_service_notifier_path:               "/v1/notifications.json"
 
   ### Right Navigation ###
   use_feedback_link:                          "false"

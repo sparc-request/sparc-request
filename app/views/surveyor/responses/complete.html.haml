@@ -25,4 +25,4 @@
       = @response.survey.title
     .alert.alert-info.text-center
       = t(:surveyor)[:responses][:complete][:thanks]
-    = link_to t(:surveyor)[:responses][:complete][:to_dashboard], Setting.get_value("dashboard_link"), class: 'btn btn-lg btn-success'
+    = link_to t(:surveyor)[:responses][:complete][:to_dashboard], dashboard_root_path, class: 'btn btn-lg btn-success'

@@ -26,7 +26,7 @@ module EmailHelpers
     # Expected message:
     # 'Services have been added or deleted in SPARCRequest and is awaiting your review in SPARCDashboard.'
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Services have been added or deleted in SPARCRequest and is awaiting your review in']")
-    expect(mail_response).to have_xpath "//p//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard.']/@href"
+    expect(mail_response).to have_xpath "//p//a[@href='#{@host_url}/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard.']/@href"
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
     expect(mail_response).to have_xpath("//p[.='Please contact #{Setting.get_value('contact_us_mail_to')} or call (843) 792-8300 for technical assistance or contact the service provider directly for questions related to your service request.']")
   end
@@ -46,7 +46,7 @@ module EmailHelpers
     # 'A request has been submitted to start services in
     # SPARCRequest and is awaiting your review in SPARCDashboard.'
     expect(@mail).to have_text('A request has been submitted to start services in SPARCRequest and is awaiting your review in SPARCDashboard.')
-    expect(@mail).to have_xpath "//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
+    expect(@mail).to have_xpath "//a[@href='#{@host_url}/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
   end
 
   def submitted_general_users_message
@@ -55,14 +55,14 @@ module EmailHelpers
     # SPARCRequest. Visit SPARCDashboard to view the status or
     # make any updates to your request."
     expect(@mail.body.parts.first.body).to have_text("A request has been submitted to start services in SPARCRequest. Visit SPARCDashboard to view the status or make any updates to your request.")
-    expect(@mail.body.parts.first.body).to have_xpath "//p//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
+    expect(@mail.body.parts.first.body).to have_xpath "//p//a[@href='#{@host_url}/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
   end
   #### END SUBMITTED MESSAGE METHODS ####
 
 
   #### REUSABLE METHODS ####
   def service_provider_and_admin_link(mail_response)
-    expect(mail_response).to have_xpath "//p//a[@href='/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'Administrators/Service Providers, Click Here']/@href"
+    expect(mail_response).to have_xpath "//p//a[@href='#{@host_url}/dashboard/protocols/#{@service_request.protocol.id}'][text()= 'Administrators/Service Providers, Click Here']/@href"
   end
 
   def message_conclusion(mail_response)

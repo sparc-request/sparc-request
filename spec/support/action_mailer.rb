@@ -28,5 +28,6 @@ RSpec.configure do |config|
     default_url_options = { host: host, port: port }
     Rails.configuration.action_mailer.default_url_options = default_url_options
     ActionMailer::Base.default_url_options = default_url_options
+    @host_url = "http://#{host}:#{port}"
   end
 end

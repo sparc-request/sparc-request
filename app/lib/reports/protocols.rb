@@ -30,13 +30,14 @@ class ProtocolsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "2012-03-01".to_datetime, :to => DateTime.now},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "1900-01-01".to_datetime, :to => DateTime.now},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
       "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'},
-      "Include Investigational Device Columns" => { field_type: :check_box_tag, for: 'show_device_cols', field_label: "Include Investigational Device Columns" }
+      "Include Investigational Device Columns" => { field_type: :check_box_tag, for: 'show_device_cols', field_label: "Include Investigational Device Columns" },
+      "Include Pre-Submission Protocols" => { field_type: :check_box_tag, for: 'include_presubmitted', field_label: 'Include Pre-Submission Protocols' }
     }
   end
 
@@ -138,7 +139,13 @@ class ProtocolsReport < ReportingModule
     submitted_at_start  = (args[:service_requests_original_submitted_date_from].present?  ? DateTime.strptime(args[:service_requests_original_submitted_date_from], "%m/%d/%Y") : self.default_options['Date Range'][:from]).utc
     submitted_at_end    = (args[:service_requests_original_submitted_date_to].present?    ? DateTime.strptime(args[:service_requests_original_submitted_date_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59").to_datetime : self.default_options['Date Range'][:to]).utc
 
-    query             = { service_requests: { submitted_at: submitted_at_start..submitted_at_end } }
+    if args[:include_presubmitted] #include pre-submission protocols
+      service_request_ids = ServiceRequest.where(submitted_at: submitted_at_start..submitted_at_end).or(ServiceRequest.where(submitted_at: nil).where.not(protocol_id: nil)).ids
+    else
+      service_request_ids = ServiceRequest.where(submitted_at: submitted_at_start..submitted_at_end).ids
+    end
+
+    query             = { service_requests: { id: service_request_ids } }
     query[:services]  = { organization_id: service_organization_ids } if service_organization_ids.any?
 
     if ssr_organization_ids.any? || args[:status]

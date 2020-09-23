@@ -30,6 +30,7 @@
         = notes_button(protocol, protocol_id: protocol.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
         = protocol_details_button(protocol)
         = edit_protocol_button(protocol, permission: permission_to_edit || admin)
+        = push_to_oncore_button(protocol)
         = archive_protocol_button(protocol, permission: permission_to_edit || Protocol.for_super_user(current_user.id).include?(protocol))
       - else
         = notes_button(protocol, srid: service_request.id, model: protocol, tooltip: t(:protocols)[:summary][:tooltips][:notes], class: 'mr-1')
@@ -42,7 +43,7 @@
     = render 'layouts/modal_errors', messages: messages, margin: false, rounded: false
   .collapse#protocolSummary{ class: action_name == 'protocol' && service_request.previously_submitted? ? '' : 'show' }
     %table.table.mb-0
-      - if Setting.get_value("research_master_enabled") && protocol.is_study?
+      - if Setting.get_value("research_master_enabled")
         %tr.d-flex
           %td.d-inline-block.col-2
             %label.mb-0<

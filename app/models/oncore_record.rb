@@ -18,13 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
+class OncoreRecord < ApplicationRecord
+  belongs_to :protocol
 
-  config.before(:each) do
-    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 201)
-  end
-
-  config.before(:each, remote_service: :unavailable) do
-    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).to_return(status: 500)
+  scope :most_recent_push_per_protocol, -> do
+    where(id: OncoreRecord.select("MAX(id) AS latest").group(:protocol_id).collect(&:latest))
   end
 end

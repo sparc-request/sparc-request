@@ -19,6 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CreateDocumentGroupingAndAddGroupingIdToDocument < ActiveRecord::Migration[4.2]
+  class DocumentGroupings < ActiveRecord::Base
+    belongs_to :service_request
+    has_many :documents, dependent: :destroy
+  end
+
   def up
     create_table :document_groupings do |t|
       t.belongs_to :service_request

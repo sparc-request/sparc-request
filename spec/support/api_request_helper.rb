@@ -18,49 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module CwfHelper
+module APIHelper
+  def send_api_update_request(args={})
+    resource  = args[:resource]
+    id        = args[:id]
+    params    = args[:params] || {}
+    token     = args[:token] || create(:api_access_token, application: create(:api_application)).token
 
-  def cwf_sends_api_put_request_for_resource(klass, object_id, params)
-    http_login
-
-    put "/v1/#{klass}/#{object_id}.json", params: params, headers: @env
+    put "/api/v1/#{resource}/#{id}.json", params: params.merge(access_token: token)
   end
 
-  def cwf_sends_api_get_request_for_resource(klass, object_id, depth)
-    http_login
+  def send_api_get_request(args={})
+    resource  = args[:resource]
+    id        = args[:id]
+    ids       = args[:ids]
+    depth     = args[:depth]
+    params    = args[:params] || {}
+    token     = args[:token] || create(:api_access_token, application: create(:api_application)).token
 
-    if depth
-      params = { depth: depth }
+    params.merge!(ids: ids) if ids
+    params.merge!(depth: depth) if depth
+
+    if id
+      get "/api/v1/#{resource}/#{id}.json", params: params.merge(access_token: token)
     else
-      params = {}
+      get "/api/v1/#{resource}.json", params: params.merge(access_token: token)
     end
-
-    get "/v1/#{klass}/#{object_id}.json", params: params, headers: @env
-  end
-
-  def cwf_sends_api_get_request_for_resources(klass, depth, ids=[])
-    http_login
-
-    params = Hash.new
-
-    if ids.any?
-      params.merge!({ ids: ids })
-    end
-
-    if depth.present?
-      params.merge!({ depth: depth })
-    end
-
-    get "/v1/#{klass}.json", params: params, headers: @env
-  end
-
-  def cwf_sends_api_get_request_for_resources_by_params(klass, params)
-    http_login
-
-    get "/v1/#{klass}.json", params: params, headers: @env
   end
 end
 
 RSpec.configure do |config|
-  config.include CwfHelper, type: :request
+  config.include APIHelper, type: :request
 end

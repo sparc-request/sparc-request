@@ -110,16 +110,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "dashboard_link",
-    "value":          "/dashboard",
-    "friendly_name":  "Dashboard URL",
-    "description":    "This is the URL of SPARCDashboard for use in emails.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "default_mail_to",
     "value":          "sparcrequest@gmail.com",
     "friendly_name":  "Default Mail-To",
@@ -310,36 +300,6 @@
     "parent_value":   ""
   },
   {
-    "key":            "header_link_2_proper",
-    "value":          "http://127.0.0.1:3000",
-    "friendly_name":  "Header Logo 2 URL (SPARCRequest)",
-    "description":    "This is the URL for the \"SPARCRequest Logo\" in the SPARCRequest header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "header_link_2_dashboard",
-    "value":          "http://127.0.0.1:3000/dashboard",
-    "friendly_name":  "Header Logo 2 URL (SPARCDashboard)",
-    "description":    "This is the URL for the \"SPARCDashboard Logo\" in the SPARCDashboard header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
-    "key":            "header_link_2_catalog",
-    "value":          "http://127.0.0.1:3000/catalog_manager",
-    "friendly_name":  "Header Logo 2 URL (SPARCCatalog)",
-    "description":    "This is the URL for the \"SPARCCatalog Logo\" in the SPARCCatalog header.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
-  },
-  {
     "key":            "header_link_3",
     "value":          "http://www.musc.edu",
     "friendly_name":  "Header Logo 3 URL",
@@ -368,16 +328,6 @@
     "version":        "",
     "parent_key":     "use_tableau",
     "parent_value":   "true"
-  },
-  {
-    "key":            "host",
-    "value":          "127.0.0.1:5000",
-    "friendly_name":  "Host",
-    "description":    "This is the host domain of your instance of SPARCRequest.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
   },
   {
     "key":            "lazy_load_ldap",
@@ -521,7 +471,7 @@
   },
   {
     "key":            "navbar_links",
-    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://127.0.0.1:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://127.0.0.1:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://127.0.0.1:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://127.0.0.1:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://127.0.0.1:3000/surveyor/responses\"] }",
+    "value":          "{ \"sparc_request\": [\"SPARCRequest\", \"http://localhost:3000/\"], \"sparc_dashboard\": [\"SPARCDashboard\", \"http://localhost:3000/dashboard\"], \"sparc_fulfillment\": [\"SPARCFulfillment\", \"https://cwf-d.obis.musc.edu/identities/sign_in\"], \"sparc_catalog\": [\"SPARCCatalog\", \"http://localhost:3000/catalog_manager\"], \"sparc_report\": [\"SPARCReport\", \"http://localhost:3000/reports\"], \"sparc_forms\": [\"SPARCForms\", \"http://localhost:3000/surveyor/responses\"], \"sparc_admin\": [\"SPARCAdmin\", \"localhost:3000/admin/applications\"], \"sparc_info\": [\"SPARCInfo\", \"https://sparcrequest.atlassian.net/wiki/spaces/RD/overview\"] }",
     "friendly_name":  "Navbar Links",
     "description":    "This defines the links that appear in the header navbar. New links may be added by using the following syntax: \"key\": [\"Link Text\", \"Full URL\"].",
     "group":          "",
@@ -650,6 +600,66 @@
     "parent_value":   ""
   },
   {
+    "key":            "oncore_api",
+    "value":          "https://youroncoreserver.yourinstitution.tld",
+    "friendly_name":  "OnCore API URL",
+    "description":    "The URL for your institution's OnCore API.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_department",
+    "value":          "OTHER",
+    "friendly_name":  "OnCore Department Default Value",
+    "description":    "Default value for Primary PI's Department field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_library",
+    "value":          "Non-Oncology",
+    "friendly_name":  "OnCore Library Default Value",
+    "description":    "Default value for Library field when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_organizational_unit",
+    "value":          "MUSC Enterprise",
+    "friendly_name":  "OnCore Organizational Unit Default Value",
+    "description":    "Default value for Organizational Unit when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_default_protocol_type",
+    "value":          "Treatment",
+    "friendly_name":  "OnCore Protocol Type Default Value",
+    "description":    "Default value for Protocol Type when pushing studies to OnCore.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "oncore_endpoint_access",
+    "value":          "[]",
+    "friendly_name":  "OnCore Endpoint Access",
+    "description":    "This is a list of users who will have full access to the OnCore functionality in SPARC.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_oncore",
+    "parent_value":   "true"
+  },
+  {
     "key":            "queue_epic",
     "value":          "false",
     "friendly_name":  "Queue Epic",
@@ -693,7 +703,7 @@
     "key":            "remote_service_notifier_host",
     "value":          "127.0.0.1:5001",
     "friendly_name":  "Remote Service Notifier",
-    "description":    "This is the host domain of the SPARCRequest API.",
+    "description":    "This is the host domain of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -703,7 +713,7 @@
     "key":            "remote_service_notifier_password",
     "value":          "",
     "friendly_name":  "Remote Service Notifier Password",
-    "description":    "This is the authentication password of the SPARCRequest API.",
+    "description":    "This is the authentication password of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -713,7 +723,7 @@
     "key":            "remote_service_notifier_path",
     "value":          "/v1/notifications.json",
     "friendly_name":  "Remote Service Notifier Path",
-    "description":    "This is the URL path of the SPARCRequest API.",
+    "description":    "This is the URL path of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -723,7 +733,7 @@
     "key":            "remote_service_notifier_protocol",
     "value":          "https",
     "friendly_name":  "Remote Service Notifier Protocol",
-    "description":    "This is the HTTP protocol (HTTP/HTTPS) of the SPARCRequest API.",
+    "description":    "This is the HTTP protocol (HTTP/HTTPS) of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -733,7 +743,7 @@
     "key":            "remote_service_notifier_username",
     "value":          "",
     "friendly_name":  "Remote Service Notifier Username",
-    "description":    "This is the authentication username of the SPARCRequest API.",
+    "description":    "This is the authentication username of the SPARCFulfillment API.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -778,16 +788,6 @@
     "version":        "",
     "parent_key":     "research_master_enabled",
     "parent_value":   "true"
-  },
-  {
-    "key":            "root_url",
-    "value":          "http://127.0.0.1:3000",
-    "friendly_name":  "Root URL",
-    "description":    "This is the root URL for the application for use in emails.",
-    "group":          "",
-    "version":        "",
-    "parent_key":     "",
-    "parent_value":   ""
   },
   {
     "key":            "send_authorized_user_emails",
@@ -880,6 +880,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "use_confidentiality_questions",
+    "value":          "true",
+    "friendly_name":  "Use Confidentiality Questions",
+    "description":    "This determines whether the application will display Confidentiality Questions section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "use_epic",
     "value":          "false",
     "friendly_name":  "Use Epic",
@@ -958,6 +968,16 @@
     "version":        "",
     "parent_key":     "use_news_feed",
     "parent_value":   "true"
+  },
+    {
+    "key":            "use_oncore",
+    "value":          "false",
+    "friendly_name":  "Use OnCore",
+    "description":    "This determines whether the application will use OnCore integration.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   },
   {
     "key":            "use_redcap_api",

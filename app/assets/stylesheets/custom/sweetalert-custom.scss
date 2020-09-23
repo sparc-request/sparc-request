@@ -36,3 +36,17 @@
     }
   }
 }
+
+.swal2-show {
+  -webkit-animation: swal2-show 0.5s;
+  animation: swal2-show 0.5s;
+}
+
+.swal2-hide {
+  -webkit-animation: swal2-hide 0.5s;
+  animation: swal2-hide 0.5s;
+}
+
+.swal2-input {
+  margin-bottom: 0;
+}

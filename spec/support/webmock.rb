@@ -26,6 +26,23 @@ WebMock.disable_net_connect!({
 RSpec.configure do |config|
   config.before(:each) do
     stub_request(:get, "https://sparcrequest.atlassian.net/wiki").
-     to_return(status: 200, body: "")
+      to_return(status: 200, body: "")
+
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
+      to_return(status: 201)
+
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols").
+      to_return(status: 201)
+
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
+      to_return(status: 200, body: { access_token: "some_token_value", expires_in: "300", token_type: "Bearer" }.to_json)
+  end
+
+  config.before(:each, remote_service: :unavailable) do
+    stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
+      to_return(status: 500)
+
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
+      to_return(status: 500)
   end
 end

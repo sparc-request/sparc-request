@@ -103,6 +103,20 @@ en:
         main_button: "Send SPARC system notification to an Authorized User or Service Provider"
         shared: "Share this message with super users of your group and overlords."
 
+    ###################
+    # ONCORE ENDPOINT #
+    ###################
+    oncore:
+      log:
+        header: "OnCore CRPC Push Log"
+        protocol: "Protocol"
+        PIs: "PI(s)"
+        calendar_version: "Calendar Version"
+        created_at: "Last Push Date"
+        status: "Status"
+        history: "Push History"
+        history_title: "Protocol #%{protocol_id} CRPC Push History"
+
     ######################
     #  PROTOCOL FILTERS  #
     ######################
@@ -131,6 +145,7 @@ en:
     #  PROTOCOLS  #
     ###############
     protocols:
+      epic_user_error: "The PI of this study (%{user_name}) does not have Epic rights; please contact Epic Research team for training and access."
       new: "Start a New Protocol"
       form:
         edit_selected_for_epic: 'Edit'
@@ -142,17 +157,20 @@ en:
       table:
         header: "Protocols"
         short_title: "Short Title"
+        request_sent: "Request to access protocol %{protocol_id} sent!"
+        request_access: "Request Access"
         tooltips:
           protocol_id: "System generated from SPARCRequest"
           short_title: "An abbreviated form of the title used to identify your study/project. Special characters outside the allowed range will be removed automatically."
           pi: "Principal Investigator(s)"
           export: "Export displayed protocols to Excel"
           requests: "Quick access to requests"
+          request_access: "Request access to this protocol from a selected authorized user"
 
       service_requests:
         header: "Requests - %{status} - %{date}"
         view_consolidated: "Consolidated Request"
-        export_consolidated: "Export"
+        export_consolidated: "Budget Template"
         coverage_report: 'Coverage Analysis'
         cost_analysis_report: 'Cost Analysis'
         consolidated_all: "All Requests"

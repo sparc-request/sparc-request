@@ -18,7 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-$('#modalContainer').html("<%= j render 'form', visit_group: @visit_group, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
+body = "<%= j render 'form', visit_group: @visit_group, visit_group_clone: @visit_group, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>"
+
+$('#modalContainer').html("
+  <div class='modal-dialog role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h3 class='modal-title'>#{I18n.t('visit_groups.new')}</h3>
+        <button class='close' type='button' data-dismiss='modal', aria-label='#{I18n.t('actions.close')}'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='modal-body'>#{body}</div>
+    </div>
+  </div>
+")
 $('#modalContainer').modal('show')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix

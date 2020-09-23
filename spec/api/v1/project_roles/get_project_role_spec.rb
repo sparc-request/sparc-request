@@ -21,70 +21,52 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/project_role/:id.json' do
-
-    before do
-      protocol = build(:protocol)
-      protocol.save validate: false
-
-      @project_role = create(:project_role_with_identity, protocol: protocol)
-    end
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resource('project_roles', @project_role.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a ProjectRole root object' do
-          expect(response.body).to include('"project_role":')
-        end
-      end
-    end
+  describe 'GET /api/v1/project_role/:id.json' do
+    let!(:project_role) { create(:project_role_without_validations) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'project_roles', id: project_role.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('project_roles', @project_role.id, 'shallow') }
-
-      it 'should respond with a single shallow project_role' do
-        expect(response.body).to eq("{\"project_role\":{\"sparc_id\":#{@project_role.id},\"callback_url\":\"https://127.0.0.1:5000/v1/project_roles/#{@project_role.id}.json\"}}")
+      it 'should respond with a shallow project_role' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['project_role']).to eq({
+          'sparc_id'      => project_role.id,
+          'callback_url'  => project_role.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'project_roles', id: project_role.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('project_roles', @project_role.id, 'full') }
-
-      it 'should respond with a ProjectRole' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = ["identity_id", "protocol_id", "project_rights", "role", "role_other"].
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['project_role'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an project_role and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['project_role']).to eq(
+          project_role.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at', 'epic_access').
+          merge({
+            'sparc_id'      => project_role.id,
+            'callback_url'  => project_role.remote_service_callback_url
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'project_roles', id: project_role.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('project_roles', @project_role.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of project_roles and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = ["identity_id", "protocol_id", "identity", "project_rights", "protocol", "role", "role_other"].
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['project_role'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an project_role and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['project_role']).to eq(
+          project_role.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at', 'epic_access').
+          merge({
+            'sparc_id'      => project_role.id,
+            'callback_url'  => project_role.remote_service_callback_url,
+            'identity'      => nil,
+            'protocol'      => nil
+          })
+        )
       end
     end
   end

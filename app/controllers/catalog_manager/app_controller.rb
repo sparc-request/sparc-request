@@ -50,4 +50,9 @@ class CatalogManager::AppController < ApplicationController
     { clinical_providers: ClinicalProvider.where(organization_id: organization_id),
       patient_registrars: PatientRegistrar.where(organization_id: organization_id)}
   end
+
+  def set_registrar_enabled organization
+    @patient_registrar_enabled = (organization.process_ssrs && organization.all_child_services.where(is_available: true, one_time_fee: false).any?)
+  end
+
 end

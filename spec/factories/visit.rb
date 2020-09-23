@@ -25,5 +25,11 @@ FactoryBot.define do
     research_billing_qty  { 0 }
     insurance_billing_qty { 0 }
     effort_billing_qty    { 0 }
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :visit_without_validations, traits: [:without_validations]
   end
 end

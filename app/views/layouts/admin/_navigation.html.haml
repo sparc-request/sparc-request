@@ -18,9 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#approval_statement
-  - if @previously_approved
-    = @approval.identity.display_name
-    = t(:service_requests)[:approve_changes][:text1]
-  - else
-    = t(:service_requests)[:approve_changes][:text2]
+.col-2
+  %nav.nav.nav-pills.flex-column.list-group.list-group-flush.list-group-blend{ role: 'tablist' }
+    = link_to t('admin.navigation.applications'), admin_applications_path, remote: true, class: ['list-group-item list-group-item-action active', controller_name == 'api_keys' ? 'active' : '']
+    = link_to t('admin.navigation.permissible_values'), 'javascript:void(0)', remote: true, class: ['list-group-item list-group-item-action disabled', controller_name == 'permissible_values' ? 'active' : '']
+    = link_to t('admin.navigation.settings'), 'javascript:void(0)', remote: true, class: ['list-group-item list-group-item-action disabled', controller_name == 'settings' ? 'active' : '']

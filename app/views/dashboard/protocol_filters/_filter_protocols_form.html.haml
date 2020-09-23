@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%aside.w-20#protocolFilters
-  .card
+.w-20#protocolFilters
+  %aside.card
     = form_for_filterrific filterrific, url: dashboard_protocols_path, remote: true, html: { id: 'protocolFiltersForm', autocomplete: 'off' } do |f|
       .card-header.bg-primary.text-white
         %h3.mb-0.mr-auto

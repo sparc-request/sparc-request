@@ -22,6 +22,12 @@ $ ->
   if $('#serviceCalendar').length
     adjustCalendarHeaders()
 
+  $(document).on('mouseenter focus', '.editable:not(.active)', ->
+    $(this).find('a').addClass('active')
+  ).on('mouseleave focusout', '.editable:not(.active)', ->
+    $(this).find('a').removeClass('active')
+  )
+
   #########################
   # Load Tab on Page Load #
   #########################
@@ -31,6 +37,7 @@ $ ->
 
   $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
     $(this).find('.service-calendar-table thead tr th').css('top', 0)
+    $('.visit-group-popover').popover('dispose')
   ).on('shown.bs.collapse', '.service-calendar-container .collapse', ->
     adjustCalendarHeaders()
   )
@@ -39,22 +46,37 @@ $ ->
   # Visit Checkbox / Input #
   ##########################
 
-  $(document).on 'click', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
-    if $(this).hasClass('editable') && event.target.tagName != 'A' && $link = $(this).find('a:not(.disabled)')
+  $(document).on 'show.bs.modal', 'body', ->
+    if $('.visit-group.active').length
+      hideVisitGroupPopover()
+
+  # Various calendar links
+  $(document).on 'click keyup', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
+    if !$(this).hasClass('visit-group')
+      hideVisitGroupPopover()
+    # Click or press <return> to open
+    if ((event.type == 'click' && event.target.tagName != 'A') || (event.type == 'keyup' && event.keyCode == 13)) && $(this).hasClass('editable') && $link = $(this).find('a:not(.disabled)')
       $.ajax
         method: $link.data('method') || 'GET'
         dataType: 'script'
         url: $link.attr('href')
 
-  $(document).on 'click', 'th.check-column.editable, td.check-row.editable', (event) ->
-    if event.target.tagName != 'A'
+  # Check row / column
+  $(document).on 'click keyup', 'th.check-column.editable, td.check-row.editable', (event) ->
+    hideVisitGroupPopover()
+    # Click or press <return> to open
+    if ((event.type == 'click' && event.target.tagName != 'A') || (event.type == 'keyup' && event.keyCode == 13))
       handleConfirm(this.querySelector('a'))
 
+  # Template checkbox
   $(document).on 'click', 'td.visit.template-visit', (event) ->
-    if event.target.tagName != 'INPUT'
+    hideVisitGroupPopover()
+    # Click or press <return> to open
+    if ((event.type == 'click' && event.target.tagName != 'INPUT') || (event.type == 'keyup' && event.keyCode == 13))
       $(this).find('input').click()
 
   $(document).on 'change', '.visit-quantity', ->
+    hideVisitGroupPopover()
     $.ajax
       method: 'PUT'
       dataType: 'script'
@@ -89,12 +111,16 @@ $ ->
 
   $(document).on 'change', '#visit_group_position', ->
     $form   = $(this).parents('form')
-    action  = if $form.is('.new_visit_group') then 'new' else 'edit'
+    action  = if $form.is('#new_visit_group') then 'new' else 'edit'
     $.ajax
       type: 'GET'
       dataType: 'script'
       url: "#{$form.attr('action')}/#{action}"
       data: $form.serialize()
+
+  $(document).on 'click', '.change-visit-btn', (e) ->
+    $form = $(this).parents('form')
+    $form.append("<input type='hidden' name='change_visit' value=#{$(this).data('new-visit')}>")
 
   ################################
   # Calendar Tab Services Toggle #
@@ -122,7 +148,7 @@ $ ->
       $('#calendarLoading').removeClass('show active')
 
 (exports ? this).adjustCalendarHeaders = () ->
-  zIndex = $('.service-calendar-container').length * 4
+  zIndex = $('.service-calendar-container').length * 5
 
   $('.service-calendar-container').each ->
     $head   = $(this).children('.card-header')
@@ -136,8 +162,9 @@ $ ->
     row3Height  = $row3.outerHeight()
 
     $head.css('z-index': zIndex)
-    zIndex--
+    zIndex -= 2
     $row1.children('th').css({ 'top': headHeight, 'z-index': zIndex })
+    $row1.children('th.visit-group-select').css({ 'z-index': zIndex + 1 })
     zIndex--
     $row2.children('th').css({ 'top': headHeight + row1Height, 'z-index': zIndex })
     zIndex--
@@ -149,3 +176,6 @@ $ ->
     $('#servicesToggle').parents('.toggle').removeClass('invisible')
   else
     $('#servicesToggle').parents('.toggle').addClass('invisible')
+
+(exports ? this).hideVisitGroupPopover = () ->
+  $('.visit-group.active').removeClass('active').trigger('focusout').popover('hide').popover('dispose')

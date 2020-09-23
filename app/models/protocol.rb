@@ -49,6 +49,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :documents,                    dependent: :destroy
+  has_many :oncore_records,               dependent: :destroy
   has_many :protocol_merges,              foreign_key: :master_protocol_id
 
   has_many :identities,                   through: :project_roles
@@ -62,8 +63,8 @@ class Protocol < ApplicationRecord
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
 
-  has_many :principal_inveestigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
-  has_many :principal_investigators, through: :principal_inveestigator_roles, source: :identity
+  has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
+  has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
 
   has_many :non_principal_investigator_roles, -> { where.not(project_roles: { role: ['pi', 'primary-pi'] }) }, class_name: "ProjectRole", dependent: :destroy
   has_many :non_pi_authorized_users, through: :non_principal_investigator_roles, source: :identity
@@ -107,7 +108,7 @@ class Protocol < ApplicationRecord
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 
-  validates_presence_of :short_title, 
+  validates_presence_of :short_title,
                         :title,
                         :funding_status
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
@@ -119,7 +120,8 @@ class Protocol < ApplicationRecord
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
-    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info?
+    # rmid is optional on Projects
+    self.bypass_rmid_validation ? false : Setting.get_value('research_master_enabled') && Protocol.rmid_status && has_human_subject_info? && self.is_a?(Study)
   end
 
   def has_human_subject_info?
@@ -539,6 +541,14 @@ class Protocol < ApplicationRecord
     project_roles.reload
   end
 
+  def check_epic_user_rights
+    principal_investigator_roles.includes(:identity).where(epic_access: true).detect do |project_role|
+      epic_user = EpicUser.for_identity(project_role.identity)
+
+      (epic_user.nil? or !EpicUser.is_active?(epic_user))
+    end
+  end
+
   # Returns true if there is a push to epic in progress, false
   # otherwise.  If no push has been initiated, return false.
   def push_to_epic_in_progress?
@@ -627,6 +637,12 @@ class Protocol < ApplicationRecord
     self.funding_source_based_on_status == 'industry'
   end
 
+  def push_to_oncore
+    # POST /protocols.json
+    oncore_protocol = OncoreProtocol.new(self)
+    oncore_protocol.create_oncore_protocol
+  end
+
   #############
   ### FORMS ###
   #############
@@ -649,7 +665,7 @@ class Protocol < ApplicationRecord
   end
 
   def notify_remote_around_update?
-    true
+    Setting.get_value("fulfillment_contingent_on_catalog_manager")
   end
 
   def remotely_notifiable_attributes_to_watch_for_change

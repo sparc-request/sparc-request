@@ -21,88 +21,73 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/line_items.json' do
-
-    before do
-      protocol        = build(:protocol_federally_funded)
-      protocol.save validate: false
-      service_request = build(:service_request, protocol: protocol)
-      service_request.save validate: false
-
-
-      5.times do
-        @line_item = create(:line_item, service: create(:service_with_pricing_map),
-                                        service_request: service_request)
-      end
-    end
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resources('line_items', 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Protocols root object' do
-          expect(response.body).to include('"line_items":')
-        end
-
-        it 'should respond with an array of Protocols' do
-          parsed_body = JSON.parse(response.body)
-
-          expect(parsed_body['line_items'].length).to eq(5)
-        end
-      end
-    end
+  describe 'GET /api/v1/line_items.json' do
+    let!(:protocol)         { create(:protocol_federally_funded, :without_validations) }
+    let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
+    let!(:service)          { create(:service_without_validations, :with_pricing_map, :with_process_ssrs_organization) }
+    let!(:line_items)       { create_list(:line_item_without_validations, 5, service: service, service_request: service_request) }
 
     context 'request for :shallow records' do
+      before { send_api_get_request(resource: 'line_items', depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resources('line_items', 'shallow') }
-
-      it 'should respond with an array of :sparc_ids' do
-        parsed_body = JSON.parse(response.body)
-
-        expect(parsed_body['line_items'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+      it 'should respond with an array of shallow line_items' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['line_items']).to eq(
+          line_items.map{ |li| { 
+            'sparc_id'      => li.id,
+            'callback_url'  => li.remote_service_callback_url
+          }}
+        )
       end
     end
 
     context 'request for :full records' do
-
-      before { cwf_sends_api_get_request_for_resources('line_items', 'full') }
+      before { send_api_get_request(resource: 'line_items', depth: 'full') }
 
       it 'should respond with an array of line_items and their attributes' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:line_item).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'one_time_fee', 'per_unit_cost').
-                                sort
-
-        expect(parsed_body['line_items'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['line_items']).to eq(
+          line_items.map{ |li| 
+            li.attributes.
+            except('id', 'created_at', 'updated_at', 'deleted_at').
+            merge({ 
+              'sparc_id'      => li.id,
+              'callback_url'  => li.remote_service_callback_url,
+              'one_time_fee'  => li.one_time_fee,
+              'per_unit_cost' => li.per_unit_cost
+            })
+          }
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections records' do
-
-      before { cwf_sends_api_get_request_for_resources('line_items', 'full_with_shallow_reflections') }
+      before { send_api_get_request(resource: 'line_items', depth: 'full_with_shallow_reflections') }
 
       it 'should respond with an array of line_items and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:line_item).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items_visits', 'service', 'service_request', 'sub_service_request', 'one_time_fee', 'per_unit_cost').
-                                sort
-
-        expect(parsed_body['line_items'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['line_items']).to eq(
+          line_items.map{ |li| 
+            li.attributes.
+            except('id', 'created_at', 'updated_at', 'deleted_at').
+              merge({
+              'sparc_id'            => li.id,
+              'callback_url'        => li.remote_service_callback_url,
+              'one_time_fee'        => li.one_time_fee,
+              'per_unit_cost'       => li.per_unit_cost,
+              'line_items_visits'   => [],
+              'sub_service_request' => nil,
+              'service'             => {
+                'sparc_id'      => service.id,
+                'callback_url'  => service.remote_service_callback_url
+              },
+              'service_request' => {
+                'sparc_id'      => service_request.id,
+                'callback_url'  => service_request.remote_service_callback_url
+              }
+            })
+          }
+        )
       end
     end
   end

@@ -134,7 +134,7 @@ class LineItem < ApplicationRecord
     else
       pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
       pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
-      funding_source      = self.service_request.protocol.funding_source_based_on_status
+      funding_source      = self.protocol.funding_source_based_on_status
       selected_rate_type  = pricing_setup.rate_type(funding_source)
       applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 
@@ -217,7 +217,7 @@ class LineItem < ApplicationRecord
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
     if Setting.get_value("use_indirect_cost")
-      self.service_request.protocol.indirect_cost_rate.to_f / 100
+      self.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
     end
@@ -313,7 +313,7 @@ class LineItem < ApplicationRecord
 
   def destroy_arms_if_last_pppv_line_item
     if self.try(:protocol).try(:service_requests).try(:none?) { |sr| sr.has_per_patient_per_visit_services? }
-      self.service_request.protocol.try(:arms).try(:destroy_all)
+      self.protocol.try(:arms).try(:destroy_all)
     end
   end
 end

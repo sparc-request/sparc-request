@@ -26,7 +26,7 @@ module VisitGroupsHelper
   end
 
   def delete_visit_group_button(visit_group, opts={})
-    link_to visit_group_path(visit_group, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, method: :delete, class: 'btn btn-danger', title: t('visit_groups.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' } do
+    link_to visit_group_path(visit_group, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, method: :delete, class: 'btn btn btn-danger', title: t('visit_groups.delete'), data: { toggle: 'tooltip', confirm_swal: 'true' } do
       icon('fas', 'trash-alt mr-2') + t('visit_groups.delete')
     end
   end

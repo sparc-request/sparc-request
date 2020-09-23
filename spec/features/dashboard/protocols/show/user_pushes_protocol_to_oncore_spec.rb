@@ -17,16 +17,44 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+require 'rails_helper'
 
-module ApiAuthenticationHelper
+RSpec.describe 'User pushes a study to OnCore', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  def http_login username=Setting.get_value('remote_service_notifier_username'), password=Setting.get_value('remote_service_notifier_password')
-    @env ||= {}
+  stub_config("use_oncore", true)
+  stub_config("oncore_endpoint_access", ['jug2'])
 
-    @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+  let(:auth_path) { "/forte-platform-web/api/oauth/token" }
+  let(:create_protocol_path) { "/oncore-api/rest/protocols" }
+
+  before :each do
+    study = create(:study_federally_funded, primary_pi: jug2)
+
+    visit dashboard_protocol_path(study)
+    wait_for_javascript_to_finish
+    click_link I18n.t('protocols.summary.oncore.push_to_oncore')
+    wait_for_javascript_to_finish
   end
-end
 
-RSpec.configure do |config|
-  config.include ApiAuthenticationHelper, type: :request
+  context 'OnCore servers accessible' do
+    it 'should contact OnCore servers twice' do
+      # Once to authenticate, once to create the study in OnCore
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+      expect(a_request(:post, Setting.get_value("oncore_api")+create_protocol_path)).to have_been_made.once
+    end
+  end
+
+  context 'OnCore servers inaccessible', remote_service: :unavailable do
+    it 'should contact OnCore servers once' do
+      # Authenticate once
+      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
+    end
+
+    it 'should display HTTP error' do
+      expect(page).to have_content(I18n.t('protocols.summary.oncore.error'))
+      expect(page).to have_content('500:')
+    end
+  end
 end

@@ -21,112 +21,52 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/human_subjects_infos/:id.json' do
-
-    before do
-      human_subjects_info = FactoryBot.build(:human_subjects_info)
-      @study = FactoryBot.build(:study, human_subjects_info: human_subjects_info)
-      @study.save(validate: false)
-
-    end
-
-    context 'response params' do
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a human_subjects_info root object' do
-          expect(response.body).to include('"human_subjects_info":')
-        end
-      end
-    end
+  describe 'GET /api/v1/human_subjects_info/:id.json' do
+    let!(:human_subjects_info) { create(:human_subjects_info_without_validations) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'human_subjects_infos', id: human_subjects_info.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'shallow') }
-
-      it 'should respond with a single shallow human_subjects_info' do
-        expect(response.body).to eq("{\"human_subjects_info\":{\"sparc_id\":#{@study.human_subjects_info.id},\"callback_url\":\"https://127.0.0.1:5000/v1/human_subjects_infos/#{@study.human_subjects_info.id}.json\"}}")
+      it 'should respond with a shallow human_subjects_info' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['human_subjects_info']).to eq({
+          'sparc_id'      => human_subjects_info.id,
+          'callback_url'  => human_subjects_info.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'human_subjects_infos', id: human_subjects_info.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'full') }
-
-      it 'should respond with a HumanSubjectsInfo' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
-                                keys.
-                                reject { |key| ['id','created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
-                                sort
-
-        expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an human_subjects_info and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['human_subjects_info']).to eq(
+          human_subjects_info.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'      => human_subjects_info.id,
+            'callback_url'  => human_subjects_info.remote_service_callback_url
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'human_subjects_infos', id: human_subjects_info.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'full_with_shallow_reflections') }
-
-      it 'should respond with an array of human_subjects_info and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryBot.build(:human_subjects_info).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'protocol', 'irb_records').
-                                sort
-
-        expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)
-      end
-    end
-
-    context 'request for :shallow record with a bogus ID' do
-
-     before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'shallow') }
-
-     it 'should respond with a 404 and JSON content type' do
-       expect(response.status).to eq(404)
-       expect(response.content_type).to eq('application/json')
-       parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['human_subjects_info']).to eq(nil)
-       expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
-     end
-   end
-
-   context 'request for :full record with a bogus ID' do
-
-    before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full') }
-
-    it 'should respond with a 404 and JSON content type' do
-      expect(response.status).to eq(404)
-      expect(response.content_type).to eq('application/json')
-      parsed_body         = JSON.parse(response.body)
-      expect(parsed_body['human_subjects_info']).to eq(nil)
-      expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
-    end
-  end
-
-    context 'request for :full_with_shallow_reflections record with a bogus ID' do
-
-      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full_with_shallow_reflections') }
-
-      it 'should respond with a 404 and JSON content type' do
-        expect(response.status).to eq(404)
-        expect(response.content_type).to eq('application/json')
-        parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['human_subjects_info']).to eq(nil)
-        expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+      it 'should respond with an human_subjects_info and its attributes and its shallow reflections' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['human_subjects_info']).to eq(
+          human_subjects_info.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at').
+          merge({
+            'sparc_id'          => human_subjects_info.id,
+            'callback_url'      => human_subjects_info.remote_service_callback_url,
+            'irb_records'       => [],
+            'protocol'          => nil
+          })
+        )
       end
     end
   end

@@ -31,7 +31,7 @@ class Notifier < ActionMailer::Base
     mail(to: email, cc: cc, from: @identity.email, subject: t('devise.mailer.new_account.subject'))
   end
 
-  def notify_user(project_role, service_request, approval, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
+  def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
     @protocol = service_request.protocol
     @service_request = service_request
     @deleted_ssrs = deleted_ssrs
@@ -50,7 +50,7 @@ class Notifier < ActionMailer::Base
     @role = project_role.role
     @full_name = @identity.full_name
     @audit_report = audit_report
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
 
     if admin_delete_ssr
       @ssrs_to_be_displayed = [@deleted_ssrs]
@@ -89,7 +89,7 @@ class Notifier < ActionMailer::Base
     @full_name = submission_email_address
     @ssrs_to_be_displayed = [ssr]
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @audit_report = audit_report
@@ -115,7 +115,7 @@ class Notifier < ActionMailer::Base
     @full_name = service_provider.identity.full_name
     @audit_report = audit_report
 
-    @portal_link = Setting.get_value("dashboard_link") + "/protocols/#{@protocol.id}"
+    @portal_link = dashboard_protocol_url(@protocol)
     @portal_text = "Administrators/Service Providers, Click Here"
 
     ### ATTACHMENTS ###

@@ -32,10 +32,12 @@ en:
     approve: "Approve"
     cancel: "Cancel"
     clear: "Clear"
+    click_to_reveal: "Click to reveal"
     close: "Close"
     complete: "Complete"
     continue: "Continue"
     copy: "Copy"
+    copied: "Copied"
     copy_clipboard:
       action: "Copy to Clipboard"
       complete: "Text successfully copied to your clipboard"
@@ -50,6 +52,7 @@ en:
     max: "Max"
     preview: "Preview"
     print: "Print"
+    regenerate: "Regenerate"
     remove: "Remove"
     reply: "Reply"
     reset: "Reset"
@@ -84,6 +87,15 @@ en:
         document: "Document"
         document_updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
+        share_all: "Share with all providers"
+      doorkeeper/access_request:
+        created_at: "Access Time"
+        failure_reason: "Failure Reason"
+        ip_address: "IP Address"
+      doorkeeper/application:
+        created_at: "Date Created"
+        secret: "Client Secret"
+        uid: "Client ID"
       form:
         respondable_id: "SRID"
         surveyable: "Association"
@@ -206,7 +218,6 @@ en:
         protocol_merge: "Historical Protocol Merges"
       protocol_filter:
         search_name: "Name"
-
       question:
         content: "Question"
       question_response:
@@ -572,14 +583,18 @@ en:
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
-    supported_types: "Supported File Types:<br>%{file_types}"
-    providers: "%{provider_count} Service Providers"
+    form:
+      supported_types: "Supported File Types:<br>%{file_types}"
+      select_type: "Please Select Type"
+      select_providers: "Choose Service Providers"
+    table:
+      providers: "%{provider_count} Service Providers"
+      all_providers: "All Service Providers on this %{protocol_type}"
     tooltips:
       new: "Visible to Authorized Users and selected Service Providers"
-      access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
+      access: "Share this document with all current and future service providers on this %{protocol_type} or choose which providers this document should be shared with"
       add_document: "Upload document(s) in repository"
-    select_type: "Please Select Type"
-    delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
+      share_all: "Share this document with all current and future service providers on this %{protocol_type}"
 
   ###############
   # ERROR PAGES #
@@ -663,15 +678,20 @@ en:
       navigation:
         short_interaction: "Short Interaction"
         epic_queue: "Epic Queue"
+        oncore_log: "OnCore Log"
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
       copyright: "&copy; 2011-2020 MUSC Foundation for Research Development"
-      links:
-        about: "About"
-        sctr:
-          text: "SCTR"
+      github: "GitHub"
+      about:
+        header: "About"
+        about_sparc: "About SPARCRequest"
+        about_sctr:
+          text: "About SCTR"
           url: "http://sctr.musc.edu"
+      links:
+        header: "Useful Links"
         contact: "Contact Us"
         listserv:
           text: "Listserv"
@@ -692,6 +712,13 @@ en:
           question_6: "I'm stuck! Who can I contact for assistance with SPARCRequest?"
           answer_6: "The %{department_name} is happy to assist you! Please contact us at %{phone} or <a href='mailto:%{email}'>%{email}</a>."
         feedback: "Feedback"
+      browsers:
+        header: "Supported Browsers"
+        chrome: "Chrome"
+        firefox: "Firefox"
+        safari: "Safari"
+        edge: "Edge"
+        ie11: "Internet Explorer 11+"
     back_to_top: "Go to Top"
 
   ##############
@@ -707,7 +734,7 @@ en:
   # MAILERS #
   ###########
   mailers:
-    greeting: "Dear %{name}"
+    greeting: "Dear %{name},"
     protocol_mailer:
       archive_email:
         archive:
@@ -718,6 +745,9 @@ en:
           subject: "SPARCRequest Protocol Unarchive Notification (Protocol %{protocol_id})"
           introduction: "Protocol %{protocol_id} has been unarchived in SPARCRequest by %{archiver_name}. Your protocol can be accessed by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
           unarchiver: "(Unarchiver)"
+      request_access_email:
+        subject: "SPARCRequest %{requester} Requests Access to Protocol %{protocol_id}"
+        introduction: "%{requester} is requesting access to protocol %{protocol_id}. You may review this protocol and grant protocol access via <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
 
   ############
   # Messages #
@@ -752,10 +782,11 @@ en:
   protocols:
     new: "New %{protocol_type}"
     edit: "Edit %{protocol_type} Information"
+    edit_billing: "Set Default Billing Designation"
     created: "%{protocol_type} Created!"
     updated: "%{protocol_type} Updated!"
     rmid:
-      note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+      note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
       validated: "Updated to corresponding Research Master ID %{title}"
       errors:
         server_down: "The Research Master ID Server is down. You cannot edit the Research Master ID field at this time."
@@ -768,10 +799,16 @@ en:
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
       id: "%{protocol_type} ID:"
+      oncore:
+        push_to_oncore: "Push to OnCore"
+        pushed_to_oncore: "Study Pushed to OnCore!"
+        error: "Unable to push Study to OnCore"
+        already_exists: "Study %{protocol_id} already exists in OnCore."
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"
         edit: "Quick access to edit protocol information"
+        push_to_oncore: "Create Study in OnCore"
         archive: "Ability to hide study from all Authorized User dashboards"
         unarchive: "Click to reveal on all associated Authorized User dashboards"
     view_details:
@@ -790,6 +827,7 @@ en:
       header:
         new: "Start a New %{protocol_type}"
         edit: "Edit an Existing %{protocol_type}"
+        edit_billing: "Choose a Default Billing Type"
       navigation:
         header:
           new: "New %{protocol_type}"
@@ -797,13 +835,17 @@ en:
       information:
         header: "General Information"
         rmid:
-          note: "If your Study has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
+          note: "If your %{protocol_type} has a <a href='%{rmid_url}' target='_blank'>%{rmid_field}</a>, please enter it here and associated information will be filled in automatically."
           error:
             title: "No Records Found"
             text: "Could not find a Research Master record with RMID <strong>%{rmid}</strong>"
         primary_pi:
           note: "If you are not the Primary PI you will be added as a general access user and you may change your role later"
         study_type_note: "Note: %{note}"
+      confidentiality_epic_questions:
+        header: "Confidentiality and Epic Questions"
+      confidentiality_questions:
+        header: "Confidentiality Questions"
       financial_information:
         header: "Financial Information"
         guarantor_header: "Guarantor Information"
@@ -839,6 +881,7 @@ en:
       start_date: "Estimated start date for your %{protocol_type} (used by service providers to prioritize)"
       study_type_questions: "Information needed to determine confidentiality of patients/protocols."
       title: "Full title of your Study/Project."
+      edit_billing: "You can choose your default billing here. (Research or Insurance)"
 
   ########################
   # NOT APPROVED WARNING #
@@ -917,6 +960,8 @@ en:
       arm: "Arm"
       visit: "Visit"
       move_note: "Note: Consecutive visits will also have their days changed."
+      previous: "Edit previous visit - %{name}"
+      next: "Edit next visit - %{name}"
 
 
 
@@ -1020,7 +1065,7 @@ en:
     description: "Brief Description"
     deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
-    epic_notice: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    epic_notice: "*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met."
     epic_user_api_slack_error: "Epic User API with SPARCRequest %{env} is down."
     link: "HERE"
     name: "User Name"

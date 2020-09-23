@@ -22,6 +22,28 @@
   $.extend($.fn.modal.Constructor.Default, { backdrop: 'static' });
 
   $(document).ready( function() {
+    // Prevent form multi-submit during a modal closing
+    // by stopping Rails remote requests during a modal transitioning
+    $(document).on('ajax:beforeSend', '.modal form', event => {
+      $modal = $(event.target).parents('.modal')
+      if ($modal.data('bs.modal')._isTransitioning)
+        event.preventDefault()
+        event.stopImmediatePropagation()
+    })
+
+    // Allow popovers to be closed via an optional close button
+    $(document).on('click', '.popover .close', event => {
+      event.preventDefault();
+      $(event.target).parents('.popover').popover('hide').popover('dispose');
+    })
+
+    // Allow popovers to be closed via the <esc> key
+    $(document).on('keyup', 'body', event => {
+      if (event.keyCode == 27 && $('.popover').length)
+        $('.popover').popover('hide').popover('dispose')
+        $('.tooltip').tooltip('hide')
+    })
+
     $(document).on('hide.bs.popover', '[data-toggle="popover"][data-trigger="hover"]', event => {
       var $this = $(event.target);
 
@@ -35,18 +57,37 @@
     })
 
     $(document).on('click', '.nav-pills .nav-link:not(.active)', event => {
-      $this = $(event.target)
+      var $this = $(event.target)
       $this.parents('.nav-pills').find('.nav-link.active').removeClass('active');
       $this.addClass('active');
     })
 
     $(document).on('click', 'table.table-interactive tbody tr', event => {
-      el = event.target
+      var el      = event.target,
+          $link,
+          href,
+          remote;
 
-      if (el.tagName == 'tr' && $(el).find('a').length) {
-        window.location = $(el).find('a').first().attr('href');
-      } else if (el.tagName != 'a' && $(el).parents('tr').find('a').length) {
-        window.location = $(el).parents('tr').find('a').first().attr('href');
+      if (el.tagName == 'tr' && $(el).find('a:not(.dropdown-item)').length) {
+        $link   = $(el).find('a:not(.dropdown-item)').first(),
+        href    = $link.attr('href'),
+        remote  = $link.data('remote') || false;
+      } else if (el.tagName != 'a' && $(el).parents('tr').find('a:not(.dropdown-item)').length) {
+        $link = $(el).parents('tr').find('a:not(.dropdown-item)').first(),
+        href    = $link.attr('href'),
+        remote  = $link.data('remote') || false;
+      }
+
+      if (href) {
+        if (remote) {
+          $.ajax({
+            type:     'get',
+            dataType: 'script',
+            url:      href
+          })
+        } else {
+          window.location = href;
+        }
       }
     })
   })

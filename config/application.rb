@@ -95,5 +95,10 @@ module SparcRails
       
     ##  Error pages
     config.exceptions_app = self.routes
+
+    config.to_prepare do
+      Doorkeeper::ApplicationsController.layout 'application'
+      Doorkeeper::ApplicationController.helper ApplicationHelper
+    end
   end
 end

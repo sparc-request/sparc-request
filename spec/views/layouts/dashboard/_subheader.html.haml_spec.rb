@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
+RSpec.describe 'layouts/dashboard/_subheader.html.haml', view: true do
   include RSpecHtmlMatchers
 
   before(:each) do
@@ -36,7 +36,7 @@ RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
   end
 
   it 'should display breadcrumbs by sending :breadcrumbs to session[:breadcrumbs]' do
-    render 'layouts/dashboard/dashboard_navbar', current_user: @user
+    render 'layouts/dashboard/subheader', current_user: @user
 
     expect(response).to have_content('All those other pages.')
   end
@@ -46,9 +46,20 @@ RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
     stub_config("epic_queue_access", ['jug2'])
 
     it 'should display view epic queue button' do
-      render 'layouts/dashboard/dashboard_navbar', current_user: @user
+      render 'layouts/dashboard/subheader', current_user: @user
 
       expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.epic_queue'))
+    end
+  end
+
+  context 'OnCore configuration turned on' do
+    stub_config("use_oncore", true)
+    stub_config("oncore_endpoint_access", ['jug2'])
+
+    it 'should display view OnCore Log button' do
+      render 'layouts/dashboard/subheader', current_user: @user
+
+      expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.oncore_log'))
     end
   end
 
@@ -60,7 +71,7 @@ RSpec.describe 'layouts/dashboard/_dashboard_navbar.html.haml', view: true do
     end
 
     it 'should display the short interaction button' do
-      render 'layouts/dashboard/dashboard_navbar', current_user: @user
+      render 'layouts/dashboard/subheader', current_user: @user
 
       expect(response).to have_selector('a', text: I18n.t('layout.dashboard.navigation.protocol_merge'))
     end

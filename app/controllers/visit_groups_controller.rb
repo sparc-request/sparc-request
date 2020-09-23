@@ -62,7 +62,8 @@ class VisitGroupsController < ApplicationController
   end
 
   def edit
-    @visit_group.assign_attributes(visit_group_params) if params[:visit_group]
+    @visit_group_clone = @visit_group.dup
+    @visit_group_clone.assign_attributes(visit_group_params.merge(id: @visit_group.id)) if params[:visit_group]
 
     @arm = @visit_group.arm
     @tab = params[:tab]
@@ -77,6 +78,8 @@ class VisitGroupsController < ApplicationController
     @tab = params[:tab]
 
     setup_calendar_pages
+
+    @position_changed = @visit_group.position != visit_group_params[:position].to_i + 1
 
     if @visit_group.update_attributes(visit_group_params)
       flash[:success] = t('visit_groups.updated')

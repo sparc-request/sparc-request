@@ -6,6 +6,7 @@
   "author": "SPARCRequest <sparcrequest@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@sweetalert2/theme-bootstrap-4": "^3.2.0",
     "bootstrap": "^4.3.1",
     "bootstrap-select": "^1.13.12",
     "bootstrap-table": "^1.14.2",
@@ -18,10 +19,10 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "nprogress": "^0.2.0",
-    "popper.js": "^1.15.0",
+    "popper.js": "^1.16.1",
     "promise-polyfill": "^8.1.3",
     "stickybits": "^3.6.6",
-    "sweetalert2": "^8.11.4",
+    "sweetalert2": "^9.17.1",
     "tempusdominus-bootstrap-4": "^5.1.2",
     "tempusdominus-core": "^5.0.3",
     "url-polyfill": "^1.1.7"

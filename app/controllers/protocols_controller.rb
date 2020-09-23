@@ -23,7 +23,7 @@ class ProtocolsController < ApplicationController
 
   before_action :initialize_service_request,  only: [:show, :new, :create, :edit, :update, :update_protocol_type]
   before_action :authorize_identity,          only: [:show, :new, :create, :edit, :update, :update_protocol_type]
-  before_action :find_protocol,               only: [:show, :edit, :update]
+  before_action :find_protocol,               only: [:show, :edit, :update, :edit_billing, :update_billing]
 
   def show
     respond_to :js
@@ -62,6 +62,21 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
+  end
+
+  def update_billing
+    @protocol.all_research_billing = protocol_params[:all_research_billing]
+    @protocol.save(validate: false)
+    @service_request = @protocol.service_requests.first
+    @tab = 'billing_strategy'
+    setup_calendar_pages
+    research_billing = @protocol.all_research_billing
+    @protocol.visits.each do |visit|
+      if visit.indicated? 
+        indicated_quantity = determine_quantity(visit, research_billing)
+        visit.update_attributes(research_billing_qty: research_billing ? indicated_quantity : 0, insurance_billing_qty: research_billing ? 0 : indicated_quantity)
+      end
+    end
   end
 
   def update
@@ -203,5 +218,9 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
+  end
+
+  def determine_quantity(visit, research_billing)
+    research_billing ? visit.insurance_billing_qty : visit.research_billing_qty
   end
 end

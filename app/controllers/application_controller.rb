@@ -232,6 +232,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_site_admin
+    authorization_error unless current_user.is_site_admin?
+  end
+
   def authorize_funding_admin
     redirect_to root_path unless Setting.get_value("use_funding_module") && current_user.is_funding_admin?
   end
@@ -249,15 +253,15 @@ class ApplicationController < ActionController::Base
   def setup_calendar_pages
     @pages  = {}
     @page   = params[:page].try(:to_i) || 1
-    arm_id  = params[:arm_id].to_i if params[:arm_id]
+    arm_id  = params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
 
     session[:service_calendar_pages]          = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
 
     @service_request.arms.each do |arm|
-      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id].nil?) ? 1 : session[:service_calendar_pages][arm.id]
-      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
+      new_page        = (session[:service_calendar_pages].nil? || session[:service_calendar_pages][arm.id.to_s].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s]
+      @pages[arm.id.to_s]  = @service_request.set_visit_page(new_page.to_i, arm)
     end
   end
 

@@ -48,6 +48,10 @@ module Dashboard::ProtocolsHelper
     content_tag(:div, short_title) + content_tag(:div, (display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))) )
   end
 
+  def format_protocol(protocol)
+    link_to "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}", dashboard_protocol_path(protocol)
+  end
+
   def pis_display(protocol)
     content_tag(:div, class: 'd-flex flex-column align-items-start') do
       if protocol.primary_pi
@@ -72,6 +76,8 @@ module Dashboard::ProtocolsHelper
           raw(Protocol.human_attribute_name(:requests) + content_tag(:span, protocol.sub_service_requests_count, class: 'badge badge-pill badge-c badge-light ml-2'))
         end
       end
+    elsif !access
+      render "dashboard/protocols/request_access_dropdown.html.haml", protocol: protocol
     end
   end
 

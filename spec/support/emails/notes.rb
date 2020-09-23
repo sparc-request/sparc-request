@@ -20,11 +20,11 @@
 
 module EmailHelpers
   def does_not_have_a_submission_reminder(mail_response)
-    expect(mail_response).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+    expect(mail_response).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met.']"
   end
 
   def does_have_a_submission_reminder(mail_response)
-    expect(mail_response).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+    expect(mail_response).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be reviewed by Office of Clinical Research and sent to Epic when all Institutional approvals are met.']"
   end
 end
 

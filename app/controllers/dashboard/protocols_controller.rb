@@ -21,7 +21,7 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
   include ProtocolsControllerShared
 
-  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
+  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
@@ -40,7 +40,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       merge = search_protocol_merges(search_term)
       if merge
         params[:filterrific][:search_query][:search_text] = merge.master_protocol_id.to_s
-      end 
+      end
     end
 
     # if we are an admin we want to default to admin organizations
@@ -94,6 +94,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
+        if Setting.get_value("use_epic") && @protocol.selected_for_epic && Setting.get_value("validate_epic_users")
+          @malformed_project_role = @protocol.check_epic_user_rights
+        end
       }
       format.js
       format.xlsx {
@@ -167,7 +170,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
             EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
           end
         end
-        
+
         flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
       else
         @errors = @protocol.errors
@@ -189,6 +192,24 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to :js
   end
 
+  def push_to_oncore
+    if @protocol.is_a?(Study)
+      oncore_protocol = OncoreProtocol.new(@protocol)
+      response = oncore_protocol.create_oncore_protocol
+      if response.success?
+        flash[:success] = I18n.t('protocols.summary.oncore.pushed_to_oncore')
+      else
+        if response['message'].try(:include?, ('already exists'))
+          @error = t('protocols.summary.oncore.already_exists', protocol_id: @protocol.id)
+        else
+          @error = "#{response.code}: #{response.message}"
+        end
+      end
+    end
+
+    respond_to :js
+  end
+
   def archive
     @protocol.toggle!(:archived)
 
@@ -202,7 +223,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     (@protocol.identities + ssrs_to_be_displayed.map(&:candidate_owners).flatten).uniq.each do |recipient|
       ProtocolMailer.with(recipient: recipient, protocol: @protocol, archiver: current_user, action: action).archive_email.deliver
     end
-    
+
+    respond_to :js
+  end
+
+  def request_access
+    recipient = Identity.find(params[:recipient_id])
+    ProtocolMailer.with(recipient: recipient, protocol: @protocol, requester: current_user).request_access_email.deliver
+
+    flash[:success] = t('dashboard.protocols.table.request_sent', protocol_id: @protocol.id)
+
     respond_to :js
   end
 

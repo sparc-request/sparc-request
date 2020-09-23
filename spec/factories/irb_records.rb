@@ -27,5 +27,11 @@ FactoryBot.define do
     initial_irb_approval_date { Faker::Date.between(from: 1.year.ago, to: Date.today) }
     irb_approval_date         { Faker::Date.between(from: Date.today, to: 1.year.from_now) }
     irb_expiration_date       { Faker::Date.between(from: 1.year.from_now, to: 2.years.from_now) }
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :irb_record_without_validations, traits: [:without_validations]
   end
 end

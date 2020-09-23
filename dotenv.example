@@ -27,3 +27,5 @@ sender_address=no-reply@sample.org
 content_security_report_only=true
 script_src_domain=*.musc.edu
 ROOT_URL=https://sparc.musc.edu
+oncore_client_id=client_id_from_oncore
+oncore_client_secret=client_secret_from_oncore

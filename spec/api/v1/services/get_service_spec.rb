@@ -21,69 +21,68 @@
 require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
-
-  describe 'GET /v1/service/:id.json' do
-
-    before { @service = create(:service_with_process_ssrs_organization) }
-
-    context 'response params' do
-
-      before { cwf_sends_api_get_request_for_resource('services', @service.id, 'shallow') }
-
-      context 'success' do
-
-        it 'should respond with an HTTP status code of: 200' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should respond with content-type: application/json' do
-          expect(response.content_type).to eq('application/json')
-        end
-
-        it 'should respond with a Service root object' do
-          expect(response.body).to include('"service":')
-        end
-      end
-    end
+  describe 'GET /api/v1/service/:id.json' do
+    let!(:service) { create(:service_without_validations, :with_pricing_map, :with_process_ssrs_organization) }
 
     context 'request for :shallow record' do
+      before { send_api_get_request(resource: 'services', id: service.id, depth: 'shallow') }
 
-      before { cwf_sends_api_get_request_for_resource('services', @service.id, 'shallow') }
-
-      it 'should respond with a single shallow service' do
-        expect(response.body).to eq("{\"service\":{\"sparc_id\":#{@service.id},\"callback_url\":\"https://127.0.0.1:5000/v1/services/#{@service.id}.json\"}}")
+      it 'should respond with a shallow service' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['service']).to eq({
+          'sparc_id'      => service.id,
+          'callback_url'  => service.remote_service_callback_url
+        })
       end
     end
 
     context 'request for :full record' do
+      before { send_api_get_request(resource: 'services', id: service.id, depth: 'full') }
 
-      before { cwf_sends_api_get_request_for_resource('services', @service.id, 'full') }
-
-      it 'should respond with a Service' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:service).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'direct_link').
-                                sort
-
-        expect(parsed_body['service'].keys.sort).to eq(expected_attributes)
+      it 'should respond with an service and its attributes' do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['service']).to eq(
+          service.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list').
+          merge({
+            'sparc_id'                  => service.id,
+            'callback_url'              => service.remote_service_callback_url,
+            'direct_link'               => service.direct_link,
+            'service_center_cost'       => service.service_center_cost.to_f.to_s,
+            'process_ssrs_organization' => {
+              'sparc_id'      => service.process_ssrs_organization.id,
+              'name'          => service.process_ssrs_organization.name,
+              'callback_url'  => service.process_ssrs_organization.remote_service_callback_url,
+            }
+          })
+        )
       end
     end
 
     context 'request for :full_with_shallow_reflections record' do
+      before { send_api_get_request(resource: 'services', id: service.id, depth: 'full_with_shallow_reflections') }
 
-      before { cwf_sends_api_get_request_for_resource('services', @service.id, 'full_with_shallow_reflections') }
+      it 'should respond with an service and its attributes and its shallow reflections' do
+        attributes = service.attributes
+        attributes['service_center_cost'] = service.service_center_cost.to_f.to_s
 
-      it 'should respond with an array of services and their attributes and their shallow reflections' do
-        parsed_body         = JSON.parse(response.body)
-        expected_attributes = build(:service).attributes.
-                                keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'direct_link', 'line_items').
-                                sort
-
-        expect(parsed_body['service'].keys.sort).to eq(expected_attributes)
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)['service']).to eq(
+          service.attributes.
+          except('id', 'created_at', 'updated_at', 'deleted_at', 'order_code', 'tag_list').
+          merge({
+            'sparc_id'                  => service.id,
+            'callback_url'              => service.remote_service_callback_url,
+            'direct_link'               => service.direct_link,
+            'service_center_cost'       => service.service_center_cost.to_f.to_s,
+            'line_items'                => [],
+            'process_ssrs_organization' => {
+              'sparc_id'      => service.process_ssrs_organization.id,
+              'name'          => service.process_ssrs_organization.name,
+              'callback_url'  => service.process_ssrs_organization.remote_service_callback_url,
+            }
+          })
+        )
       end
     end
   end

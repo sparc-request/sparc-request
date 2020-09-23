@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'actionpack'
 gem 'activerecord-import' # Use this more! In particular for arms/calendar creation
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
@@ -27,19 +28,20 @@ gem 'deep_cloneable', '~> 3.0.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.7'
+gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
 gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.3.3'
-gem 'grape-entity', '~> 0.8.0'
+gem 'grape', '1.4.0'
+gem 'grape-entity', '~> 0.8.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.18.0'
+gem 'httparty', '~> 0.18.1'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -56,17 +58,17 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.16.2'
+gem 'net-ldap', '~> 0.16.3'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
 gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
-gem 'pdfkit' # Check usage
+gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.2.2' # Check usage
+gem 'prawn', '2.3.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 4.3'
+gem 'puma', '~> 5.0'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.4.3'
 gem 'rails-html-sanitizer' # Check usage
@@ -77,7 +79,7 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.12.0'
+gem 'savon', '~> 2.12.1'
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.0'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge

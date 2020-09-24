@@ -60,4 +60,6 @@ if $('.is-invalid').length
   $('html, body').animate({ scrollTop: $('.is-invalid').first().offset().top }, 'slow')
 <% else %>
 window.location = "<%= protocol_service_request_path(srid: @service_request.id) %>"
+$('.protocol-save-btn').removeAttr('data-disable-with')
+$('.protocol-save-btn').prop('disabled', true)
 <% end %>

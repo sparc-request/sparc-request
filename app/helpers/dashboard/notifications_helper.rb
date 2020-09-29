@@ -43,9 +43,9 @@ module Dashboard::NotificationsHelper
 
   def notification_time_display(notification)
     unless notification.messages.empty?
-      format_datetime(notification.messages.last.created_at, html: true)
+      format_datetime(notification.messages.last.created_at)
     else
-      format_datetime(notification.updated_at, html: true)
+      format_datetime(notification.updated_at)
     end
   end
 

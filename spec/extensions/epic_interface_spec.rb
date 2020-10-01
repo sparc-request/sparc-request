@@ -70,7 +70,8 @@ RSpec.describe EpicInterface do
   let!(:epic_interface) {
     EpicInterface.new(
         'epic_wsdl' => "http://localhost:#{server.port}/wsdl",
-        'epic_study_root' => '1.2.3.4')
+        'epic_study_rsh_root' => '1.2.5.2.3.4',
+        'epic_study_prl_root' => '3.2.4.4.5')
   }
 
   build_study_type_question_groups
@@ -1072,10 +1073,10 @@ RSpec.describe EpicInterface do
       # base study creation message
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+          <query root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+              <id root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -1112,10 +1113,10 @@ RSpec.describe EpicInterface do
       # base study creation message
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+          <query root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+              <id root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -1151,21 +1152,21 @@ RSpec.describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+          <query root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+              <id root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm1.id}" />
                   <title>#{arm1.name}</title>
                   <code code="CELL" codeSystem="n/a" />
                   <component1 typeCode="COMP">
                     <sequenceNumber value="1" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
+                      <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
@@ -1175,7 +1176,7 @@ RSpec.describe EpicInterface do
                       <component1 typeCode="COMP">
                         <sequenceNumber value="1"/>
                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                          <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
                           <title>#{arm1.visit_groups.first.name}</title>
                         </timePointEventDefinition>
                       </component1>
@@ -1185,7 +1186,7 @@ RSpec.describe EpicInterface do
               </component4>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
                   <title>#{arm1.visit_groups.first.name}</title>
                   <code code="VISIT" codeSystem="n/a"/>
                   <component2 typeCode="COMP">
@@ -1239,21 +1240,21 @@ RSpec.describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+          <query root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+              <id root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm1.id}" />
                   <title>#{arm1.name}</title>
                   <code code="CELL" codeSystem="n/a" />
                   <component1 typeCode="COMP">
                     <sequenceNumber value="1" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
+                      <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
@@ -1263,7 +1264,7 @@ RSpec.describe EpicInterface do
                       <component1 typeCode="COMP">
                         <sequenceNumber value="1"/>
                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                          <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
                           <title>#{arm1.visit_groups.first.name}</title>
                         </timePointEventDefinition>
                       </component1>
@@ -1273,13 +1274,13 @@ RSpec.describe EpicInterface do
               </component4>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}" />
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm2.id}" />
                   <title>#{arm2.name}</title>
                   <code code="CELL" codeSystem="n/a" />
                   <component1 typeCode="COMP">
                     <sequenceNumber value="2" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1" />
+                      <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1" />
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
@@ -1289,7 +1290,7 @@ RSpec.describe EpicInterface do
                       <component1 typeCode="COMP">
                         <sequenceNumber value="1"/>
                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
+                          <id root="1.2.5.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
                           <title>#{arm2.visit_groups.first.name}</title>
                         </timePointEventDefinition>
                       </component1>
@@ -1299,7 +1300,7 @@ RSpec.describe EpicInterface do
               </component4>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1.DAY#{arm1.visit_groups.first.day}"/>
                   <title>#{arm1.visit_groups.first.name}</title>
                   <code code="VISIT" codeSystem="n/a"/>
                   <component2 typeCode="COMP">
@@ -1315,7 +1316,7 @@ RSpec.describe EpicInterface do
               </component4>
               <component4 typeCode="COMP">
                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
+                  <id root="3.2.4.4.5" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1.DAY#{arm2.visit_groups.first.day}"/>
                   <title>#{arm2.visit_groups.first.name}</title>
                   <code code="VISIT" codeSystem="n/a"/>
                   <component2 typeCode="COMP">
@@ -1386,10 +1387,10 @@ RSpec.describe EpicInterface do
         # base study creation message
         xml = <<-END
           <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-            <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+            <query root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
             <protocolDef>
               <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+                <id root="1.2.5.2.3.4" extension="STUDY#{study.id}"/>
                 <title>#{study.epic_title}</title>
                 <text>#{study.brief_description}</text>
               </plannedStudy>

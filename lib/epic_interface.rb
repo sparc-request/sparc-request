@@ -59,7 +59,8 @@ class EpicInterface
     @errors = {}
 
     @namespace = @config['epic_namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @study_root = @config['epic_study_root'] || 'UNCONFIGURED'
+    @study_rsh_root = @config['epic_study_rsh_root'] || 'UNCONFIGURED'
+    @study_prl_root = @config['epic_study_prl_root'] || 'UNCONFIGURED'
 
     # We must set namespace_identifier to nil here, in order to prevent
     # Savon from prepending a wsdl: prefix to the
@@ -143,11 +144,11 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: "STUDY#{study.id}")
+    xml.query(root: @study_rsh_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}")
         xml.title study.epic_title
         xml.text study.brief_description
 
@@ -172,11 +173,11 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: "STUDY#{study.id}")
+    xml.query(root: @study_rsh_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}")
         xml.title study.epic_title
         xml.text study.brief_description
 
@@ -321,11 +322,11 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: "STUDY#{study.id}")
+    xml.query(root: @study_rsh_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}")
         xml.title study.epic_title
         xml.text study.brief_description
 
@@ -356,7 +357,7 @@ class EpicInterface
 
       xml.component4(typeCode: 'COMP') {
         xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
+          xml.id(root: @study_prl_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
           xml.title(arm.name)
           xml.code(code: 'CELL', codeSystem: 'n/a')
 
@@ -366,7 +367,7 @@ class EpicInterface
             xml.sequenceNumber(value: seq)
 
             xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
+              xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
               xml.title("Cycle #{cycle}")
               xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
@@ -382,7 +383,7 @@ class EpicInterface
                 xml.component1(typeCode: 'COMP') {
                   xml.sequenceNumber(value: visit_group.position)
                   xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+                    xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
                     xml.title(visit_group.name)
                   }
                 }
@@ -404,7 +405,7 @@ class EpicInterface
 
         xml.component4(typeCode: 'COMP') {
           xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+            xml.id(root: @study_prl_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
             xml.title(visit_group.name)
             xml.code(code: 'VISIT', codeSystem: 'n/a')
 
@@ -456,7 +457,7 @@ class EpicInterface
           # TODO: there's nowhere in this message to put the quantity
           xml.component1(typeCode: 'COMP') {
             xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
+              xml.id(root: @study_rsh_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
               xml.code(code: 'PROC', codeSystem: service_code_system)
 
               xml.component2(typeCode: 'COMP') {

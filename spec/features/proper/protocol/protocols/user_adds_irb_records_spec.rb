@@ -27,6 +27,8 @@ RSpec.describe 'User wants to make a new Study with IRB Records', js: true do
   build_study_type_questions
 
   before :each do
+    protocol  = create(:protocol_federally_funded, primary_pi: jug2)
+    create(:service_request_without_validations, protocol: protocol)
     org     = create(:organization, name: "Program", process_ssrs: true, pricing_setup_count: 1)
     service = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1)
     @sr     = create(:service_request_without_validations, status: 'first_draft')

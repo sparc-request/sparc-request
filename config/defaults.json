@@ -160,10 +160,20 @@
     "parent_value":   "true"
   },
   {
-    "key":            "epic_study_root",
-    "value":          "1.2.3.4",
-    "friendly_name":  "Epic Study Root",
+    "key":            "epic_study_rsh_root",
+    "value":          "1.2.5.2.3.4",
+    "friendly_name":  "Epic RHS Study Root",
     "description":    "This is the root URL of your institution's Epic API.",
+    "group":          "epic_settings",
+    "version":        "",
+    "parent_key":     "use_epic",
+    "parent_value":   "true"
+  },
+  {
+    "key":            "epic_study_prl_root",
+    "value":          "3.2.4.4.5",
+    "friendly_name":  "Epic PRL Study Root",
+    "description":    "This is the root URL of your institution's Epic API used in Arm (component4) SOAP message segments.",
     "group":          "epic_settings",
     "version":        "",
     "parent_key":     "use_epic",

@@ -40,6 +40,12 @@ class ProtocolsController < ApplicationController
 
       @protocol.service_requests << @service_request
       @service_request.sub_service_requests.each{ |ssr| @protocol.sub_service_requests << ssr }
+      recent_protocol = Protocol.last
+      # We have a duplicate situation and must delete (need to save the service request) 
+      # the most recent protocol for the new one
+      if recent_protocol.service_requests.first.id == @protocol.service_requests.first.id
+        recent_protocol.delete
+      end
       @protocol.save
       @service_request.update_status('draft', current_user)
 

@@ -22,7 +22,12 @@ namespace :data do
   desc "Fix Duplicate Satisfaction Survey Responses"
   task :fix_duplicate_responses => :environment do
     CSV.open('tmp/duplicate_survey_responses.csv', 'wb') do |csv|
-      csv << ["", "", "", ""]
+      csv << ["List of Removed Survey Responses for Survey ID: 4"]
+      csv << ["Identity ID:", "Response ID:", "Content(s):", "'Original' Response ID:", "Original Content(s)"]
+
+      Response.where(survey_id: 4).group_by(&:identity).each do |identity, identity_response_group|
+
+      end
     end
   end
 end

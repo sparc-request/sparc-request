@@ -25,7 +25,7 @@ namespace :data do
       csv << ["List of Removed Survey Responses for Survey ID: 4"]
 
       Response.where(survey_id: 4).group_by(&:identity).each do |identity, identity_response_group|
-        csv << ["Identity ID: #{identity.id}"]
+        csv << ["User: #{identity.full_name}"]
         identity_response_group.group_by{|response| response.created_at.to_date}.each do |date, grouped_responses_by_date|
 
           if grouped_responses_by_date.size > 1
@@ -33,19 +33,20 @@ namespace :data do
             response_to_keep = grouped_responses_by_date.first
 
 
-            csv << ["", "Original Response ID:", "Original Response Timestamp:", "Original Response Respondable ID:", "Original Response Content(s):"]
-            csv << ["", response_to_keep.id, response_to_keep.created_at, response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
+            csv << ["", "Original Response ID:", "Original Response Timestamp:", "Protocol ID:", "Original Response Respondable ID:", "Original Response Content(s):"]
+            csv << ["", response_to_keep.id, response_to_keep.created_at, response.respondable.try(:protocol).try(:id), response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
 
             grouped_responses_by_date.delete(response_to_keep)
 
             csv << ["", "Removed Response ID:", "Removed Response Timestamp:", "Removed Response Respondable ID:", "Removed Response Content(s):"]
             grouped_responses_by_date.each do |response|
-              csv << ["", response.id, response.created_at, response.respondable_id, response.question_responses.map(&:content).join(' | ')]
+
+              csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]
 
               # if response.destroy
-              #   csv << ["", "", response.id, response.created_at, response.question_responses.map(&:content).join(' | ')]
+              #   csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]
               # else
-              #   csv << ["", "", "Error, could not remove response, ID: #{response.id}"]
+              #   csv << ["", "Error, could not remove response, ID: #{response.id}"]
               # end
 
             end

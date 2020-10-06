@@ -22,9 +22,11 @@ namespace :data do
   desc "Fix Duplicate Satisfaction Survey Responses"
   task :fix_duplicate_responses => :environment do
     CSV.open('tmp/duplicate_survey_responses.csv', 'wb') do |csv|
-      csv << ["List of Removed Survey Responses for Survey ID: 4"]
+      csv << ["List of Removed Survey Responses for Survey ID: 4, Since 5/26/2020"]
 
-      Response.where(survey_id: 4).group_by(&:identity).each do |identity, identity_response_group|
+      from_date = "26/05/2020".to_date
+
+      Response.where(survey_id: 4, created_at: (from_date..Date.today)).group_by(&:identity).each do |identity, identity_response_group|
         csv << ["User: #{identity.full_name}"]
         identity_response_group.group_by{|response| response.created_at.to_date}.each do |date, grouped_responses_by_date|
 
@@ -48,7 +50,6 @@ namespace :data do
               # else
               #   csv << ["", "Error, could not remove response, ID: #{response.id}"]
               # end
-
             end
           end
         end

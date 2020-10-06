@@ -34,7 +34,7 @@ namespace :data do
 
 
             csv << ["", "Original Response ID:", "Original Response Timestamp:", "Protocol ID:", "Original Response Respondable ID:", "Original Response Content(s):"]
-            csv << ["", response_to_keep.id, response_to_keep.created_at, response.respondable.try(:protocol).try(:id), response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
+            csv << ["", response_to_keep.id, response_to_keep.created_at, response_to_keep.respondable.try(:protocol).try(:id), response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
 
             grouped_responses_by_date.delete(response_to_keep)
 

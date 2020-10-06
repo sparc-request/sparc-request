@@ -38,7 +38,7 @@ namespace :data do
 
             grouped_responses_by_date.delete(response_to_keep)
 
-            csv << ["", "Removed Response ID:", "Removed Response Timestamp:", "Removed Response Respondable ID:", "Removed Response Content(s):"]
+            csv << ["", "Removed Response ID:", "Removed Response Timestamp:", "Protocol ID:", "Removed Response Respondable ID:", "Removed Response Content(s):"]
             grouped_responses_by_date.each do |response|
 
               csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]

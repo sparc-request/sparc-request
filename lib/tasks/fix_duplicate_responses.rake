@@ -27,29 +27,29 @@ namespace :data do
       from_date = "26/05/2020".to_date
 
       Response.where(survey_id: 4, created_at: (from_date..Date.today)).group_by(&:identity).each do |identity, identity_response_group|
-        csv << ["User: #{identity.full_name}"]
+        csv << ["User: #{identity.full_name} ID: #{identity.id}"]
         identity_response_group.group_by{|response| response.created_at.to_date}.each do |date, grouped_responses_by_date|
 
-          if grouped_responses_by_date.size > 1
-            csv << ["", "Date of Response Group:", date]
-            response_to_keep = grouped_responses_by_date.first
+          grouped_responses_by_date.group_by(&:respondable_id).each do |respondable_id, grouped_by_respondable_id|
 
+            if grouped_by_respondable_id.size > 1
+              csv << ["", "Date of Response Group: #{date}", "Respondable ID of Response Group: #{respondable_id}"]
+              response_to_keep = grouped_by_respondable_id.first
 
-            csv << ["", "Original Response ID:", "Original Response Timestamp:", "Protocol ID:", "Original Response Respondable ID:", "Original Response Content(s):"]
-            csv << ["", response_to_keep.id, response_to_keep.created_at, response_to_keep.respondable.try(:protocol).try(:id), response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
+              csv << ["", "Original Response ID:", "Original Response Timestamp:", "Protocol ID:", "Original Response Respondable ID:", "Original Response Content(s):"]
+              csv << ["", response_to_keep.id, response_to_keep.created_at, response_to_keep.respondable.try(:protocol).try(:id), response_to_keep.respondable_id, response_to_keep.question_responses.map(&:content).join(' | ')]
 
-            grouped_responses_by_date.delete(response_to_keep)
+              grouped_by_respondable_id.delete(response_to_keep)
 
-            csv << ["", "Removed Response ID:", "Removed Response Timestamp:", "Protocol ID:", "Removed Response Respondable ID:", "Removed Response Content(s):"]
-            grouped_responses_by_date.each do |response|
+              csv << ["", "Removed Response ID:", "Removed Response Timestamp:", "Protocol ID:", "Removed Response Respondable ID:", "Removed Response Content(s):"]
+              grouped_by_respondable_id.each do |response|
 
-              csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]
-
-              # if response.destroy
-              #   csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]
-              # else
-              #   csv << ["", "Error, could not remove response, ID: #{response.id}"]
-              # end
+                if response.destroy
+                  csv << ["", response.id, response.created_at, response.respondable.try(:protocol).try(:id), response.respondable_id, response.question_responses.map(&:content).join(' | ')]
+                else
+                  csv << ["", "Error, could not remove response, ID: #{response.id}"]
+                end
+              end
             end
           end
         end

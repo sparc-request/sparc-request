@@ -57,6 +57,10 @@
       }
     }
 
+    &> thead > tr:last-child> th::before {
+      bottom: -1px;
+    }
+
     tbody th:first-child, tbody td:first-child {
       border-left: 0;
     }
@@ -132,6 +136,8 @@
 }
 
 .visit-group-popover {
+  max-width: unset;
+
   .change-visit-btn {
     margin-top: -0.5rem;
 

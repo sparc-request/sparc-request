@@ -103,7 +103,7 @@ class ServiceRequestsController < ApplicationController
     # step.
     @pages = {}
     @service_request.arms.each do |arm|
-      @pages[arm.id] = 1
+      @pages[arm.id.to_s] = 1
     end
   end
 

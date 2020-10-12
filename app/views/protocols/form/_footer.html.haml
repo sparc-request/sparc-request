@@ -28,6 +28,6 @@
       = link_to back_url, class: 'btn btn-lg btn-link px-0' do
         - succeed t('actions.cancel') do
           = icon('fas', 'arrow-left mr-2')
-      = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
+      = f.button type: 'submit', class: 'btn btn-lg btn-outline-success float-right protocol-save-btn', data: { disable_with: t(:proper)[:navigation][:bottom][:saving] } do
         - succeed icon('fas', 'arrow-right ml-2') do
           = t('actions.save')

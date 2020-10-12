@@ -26,6 +26,8 @@ class SettingsPopulator
   end
 
   def populate
+    Setting.auditing_enabled = false
+
     ActiveRecord::Base.transaction do
       @defaults.each do |hash|
         if Setting.exists?(key: hash['key'])
@@ -46,7 +48,11 @@ class SettingsPopulator
           setting.save(validate: false)
         end
       end
+
+      Setting.where(key: deprecated_settings).destroy_all
     end
+
+    Setting.auditing_enabled = true
   end
 
   private
@@ -66,5 +72,16 @@ class SettingsPopulator
     if File.exists? Rails.root.join('config', 'ldap.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env])
     end
+  end
+
+  def deprecated_settings
+    @deprecated = [
+      'dashboard_link',
+      'header_link_2_catalog',
+      'header_link_2_dashboard',
+      'header_link_2_proper',
+      'host',
+      'root_url'
+    ]
   end
 end

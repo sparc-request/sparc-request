@@ -93,7 +93,7 @@ module Dashboard
           end
         end
 
-        delete_empty_srs(protocol)
+        delete_empty_srs(protocol, recent_service_request.id)
       end
 
       ServiceRequest.set_callback(:save, :after, :set_original_submitted_date)
@@ -101,8 +101,8 @@ module Dashboard
 
     private
 
-    def delete_empty_srs(protocol)
-      protocol.service_requests.includes(:sub_service_requests).where(sub_service_requests: { id: nil }).each do |sr|
+    def delete_empty_srs(protocol, service_request_id)
+      protocol.service_requests.where.not(id: service_request_id).includes(:sub_service_requests).where(sub_service_requests: { id: nil }).each do |sr|
         begin
           sr.destroy
           sr.audits.last.update(comment: 'merge_srs')

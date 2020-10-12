@@ -57,22 +57,17 @@ class VisitGroup < ApplicationRecord
 
   default_scope { order(:position) }
 
-  def <=> (other_vg)
-    return unless other_vg.respond_to?(:day)
-    self.day <=> other_vg.day
-  end
-
-  def position=(position)
-    if position.blank?
-      write_attribute(:position, nil)
-    elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
-      write_attribute(:position, position)
-    else
-      # Because we have to insert before using position - 1,
-      # increment position when changed
-      write_attribute(:position, position.to_i + 1)
-    end
-  end
+  # def position=(position)
+  #   if position.blank?
+  #     write_attribute(:position, nil)
+  #   elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
+  #     write_attribute(:position, position)
+  #   else
+  #     # Because we have to insert before using position - 1,
+  #     # increment position when changed
+  #     write_attribute(:position, position.to_i + 1)
+  #   end
+  # end
 
   def identifier
     "#{self.name}" + (self.day.present? ? " (#{self.class.human_attribute_name(:day)} #{self.day})" : "")

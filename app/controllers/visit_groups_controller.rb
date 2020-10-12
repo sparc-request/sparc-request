@@ -40,6 +40,11 @@ class VisitGroupsController < ApplicationController
   end
 
   def create
+    # A new visit group it will actually be given
+    # a position 1 before where it should go because of the "Before" dropdown
+    # so add 1 to insert it into the correct position
+    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1
+
     @visit_group  = VisitGroup.new(visit_group_params)
     @tab          = params[:tab]
 
@@ -75,7 +80,10 @@ class VisitGroupsController < ApplicationController
 
     setup_calendar_pages
 
-    @position_changed = @visit_group.position != visit_group_params[:position].to_i
+    # If the visit group is being moved, it will actually be given
+    # a position 1 before where it should go because of the "Before" dropdown
+    # so add 1 to insert it into the correct position
+    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1 if @visit_group.position != params[:visit_group][:position].to_i
 
     if @visit_group.update_attributes(visit_group_params)
       flash[:success] = t('visit_groups.updated')

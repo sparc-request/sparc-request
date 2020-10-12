@@ -96,7 +96,8 @@ class VisitGroup < ApplicationRecord
     # The Visit Group has been moved and now we need to move consecutive visits
     @moved_and_update ||= (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
                           (self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) ||
-                          (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day))
+                          (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position + 1).try(:day))
+    @moved_and_update
   end
 
   def in_order?
@@ -130,14 +131,17 @@ class VisitGroup < ApplicationRecord
 
   def move_consecutive_visit
     # The Visit Group has been moved and now we need to move consecutive visits
-    if self.position_changed?
+    # note: this is only for already-existing visits
+    if self.position_changed? && self.position_change[0].present?
       if vg = self.arm.visit_groups.find_by(position: self.position)
         # This actually increments position when position= is called
-        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position)
+        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
       end
-    else # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
-      if vg = self.lower_items.where.not(id: self.id, day: nil).first
-        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position - 1)
+    # The Visit Group was new or had a nil day but is between two
+    # consecutive-day visits and needs to move one
+    else
+      if vg = self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
+        vg.update_attributes(day: vg.day + 1, position: vg.position)
       end
     end
   end

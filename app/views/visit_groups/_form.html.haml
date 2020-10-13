@@ -43,7 +43,7 @@
         = f.text_field :name, class: ['form-control', action_name == 'edit' ? 'form-control' : '']
       .form-row
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-1' : '' }
-          - min, max = move_visit_group_boundaries(visit_group_clone, arm)
+          - min, max = move_visit_group_boundaries(visit_group, visit_group_clone, arm)
           - disable = min == max && min.present? # Disable if there can only be one day to choose from and the user did not select the blank option
           = f.label :day, class: 'required'
           = f.number_field :day, class: ['form-control', action_name == 'edit' ? 'form-control' : ''], value: disable ? min : visit_group_clone.day, readonly: disable
@@ -58,7 +58,7 @@
                 = t('visit_groups.form.move_note')
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-1' : '' }
           = f.label :position, class: 'required'
-          = f.select :position, visit_position_options(arm, visit_group_clone), { include_blank: action_name == 'new' }, class: 'selectpicker', disabled: visit_group.nil?, data: { style: action_name == 'edit' ? 'btn btn-light dropdown-menu-right' : 'btn-light', size: 10 }
+          = f.select :position, visit_position_options(arm, visit_group, visit_group_clone), { include_blank: action_name == 'new' }, class: 'selectpicker', disabled: visit_group.nil?, data: { style: action_name == 'edit' ? 'btn btn-light dropdown-menu-right' : 'btn-light', size: 10 }
       .form-row
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-2' : '' }
           = f.label :window_before, class: 'required'

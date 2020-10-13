@@ -99,7 +99,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     synchs = sub_service_request.fulfillment_synchronizations.select{|x| x.synched != true}
     synchs.each do |synch|
       if synch.action == 'destroy'
-        Shard::Fulfillment::LineItem.where(sparc_id: synch.line_item_id).first.destroy
+        to_be_deleted = Shard::Fulfillment::LineItem.where(sparc_id: synch.line_item_id).first
+        if to_be_deleted
+          to_be_deleted.destroy
+        end
       else
         # Need to ignore any line item that was first created/updated then destroyed in the same synch cycle
         line_item = LineItem.where(id: synch.line_item_id).first

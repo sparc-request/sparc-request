@@ -80,10 +80,11 @@ class VisitGroupsController < ApplicationController
 
     setup_calendar_pages
 
-    # If the visit group is being moved, it will actually be given
-    # a position 1 before where it should go because of the "Before" dropdown
+    # If the visit group is being moved to a position before its
+    # current position, it will actually be given a position 1
+    # before where it should go because of the "Before" dropdown
     # so add 1 to insert it into the correct position
-    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1 if @visit_group.position != params[:visit_group][:position].to_i
+    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1 if @visit_group.position > params[:visit_group][:position].to_i
 
     if @visit_group.update_attributes(visit_group_params)
       flash[:success] = t('visit_groups.updated')

@@ -125,11 +125,11 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def has_cwf_fulfillments?(line_item)
-    cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
-    if cwf_line_item
-      return (cwf_line_item.fulfillments.size > 0) ? true : false
+    if Setting.get_value("fulfillment_contingent_on_catalog_manager")
+      cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
+      (cwf_line_item && cwf_line_item.fulfillments.size > 0) ? true : false
     else
-      return false
+      false
     end
   end
 end

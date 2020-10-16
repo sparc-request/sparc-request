@@ -107,7 +107,7 @@ class VisitGroup < ApplicationRecord
   # position
   def in_order?
     self.arm.visit_groups.where.not(id: self.id, day: nil).where(
-      (self.position_changed? && self.position_change[0] < self.position_change[1] ?
+      (self.position_changed? && self.position_change[0].present? && self.position_change[0] < self.position_change[1] ?
         VisitGroup.arel_table[:position].lteq(self.position) :
         VisitGroup.arel_table[:position].lt(self.position)).and(
       VisitGroup.arel_table[:day].gteq(self.day)).or(

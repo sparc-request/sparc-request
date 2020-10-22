@@ -207,11 +207,13 @@ class Arm < ApplicationRecord
   end
 
   def mass_create_visit_groups
-    position = self.visit_groups.any? ? self.visit_groups.last.position : 0
-    count    = self.visit_count - position
+    # Get the position to start creating visit groups
+    position = self.visit_groups.any? ? self.visit_groups.last.position + 1 : 1
+    # Positionining starts at 1 so add back 1 for the count
+    count    = self.visit_count - position + 1
 
     count.times do |index|
-      self.visit_groups.new(name: "Visit #{position + 1}", position: position).save(validate: false)
+      self.visit_groups.new(name: "Visit #{position}", position: position).save(validate: false)
       position += 1
     end
   end

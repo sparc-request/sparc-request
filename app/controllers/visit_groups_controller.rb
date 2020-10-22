@@ -29,11 +29,7 @@ class VisitGroupsController < ApplicationController
     @tab          = params[:tab]
     @visit_group  =
       if params[:visit_group]
-        # If you mass assign position then arm_id is nil
-        # making position= set position to nil as well
-        vg = @arm.visit_groups.new(visit_group_params.except(:position))
-        vg.assign_attributes(position: visit_group_params[:position])
-        vg
+        @arm.visit_groups.new(visit_group_params)
       else
         @arm.visit_groups.new
       end
@@ -44,8 +40,12 @@ class VisitGroupsController < ApplicationController
   end
 
   def create
-    @visit_group  = VisitGroup.new(visit_group_params.except(:position))
-    @visit_group.assign_attributes(position: visit_group_params[:position])
+    # A new visit group it will actually be given
+    # a position 1 before where it should go because of the "Before" dropdown
+    # so add 1 to insert it into the correct position
+    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1
+
+    @visit_group  = VisitGroup.new(visit_group_params)
     @tab          = params[:tab]
 
     setup_calendar_pages
@@ -63,7 +63,8 @@ class VisitGroupsController < ApplicationController
 
   def edit
     @visit_group_clone = @visit_group.dup
-    @visit_group_clone.assign_attributes(visit_group_params.merge(id: @visit_group.id)) if params[:visit_group]
+    @visit_group_clone.assign_attributes(id: @visit_group.id)
+    @visit_group_clone.assign_attributes(visit_group_params) if params[:visit_group]
 
     @arm = @visit_group.arm
     @tab = params[:tab]
@@ -79,7 +80,11 @@ class VisitGroupsController < ApplicationController
 
     setup_calendar_pages
 
-    @position_changed = @visit_group.position != visit_group_params[:position].to_i + 1
+    # If the visit group is being moved to a position before its
+    # current position, it will actually be given a position 1
+    # before where it should go because of the "Before" dropdown
+    # so add 1 to insert it into the correct position
+    params[:visit_group][:position] = params[:visit_group][:position].to_i + 1 if @visit_group.position > params[:visit_group][:position].to_i
 
     if @visit_group.update_attributes(visit_group_params)
       flash[:success] = t('visit_groups.updated')

@@ -32,11 +32,8 @@ $("[name='visit_group[<%= attr.to_s %>]']").parents('.form-group').removeClass('
 <% else %>
 $(".visit-group-<%= @visit_group.id %>").popover('dispose')
 
-# Update the whole calendar if the position changed
-<% if @position_changed %>
-$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
 # Change the page up if moving to previous page of visits
-<% elsif @visit_group.position % VisitGroup.per_page == 0 && params[:change_visit] == 'next' %>
+<% if @visit_group.position % VisitGroup.per_page == 0 && params[:change_visit] == 'next' %>
 <% @page += 1 %>
 <% @pages[@arm.id] = @page %>
 <% session[:service_calendar_pages][@arm.id.to_s] = @page %>
@@ -47,9 +44,9 @@ $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars
 <% @pages[@arm.id] = @page %>
 <% session[:service_calendar_pages][@arm.id.to_s] = @page %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
-# Else re-render just the visit group
+# Update the whole calendar if the position changed
 <% else %>
-$('.visit-group-<%= @visit_group.id %>').replaceWith("<%= j render '/service_calendars/master_calendar/pppv/visit_group', visit_group: @visit_group, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages, merged: false, consolidated: false %>")
+$(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
 <% end %>
 adjustCalendarHeaders()
 

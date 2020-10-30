@@ -24,8 +24,13 @@ class Dashboard::BaseController < ApplicationController
 
   before_action :authenticate_identity!
   before_action :establish_breadcrumber
+  before_action :set_location
 
   protected
+
+  def set_location
+    @location ||= 'dashboard'
+  end
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_dashboard'

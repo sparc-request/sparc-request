@@ -60,7 +60,10 @@
                 = t('constants.min', min: min)
               - if max
                 = t('constants.max', max: max)
-            - if min == max && (visit_group_clone.new_record? || visit_group_clone.position_changed?)
+            - # Because the visit group here actually has a position 1 less than it's true position would be, we can't use the built-in lower_item_with_day method
+            - higher_item_with_day  = visit_group_clone.higher_item_with_day
+            - lower_item_with_day   = visit_group_clone.lower_items.where(VisitGroup.arel_table[:position].gteq(visit_group_clone.position + 1)).where.not(id: visit_group_clone.id, day: nil).first
+            - if (visit_group_clone.new_record? || visit_group_clone.position_changed?) && higher_item_with_day.try(:day) == lower_item_with_day.try(:day).try(:-, 1)
               %small.form-text.text-warning
                 = t('visit_groups.form.move_note')
         .form-group.col-6{ class: action_name == 'edit' ? 'mb-1' : '' }

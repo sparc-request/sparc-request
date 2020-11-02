@@ -27,8 +27,8 @@ class VisitGroup < ApplicationRecord
   audited
 
   belongs_to :arm
+
   has_many :visits, :dependent => :destroy
-  
   has_many :line_items_visits, through: :visits
   
   ########################
@@ -67,6 +67,18 @@ class VisitGroup < ApplicationRecord
     I18n.t('visit_groups.before') + " " + self.identifier
   end
 
+  # Like the #higher_item method from acts_as_list but checks for
+  # the closest higher item with a non-null day
+  def higher_item_with_day
+    self.higher_items.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id, day: nil).first
+  end
+
+  # Like the #lower_item method from acts_as_list but checks for
+  # the closest lower item with a non-null day
+  def lower_item_with_day
+    self.lower_items.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
+  end
+
   ### audit reporting methods ###
 
   def audit_label audit
@@ -82,13 +94,15 @@ class VisitGroup < ApplicationRecord
   def moved_and_days_need_update?
     # Three Cases:
     # The Visit Group is new and is being inserted between two other consecutive-day visits
+    #   Note: requires the query instead of self.higher_items because
+    #   the higher items are cached by acts_as_list at that point
     # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
     # The Visit Group has been moved in-between consecutive visits and now we need to move
     #   consecutive visits
     @moved_and_update ||= neighbor_moved ||
                           (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
                           ((self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) &&
-                          (self.persisted? && day_changed? && position_changed? && self.day == self.arm.visit_groups.find_by(position: self.position).try(:day)))
+                          (self.persisted? && day_changed? && position_changed? && self.day == self.lower_item_with_day.try(:day)))
     @moved_and_update
   end
 
@@ -130,14 +144,11 @@ class VisitGroup < ApplicationRecord
   def move_consecutive_visit
     # The Visit Group has been moved and now we need to move consecutive visits
     # note: this is only for already-existing visits
-    if self.position_changed? && self.position_change[0].present?
-      if vg = self.arm.visit_groups.find_by(position: self.position)
-        # This actually increments position when position= is called
-        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
-      end
+    if vg = self.lower_item_with_day && self.position_changed? && self.position_change[0].present?
+      vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
     # The Visit Group was new or had a nil day but is between two
     # consecutive-day visits and needs to move one
-    elsif vg = self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
+    elsif vg
       vg.neighbor_moved = true
       vg.update_attributes(day: vg.day + 1)
     end

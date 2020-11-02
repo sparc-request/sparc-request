@@ -22,5 +22,5 @@
   - if service.organization.is_available?
     = f.select :core, options_for_select(cores.available.order(:order, :name).map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
   - else
-    = f.select :core, options_for_select(cores.not_available.order(:order, :name).map{|c| [c.name, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
+    = f.select :core, options_for_select(cores.not_available.order(:order, :name).map{|c| [{'data-content': c.name + ' ' + inactive_tag}, c.id]}.insert(0, ['None',0]), (service.core.id if service.core)), {}, {class: 'form-control select-type selectpicker'}
 

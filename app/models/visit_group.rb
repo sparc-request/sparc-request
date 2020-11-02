@@ -27,8 +27,8 @@ class VisitGroup < ApplicationRecord
   audited
 
   belongs_to :arm
+
   has_many :visits, :dependent => :destroy
-  
   has_many :line_items_visits, through: :visits
   
   ########################
@@ -55,19 +55,9 @@ class VisitGroup < ApplicationRecord
 
   validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
 
-  default_scope { order(:position) }
+  attr_accessor :neighbor_moved
 
-  # def position=(position)
-  #   if position.blank?
-  #     write_attribute(:position, nil)
-  #   elsif self.arm && position == self.arm.visit_count || self.position == position.to_i
-  #     write_attribute(:position, position)
-  #   else
-  #     # Because we have to insert before using position - 1,
-  #     # increment position when changed
-  #     write_attribute(:position, position.to_i + 1)
-  #   end
-  # end
+  default_scope { order(:position) }
 
   def identifier
     "#{self.name}" + (self.day.present? ? " (#{self.class.human_attribute_name(:day)} #{self.day})" : "")
@@ -75,6 +65,18 @@ class VisitGroup < ApplicationRecord
 
   def insertion_name
     I18n.t('visit_groups.before') + " " + self.identifier
+  end
+
+  # Like the #higher_item method from acts_as_list but checks for
+  # the closest higher item with a non-null day
+  def higher_item_with_day
+    self.higher_items.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id, day: nil).first
+  end
+
+  # Like the #lower_item method from acts_as_list but checks for
+  # the closest lower item with a non-null day
+  def lower_item_with_day
+    self.lower_items.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
   end
 
   ### audit reporting methods ###
@@ -92,12 +94,15 @@ class VisitGroup < ApplicationRecord
   def moved_and_days_need_update?
     # Three Cases:
     # The Visit Group is new and is being inserted between two other consecutive-day visits
+    #   Note: requires the query instead of self.higher_items because
+    #   the higher items are cached by acts_as_list at that point
     # The Visit Group had a nil day but is between two consecutive-day visits and needs to move one
-    # The Visit Group has been moved in-between consecutive visits 
-    #   and now we need to move consecutive visits
-    @moved_and_update ||= (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
+    # The Visit Group has been moved in-between consecutive visits and now we need to move
+    #   consecutive visits
+    @moved_and_update ||= neighbor_moved ||
+                          (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
                           ((self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) &&
-                          (self.persisted? && position_changed? && day_changed? && self.day == self.arm.visit_groups.find_by(position: self.position + 1).try(:day)))
+                          (self.persisted? && day_changed? && position_changed? && self.day == self.lower_item_with_day.try(:day)))
     @moved_and_update
   end
 
@@ -139,17 +144,13 @@ class VisitGroup < ApplicationRecord
   def move_consecutive_visit
     # The Visit Group has been moved and now we need to move consecutive visits
     # note: this is only for already-existing visits
-    if self.position_changed? && self.position_change[0].present?
-      if vg = self.arm.visit_groups.find_by(position: self.position)
-        # This actually increments position when position= is called
-        vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
-      end
+    if vg = self.lower_item_with_day && self.position_changed? && self.position_change[0].present?
+      vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
     # The Visit Group was new or had a nil day but is between two
     # consecutive-day visits and needs to move one
-    else
-      if vg = self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
-        vg.update_attributes(day: vg.day + 1, position: vg.position)
-      end
+    elsif vg
+      vg.neighbor_moved = true
+      vg.update_attributes(day: vg.day + 1)
     end
   end
 

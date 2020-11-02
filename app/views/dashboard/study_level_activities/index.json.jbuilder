@@ -9,7 +9,7 @@ json.(@line_items) do |line_item|
   json.service_rate       sla_service_rate_display(line_item)
   json.cost               sla_your_cost_field(line_item)
   json.total              display_one_time_fee_direct_cost(line_item)
-  json.date_started       format_date(line_item.in_process_date, html: true)
-  json.date_completed     format_date(line_item.complete_date, html: true)
+  json.date_started       format_date(line_item.in_process_date)
+  json.date_completed     format_date(line_item.complete_date)
   json.actions            sla_actions(line_item)
 end

@@ -70,13 +70,13 @@ class VisitGroup < ApplicationRecord
   # Like the #higher_item method from acts_as_list but checks for
   # the closest higher item with a non-null day
   def higher_item_with_day
-    self.higher_items.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id, day: nil).first
+    self.arm.visit_groups.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id, day: nil).first
   end
 
   # Like the #lower_item method from acts_as_list but checks for
   # the closest lower item with a non-null day
   def lower_item_with_day
-    self.lower_items.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
+    self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
   end
 
   ### audit reporting methods ###
@@ -102,7 +102,7 @@ class VisitGroup < ApplicationRecord
     @moved_and_update ||= neighbor_moved ||
                           (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
                           ((self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) &&
-                          (self.persisted? && day_changed? && position_changed? && self.day == self.lower_item_with_day.try(:day)))
+                          (self.persisted? && day_changed? && self.day == self.lower_item_with_day.try(:day)))
     @moved_and_update
   end
 
@@ -144,11 +144,7 @@ class VisitGroup < ApplicationRecord
   def move_consecutive_visit
     # The Visit Group has been moved and now we need to move consecutive visits
     # note: this is only for already-existing visits
-    if vg = self.lower_item_with_day && self.position_changed? && self.position_change[0].present?
-      vg.update_attributes(day: vg.day.try(:+, 1), position: vg.position + 1)
-    # The Visit Group was new or had a nil day but is between two
-    # consecutive-day visits and needs to move one
-    elsif vg
+    if vg = self.lower_item_with_day
       vg.neighbor_moved = true
       vg.update_attributes(day: vg.day + 1)
     end

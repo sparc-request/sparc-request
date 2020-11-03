@@ -20,6 +20,9 @@
 
 class Arm < ApplicationRecord
   include RemotelyNotifiable
+  include SanitizedData
+
+  sanitize_setter :name, :special_characters, :epic_special_characters, :squish
 
   audited
 
@@ -41,8 +44,7 @@ class Arm < ApplicationRecord
   after_update :update_visit_groups
   after_update :update_liv_subject_counts
 
-  validates :name, presence: true
-  validates_format_of :name, with: /\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/, if: Proc.new{ |arm| arm.name.present? }
+  validates_presence_of :name
   validates_uniqueness_of :name, case_sensitive: false, scope: :protocol_id
 
   validates :visit_count, numericality: { greater_than: 0 }
@@ -56,10 +58,6 @@ class Arm < ApplicationRecord
 
   # To add errors for moving a visit's position
   attr_accessor :visit_group_id
-
-  def name=(name)
-    write_attribute(:name, name.squish)
-  end
 
   def display_line_items_visits(display_all_services)
     if Setting.get_value('use_epic')

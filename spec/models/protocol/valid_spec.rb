@@ -30,6 +30,18 @@ RSpec.describe Protocol, type: :model do
   build_study_type_questions()
   build_study_type_answers()
 
+  describe 'should have a valid title' do
+    it 'should remove [ ] ^ | with sanitize_data' do
+      protocol = build(:protocol)
+      protocol.funding_status = 'funded'
+      protocol.funding_source = 'college'
+      protocol.title = 'protocol []^| AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%&()_-+=}{"\';><.,*/\\?:'
+
+      expect(protocol.valid?).to eq(true)
+      expect(protocol.title).to eq('protocol AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%&()_-+=}{"\';><.,*/\\?:')
+    end
+  end
+
   describe 'should validate funding source for projects' do
     it 'should raise an exception if funding source is nil' do
       project = Project.create(attributes_for(:protocol))

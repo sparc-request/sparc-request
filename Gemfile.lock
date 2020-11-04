@@ -8,9 +8,9 @@ GIT
 
 GIT
   remote: https://github.com/HSSC/sanitized_data.git
-  revision: 2fde04e1cb3bf61ff6109bb712984bf2fce4bd23
+  revision: afdb1cfd7161ae5bc0ba6bd2f07af22da54d64e0
   specs:
-    sanitized_data (0.0.3)
+    sanitized_data (0.0.4)
       iconv
 
 GIT

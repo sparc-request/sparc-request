@@ -46,6 +46,15 @@ class ProtocolMailer < ActionMailer::Base
                @requester)
   end
 
+  def merge_protocols_email
+    @recipient         = params[:recipient]
+    @protocol          = params[:protocol]
+    @merged_id         = params[:merged_id]
+    @service_request   = @protocol.service_requests.first
+
+    send_email(@recipient, t("mailers.protocol_mailer.merge_protocols_email.subject", protocol_id: @protocol.id,  merged_id: @merged_id))
+  end
+
   private
 
   def send_email(recipient, subject, cc=nil)

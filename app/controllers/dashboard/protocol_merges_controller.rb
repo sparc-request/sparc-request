@@ -50,6 +50,11 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     @merged_protocol = Protocol.where(id: params[:protocol_merge][:merged_protocol_id]).first
 
     if @master_protocol && @merged_protocol
+      ## PT: https://www.pivotaltracker.com/n/projects/1918597/stories/174238755
+      ## recipents include: pis, service requester, incompleted ssr owner
+      recipents = []
+      @merged_id = @merged_protocol.id
+
       if @master_protocol.has_clinical_services? && @merged_protocol.has_clinical_services?
         @errors[:master_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
         @errors[:merged_protocol_id] = t(:dashboard)[:protocol_merge][:errors][:one_calendar]
@@ -112,6 +117,9 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
               if ssr.in_work_fulfillment
                 fulfillment_ssrs << ssr
               end
+              ## add service requesters, owner of unfinished ssr to recipents
+              recipents << ssr.service_requester
+              recipents << ssr.owner if ssr.owner && !ssr.is_complete?
             end
           end
 
@@ -142,6 +150,15 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
           #cleanup
           merge_srs.perform_sr_merge
           fix_ssr_ids.perform_id_fix
+        end
+
+        ## add pis to recipents
+        @master_protocol.principal_investigators.each do |pi|
+          recipents << pi
+        end
+
+        recipents.uniq.each do |recipient|
+          ProtocolMailer.with(recipient: recipient, protocol: @master_protocol, merged_id: @merged_id).merge_protocols_email.deliver
         end
         flash[:success] = t(:dashboard)[:protocol_merge][:success]
       end

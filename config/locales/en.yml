@@ -748,6 +748,9 @@ en:
       request_access_email:
         subject: "SPARCRequest %{requester} Requests Access to Protocol %{protocol_id}"
         introduction: "%{requester} is requesting access to protocol %{protocol_id}. You may review this protocol and grant protocol access via <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+      merge_protocols_email:
+        subject: "SPARCRequest Protocols Merge Notification (Protocols %{merged_id}, %{protocol_id})"
+        introduction: "Protocol #%{merged_id} has been merged into #%{protocol_id} in SPARCRequest. You can access the protocol by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
 
   ############
   # Messages #

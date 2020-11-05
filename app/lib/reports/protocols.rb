@@ -47,6 +47,8 @@ class ProtocolsReport < ReportingModule
 
     attrs["Protocol ID"]                  = "id"
     attrs["Research Master ID"]           = "research_master_id"
+    ## https://www.pivotaltracker.com/n/projects/1918597/stories/174238755
+    attrs["Combined Protocol ID(s)"]      = "protocol_merges.pluck(:merged_protocol_id).join(', ')"
     attrs["Protocol Short Title"]         = "short_title"
     attrs["Protocol Title"]               = "title"
     attrs["Number of Requests"]           = "sub_service_requests.length"

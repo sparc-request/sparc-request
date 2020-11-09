@@ -144,7 +144,7 @@ $ ->
   ##############################
 
   $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
-    if $('#studyLevelActivitiesForm').hasClass('.new_line_item')
+    if $('#studyLevelActivitiesForm').hasClass('new_line_item')
       $.ajax
         method: 'get'
         dataType: 'script'

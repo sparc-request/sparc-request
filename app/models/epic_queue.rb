@@ -60,9 +60,9 @@ class EpicQueue < ApplicationRecord
       when 'pis'
         joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
       when 'date'
-        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_time #{order}"))
+        eager_load(:protocol).order(Arel.sql("protocols.last_epic_push_time #{order}"))
       when 'status'
-        eager_load(:protocol).order(Arel.sql("protocol.last_epic_push_status #{order}"))
+        eager_load(:protocol).order(Arel.sql("protocols.last_epic_push_status #{order}"))
       when 'created_at'
         order(Arel.sql("epic_queues.created_at #{order}"))
       when 'name'

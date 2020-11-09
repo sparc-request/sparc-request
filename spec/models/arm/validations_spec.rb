@@ -34,17 +34,17 @@ RSpec.describe Arm, type: :model do
       expect(arm.errors.full_messages[0]).to eq("Arm Name can't be blank")
     end
 
-    it 'must not contain: [ ] * / \\ ? :' do
+    it 'sanitize_data must remove: [ ] ^ |' do
       arm = build(:arm, protocol: @protocol)
-      arm.name = '[ ] * \\ / ? :'
+      arm.name = '[a] | b ^ c'
 
-      expect(arm.valid?).to eq(false)
-      expect(arm.errors.messages[:name].first).to eq(I18n.t('activerecord.errors.models.arm.attributes.name.invalid'))
+      expect(arm.valid?).to eq(true)
+      expect(arm.name).to eq('a b c')
     end
 
     it 'may contain numbers, letters, and other special characters' do
       arm = build(:arm, protocol: @protocol)
-      arm.name = 'arm 2 and AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%^&()_-+=|}{"\';><.,'
+      arm.name = 'arm 2 and AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%&()_-+=}{"\';><.,*/\\?:'
       expect(arm.valid?).to eq(true)
     end
 

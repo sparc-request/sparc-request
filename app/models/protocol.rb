@@ -22,8 +22,8 @@ class Protocol < ApplicationRecord
   include RemotelyNotifiable
   include SanitizedData
 
-  sanitize_setter :short_title, :special_characters, :squish
-  sanitize_setter :title, :special_characters, :squish
+  sanitize_setter :short_title, :special_characters, :epic_special_characters, :squish
+  sanitize_setter :title, :special_characters, :epic_special_characters, :squish
   sanitize_setter :brief_description, :special_characters, :squish
 
   audited

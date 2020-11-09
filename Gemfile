@@ -23,7 +23,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 0.9.10'
+gem 'curb', '~> 0.9.11'
 gem 'deep_cloneable', '~> 3.0.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
@@ -36,7 +36,7 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'grape', '1.5.0'
-gem 'grape-entity', '~> 0.8.1'
+gem 'grape-entity', '~> 0.8.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
@@ -147,5 +147,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof', '~> 1.4.1' # Check usage
+  gem 'ruby-prof', '~> 1.4.2' # Check usage
 end

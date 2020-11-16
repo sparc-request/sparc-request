@@ -46,7 +46,7 @@ module Dashboard
       orgs.each do |org|
         name = content_tag(
                 :span,
-                org.name.strip + (org.is_available ? "" : inactive),
+                org.name.strip.html_safe + (org.is_available ? "" : inactive),
                 class: 'text')
         org_options << [name, org.id]
       end

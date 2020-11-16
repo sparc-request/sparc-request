@@ -277,7 +277,7 @@ GEM
       sassc (>= 1.11)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    grape (1.5.0)
+    grape (1.5.1)
       activesupport
       builder
       dry-types (>= 1.1)
@@ -666,7 +666,7 @@ DEPENDENCIES
   faker
   filterrific!
   font-awesome-sass
-  grape (= 1.5.0)
+  grape (= 1.5.1)
   grape-entity (~> 0.8.2)
   grouped_validations!
   gyoku

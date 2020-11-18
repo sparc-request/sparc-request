@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.card.w-100.border-top-0
+.card.w-100
   - unless sub_service_request.has_one_time_fee_services?
     .alert.alert-warning.mb-0.rounded-0
       = t(:dashboard)[:sub_service_requests][:study_level_activities][:none]

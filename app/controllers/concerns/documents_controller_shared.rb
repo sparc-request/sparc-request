@@ -93,7 +93,11 @@ module DocumentsControllerShared
   end
 
   def assign_organization_access
-    @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
+    if @document.share_all
+      @document.sub_service_requests = @protocol.sub_service_requests
+    else
+      @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
+    end
   end
 
   def document_params

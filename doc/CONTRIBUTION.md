@@ -91,7 +91,7 @@ Visit our [Google Group](https://groups.google.com/forum/?hl=en#!forum/sparcrequ
 *NOTE:  All feature requests will be reviewed by our OS Governance Committee, we will follow-up with you about the implementation.*
 
 ## Fixing bugs / Submit New Features:
-Submit a pull request! Please make sure you are following the [Pull Request Guidelines](https://github.com/sparc-request/sparc-request/blob/master/PULL_REQUEST_GUIDELINES.md).
+Submit a pull request! Please make sure you are following the [Pull Request Guidelines](https://github.com/sparc-request/sparc-request/blob/master/doc/PULL_REQUEST_GUIDELINES.md).
 
 Remember to check that your Pull Request has:
 

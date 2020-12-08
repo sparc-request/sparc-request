@@ -31,17 +31,39 @@ RSpec.configure do |config|
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 201)
 
+    ##### OnCore Stubs #####
+    stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/protocols\?protocolNo=STUDY([0-9])+/).
+      to_return(status: 200, body: '[{"protocolId" => 1111}]')
+
+    stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/contacts\?email=(.+)&firstName=(.+)&lastName=(.+)/).
+      to_return(status: 200, body: '[{"contactId" => 2222}]')
+
     stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols").
+      to_return(status: 201)
+
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocolInstitutions").
+      to_return(status: 201)
+
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocolStaff").
       to_return(status: 201)
 
     stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
       to_return(status: 200, body: { access_token: "some_token_value", expires_in: "300", token_type: "Bearer" }.to_json)
   end
 
+  config.before(:each, oncore_protocol: :exists) do
+    stub_request(:post, "#{Setting.get_value("oncore_api")}/oncore-api/rest/protocols").
+      to_return(status: 400,
+        body: { "message" => "Protocol with protocol no. 'STUDY1' already exists", "errorType" => "FieldValidationError", "field" => "protocolNo" }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+  end
+
   config.before(:each, remote_service: :unavailable) do
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 500)
 
+    ##### OnCore Stubs #####
     stub_request(:post, "#{Setting.get_value("oncore_api")}/forte-platform-web/api/oauth/token").
       to_return(status: 500)
   end

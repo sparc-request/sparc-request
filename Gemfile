@@ -35,8 +35,8 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.5.0'
-gem 'grape-entity', '~> 0.8.1'
+gem 'grape', '1.5.1'
+gem 'grape-entity', '~> 0.8.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
@@ -147,5 +147,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof', '~> 1.4.1' # Check usage
+  gem 'ruby-prof', '~> 1.4.2' # Check usage
 end

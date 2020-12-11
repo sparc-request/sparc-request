@@ -50,7 +50,6 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
     @merged_protocol = Protocol.where(id: params[:protocol_merge][:merged_protocol_id]).first
 
     if @master_protocol && @merged_protocol
-      ## PT: https://www.pivotaltracker.com/n/projects/1918597/stories/174238755
       ## recipents include: pis, service requester, incompleted ssr owner
       recipents = []
       @merged_id = @merged_protocol.id

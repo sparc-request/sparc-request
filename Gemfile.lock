@@ -46,7 +46,7 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 81fa835c030eea7cbc6191f69a7a8585a5171fac
+  revision: 49427dc876408668b7aa7b8ff21273250087348b
   specs:
     acts_as_list (1.0.2)
       activerecord (>= 4.2)

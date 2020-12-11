@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%header.bg-white#siteHeader
-  .container-fluid.d-flex.p-2.p-md-3
+%header.container-fluid.bg-white#siteHeader
+  .row.d-flex.py-2.py-md-3
     .logo-container.col-3.d-none.d-lg-flex.justify-content-center
       = link_to Setting.get_value("header_link_1"), target: :_blank do
         = image_tag ENV['org_logo'] || 'logos/sctr_header_sized.jpg', alt: t('layout.header.org_logo_alt'), id: 'orgLogo', class: 'header-logo'

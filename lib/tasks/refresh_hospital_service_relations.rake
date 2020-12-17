@@ -18,46 +18,30 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc "Updating service relations"
-task :update_related_services => :environment do
+desc "Destroying all service relations on hospital services"
+task :refresh_hospital_service_relations => :environment do
 
   def prompt(*args)
     print(*args)
     STDIN.gets.strip
   end
 
-  def get_file(error=false)
-    puts "No import file specified or the file specified does not exist in db/imports" if error
-    file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
-
-    while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
-      file = get_file(true)
-    end
-
-    file
-  end
-
-  puts ""
-  puts "Reading in file..."
-  input_file = Rails.root.join("db", "imports", get_file)
-  continue = prompt('Preparing to update related services. Are you sure you want to continue? (y/n): ')
-  updated_service_relations_count = 0
+  # Get linked services on hospital services: services where send_to_epic is true and cpt_code is not nil
+  hospital_service_relations = ServiceRelation.where(service_id: Service.where(send_to_epic: 1).where.not(cpt_code: nil).pluck(:id))
+  continue = prompt("Are you sure you want to destroy #{hospital_service_relations.count} service relations on hospital services? (Y/n): ")
   if (continue == 'y') || (continue == 'Y')
-    ActiveRecord::Base.transaction do
-      CSV.foreach(input_file, headers: true) do |row|
-        service = Service.where(id: row['Service ID'].to_i).first
-        related_service_id = row['Related Service ID'].to_i
-        required = row['Required'].to_i
-        if service
-          puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}"
-          service.service_relations.create(related_service_id: related_service_id, required: required)
-          service.save
-          updated_service_relations_count += 1
-        else
-          puts "Service with ID #{row['Service ID'].to_i} was not updated with a new service relation"
-        end
-      end
+    begin
+      puts "Destroying #{hospital_service_relations.count} service relations#{hospital_service_relations.count > 100 ? ', this may take a few moments' : ''}..."
+      hospital_service_relations.destroy_all
+
+      # Update service relations with update_related_services
+      Rake::Task["update_related_services"].invoke
+    rescue
+      # rollback if there's any uncaught errors in update_related_services
+      raise ActiveRecord::Rollback
     end
-    puts "#{updated_service_relations_count} service relations have been updated"
+  else
+    puts "Exiting rake task..."
   end
+
 end

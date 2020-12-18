@@ -30,15 +30,12 @@ task :refresh_hospital_service_relations => :environment do
   hospital_service_relations = ServiceRelation.where(service_id: Service.where(send_to_epic: 1).where.not(cpt_code: nil).pluck(:id))
   continue = prompt("Are you sure you want to destroy #{hospital_service_relations.count} service relations on hospital services? (Y/n): ")
   if (continue == 'y') || (continue == 'Y')
-    begin
+    ActiveRecord::Base.transaction do
       puts "Destroying #{hospital_service_relations.count} service relations#{hospital_service_relations.count > 100 ? ', this may take a few moments' : ''}..."
       hospital_service_relations.destroy_all
 
       # Update service relations with update_related_services
       Rake::Task["update_related_services"].invoke
-    rescue
-      # rollback if there's any uncaught errors in update_related_services
-      raise ActiveRecord::Rollback
     end
   else
     puts "Exiting rake task..."

@@ -46,7 +46,7 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: 81fa835c030eea7cbc6191f69a7a8585a5171fac
+  revision: 49427dc876408668b7aa7b8ff21273250087348b
   specs:
     acts_as_list (1.0.2)
       activerecord (>= 4.2)
@@ -270,14 +270,14 @@ GEM
     factory_bot_rails (6.1.0)
       factory_bot (~> 6.1.0)
       railties (>= 5.0.0)
-    faker (2.14.0)
+    faker (2.15.1)
       i18n (>= 1.6, < 2)
     ffi (1.13.1)
     font-awesome-sass (5.15.1)
       sassc (>= 1.11)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    grape (1.5.0)
+    grape (1.5.1)
       activesupport
       builder
       dry-types (>= 1.1)
@@ -376,7 +376,7 @@ GEM
     omniauth (1.9.1)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
-    omniauth-cas (1.1.1)
+    omniauth-cas (2.0.0)
       addressable (~> 2.3)
       nokogiri (~> 1.5)
       omniauth (~> 1.2)
@@ -393,8 +393,8 @@ GEM
       mime-types
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
-    parallel (1.19.2)
-    parallel_tests (3.3.0)
+    parallel (1.20.1)
+    parallel_tests (3.4.0)
       parallel
     pdf-core (0.8.1)
     pdf-inspector (1.3.0)
@@ -418,7 +418,7 @@ GEM
     premailer-rails (1.11.1)
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
-    progress_bar (1.3.2)
+    progress_bar (1.3.3)
       highline (>= 1.6, < 3)
       options (~> 2.3.0)
     pry (0.13.1)
@@ -600,7 +600,7 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
       selenium-webdriver (>= 3.0, < 4.0)
-    webmock (3.9.4)
+    webmock (3.10.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -666,7 +666,7 @@ DEPENDENCIES
   faker
   filterrific!
   font-awesome-sass
-  grape (= 1.5.0)
+  grape (= 1.5.1)
   grape-entity (~> 0.8.2)
   grouped_validations!
   gyoku

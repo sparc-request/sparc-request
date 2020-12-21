@@ -27,28 +27,43 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
   stub_config("oncore_endpoint_access", ['jug2'])
 
   let(:auth_path) { "/forte-platform-web/api/oauth/token" }
-  let(:create_protocol_path) { "/oncore-api/rest/protocols" }
+  let(:protocols_path) { "/oncore-api/rest/protocols" }
+  let(:contacts_path) { "/oncore-api/rest/contacts" }
+  let(:protocol_institutions_path) { "/oncore-api/rest/protocolInstitutions" }
+  let(:protocol_staff_path) { "/oncore-api/rest/protocolStaff" }
 
   before :each do
-    study = create(:study_federally_funded, primary_pi: jug2)
+    @study = create(:study_federally_funded, primary_pi: jug2)
 
-    visit dashboard_protocol_path(study)
+    visit dashboard_protocol_path(@study)
     wait_for_javascript_to_finish
     click_link I18n.t('protocols.summary.oncore.push_to_oncore')
     wait_for_javascript_to_finish
   end
 
   context 'OnCore servers accessible' do
-    it 'should contact OnCore servers twice' do
-      # Once to authenticate, once to create the study in OnCore
-      expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
-      expect(a_request(:post, Setting.get_value("oncore_api")+create_protocol_path)).to have_been_made.once
+    context 'and the protocol does not yet exist in OnCore' do
+      it 'should post a protocol to OnCore' do
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocols_path)).to have_been_made.once
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocol_institutions_path)).to have_been_made.once
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocol_staff_path)).to have_been_made.once
+      end
+    end
+
+    context 'and the protocol has already been pushed to OnCore', oncore_protocol: :exists do
+      it 'should only attempt to push the base protocol' do
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocols_path)).to have_been_made.once
+      end
+
+      it 'should display an error' do
+        expect(page).to have_content(I18n.t('protocols.summary.oncore.error'))
+        expect(page).to have_content(I18n.t('protocols.summary.oncore.already_exists', protocol_id: @study.id))
+      end
     end
   end
 
   context 'OnCore servers inaccessible', remote_service: :unavailable do
     it 'should contact OnCore servers once' do
-      # Authenticate once
       expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
     end
 

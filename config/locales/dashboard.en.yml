@@ -306,6 +306,7 @@ en:
           new: "Add Non-Clinical Services related to the selected organization"
           view: "View Details"
           fulfillments: "View Fulfillments for this Service"
+          dropdown_disabled: "Has Fulfillments, Edit Disabled"
       history:
         header: "History"
         status_history:

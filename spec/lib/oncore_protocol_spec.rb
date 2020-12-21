@@ -23,12 +23,15 @@ require "rails_helper"
 RSpec.describe OncoreProtocol do
 
   let(:auth_path) { "/forte-platform-web/api/oauth/token" }
-  let(:create_protocol_path) { "/oncore-api/rest/protocols" }
+  let(:protocols_path) { "/oncore-api/rest/protocols" }
+  let(:contacts_path) { "/oncore-api/rest/contacts" }
+  let(:protocol_institutions_path) { "/oncore-api/rest/protocolInstitutions" }
+  let(:protocol_staff_path) { "/oncore-api/rest/protocolStaff" }
   stub_config 'oncore_default_department', 'Other' #force setting to not be all caps to make sure department is capitalized
 
   before :each do
-    pi = create(:identity)
-    study = create(:study_federally_funded, primary_pi: pi)
+    @pi = create(:identity)
+    study = create(:study_federally_funded, primary_pi: @pi)
     @oncore_protocol = OncoreProtocol.new(study)
   end
 
@@ -39,10 +42,26 @@ RSpec.describe OncoreProtocol do
   end
 
   describe '#create_oncore_protocol' do
-    it 'should send a POST request to OnCore twice' do
+    it 'should send a POST request to OnCore four times' do
       @oncore_protocol.create_oncore_protocol
+      # 1st to authenticate
       expect(a_request(:post, Setting.get_value("oncore_api")+auth_path)).to have_been_made.once
-      expect(a_request(:post, Setting.get_value("oncore_api")+create_protocol_path)).to have_been_made.once
+      # 2nd to create the protocol in OnCore
+      expect(a_request(:post, Setting.get_value("oncore_api")+protocols_path)).to have_been_made.once
+      # 3rd to add the institution to the protocol in OnCore
+      expect(a_request(:post, Setting.get_value("oncore_api")+protocol_institutions_path)).to have_been_made.once
+      # 4th to add the primary PI to the protcol in OnCore
+      expect(a_request(:post, Setting.get_value("oncore_api")+protocol_staff_path)).to have_been_made.once
+    end
+
+    it 'should sent a GET request to OnCore twice' do
+      @oncore_protocol.create_oncore_protocol
+      # 1st to get the OnCore protocol id after creation
+      expect(a_request(:get, Setting.get_value("oncore_api")+protocols_path).
+        with(query: { "protocolNo" => "STUDY1" })).to have_been_made.once
+      # 2nd to get the staff id of the primary PI
+      expect(a_request(:get, Setting.get_value("oncore_api")+contacts_path).
+        with(query: { "email" => @pi.email, "firstName" => @pi.first_name, "lastName" => @pi.last_name })).to have_been_made.once
     end
   end
 

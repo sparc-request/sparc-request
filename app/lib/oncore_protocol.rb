@@ -22,7 +22,7 @@ class OncoreProtocol
   include HTTParty
   base_uri Setting.get_value('oncore_api')
 
-  attr_accessor :auth, :protocol_no, :title, :short_title, :library, :department, :organizational_unit, :protocol_type
+  attr_accessor :auth, :protocol_no, :protocol_id, :title, :short_title, :library, :department, :organizational_unit, :protocol_type, :institution, :primary_pi, :primary_pi_role
 
   def initialize(study)
     # Use default values for fields that do not correlate to SPARC values
@@ -33,32 +33,114 @@ class OncoreProtocol
     self.department          = (study.primary_pi.professional_organization.try(:department_name) || Setting.get_value("oncore_default_department")).upcase
     self.organizational_unit = Setting.get_value("oncore_default_organizational_unit")
     self.protocol_type       = Setting.get_value("oncore_default_protocol_type")
+
+    self.institution         = Setting.get_value("oncore_default_institution")
+    self.primary_pi          = study.primary_pi
+    self.primary_pi_role     = Setting.get_value("oncore_default_pi_role")
   end
 
   def create_oncore_protocol
-    auth_response = self.authenticate
+    auth_response = authenticate
     if auth_response.success?
-    # Assumes that the push will fail if it already exists in OnCore, need to confirm
-      response = self.class.post('/oncore-api/rest/protocols',
-                                headers: {
-                                  'Accept' => 'application/json',
-                                  'Content-Type' => 'application/json',
-                                  'Authorization' => self.auth
-                                },
-                                body: {
-                                  protocolNo: self.protocol_no,
-                                  title: self.title,
-                                  shortTitle: self.short_title,
-                                  library: self.library,
-                                  department: self.department,
-                                  organizationalUnit: self.organizational_unit,
-                                  protocolType: self.protocol_type
-                                }.to_json)
-      log_request_and_response(response)
-      return response
+      push_base_response = push_base_oncore_protocol
+      return push_base_response if !push_base_response.success?
+
+      id_search_response = oncore_protocol_id_search
+      return id_search_response if !id_search_response.success?
+
+      add_institution_response = add_insitution
+      return add_institution_response if !add_institution_response.success?
+
+      primary_pi_response = add_primary_pi
+
+      return primary_pi_response
     else
       return auth_response
     end
+  end
+
+  def push_base_oncore_protocol
+    response = self.class.post('/oncore-api/rest/protocols',
+                              headers: {
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                                'Authorization' => self.auth
+                              },
+                              body: {
+                                protocolNo: self.protocol_no,
+                                title: self.title,
+                                shortTitle: self.short_title,
+                                library: self.library,
+                                department: self.department,
+                                organizationalUnit: self.organizational_unit,
+                                protocolType: self.protocol_type
+                              }.to_json)
+    log_request_and_response(response)
+    return response
+  end
+
+  # Get the OnCore protocolId, like SPARC's ids but specific to OnCore
+  # protocolId is required field in most POST requests related to a protocol.
+  def oncore_protocol_id_search
+    response = self.class.get('/oncore-api/rest/protocols',
+                              headers: {
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                                'Authorization' => self.auth
+                              },
+                              query: {
+                                protocolNo: self.protocol_no
+                              })
+    log_request_and_response(response)
+    self.protocol_id = response.success? ? response.first['protocolId'] : nil
+    return response
+  end
+
+  def add_insitution
+    response = self.class.post('/oncore-api/rest/protocolInstitutions',
+                              headers: {
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                                'Authorization' => self.auth
+                              },
+                              body: {
+                                protocolId: self.protocol_id,
+                                institution: self.institution
+                              }.to_json)
+    log_request_and_response(response)
+    return response
+  end
+
+  def add_primary_pi
+    contact_response = response = self.class.get('/oncore-api/rest/contacts',
+                              headers: {
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                                'Authorization' => self.auth
+                              },
+                              query: {
+                                email: self.primary_pi.email,
+                                firstName: self.primary_pi.first_name,
+                                lastName: self.primary_pi.last_name
+                              })
+    log_request_and_response(contact_response)
+    return contact_response if !contact_response.success?
+
+    contact_id = response.first['contactId']
+
+    staff_response = self.class.post('/oncore-api/rest/protocolStaff',
+                              headers: {
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                                'Authorization' => self.auth
+                              },
+                              body: {
+                                protocolId: self.protocol_id,
+                                contactId: contact_id,
+                                role: self.primary_pi_role
+                              }.to_json)
+    log_request_and_response(staff_response)
+    return staff_response
   end
 
   def authenticate
@@ -89,7 +171,7 @@ class OncoreProtocol
     logger.info "OnCore REST request ---------- Timestamp: #{DateTime.now.to_formatted_s(:long)}"
     logger.info "URI: " + request.uri.to_s
     logger.info "HTTP method: " + request.http_method.to_s
-    logger.info "Request Body:\n" + request.raw_body
+    logger.info "Request Body:\n" + request.raw_body.to_s
     logger.info "Response:\n" + response.to_s
   end
 end

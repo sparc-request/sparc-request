@@ -37,11 +37,16 @@ task :refresh_hospital_services_abbreviations => :environment do
     file
   end
 
-  # Update all hospital service abbreviations to be their service names
-  puts "Reading in file of services to escape..."
-  input_file = Rails.root.join("db", "imports", get_file)
-  escaped_service_ids = CSV.parse(File.read(input_file), headers: true).by_col['Service ID'].map(&:to_i)
-  hospital_services = Service.where(send_to_epic: 1).where.not(id: escaped_service_ids)
+  # Update all hospital service abbreviations to be their service names, minus any exceptions
+  has_exceptions = prompt("Are there any hospital services that should be excluded from the abbreviation refresh? (y/n): ")
+  if (has_exceptions == 'y') || (has_exceptions == 'Y')
+    puts "Reading in file of services to escape..."
+    input_file = Rails.root.join("db", "imports", get_file)
+    escaped_service_ids = CSV.parse(File.read(input_file), headers: true).by_col['Service ID'].map(&:to_i)
+    hospital_services = Service.where(send_to_epic: 1).where.not(id: escaped_service_ids)
+  else
+    hospital_services = Service.where(send_to_epic: 1)
+  end
 
   continue = prompt("Preparing to refresh #{hospital_services.count} hospital service abbreviations. Are you sure you want to continue? (y/n): ")
   if (continue == 'y') || (continue == 'Y')

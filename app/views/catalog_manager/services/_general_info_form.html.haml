@@ -30,7 +30,7 @@
 
   .form-group
     = f.label :core, t(:catalog_manager)[:organization_form][:core], class: 'col-sm-3 control-label'
-    .col-sm-9
+    .col-sm-9.core_wrapper
       = render 'catalog_manager/services/core_dropdown', cores: @cores, service: service
   .form-group
     = f.label :name, t(:catalog_manager)[:organization_form][:name], class: 'col-sm-3 control-label'

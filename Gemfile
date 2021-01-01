@@ -66,7 +66,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.3.0' # Check usage
+gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 5.1'
 gem 'rack-mini-profiler', require: false

@@ -23,7 +23,7 @@
   .form-group
     = f.label :program, t(:catalog_manager)[:organization_form][:program], class: 'col-sm-3 control-label'
     .col-sm-9
-      - if service.organization.is_available?
+      - if service.program.is_available?
         = f.select :program, options_for_select(@programs.available.order(:order, :name).map{|p| [p.name, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}
       - else
         = f.select :program, options_for_select(@programs.not_available.order(:order, :name).map{|p| [{'data-content': p.name + ' ' + inactive_tag}, p.id]}, service.program.id), {}, {class: 'form-control select-type selectpicker', data: { service_id: service.id }}

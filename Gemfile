@@ -58,7 +58,7 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.16.3'
+gem 'net-ldap', '~> 0.17.0'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
@@ -66,9 +66,9 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.3.0' # Check usage
+gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 5.1'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.4.3'
 gem 'rails-html-sanitizer' # Check usage

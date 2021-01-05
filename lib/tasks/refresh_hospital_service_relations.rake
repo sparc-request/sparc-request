@@ -18,39 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module Dashboard
-  class GroupedOrganizations
-    include ActionView::Helpers::TagHelper
+desc "Destroying all service relations on hospital services"
+task :refresh_hospital_service_relations => :environment do
 
-    def initialize(organizations)
-      @organizations = organizations
-    end
-
-    def collect_grouped_options
-      groups = @organizations.
-        sort { |lhs, rhs| lhs.name <=> rhs.name }.
-        group_by(&:type)
-      options = ["Institution", "Provider", "Program", "Core"].map do |type|
-        next unless groups[type].present?
-
-        [type.pluralize, extract_name_and_id(groups[type])]
-      end
-      options.compact
-    end
-
-    private
-
-    def extract_name_and_id(orgs)
-      org_options = []
-      inactive = content_tag(:small, content_tag(:em, I18n.t('calendars.inactive')), class: 'text-danger')
-      orgs.each do |org|
-        name = content_tag(
-                :span,
-                org.name.strip.html_safe + (org.is_available ? "" : inactive),
-                class: 'text')
-        org_options << [name, org.id]
-      end
-      org_options
-    end
+  def prompt(*args)
+    print(*args)
+    STDIN.gets.strip
   end
+
+  # Get linked services on hospital services: services where send_to_epic is true and cpt_code is not nil
+  hospital_service_relations = ServiceRelation.where(service_id: Service.where(send_to_epic: 1).where.not(cpt_code: nil).pluck(:id))
+  continue = prompt("Are you sure you want to destroy #{hospital_service_relations.count} service relations on hospital services? (Y/n): ")
+  if (continue == 'y') || (continue == 'Y')
+    ActiveRecord::Base.transaction do
+      puts "Destroying #{hospital_service_relations.count} service relations#{hospital_service_relations.count > 100 ? ', this may take a few moments' : ''}..."
+      hospital_service_relations.destroy_all
+
+      # Update service relations with update_related_services
+      Rake::Task["update_related_services"].invoke
+    end
+  else
+    puts "Exiting rake task..."
+  end
+
 end

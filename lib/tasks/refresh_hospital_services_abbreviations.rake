@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc "Updating service relations"
-task :update_related_services => :environment do
+desc "Refreshing all abbreviations on hospital services"
+task :refresh_hospital_services_abbreviations => :environment do
 
   def prompt(*args)
     print(*args)
@@ -37,27 +37,25 @@ task :update_related_services => :environment do
     file
   end
 
-  puts ""
-  puts "Reading in file..."
-  input_file = Rails.root.join("db", "imports", get_file)
-  continue = prompt('Preparing to update related services. Are you sure you want to continue? (y/n): ')
-  updated_service_relations_count = 0
+  # Update all hospital service abbreviations to be their service names, minus any exceptions
+  has_exceptions = prompt("Are there any hospital services that should be excluded from the abbreviation refresh? (y/n): ")
+  if (has_exceptions == 'y') || (has_exceptions == 'Y')
+    puts "Reading in file of services to escape..."
+    input_file = Rails.root.join("db", "imports", get_file)
+    escaped_service_ids = CSV.parse(File.read(input_file), headers: true).by_col['Service ID'].map(&:to_i)
+    hospital_services = Service.where(send_to_epic: 1).where.not(id: escaped_service_ids)
+  else
+    hospital_services = Service.where(send_to_epic: 1)
+  end
+
+  continue = prompt("Preparing to refresh #{hospital_services.count} hospital service abbreviations. Are you sure you want to continue? (y/n): ")
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
-      CSV.foreach(input_file, headers: true) do |row|
-        service = Service.where(id: row['Service ID'].to_i).first
-        related_service_id = row['Related Service ID'].to_i
-        required = row['Required'].to_i
-        if service
-          puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}"
-          service.service_relations.create(related_service_id: related_service_id, required: required)
-          service.save
-          updated_service_relations_count += 1
-        else
-          puts "Service with ID #{row['Service ID'].to_i} was not updated with a new service relation"
-        end
-      end
+      hospital_services.update_all("abbreviation=name")
+      puts "#{hospital_services.count} hospital service abbreviations have been updated!"
     end
-    puts "#{updated_service_relations_count} service relations have been updated"
+  else
+    puts "Exiting rake task..."
   end
+
 end

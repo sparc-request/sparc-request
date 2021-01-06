@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.14'
+gem 'capistrano', '~> 3.15'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false

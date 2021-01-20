@@ -122,7 +122,7 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.4'
+  gem 'webdrivers', '~> 4.5'
   gem 'webmock'
 end
 

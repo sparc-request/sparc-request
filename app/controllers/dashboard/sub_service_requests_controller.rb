@@ -103,7 +103,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       Setting.get_value("remote_service_notifier_password"),
       '@',
       Setting.get_value("remote_service_notifier_host"),
-      "/v/otf_sync_from_sparc.json"
+      "/v1/otf_sync_from_sparc.json"
     ].join
 
     sub_service_request = SubServiceRequest.find(params[:id])
@@ -128,46 +128,15 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
       if params #Because of the above check for syncs that are duplicative
         RestClient.post(url, params, content_type: 'application/json') do |response, request, result, &block|
-          sync.update_attributes(synched: true)
-          puts '#' * 50
-          puts response
-          puts '#' * 50
+          if JSON.parse(response.body)['result'] == "success"
+            sync.update_attributes(synched: true)
+          end
         end
       end
     end
 
     sub_service_request.synch_to_fulfillment = false
     sub_service_request.save(validate: false)
-
-
-
-    # sub_service_request = SubServiceRequest.find(params[:id])
-    # synchs = sub_service_request.fulfillment_synchronizations.select{|x| x.synched != true}
-    # synchs.each do |synch|
-    #   if synch.action == 'destroy'
-    #     to_be_deleted = Shard::Fulfillment::LineItem.where(sparc_id: synch.line_item_id).first
-    #     if to_be_deleted
-    #       to_be_deleted.destroy
-    #     end
-    #   else
-    #     # Need to ignore any line item that was first created/updated then destroyed in the same synch cycle
-    #     line_item = LineItem.where(id: synch.line_item_id).first
-    #     if line_item
-    #       cwf_line_item = Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).first
-    #       cwf_protocol = Shard::Fulfillment::Protocol.where(sub_service_request_id: sub_service_request.id).first
-    #       if synch.action == 'create'
-    #         cwf_protocol.line_items.create(sparc_id: line_item.id, protocol_id: cwf_protocol.id, service_id: line_item.service_id, quantity_requested: line_item.quantity)
-    #       elsif synch.action == 'update'
-    #         if line_item_in_fulfillment?(line_item)
-    #           cwf_line_item.update_attributes(quantity_requested: line_item.quantity, service_id: line_item.service_id)
-    #         end
-    #       end
-    #     end
-    #   end
-    #   synch.update_attributes(synched: true)
-    # end
-    # sub_service_request.synch_to_fulfillment = false
-    # sub_service_request.save(validate: false)
   end
 
   def resend_surveys

@@ -111,7 +111,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
     syncs.each do |sync|
       if sync.action == 'destroy'
-        params = params = {sync: {action: 'destroy', line_item: {sparc_id: line_item.id}}}
+        params = params = {sync: {action: 'destroy', line_item: {sparc_id: sync.line_item_id}}}
       else
 
         line_item = LineItem.where(id: sync.line_item_id).first

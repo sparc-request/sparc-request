@@ -6,7 +6,7 @@ gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
-gem 'audited', '~> 4.9'
+gem 'audited', '~> 4.10'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'babel-transpiler'
@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.14'
+gem 'capistrano', '~> 3.15'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -47,7 +47,7 @@ gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
-gem 'jbuilder', '~> 2.10'
+gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge

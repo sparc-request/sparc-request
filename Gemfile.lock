@@ -93,8 +93,8 @@ GEM
       arel (>= 9.0)
     activerecord-import (1.0.7)
       activerecord (>= 3.2)
-    activerecord-nulldb-adapter (0.5.1)
-      activerecord (>= 5.2.0)
+    activerecord-nulldb-adapter (0.7.0)
+      activerecord (>= 5.2.0, < 6.3)
     activerecord-session_store (1.1.3)
       actionpack (>= 4.0)
       activerecord (>= 4.0)
@@ -136,7 +136,7 @@ GEM
       execjs (~> 2.0)
     bcrypt (3.1.16)
     bluecloth (2.2.0)
-    bootsnap (1.5.1)
+    bootsnap (1.7.2)
       msgpack (~> 1.0)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
@@ -145,7 +145,7 @@ GEM
     bootstrap3-datetimepicker-rails (4.17.47)
       momentjs-rails (>= 2.8.1)
     builder (3.2.4)
-    bullet (6.1.2)
+    bullet (6.1.3)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
@@ -321,7 +321,7 @@ GEM
       ice_cube (~> 0.16)
     ice_cube (0.16.3)
     iconv (1.0.8)
-    jbuilder (2.10.1)
+    jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
@@ -350,7 +350,7 @@ GEM
     minitest (5.14.3)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
-    msgpack (1.3.3)
+    msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     mustermann (1.1.1)
@@ -368,8 +368,8 @@ GEM
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
     netrc (0.11.0)
-    newrelic_rpm (6.14.0)
-    nio4r (2.5.4)
+    newrelic_rpm (6.15.0)
+    nio4r (2.5.5)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
@@ -426,7 +426,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
-    puma (5.1.1)
+    puma (5.2.1)
       nio4r (~> 2.0)
     rack (2.2.3)
     rack-accept (0.4.5)
@@ -592,7 +592,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode_utils (1.4.0)
-    uniform_notifier (1.13.0)
+    uniform_notifier (1.13.2)
     warden (1.2.9)
       rack (>= 2.0.9)
     wasabi (3.5.0)
@@ -681,7 +681,7 @@ DEPENDENCIES
   i18n-js
   icalendar
   icalendar-recurrence
-  jbuilder (~> 2.10)
+  jbuilder (~> 2.11)
   jquery-rails
   jquery_datepicker
   json (>= 1.8)
@@ -709,7 +709,7 @@ DEPENDENCIES
   premailer-rails
   progress_bar
   pry
-  puma (~> 5.1)
+  puma (~> 5.2)
   rack-mini-profiler
   rails (= 5.2.4.3)
   rails-controller-testing

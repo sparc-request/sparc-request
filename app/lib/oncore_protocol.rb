@@ -28,7 +28,7 @@ class OncoreProtocol
     # Use default values for fields that do not correlate to SPARC values
     self.protocol_no         = "STUDY#{study.id}"
     self.title               = study.title
-    self.short_title         = study.short_title
+    self.short_title         = "#{study.short_title} - #{study.title}"
     self.library             = Setting.get_value("oncore_default_library")
     self.department          = (study.primary_pi.professional_organization.try(:department_name) || Setting.get_value("oncore_default_department")).upcase
     self.organizational_unit = Setting.get_value("oncore_default_organizational_unit")

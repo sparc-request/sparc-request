@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2019 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -100,7 +100,9 @@ task :update_hb_services => :environment do
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
       CSV.foreach(input_file, :headers => true) do |row|
+        puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
+        puts service.inspect
         puts ""
         puts ""
         updated = false
@@ -136,9 +138,14 @@ task :update_hb_services => :environment do
             updated = true
           end
 
-          unless service.current_effective_pricing_map.full_rate == (row['Service Rate'].to_i * 100)
+          if (service.current_effective_pricing_map.full_rate != (row['Service Rate'].to_f * 100))
             pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
             puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.full_rate} to #{row['Service Rate'].to_i * 100}"
+            update_service_pricing(service, row)
+            updated = true
+          elsif (service.current_effective_pricing_map.federal_rate != (row['Federal Rate'].to_f * 100))
+            pricing_maps << [service.id, service.current_effective_pricing_map.federal_rate]
+            puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.federal_rate} to #{row['Federal Rate'].to_i * 100}"
             update_service_pricing(service, row)
             updated = true
           end
@@ -153,39 +160,39 @@ task :update_hb_services => :environment do
     end
 
     CSV.open("tmp/altered_service_report.csv", "w+") do |csv|
-      csv << ['Service Name', 'Service Id', 'Column Changed', 'New Attribute', 'Old Attribute']
+      csv << ['Service Name', 'Service Id', 'EAP ID', 'Column Changed', 'New Attribute', 'Old Attribute']
       unless revenue_codes.empty?
         revenue_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], 'Revenue Code', service.revenue_code, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Revenue Code', service.revenue_code, id_and_code[1]]
         end
       end
 
       unless cpt_codes.empty?
         cpt_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], 'Cpt Code', service.cpt_code, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Cpt Code', service.cpt_code, id_and_code[1]]
         end
       end
 
       unless is_available.empty?
         is_available.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], 'Is Available', service.is_available, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Is Available', service.is_available, id_and_code[1]]
         end
       end
 
       unless service_names.empty?
         service_names.each do |id_and_name|
           service = Service.find(id_and_name[0])
-          csv << [service.name, id_and_name[0], 'Procedure Name', service.name, id_and_name[1]]
+          csv << [service.name, id_and_name[0], service.eap_id, 'Procedure Name', service.name, id_and_name[1]]
         end
       end
 
       unless pricing_maps.empty?
         pricing_maps.each do |id_and_rate|
           service = Service.find(id_and_rate[0])
-          csv << [service.name, id_and_rate[0], 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1]]
+          csv << [service.name, id_and_rate[0], service.eap_id, 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1]]
         end
       end
     end

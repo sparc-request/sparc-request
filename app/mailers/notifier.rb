@@ -33,8 +33,7 @@ class Notifier < ActionMailer::Base
 
   def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
     @identity = project_role.identity
-    @recipient = @identity.email
-    unless @recipient.imported_from_lbb
+    unless @identity.imported_from_lbb
       @protocol = service_request.protocol
       @service_request = service_request
       @deleted_ssrs = deleted_ssrs
@@ -66,6 +65,7 @@ class Notifier < ActionMailer::Base
       end
 
       subject = email_title(@status, @protocol, @deleted_ssrs)
+      recipient = @identity.email
 
       mail(:to => @recipient, :from => Setting.get_value("no_reply_from"), :subject => subject)
     end

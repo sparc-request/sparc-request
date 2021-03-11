@@ -159,15 +159,14 @@ class Notifier < ActionMailer::Base
   end
 
   def account_status_change identity, approved
-    @recipient = identity.email
-    unless @recipient.imported_from_lbb
+    unless identity.imported_from_lbb
       @approved = approved
 
       ##REVIEW: Why do we care what the from is?
       email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
       subject = "#{t(:mailer)[:application_title]} account request - status change"
 
-      mail(:to => @recipient, :from => email_from, :subject => subject)
+      mail(:to => identity.email, :from => email_from, :subject => subject)
     end
   end
 

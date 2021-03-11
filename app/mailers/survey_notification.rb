@@ -24,12 +24,11 @@ class SurveyNotification < ActionMailer::Base
   def system_satisfaction_survey(response)
     @response = response
     @identity = Identity.find(response.identity_id)
-    from      = @identity.email
     recipient = Setting.get_value("admin_mail_to")
     cc        = Setting.get_value("system_satisfaction_survey_cc")
     subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])
 
-    mail(to: email, cc: cc, from: @identity.email, subject: subject)
+    mail(to: recipient, cc: cc, from: @identity.email, subject: subject)
   end
 
   def service_survey(surveys, identity, ssr)
@@ -45,8 +44,8 @@ class SurveyNotification < ActionMailer::Base
 
   def service_survey_completed(response, ssr, super_user)
     @response  = response
-    @identity  = response.identity
-    from       = @Identity.email
+    @identity  = @response.identity
+    from       = @identity.email
     subject    = t('surveyor.responses.emails.service_survey_completed.subject', site_name: t(:proper)[:header], ssr_id: ssr.display_id)
 
     send_email(super_user.identity, from, subject)

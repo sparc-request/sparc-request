@@ -28,7 +28,8 @@ class UserMailer < ActionMailer::Base
     @protocol_link    = dashboard_protocol_url(@protocol)
     @service_request  = @protocol.service_requests.first
 
-    send_email(recipient, t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
+    send_email(recipient,
+               t('mailer.email_title.general', email_status: "Authorized Users Update", type: "Protocol", id: @protocol.id))
   end
 
   def notification_received(user, ssr, sender)
@@ -39,17 +40,21 @@ class UserMailer < ActionMailer::Base
       @protocol_id = ssr.protocol_id
       @is_service_provider = user.is_service_provider?(ssr)
 
-      send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Protocol.model_name.human, id: ssr.protocol.id)}")
+      send_email(user,
+                 "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Protocol.model_name.human, id: ssr.protocol.id)}")
     else
-      send_email(user, "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Message.human_attribute_name(:from), id: @sender_name)}")
+      send_email(user,
+                 "#{t(:mailer)[:email_title][:new]} #{t('mailer.email_title.general_dashboard', email_status: Notification.model_name.human, type: Message.human_attribute_name(:from), id: @sender_name)}")
     end
   end
 
   private
 
   def send_email(recipient, subject)
-    @send_to = recipient
+    unless recipient.imported_from_lbb
+      @send_to = recipient
 
-    mail(to: recipient.email, subject: subject)
+      mail(to: recipient.email, subject: subject)
+    end
   end
 end

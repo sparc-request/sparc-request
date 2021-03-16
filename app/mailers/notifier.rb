@@ -32,41 +32,43 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
-    @protocol = service_request.protocol
-    @service_request = service_request
-    @deleted_ssrs = deleted_ssrs
-
-    ### ATTACHMENTS ###
-    service_list_false = @service_request.service_list(false)
-    service_list_true = @service_request.service_list(true)
-    controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
-
-    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
-    ### END ATTACHMENTS ###
-
-    @status = status(admin_delete_ssr, audit_report.present?, @service_request)
-    @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
-    @role = project_role.role
-    @full_name = @identity.full_name
-    @audit_report = audit_report
-    @portal_link = dashboard_protocol_url(@protocol)
+    unless @identity.imported_from_lbb
+      @protocol = service_request.protocol
+      @service_request = service_request
+      @deleted_ssrs = deleted_ssrs
 
-    if admin_delete_ssr
-      @ssrs_to_be_displayed = [@deleted_ssrs]
-    else
-      @ssrs_to_be_displayed = @service_request.sub_service_requests
+      ### ATTACHMENTS ###
+      service_list_false = @service_request.service_list(false)
+      service_list_true = @service_request.service_list(true)
+      controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
+
+      xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
+      ### END ATTACHMENTS ###
+
+      @status = status(admin_delete_ssr, audit_report.present?, @service_request)
+      @notes = @protocol.notes.eager_load(:identity)
+      
+      @role = project_role.role
+      @full_name = @identity.full_name
+      @audit_report = audit_report
+      @portal_link = dashboard_protocol_url(@protocol)
+
+      if admin_delete_ssr
+        @ssrs_to_be_displayed = [@deleted_ssrs]
+      else
+        @ssrs_to_be_displayed = @service_request.sub_service_requests
+      end
+
+      if !admin_delete_ssr
+        attachments["service_request_#{@protocol.id}.xlsx"] = xls
+      end
+
+      subject = email_title(@status, @protocol, @deleted_ssrs)
+      recipient = @identity.email
+
+      mail(:to => @recipient, :from => Setting.get_value("no_reply_from"), :subject => subject)
     end
-
-    if !admin_delete_ssr
-      attachments["service_request_#{@protocol.id}.xlsx"] = xls
-    end
-
-    # only send these to the correct person in the production env
-    email = @identity.email
-    subject = email_title(@status, @protocol, @deleted_ssrs)
-
-    mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
   def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false)
@@ -157,14 +159,15 @@ class Notifier < ActionMailer::Base
   end
 
   def account_status_change identity, approved
-    @approved = approved
+    unless identity.imported_from_lbb
+      @approved = approved
 
-    ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
-    email_to = identity.email
-    subject = "#{t(:mailer)[:application_title]} account request - status change"
+      ##REVIEW: Why do we care what the from is?
+      email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
+      subject = "#{t(:mailer)[:application_title]} account request - status change"
 
-    mail(:to => email_to, :from => email_from, :subject => subject)
+      mail(:to => identity.email, :from => email_from, :subject => subject)
+    end
   end
 
   def provide_feedback feedback

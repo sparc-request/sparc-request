@@ -18,21 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
-  config.before(:suite) do
-    DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
+# RSpec.configure do |config|
+#   config.before(:suite) do
+#     DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
 
-    # Ensure that this data is created after databasecleaner finishes
-    populate_settings_before_suite
-    populate_permissible_values_before_suite
-  end
+#     # Ensure that this data is created after databasecleaner finishes
+#     populate_settings_before_suite
+#     populate_permissible_values_before_suite
+#   end
 
-  config.before(:each) do |example|
-    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation, { except: %w[permissible_values settings] }
-    DatabaseCleaner.start
-  end
+#   config.before(:each) do |example|
+#     DatabaseCleaner[:active_record, connection: :test].strategy = :truncation, { except: %w[permissible_values settings] }
+#     DatabaseCleaner.start
+#   end
 
-  config.append_after(:each) do
-    DatabaseCleaner.clean
-  end
-end
+#   config.append_after(:each) do
+#     DatabaseCleaner.clean
+#   end
+# end

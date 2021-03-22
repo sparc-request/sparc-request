@@ -73,7 +73,7 @@ RSpec.describe Dashboard::Breadcrumber do
       @breadcrumber.add_crumbs(protocol_id: protocol.id, sub_service_request_id: ssr.id)
 
       breadcrumbs = @breadcrumber.breadcrumbs
-      expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/#{protocol.id}" }, text: "(1) My Protocol" )
+      expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/#{protocol.id}" }, text: "(#{protocol.id}) My Protocol" )
       expect(breadcrumbs).to have_tag('li', text: "(#{ssr.ssr_id}) SPEW")
     end
   end

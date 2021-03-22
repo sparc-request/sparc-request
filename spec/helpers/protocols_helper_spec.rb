@@ -136,12 +136,14 @@ RSpec.describe ProtocolsHelper, type: :helper do
     context 'without access' do
       it 'should render the Request Access button with service requests' do
         create(:service_request_without_validations, protocol: protocol)
+        ##This Spec has some transactional issues, and isn't resetting the identities, so we specify the correct one.
         user = protocol.project_roles.first.identity
         expect(helper).to receive(:link_to).with(anything, request_access_dashboard_protocol_path(protocol, recipient_id: user.id), any_args)
         helper.display_requests_button(protocol, false)
       end
 
       it 'should render the Request Access button without service requests' do
+        ##This Spec has some transactional issues, and isn't resetting the identities, so we specify the correct one.
         user = protocol.project_roles.first.identity
         expect(helper).to receive(:link_to).with(anything, request_access_dashboard_protocol_path(protocol, recipient_id: user.id), any_args)
         helper.display_requests_button(protocol, false)

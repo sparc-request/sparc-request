@@ -19,7 +19,7 @@ before_script:
   - cp dotenv.example .env
   - mysql -e 'create database test_sparc_request;'
   - mysql -e 'create database cwf_test;'
-  # - RAILS_ENV=test bundle exec rake db:migrate
+  - RAILS_ENV=test bundle exec rake db:migrate
   - bundle exec rake db:test:prepare
   - cd ..
   - git clone https://github.com/sparc-request/sparc-fulfillment.git

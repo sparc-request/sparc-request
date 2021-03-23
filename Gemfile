@@ -106,7 +106,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   gem 'factory_bot_rails'
   gem 'parallel_tests' # Check usage

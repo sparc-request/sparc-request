@@ -31,8 +31,8 @@ RSpec.describe OncoreProtocol do
 
   before :each do
     @pi = create(:identity)
-    study = create(:study_federally_funded, primary_pi: @pi)
-    @oncore_protocol = OncoreProtocol.new(study)
+    @study = create(:study_federally_funded, primary_pi: @pi)
+    @oncore_protocol = OncoreProtocol.new(@study)
   end
 
   describe '#initialize' do
@@ -58,7 +58,7 @@ RSpec.describe OncoreProtocol do
       @oncore_protocol.create_oncore_protocol
       # 1st to get the OnCore protocol id after creation
       expect(a_request(:get, Setting.get_value("oncore_api")+protocols_path).
-        with(query: { "protocolNo" => "STUDY1" })).to have_been_made.once
+        with(query: { "protocolNo" => "STUDY#{@study.id}" })).to have_been_made.once
       # 2nd to get the staff id of the primary PI
       expect(a_request(:get, Setting.get_value("oncore_api")+contacts_path).
         with(query: { "email" => @pi.email, "firstName" => @pi.first_name, "lastName" => @pi.last_name })).to have_been_made.once

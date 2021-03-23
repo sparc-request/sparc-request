@@ -231,7 +231,7 @@ GEM
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
-    dry-configurable (0.12.0)
+    dry-configurable (0.12.1)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5.0)
     dry-container (0.7.2)
@@ -243,7 +243,7 @@ GEM
     dry-logic (1.1.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-types (1.5.0)
+    dry-types (1.5.1)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
       dry-core (~> 0.5, >= 0.5)
@@ -273,7 +273,7 @@ GEM
       sassc (>= 1.11)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    grape (1.5.2)
+    grape (1.5.3)
       activesupport
       builder
       dry-types (>= 1.1)
@@ -665,7 +665,7 @@ DEPENDENCIES
   faker
   filterrific!
   font-awesome-sass
-  grape (= 1.5.2)
+  grape (= 1.5.3)
   grape-entity (~> 0.8.2)
   grouped_validations!
   gyoku

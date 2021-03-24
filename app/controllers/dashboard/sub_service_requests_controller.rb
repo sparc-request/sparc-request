@@ -168,6 +168,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     #For Subsidy History Bootstrap Table
     @subsidies = PastSubsidy.where(sub_service_request_id: @sub_service_request.id)
   end
+
+  def rate_history
+    #For admin_rate history
+    @rates = @sub_service_request.admin_rates
+  end
   #History Table Methods End
 
   def refresh_tab

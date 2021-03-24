@@ -31,6 +31,8 @@
             = link_to t(:dashboard)[:sub_service_requests][:history][:approval_history][:header], '#approvalHistoryTab', id: 'approvalHistoryLink', class: ['list-group-item list-group-item-action', tab == 'approval_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'approvalHistoryTab', selected: (tab == 'approval_history').to_s }
           - if sub_service_request.eligible_for_subsidy?
             = link_to t(:dashboard)[:sub_service_requests][:history][:subsidy_history][:header], '#subsidyHistoryTab', id: 'subsidyHistoryLink', class: ['list-group-item list-group-item-action', tab == 'subsidy_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'subsidyHistoryTab', selected: (tab == 'subsidy_history').to_s }
+          - if sub_service_request.admin_rates.any?
+            = link_to t(:dashboard)[:sub_service_requests][:history][:rate_history][:header], '#rateHistoryTab', id: 'rateHistoryLink', class: ['list-group-item list-group-item-action', tab == 'rate_history' ? 'active' : ''], role: 'tab', data: { toggle: 'tab' }, aria: { controls: 'rateHistoryTab', selected: (tab == 'rate_history').to_s }
       .tab-content.col-10.pl-0
         .tab-pane.fade#statusHistoryTab{ role: 'tabpanel', class: tab == 'status_history' ? 'show active' : '', aria: { labelledby: 'statusHistoryTabLink' } }
           = render 'dashboard/sub_service_requests/history/status_history', sub_service_request: sub_service_request
@@ -38,3 +40,5 @@
           = render 'dashboard/sub_service_requests/history/approval_history', sub_service_request: sub_service_request
         .tab-pane.fade#subsidyHistoryTab{ role: 'tabpanel', class: tab == 'subsidy_history' ? 'show active' : '', aria: { labelledby: 'subsidyHistoryTabLink' } }
           = render 'dashboard/sub_service_requests/history/subsidy_history', sub_service_request: sub_service_request
+        .tab-pane.fade#rateHistoryTab{ role: 'tabpanel', class: tab == 'rate_history' ? 'show active' : '', aria: { lablledby: 'rateHistoryLink' } }
+          = render 'dashboard/sub_service_requests/history/rate_history', sub_service_request: sub_service_request

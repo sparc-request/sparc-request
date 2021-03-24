@@ -35,8 +35,8 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.5.2'
-gem 'grape-entity', '~> 0.8.2'
+gem 'grape', '1.5.3'
+gem 'grape-entity', '~> 0.9.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
@@ -106,7 +106,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   gem 'factory_bot_rails'
   gem 'parallel_tests' # Check usage

@@ -43,7 +43,12 @@ RSpec.configure do |config|
 
   # TODO mark spec types explicitly
   config.infer_spec_type_from_file_location!
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
+
+  config.before(:each) do
+    populate_settings_before_suite
+    populate_permissible_values_before_suite
+  end
 
   config.after(:each) do
     # wait on all the push to epic calls to finish

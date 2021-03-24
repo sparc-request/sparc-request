@@ -24,11 +24,11 @@ class SurveyNotification < ActionMailer::Base
   def system_satisfaction_survey(response)
     @response = response
     @identity = Identity.find(response.identity_id)
-    email     = Setting.get_value("admin_mail_to")
+    recipient = Setting.get_value("admin_mail_to")
     cc        = Setting.get_value("system_satisfaction_survey_cc")
     subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])
 
-    mail(to: email, cc: cc, from: @identity.email, subject: subject)
+    mail(to: recipient, cc: cc, from: @identity.email, subject: subject)
   end
 
   def service_survey(surveys, identity, ssr)
@@ -36,19 +36,27 @@ class SurveyNotification < ActionMailer::Base
     @ssr        = ssr
     @surveys    = surveys
     @protocol   = @ssr.protocol
-    email       = @identity.email
+    from        = Setting.get_value("no_reply_from")
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
 
-    mail(to: email, from: Setting.get_value("no_reply_from"), subject: subject)
+    send_email(@identity, from, subject)
   end
 
   def service_survey_completed(response, ssr, super_user)
     @response  = response
-    @identity  = response.identity
-    email      = super_user.identity.email
+    @identity  = @response.identity
+    from       = @identity.email
     subject    = t('surveyor.responses.emails.service_survey_completed.subject', site_name: t(:proper)[:header], ssr_id: ssr.display_id)
 
-    mail(to: email, from: @identity.email, subject: subject)
+    send_email(super_user.identity, from, subject)
+  end
+
+  private
+
+  def send_email(recipient, from, subject)
+    unless recipient.imported_from_lbb
+      mail(to: recipient.email, from: from, subject: subject)
+    end
   end
 
 end

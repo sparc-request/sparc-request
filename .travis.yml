@@ -12,7 +12,6 @@ services:
 before_install:
   - "export TZ=America/New_York"
   - nvm install node 12.10.0
-  - sudo apt-get install -y shared-mime-info
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml

@@ -49,6 +49,7 @@ class SubServiceRequest < ApplicationRecord
 
   has_many :line_items_visits, through: :line_items
   has_many :services, through: :line_items
+  has_many :admin_rates, through: :line_items
 
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
@@ -421,7 +422,7 @@ class SubServiceRequest < ApplicationRecord
       end
     end
   end
-  
+
   # send all available surveys at once
   def available_surveys
     self.line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq

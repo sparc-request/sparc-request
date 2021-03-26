@@ -22,4 +22,5 @@ class AdminRate < ApplicationRecord
   audited
 
   belongs_to :line_item
+  belongs_to :identity
 end

@@ -332,6 +332,13 @@ en:
           actions:
             overridden: "Overridden"
             deleted: "Deleted"
+        rate_history:
+          header: "Modified Rate History"
+          date_changed: "Date Changed"
+          service_name: "Service Name"
+          modified_by: "Modified By"
+          cpt_code: "CPT Code"
+          modified_rate: "Modified Rate"
         tooltips:
           status_history: "Status log of request"
           approval_history: "Time stamp log of approvals"

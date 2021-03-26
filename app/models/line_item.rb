@@ -44,6 +44,7 @@ class LineItem < ApplicationRecord
   has_many :fulfillment_line_items, -> { order(:arm_id) }, class_name: 'Shard::Fulfillment::LineItem', foreign_key: :sparc_id
 
   attr_accessor :pricing_scheme
+  attr_accessor :current_user_id
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
@@ -99,7 +100,7 @@ class LineItem < ApplicationRecord
   end
 
   def displayed_cost=(dollars)
-    admin_rates.new( admin_cost: Service.dollars_to_cents(dollars) )
+    admin_rates.new( admin_cost: Service.dollars_to_cents(dollars), identity_id: current_user_id )
   end
 
   def pricing_scheme

@@ -206,8 +206,7 @@ module V1
     root 'service_requests', 'service_request'
 
     expose  :protocol_id,
-            :status,
-            :approved
+            :status
 
     with_options(format_with: :iso_timestamp) do
       expose :submitted_at

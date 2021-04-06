@@ -156,7 +156,7 @@ GEM
       sshkit (>= 1.9.0)
     capistrano-bundler (2.0.1)
       capistrano (~> 3.1)
-    capistrano-passenger (0.2.0)
+    capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
     capistrano-rails (1.6.1)
       capistrano (~> 3.1)
@@ -304,7 +304,7 @@ GEM
     httpi (2.4.4)
       rack
       socksify
-    i18n (1.8.9)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     i18n-js (3.8.2)
       i18n (>= 0.6.6)

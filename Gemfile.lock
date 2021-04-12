@@ -212,7 +212,7 @@ GEM
       activerecord (>= 3.1.0, < 7)
     delayed_job (4.1.9)
       activesupport (>= 3.0, < 6.2)
-    delayed_job_active_record (4.1.5)
+    delayed_job_active_record (4.1.6)
       activerecord (>= 3.0, < 6.2)
       delayed_job (>= 3.0, < 5)
     devise (4.7.3)
@@ -304,7 +304,7 @@ GEM
     httpi (2.4.4)
       rack
       socksify
-    i18n (1.8.9)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     i18n-js (3.8.2)
       i18n (>= 0.6.6)

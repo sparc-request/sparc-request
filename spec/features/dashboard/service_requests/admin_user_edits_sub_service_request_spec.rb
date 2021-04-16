@@ -24,21 +24,68 @@ RSpec.describe "Admin user edits a SubServiceRequest", js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  it 'should open the Admin Dashboard' do
-    org       = create(:organization, :process_ssrs)
-    service   = create(:service, organization: org)
-    protocol  = create(:study_federally_funded, primary_pi: jug2)
-    sr        = create(:service_request_without_validations, protocol: protocol)
-    ssr       = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol, status: 'draft')
-                create(:line_item, sub_service_request: ssr, service_request: sr, service: service)
-                create(:service_provider, organization: org, identity: jug2)
+  before :each do
+    @org       = create(:organization, :process_ssrs)
+    @service   = create(:service, organization: @org)
+    @protocol  = create(:study_federally_funded, primary_pi: jug2)
+    @sr        = create(:service_request_without_validations, protocol: @protocol)
+    @ssr       = create(:sub_service_request, service_request: @sr, organization: @org, protocol: @protocol, status: 'draft')
+                create(:line_item, sub_service_request: @ssr, service_request: @sr, service: @service)
+                create(:service_provider, organization: @org, identity: jug2)
+  end
 
-    visit dashboard_protocol_path(protocol)
+  it 'should open the Admin Dashboard' do
+    visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
 
     find('.edit-request').click
     wait_for_javascript_to_finish
 
-    expect(page).to have_current_path(dashboard_sub_service_request_path(ssr))
+    expect(page).to have_current_path(dashboard_sub_service_request_path(@ssr))
   end
+
+  describe 'Non clinical services tab' do
+
+    before :each do
+      @service.update_attributes(one_time_fee: true)
+      create(:pricing_setup, organization: @org)
+      create(:pricing_map, service_id: @service.id, display_date: Date.today, effective_date: Date.today)
+    end
+
+    context 'fulfillment turned on' do
+      stub_config('fulfillment_contingent_on_catalog_manager', true)
+
+      it 'should open non clinical services tab without errors' do
+
+        visit dashboard_protocol_path(@protocol)
+        wait_for_javascript_to_finish
+
+        find('.edit-request').click
+        wait_for_javascript_to_finish
+
+        click_link 'Non-Clinical Services'
+        expect(page).to have_selector('#studyLevelActivitiesTab')
+      end
+    end
+
+    context 'fulfillment turned off' do
+      stub_config('fulfillment_contingent_on_catalog_manager', false)
+
+      it 'should open non clinical services tab without errors' do
+
+        visit dashboard_protocol_path(@protocol)
+        wait_for_javascript_to_finish
+
+        find('.edit-request').click
+        wait_for_javascript_to_finish
+
+        click_link 'Non-Clinical Services'
+        expect(page).to have_selector('#studyLevelActivitiesTab')
+      end
+    end
+
+
+  end
+
+
 end

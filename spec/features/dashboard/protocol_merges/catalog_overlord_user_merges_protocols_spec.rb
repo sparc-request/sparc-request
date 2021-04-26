@@ -20,60 +20,44 @@
 
 require 'rails_helper'
 
-RSpec.describe "Admin user edits a SubServiceRequest", js: true do
-  let_there_be_lane
+RSpec.describe "Catalog overlord user merges protocols", js: true do
+  let_there_be_lane(catalog_overlord: true)
   fake_login_for_each_test
 
   before :each do
-    @org       = create(:organization, :process_ssrs, pricing_setup_count: 1)
-    @service   = create(:service, organization: @org, pricing_map_count: 1, one_time_fee: true)
-    @protocol  = create(:study_federally_funded, primary_pi: jug2)
-    @sr        = create(:service_request_without_validations, protocol: @protocol)
-    @ssr       = create(:sub_service_request, service_request: @sr, organization: @org, protocol: @protocol, status: 'draft')
-                create(:line_item, sub_service_request: @ssr, service_request: @sr, service: @service)
-                create(:service_provider, organization: @org, identity: jug2)
+    @protocol_master  = create(:study_federally_funded, primary_pi: jug2)
+    @protocol_to_merge = create(:study_federally_funded, primary_pi: jug2)
   end
 
-  it 'should open the Admin Dashboard' do
-    visit dashboard_protocol_path(@protocol)
+  def click_merge_protocol_button
+    visit dashboard_protocol_path(@protocol_master)
     wait_for_javascript_to_finish
 
-    find('.edit-request').click
+    click_link I18n.t('layout.dashboard.navigation.protocol_merge')
     wait_for_javascript_to_finish
 
-    expect(page).to have_current_path(dashboard_sub_service_request_path(@ssr))
+    fill_in 'master_protocol_id', with: @protocol_master.id
+    fill_in 'merged_protocol_id', with: @protocol_to_merge.id
+
+    click_button 'merge-button'
+
   end
 
-  def click_non_clinical_services_tab
-    visit dashboard_protocol_path(@protocol)
-    wait_for_javascript_to_finish
-
-    find('.edit-request').click
-    wait_for_javascript_to_finish
-
-    click_link 'Non-Clinical Services'
-  end
-
-  describe 'Non clinical services tab' do
-
-    context 'fulfillment turned on' do
+  describe 'Merge Protocol tab' do
+    context 'Fulfillment turned on' do
       stub_config('fulfillment_contingent_on_catalog_manager', true)
 
-      it 'should open non clinical services tab without errors' do
-        click_non_clinical_services_tab
-        expect(page).to have_selector('#studyLevelActivitiesTab')
-      end
-    end
+      it 'should merge protocols without errors' do
+        click_merge_protocol_button
 
-    context 'fulfillment turned off' do
-      stub_config('fulfillment_contingent_on_catalog_manager', false)
+        find('.swal2-container').find('.swal2-confirm').click
+        sleep 5
+        expect(@protocol_master.protocol_merges.count).to eq(1)
 
-      it 'should open non clinical services tab without errors' do
-        click_non_clinical_services_tab
-        expect(page).to have_selector('#studyLevelActivitiesTab')
       end
     end
 
   end
+
 
 end

@@ -24,16 +24,59 @@ RSpec.describe "User modifies a service request", js: true do
   let_there_be_lane
   fake_login_for_each_test
 
-  it 'should open the service catalog' do
-    protocol  = create(:study_federally_funded, primary_pi: jug2)
-    sr        = create(:service_request_without_validations, protocol: protocol)
+  before :each do
+    @org       = create(:organization, :process_ssrs, pricing_setup_count: 1)
+    @service   = create(:service, organization: @org, pricing_map_count: 1, one_time_fee: true)
+    @protocol  = create(:study_federally_funded, primary_pi: jug2)
+    @sr        = create(:service_request_without_validations, protocol: @protocol)
+    @ssr       = create(:sub_service_request, service_request: @sr, organization: @org, protocol: @protocol, status: 'draft')
+                 create(:line_item, sub_service_request: @ssr, service_request: @sr, service: @service)
+  end
 
-    visit dashboard_protocol_path(protocol)
+  it 'should open the service catalog' do
+
+    visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
 
     click_link I18n.t('dashboard.service_requests.modify_request')
     wait_for_javascript_to_finish
 
-    expect(page).to have_current_path(catalog_service_request_path(srid: sr.id))
+    expect(page).to have_current_path(catalog_service_request_path(srid: @sr.id))
   end
+
+  def click_review_your_request_tab
+    visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
+
+    click_link I18n.t('dashboard.service_requests.modify_request')
+    wait_for_javascript_to_finish
+
+    visit review_service_request_path(srid: @sr.id)
+    wait_for_javascript_to_finish
+
+    click_link I18n.t('proper.navigation.bottom.submit')
+    wait_for_javascript_to_finish
+  end
+
+  describe 'Review Your Request Tab' do
+    context 'fulfillment turned on' do
+      stub_config('fulfillment_contingent_on_catalog_manager', true)
+
+      it 'should submit request without errors' do
+        click_review_your_request_tab
+        expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
+      end
+    end
+
+    context 'fulfillment turned off' do
+      stub_config('fulfillment_contingent_on_catalog_manager', false)
+
+      it 'should submit request without errors' do
+        click_review_your_request_tab
+        expect(page).to have_current_path(confirmation_service_request_path(srid: @sr.id))
+      end
+    end
+
+  end
+
 end

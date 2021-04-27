@@ -21,12 +21,15 @@
 require 'rails_helper'
 
 RSpec.describe "Catalog overlord user merges protocols", js: true do
-  let_there_be_lane(catalog_overlord: true)
+  let_there_be_lane
   fake_login_for_each_test
 
   before :each do
+    @org       = create(:organization, :process_ssrs, pricing_setup_count: 1)
+    @service   = create(:service, organization: @org, pricing_map_count: 1, one_time_fee: true)
     @protocol_master  = create(:study_federally_funded, primary_pi: jug2)
     @protocol_to_merge = create(:study_federally_funded, primary_pi: jug2)
+    @sr        = create(:service_request_without_validations, protocol: @protocol_master)
   end
 
   def click_merge_protocol_button
@@ -40,6 +43,7 @@ RSpec.describe "Catalog overlord user merges protocols", js: true do
     fill_in 'merged_protocol_id', with: @protocol_to_merge.id
 
     click_button 'merge-button'
+    find('.swal2-container').find('.swal2-confirm').click
 
   end
 
@@ -50,10 +54,19 @@ RSpec.describe "Catalog overlord user merges protocols", js: true do
       it 'should merge protocols without errors' do
         click_merge_protocol_button
 
-        find('.swal2-container').find('.swal2-confirm').click
-        sleep 5
         expect(@protocol_master.protocol_merges.count).to eq(1)
+        expect(@protocol_master.protocol_merges.pluck(:merged_protocol_id)[0]).to eq(@protocol_to_merge.id)
+      end
+    end
 
+    context 'Fulfillment turned off' do
+      stub_config('fulfillment_contingent_on_catalog_manager', false)
+
+      it 'should merge protocols without errors' do
+        click_merge_protocol_button
+
+        expect(@protocol_master.protocol_merges.count).to eq(1)
+        expect(@protocol_master.protocol_merges.pluck(:merged_protocol_id)[0]).to eq(@protocol_to_merge.id)
       end
     end
 

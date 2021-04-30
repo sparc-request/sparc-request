@@ -27,7 +27,7 @@ gem 'curb', '~> 0.9.11'
 gem 'deep_cloneable', '~> 3.1.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.7'
+gem 'devise', '~> 4.8'
 gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage

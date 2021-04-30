@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "07:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: bootsnap
+    versions:
+    - 1.7.0
+    - 1.7.1
+  - dependency-name: database_cleaner
+    versions:
+    - 2.0.0
+    - 2.0.1
+  - dependency-name: puma
+    versions:
+    - 5.2.0
+  - dependency-name: connection_pool
+    versions:
+    - 2.2.4
+  - dependency-name: nokogiri
+    versions:
+    - 1.11.0
+  - dependency-name: webdrivers
+    versions:
+    - 4.5.0

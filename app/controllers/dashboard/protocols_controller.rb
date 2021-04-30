@@ -35,7 +35,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are performing a search, check if user is looking for an old protocol
     # that has been merged and return the most current master protocol
-    if params.has_key?(:filterrific) && params[:filterrific].has_key?(:search_query)
+    if params.has_key?(:filterrific) && params[:filterrific].has_key?(:search_query) && params[:filterrific][:search_query][:search_drop] == "Protocol ID"
       search_term = params[:filterrific][:search_query][:search_text].to_i
       merge = search_protocol_merges(search_term)
       if merge

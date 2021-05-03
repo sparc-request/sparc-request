@@ -48,6 +48,7 @@ $("#documentsCard").replaceWith("<%= j render 'documents/table', protocol: @prot
 $('.service-request-card:not(:eq(0))').remove()
 $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
 
+$("#modalContainer").modal('hide')
 $("#authorizedUsersTable").bootstrapTable('refresh')
 $("#documentsTable").bootstrapTable()
 $(".service-requests-table").bootstrapTable()

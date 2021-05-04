@@ -1,5 +1,5 @@
 json.(@funding_documents) do |document|
-  ssr = document.share_all ? document.protocol.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first : document.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first
+  ssr = document.protocol.sub_service_requests.joins(:line_items).where(line_items: {service_id: @service_id}).first
 
   json.pi display_pi(ssr)
   json.institution display_pi_institution(ssr)

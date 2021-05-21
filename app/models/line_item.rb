@@ -108,11 +108,11 @@ class LineItem < ApplicationRecord
   end
 
   def in_process_date=(date)
-    write_attribute(:in_process_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:in_process_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def complete_date=(date)
-    write_attribute(:complete_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
+    write_attribute(:complete_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end
 
   def quantity_must_be_smaller_than_max_and_greater_than_min

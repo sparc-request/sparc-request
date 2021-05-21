@@ -31,7 +31,7 @@
           = t(:dashboard)[:oncore][:log][:PIs]
         %th{data: { field: 'calendar_version', align: 'left', sortable: 'false' } }
           = t(:dashboard)[:oncore][:log][:calendar_version]
-        %th.col-2{data: { field: 'created_at', align: 'left', sortable: 'true' } }
+        %th.col-2{data: { field: 'created_at', align: 'left', sortable: 'true', sorter: 'dateSorter' } }
           = t(:dashboard)[:oncore][:log][:created_at]
         %th.col-2{data: { field: 'status', align: 'left', sortable: 'true' } }
           = t(:dashboard)[:oncore][:log][:status]

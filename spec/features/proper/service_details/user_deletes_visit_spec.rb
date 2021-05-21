@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User adds an arm to a request', js: true do
+RSpec.describe 'User deletes a visit from an arm', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -33,32 +33,20 @@ RSpec.describe 'User adds an arm to a request', js: true do
     sr        = create(:service_request_without_validations, protocol: @protocol)
     ssr       = create(:sub_service_request, service_request: sr, organization: org)
     @pppv_li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: pppv)
-                create(:arm, protocol: @protocol, subject_count: 10)
+    @arm      = create(:arm, protocol: @protocol, subject_count: 10)
+
+    @vg_count = @arm.visit_groups.count
 
     visit service_details_service_request_path(srid: sr.id)
     wait_for_javascript_to_finish
   end
 
-  def create_new_arm
-    click_link I18n.t('arms.new')
+  it 'should delete the visit' do
+    first('.visit-group a').click
+    click_link I18n.t('visit_groups.delete')
     wait_for_javascript_to_finish
 
-    fill_in 'arm_name', with: 'Give me an Arm'
-
-    click_button I18n.t('actions.submit')
-    wait_for_javascript_to_finish
+    confirm_swal
+    expect(@arm.reload.visit_groups.count).to eq(@vg_count - 1)
   end
-
-  it 'should create the new arm' do
-    create_new_arm
-
-    expect(@protocol.reload.arms.count).to eq(2)
-    expect(page).to have_selector('.service-calendar-container .card-header h3', text: 'Give me an Arm')
-  end
-
-  it 'should have a blank visit day without errors' do
-    create_new_arm
-    expect(@protocol.reload.arms.last.visit_groups.first.day).to eq(nil)
-  end
-
 end

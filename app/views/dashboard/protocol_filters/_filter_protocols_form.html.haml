@@ -62,11 +62,10 @@
             = f.label "admin_filter_for_admin_#{current_user.id}", t('dashboard.protocol_filters.my_admin_protocols'), class: 'col-6 col-form-label pr-0'
             .col-5.d-flex.align-items-center.justify-content-center
               = f.radio_button :admin_filter, "for_admin #{current_user.id}"
-        - else
-          .form-group.row.mb-0
-            = f.label "admin_filter_for_all", t('dashboard.protocol_filters.all_protocols'), class: 'col-6 col-form-label pr-0'
-            .col-5.d-flex.align-items-center.justify-content-center
-              = f.radio_button :admin_filter, "for_all"
+        .form-group.row.mb-0
+          = f.label "admin_filter_for_all", t('dashboard.protocol_filters.all_protocols'), class: 'col-6 col-form-label pr-0'
+          .col-5.d-flex.align-items-center.justify-content-center
+            = f.radio_button :admin_filter, "for_all"
       .card-footer.flex-wrap
         = f.submit t('actions.filter'), class: 'btn btn-block btn-primary mb-2'
         .col-lg-6.col-12.pl-0.pr-1

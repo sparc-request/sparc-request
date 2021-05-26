@@ -64,8 +64,8 @@ RSpec.describe 'dashboard/protocol_filters/_filter_protocols_form', type: :view 
       expect(response).to have_selector(:label, text: 'My Admin Protocols')
     end
 
-    it 'should not show "All Protocols" radio' do
-      expect(response).to_not have_selector(:label, text: I18n.t('dashboard.protocol_filters.all_protocols'))
+    it 'should show "All Protocols" radio' do
+      expect(response).to have_selector(:label, text: I18n.t('dashboard.protocol_filters.all_protocols'))
     end
   end
 end

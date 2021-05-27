@@ -151,7 +151,6 @@ module V1
             :federal_grant_code_id,
             :federal_non_phs_sponsor,
             :federal_phs_sponsor,
-            :potential_funding_source_other,
             :funding_source_other,
             :last_epic_push_time,
             :last_epic_push_status,

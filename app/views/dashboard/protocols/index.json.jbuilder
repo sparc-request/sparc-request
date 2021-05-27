@@ -3,7 +3,7 @@ admin_protocols           = Protocol.for_admin(current_user.id).ids
 
 json.total @protocol_count
 json.rows (@protocols) do |protocol|
-  access = authorized_user_protocols.include?(protocol.id)
+  access = authorized_user_protocols.include?(protocol.id) || admin_protocols.include?(protocol.id)
 
   json.id               protocol_id_link(protocol, access)
   json.protocol_merges  display_merges(protocol)

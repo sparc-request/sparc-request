@@ -113,6 +113,7 @@ class Protocol < ApplicationRecord
                         :funding_status
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
   validates_presence_of :potential_funding_source,  if: :pending_funding?
+  validates_presence_of :funding_source_other,      if: :internally_funded?
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 

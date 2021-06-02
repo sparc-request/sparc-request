@@ -473,18 +473,12 @@ class Protocol < ApplicationRecord
   end
 
   def display_funding_source_value
-    if funding_status == "funded"
-      if funding_source == "internal"
-        "#{PermissibleValue.get_value('funding_source', funding_source)}: #{funding_source_other}"
-      else
-        "#{PermissibleValue.get_value('funding_source', funding_source)}"
+    if ['funded', 'pending_funding'].include?(funding_status)
+      source = funding_status == "funded" ? "#{PermissibleValue.get_value('funding_source', funding_source)}" : "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
+      if internally_funded?
+        source += ": #{funding_source_other}"
       end
-    elsif funding_status == "pending_funding"
-      if potential_funding_source == "internal"
-        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}: #{funding_source_other}"
-      else
-        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
-      end
+      return source
     end
   end
 

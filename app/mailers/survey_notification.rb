@@ -32,7 +32,7 @@ class SurveyNotification < ActionMailer::Base
   end
 
   def service_survey(surveys, identity, ssr)
-    @identity   = identity
+    @identity  = identity
     @ssr        = ssr
     @surveys    = surveys
     @protocol   = @ssr.protocol

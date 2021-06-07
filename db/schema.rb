@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_195251) do
     t.datetime "updated_at", null: false
     t.string "document_file_name"
     t.string "document_content_type"
-    t.integer "document_file_size"
+    t.bigint "document_file_size"
     t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
@@ -558,7 +558,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_195251) do
     t.datetime "updated_at", null: false
     t.string "file_file_name"
     t.string "file_content_type"
-    t.integer "file_file_size"
+    t.bigint "file_file_size"
     t.datetime "file_updated_at"
     t.index ["payment_id"], name: "index_payment_uploads_on_payment_id"
   end
@@ -765,7 +765,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_195251) do
     t.bigint "sub_service_request_id"
     t.string "xlsx_file_name"
     t.string "xlsx_content_type"
-    t.integer "xlsx_file_size"
+    t.bigint "xlsx_file_size"
     t.datetime "xlsx_updated_at"
     t.string "report_type"
     t.datetime "created_at", null: false

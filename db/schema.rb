@@ -10,20 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_14_162116) do
+ActiveRecord::Schema.define(version: 2021_05_27_195251) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.integer "admin_cost"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "identity_id"
   end
 
   create_table "affiliations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_affiliations_on_protocol_id"
   end
@@ -31,8 +32,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "alerts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "alert_type"
     t.string "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "applications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -49,8 +50,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "approvals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.datetime "approval_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "approval_type", default: "Resource Approval"
     t.bigint "sub_service_request_id"
@@ -61,8 +62,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "arms", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "visit_count", default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "subject_count", default: 1
     t.bigint "protocol_id"
     t.boolean "new_with_draft", default: false
@@ -75,18 +76,18 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "associable_id"
     t.string "associable_type"
     t.bigint "survey_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["associable_id"], name: "index_associated_surveys_on_associable_id"
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "auditable_id"
+  create_table "audits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.bigint "auditable_id"
     t.string "auditable_type"
-    t.integer "associated_id"
+    t.bigint "associated_id"
     t.string "associated_type"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -106,8 +107,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "available_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "organization_id"
     t.string "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "selected", default: false
     t.index ["organization_id"], name: "index_available_statuses_on_organization_id"
   end
@@ -115,8 +116,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "catalog_managers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "edit_historic_data"
     t.index ["identity_id"], name: "index_catalog_managers_on_identity_id"
@@ -127,8 +128,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "service_request_id"
     t.bigint "service_id"
     t.decimal "charge_amount", precision: 12, scale: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["service_id"], name: "index_charges_on_service_id"
     t.index ["service_request_id"], name: "index_charges_on_service_request_id"
@@ -137,8 +138,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "clinical_providers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_clinical_providers_on_identity_id"
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id"
   end
@@ -146,8 +147,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "cover_letters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.text "content"
     t.bigint "sub_service_request_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id"
   end
 
@@ -161,16 +162,16 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.datetime "failed_at"
     t.string "locked_by"
     t.string "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "documents", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.datetime "deleted_at"
     t.string "doc_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "document_file_name"
     t.string "document_content_type"
     t.bigint "document_file_size"
@@ -198,16 +199,16 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "epic_queue_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "origin"
     t.bigint "identity_id"
   end
 
   create_table "epic_queues", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "identity_id"
     t.boolean "attempted_push", default: false
     t.boolean "user_change", default: false
@@ -216,15 +217,15 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "epic_rights", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "project_role_id"
     t.string "right"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "excluded_funding_sources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "subsidy_map_id"
     t.string "funding_source"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
@@ -233,8 +234,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.text "message"
     t.string "name"
     t.string "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "fulfillment_synchronizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -250,8 +251,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "timeframe"
     t.string "time"
     t.datetime "date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "unit_type"
     t.string "quantity_type"
@@ -262,8 +263,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
 
   create_table "human_subjects_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "nct_number"
     t.index ["protocol_id"], name: "index_human_subjects_info_on_protocol_id"
@@ -298,6 +299,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
+    t.boolean "imported_from_lbb", default: false
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["last_name"], name: "index_identities_on_last_name"
@@ -308,8 +310,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "impact_areas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "other_text"
     t.index ["protocol_id"], name: "index_impact_areas_on_protocol_id"
@@ -320,8 +322,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "ind_number"
     t.boolean "ind_on_hold"
     t.string "inv_device_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "exemption_type", default: ""
     t.index ["protocol_id"], name: "index_investigational_products_info_on_protocol_id"
@@ -331,8 +333,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "protocol_id"
     t.string "patent_number"
     t.text "inventors"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
@@ -366,8 +368,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.integer "quantity"
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "units_per_quantity", default: 1
     t.index ["service_id"], name: "index_line_items_on_service_id"
@@ -379,8 +381,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "arm_id"
     t.bigint "line_item_id"
     t.integer "subject_count"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["arm_id"], name: "index_line_items_visits_on_arm_id"
     t.index ["line_item_id"], name: "index_line_items_visits_on_line_item_id"
   end
@@ -391,8 +393,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "from"
     t.string "email"
     t.text "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["from"], name: "index_messages_on_from"
     t.index ["notification_id"], name: "index_messages_on_notification_id"
     t.index ["to"], name: "index_messages_on_to"
@@ -401,8 +403,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "notes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.text "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "notable_id"
     t.string "notable_type"
     t.index ["identity_id"], name: "index_notes_on_identity_id"
@@ -413,8 +415,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.bigint "originator_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "subject"
     t.bigint "other_user_id"
     t.boolean "read_by_originator"
@@ -507,8 +509,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.text "ack_language"
     t.boolean "process_ssrs", default: false
     t.boolean "is_available", default: true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "use_default_statuses", default: true
     t.boolean "survey_completion_alerts", default: false
@@ -520,8 +522,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "sub_service_request_id"
     t.string "status"
     t.datetime "date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.bigint "changed_by_id"
     t.string "new_status"
@@ -552,8 +554,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
 
   create_table "payment_uploads", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "payment_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "file_file_name"
     t.string "file_content_type"
     t.bigint "file_file_size"
@@ -569,8 +571,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.date "date_received"
     t.string "payment_method"
     t.text "details"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.float "percent_subsidy"
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
@@ -600,8 +602,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.decimal "federal_rate", precision: 12, scale: 4
     t.decimal "corporate_rate", precision: 12, scale: 4
     t.date "effective_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.date "display_date"
     t.decimal "other_rate", precision: 12, scale: 4
@@ -644,8 +646,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "identity_id"
     t.string "project_rights"
     t.string "role"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "role_other"
     t.boolean "epic_access", default: false
@@ -695,10 +697,9 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "federal_grant_code_id"
     t.string "federal_non_phs_sponsor"
     t.string "federal_phs_sponsor"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.string "potential_funding_source_other"
     t.string "funding_source_other"
     t.datetime "last_epic_push_time"
     t.string "last_epic_push_status"
@@ -756,8 +757,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "to"
     t.string "from"
     t.text "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -767,8 +768,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "xlsx_file_size"
     t.datetime "xlsx_updated_at"
     t.string "report_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "research_types_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -777,8 +778,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.boolean "vertebrate_animals"
     t.boolean "investigational_products"
     t.boolean "ip_patents"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id"
   end
@@ -815,8 +816,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "applied_org_id"
     t.string "vendor"
     t.integer "version"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -832,8 +833,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "identity_id"
     t.bigint "organization_id"
     t.boolean "is_primary_contact"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "hold_emails"
     t.datetime "deleted_at"
     t.index ["identity_id"], name: "index_service_providers_on_identity_id"
@@ -844,8 +845,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "service_id"
     t.bigint "related_service_id"
     t.boolean "required"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["related_service_id"], name: "index_service_relations_on_related_service_id"
     t.index ["service_id"], name: "index_service_relations_on_service_id"
@@ -854,10 +855,9 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "service_requests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "status"
-    t.boolean "approved"
     t.datetime "submitted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.date "original_submitted_date"
     t.index ["protocol_id"], name: "index_service_requests_on_protocol_id"
@@ -876,8 +876,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "revenue_code"
     t.bigint "organization_id"
     t.string "order_code"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "send_to_epic", default: false
     t.bigint "revenue_code_range_id"
@@ -893,8 +893,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "sessions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["session_id"], name: "index_sessions_on_session_id"
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
@@ -940,8 +940,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "protocol_id"
     t.bigint "study_type_question_id"
     t.boolean "answer"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "study_type_question_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -955,16 +955,16 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.integer "order"
     t.text "question"
     t.string "friendly_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "study_type_question_group_id"
   end
 
   create_table "study_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_study_types_on_protocol_id"
   end
@@ -975,8 +975,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.datetime "consult_arranged_date"
     t.datetime "requester_contacted_date"
@@ -988,7 +988,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "routing"
     t.text "org_tree_display"
     t.bigint "service_requester_id"
-    t.timestamp "submitted_at"
+    t.datetime "submitted_at"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
     t.boolean "synch_to_fulfillment"
@@ -1004,15 +1004,15 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "submission_emails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "organization_id"
     t.string "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["organization_id"], name: "index_submission_emails_on_organization_id"
   end
 
   create_table "subsidies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "overridden"
     t.bigint "sub_service_request_id"
@@ -1028,8 +1028,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "organization_id"
     t.decimal "max_dollar_cap", precision: 12, scale: 4, default: "0.0"
     t.decimal "max_percentage", precision: 5, scale: 2, default: "0.0"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.float "default_percentage", default: 0.0
     t.text "instructions"
@@ -1039,8 +1039,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "super_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "access_empty_protocols", default: false
     t.boolean "billing_manager"
@@ -1065,11 +1065,11 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   end
 
   create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.integer "tag_id"
+    t.bigint "tag_id"
+    t.bigint "taggable_id"
     t.string "taggable_type"
-    t.integer "taggable_id"
+    t.bigint "tagger_id"
     t.string "tagger_type"
-    t.integer "tagger_id"
     t.string "context", limit: 128
     t.datetime "created_at"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
@@ -1087,8 +1087,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.bigint "service_request_id"
     t.bigint "identity_id"
     t.string "token"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["identity_id"], name: "index_tokens_on_identity_id"
     t.index ["service_request_id"], name: "index_tokens_on_service_request_id"
@@ -1100,8 +1100,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
     t.string "name_of_iacuc"
     t.datetime "iacuc_approval_date"
     t.datetime "iacuc_expiration_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["protocol_id"], name: "index_vertebrate_animals_info_on_protocol_id"
   end
@@ -1109,8 +1109,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "visit_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "arm_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "position"
     t.integer "day"
     t.integer "window_before", default: 0
@@ -1121,8 +1121,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_162116) do
   create_table "visits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "quantity", default: 0
     t.string "billing"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.integer "research_billing_qty", default: 0
     t.integer "insurance_billing_qty", default: 0

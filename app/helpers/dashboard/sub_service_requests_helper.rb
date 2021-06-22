@@ -63,7 +63,7 @@ module Dashboard::SubServiceRequestsHelper
           end
         else
           # In fulfillment, but user has no rights to view in Fulfillment
-          content_tag :div, t('dashboard.sub_service_requests.header.fulfillment.in_fulfillment'), id: 'fulfillmentStatus', class: 'alert alert-sm alert-success mb-0'
+          content_tag :div, t('dashboard.sub_service_requests.header.fulfillment.in_fulfillment'), class: 'alert alert-sm alert-success mb-0'
         end
       elsif current_user.send_to_cwf_rights?(sub_service_request.organization)
         # Not in Fulfillment, and user has rights to send to Fulfillment

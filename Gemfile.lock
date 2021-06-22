@@ -123,8 +123,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
-    audited (4.10.0)
-      activerecord (>= 4.2, < 6.2)
+    audited (5.0.1)
+      activerecord (>= 5.0, < 6.2)
     autoprefixer-rails (9.5.0)
       execjs
     axlsx_rails (0.6.1)
@@ -192,7 +192,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.1.9)
     connection_pool (2.2.5)
     countries (3.1.0)
       i18n_data (~> 0.11.0)
@@ -636,7 +636,7 @@ DEPENDENCIES
   acts-as-taggable-on!
   acts_as_list!
   addressable (~> 2.7.0)
-  audited (~> 4.10)
+  audited (~> 5.0)
   axlsx!
   axlsx_rails
   babel-transpiler

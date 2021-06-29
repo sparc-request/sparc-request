@@ -40,7 +40,8 @@ $ ->
   refreshFulfillmentButton = ->
     refresh = window.setInterval((->
       imported_to_fulfillment = $('#fulfillmentStatus').data('imported')
-      if imported_to_fulfillment
+      request_invalid = $('#fulfillmentStatus.request_invalid').length
+      if imported_to_fulfillment or request_invalid
         window.clearInterval refresh
       else
         $.get window.location.href + ".html", (data) ->

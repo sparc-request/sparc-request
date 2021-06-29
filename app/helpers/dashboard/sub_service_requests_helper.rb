@@ -51,19 +51,19 @@ module Dashboard::SubServiceRequestsHelper
               end
             else
               # In fulfillment, and user has rights to view in Fulfillment
-              link_to "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: :_blank, id: 'fulfillmentStatus', class: 'btn btn-success', data: { imported: sub_service_request.imported_to_fulfillment? } do
+              link_to "#{Setting.get_value("clinical_work_fulfillment_url")}/sub_service_request/#{sub_service_request.id}", target: :_blank, id: 'fulfillmentStatus', class: "btn btn-success #{request_valid ? '' : 'request_invalid'}", data: { imported: sub_service_request.imported_to_fulfillment? } do
                 icon('fas', 'eye mr-2') + t('dashboard.sub_service_requests.header.fulfillment.go_to_fulfillment')
               end
             end
           else
             # Pending button displayed until ssr is imported to fulfillment
-            content_tag(:button, id: 'fulfillmentStatus', class: 'btn btn-secondary disabled', data: { imported: sub_service_request.imported_to_fulfillment? }) do
+            content_tag(:button, id: 'fulfillmentStatus', class: "btn btn-secondary disabled #{request_valid ? '' : 'request_invalid'}", data: { imported: sub_service_request.imported_to_fulfillment? }) do
               icon('fas', 'sync mr-2 rotate') + t('dashboard.sub_service_requests.header.fulfillment.pending')
             end
           end
         else
           # In fulfillment, but user has no rights to view in Fulfillment
-          content_tag :div, t('dashboard.sub_service_requests.header.fulfillment.in_fulfillment'), id: 'fulfillmentStatus', class: 'alert alert-sm alert-success mb-0'
+          content_tag :div, t('dashboard.sub_service_requests.header.fulfillment.in_fulfillment'), class: 'alert alert-sm alert-success mb-0'
         end
       elsif current_user.send_to_cwf_rights?(sub_service_request.organization)
         # Not in Fulfillment, and user has rights to send to Fulfillment

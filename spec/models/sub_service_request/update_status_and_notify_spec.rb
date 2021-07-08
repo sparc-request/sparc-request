@@ -36,10 +36,10 @@ RSpec.describe SubServiceRequest, type: :model do
               ssr.reload
 
               expect(ssr.status).to eq('submitted')
-              expect(ssr.nursing_nutrition_approved).to eq(false)
-              expect(ssr.lab_approved).to eq(false)
-              expect(ssr.imaging_approved).to eq(false)
-              expect(ssr.committee_approved).to eq(false)
+              expect(ssr.nursing_nutrition_approved?).to eq(false)
+              expect(ssr.lab_approved?).to eq(false)
+              expect(ssr.imaging_approved?).to eq(false)
+              expect(ssr.committee_approved?).to eq(false)
             end
 
             context 'and ssr was not previously submitted' do
@@ -92,16 +92,16 @@ RSpec.describe SubServiceRequest, type: :model do
           end
 
           context 'and new_status != submitted' do
-            let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org, nursing_nutrition_approved: nil, lab_approved: nil, imaging_approved: nil, committee_approved: nil) }
+            let!(:ssr) { create(:sub_service_request_without_validations, service_request: sr, organization: org) }
 
             it 'should only update status and notify' do
               expect(ssr.update_status_and_notify('awaiting_pi_approval', identity)).to eq(ssr.id)
               ssr.reload
               expect(ssr.status).to eq('awaiting_pi_approval')
-              expect(ssr.nursing_nutrition_approved).to eq(nil)
-              expect(ssr.lab_approved).to eq(nil)
-              expect(ssr.imaging_approved).to eq(nil)
-              expect(ssr.committee_approved).to eq(nil)
+              expect(ssr.nursing_nutrition_approved?).to eq(false)
+              expect(ssr.lab_approved?).to eq(false)
+              expect(ssr.imaging_approved?).to eq(false)
+              expect(ssr.committee_approved?).to eq(false)
             end
           end
         end

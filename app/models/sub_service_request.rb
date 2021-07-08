@@ -299,19 +299,19 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def nursing_nutrition_approved?
-    (self.approvals.where(approval_type: 'Nursing/Nutrition Approved').any?) ? true : false
+    approvals.where(approval_type: 'Nursing/Nutrition Approved').any?
   end
 
   def lab_approved?
-    (self.approvals.where(approval_type: 'Lab Approved').any?) ? true : false
+    approvals.where(approval_type: 'Lab Approved').any?
   end
 
   def imaging_approved?
-    (self.approvals.where(approval_type: 'Imaging Approved').any?) ? true : false
+    approvals.where(approval_type: 'Imaging Approved').any?
   end
 
   def committee_approved?
-    (self.approvals.where(approval_type: 'Committee Approved').any?) ? true : false
+    approvals.where(approval_type: 'Committee Approved').any?
   end
 
   def switch_to_new_service_request

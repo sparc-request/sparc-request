@@ -67,7 +67,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def update
     if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
-      @sub_service_request.generate_approvals(current_user)
       flash[:success] = t('dashboard.sub_service_requests.updated')
     else
       @errors = @sub_service_request.errors
@@ -83,6 +82,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       flash[:alert] = t('dashboard.sub_service_requests.deleted')
       session[:breadcrumbs].clear(crumb: :sub_service_request_id)
     end
+  end
+
+  def update_approval
+    @sub_service_request.approvals.create(identity: current_user, approval_date: Time.now, approval_type: sub_service_request_params[:approval])
+    render :update
   end
 
   def push_to_epic
@@ -192,10 +196,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         :owner_id,
         :status,
         :consult_arranged_date,
-        :nursing_nutrition_approved,
-        :lab_approved,
-        :imaging_approved,
-        :committee_approved,
+        :approval,
         :requester_contacted_date,
         :in_work_fulfillment,
         :routing,

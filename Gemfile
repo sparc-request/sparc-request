@@ -70,7 +70,7 @@ gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 5.3'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.2.4.6'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -94,7 +94,7 @@ group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.7.0' # Check usage
+  gem 'addressable', '~> 2.8.0' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

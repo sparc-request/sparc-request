@@ -107,24 +107,6 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
-  def generate_approvals(current_user)
-    if self.nursing_nutrition_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:nursing_nutrition_approved))
-    end
-
-    if self.lab_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:lab_approved))
-    end
-
-    if self.imaging_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:imaging_approved))
-    end
-
-    if self.committee_approved? && !self.approvals.exists?(approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
-      self.approvals.create(identity: current_user, approval_date: self.updated_at, approval_type: SubServiceRequest.human_attribute_name(:committee_approved))
-    end
-  end
-
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"
@@ -277,7 +259,7 @@ class SubServiceRequest < ApplicationRecord
         old_status      = self.status
         submitted_prior = self.previously_submitted?
         past_status     = self.past_statuses.last.try(:status)
-        self.update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+        self.update_attributes(status: new_status, submitted_at: Time.now)
         return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)
@@ -314,6 +296,22 @@ class SubServiceRequest < ApplicationRecord
 
   def set_to_draft
     self.update_attributes(status: 'draft') unless status == 'draft'
+  end
+
+  def nursing_nutrition_approved?
+    approvals.where(approval_type: 'Nursing/Nutrition Approved').any?
+  end
+
+  def lab_approved?
+    approvals.where(approval_type: 'Lab Approved').any?
+  end
+
+  def imaging_approved?
+    approvals.where(approval_type: 'Imaging Approved').any?
+  end
+
+  def committee_approved?
+    approvals.where(approval_type: 'Committee Approved').any?
   end
 
   def switch_to_new_service_request

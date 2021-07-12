@@ -330,6 +330,7 @@ SparcRails::Application.routes.draw do
         put :push_to_epic
         put :resend_surveys
         put :synch_to_fulfillment
+        put :update_approval
         get :change_history_tab
         get :status_history
         get :approval_history

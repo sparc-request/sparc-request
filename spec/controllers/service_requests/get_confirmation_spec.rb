@@ -37,7 +37,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
   describe '#confirmation' do
     it 'should call the Notifier Logic to update the request' do
-      expect(NotifierLogic).to receive_message_chain(:delay, :confirmation_logic)
+      expect(NotifierLogic).to receive_message_chain(:confirmation_logic)
 
       get :confirmation, params: { srid: sr.id }, xhr: true, format: :html
 

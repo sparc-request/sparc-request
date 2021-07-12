@@ -51,7 +51,7 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.2'
+gem 'mysql2', '0.5.3'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage

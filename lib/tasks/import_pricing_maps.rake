@@ -61,7 +61,7 @@ namespace :data do
     file = get_file
     continue = prompt("Are you sure you want to import pricing maps from #{file}? (Y/n) ")
 
-    if continue == 'y' || continue == 'Y'
+    if continue.downcase == 'y'
       puts "#"*50
       puts "Starting import\n"
 

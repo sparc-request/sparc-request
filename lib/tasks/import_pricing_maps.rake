@@ -24,6 +24,7 @@ namespace :data do
 
     ### columns used
     # service_id
+    # service_name (optional, updates service name if it's different)
     # full_rate (most people think of this as the service rate)
     # corporate_rate
     # federal_rate
@@ -55,65 +56,84 @@ namespace :data do
       file
     end
 
-    imported_maps = CSV.open("tmp/imported_maps.csv", "w")
-    imported_maps << ['Service ID', 'Map Created', 'Import Error']
-
-    puts "Press CTRL-C to exit"
-    puts ""
+    puts "Press CTRL-C to exit\n"
 
     file = get_file
-    continue = prompt("Are you sure you want to import pricing maps from #{file}? (Yes/No) ")
+    continue = prompt("Are you sure you want to import pricing maps from #{file}? (Y/n) ")
 
-    if continue == 'Yes'
-      puts ""
+    if continue.downcase == 'y'
       puts "#"*50
-      puts "Starting import"
+      puts "Starting import\n"
+
+      pricing_maps = []
       input_file = Rails.root.join("db", "imports", file)
-      CSV.foreach(input_file, :headers => true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/) do |row|
 
-        service = Service.find(row['Service ID'].to_i)
+      ActiveRecord::Base.transaction do
+        CSV.foreach(input_file, :headers => true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/) do |row|
 
-        pricing_map = service.pricing_maps.build(
-                                              :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :corporate_rate => (row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
-                                              :federal_rate => (row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
-                                              :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
-                                              :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
-                                              :unit_type => row['unit_type'],
-                                              :quantity_type => row['quantity_type'],
-                                              :otf_unit_type => row['otf_unit_type'],
-                                              :unit_factor => row['unit_factor'],
-                                              :unit_minimum => row['unit_minimum'],
-                                              :quantity_minimum => row['quantity_minimum'],
-                                              :units_per_qty_max => row['units_per_qty_max'],
-                                              :display_date => Date.strptime(row['display_date'], "%m/%d/%y"),
-                                              :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y")
-                                              )
+          begin
+            service = Service.find(row['Service ID'].to_i)
+          rescue
+            pricing_maps << [row['Service ID'], row['Service Name'], '', '', '', 'Service not found']
+            puts "Service #{row['Service ID']}: #{row['Service Name']} not found.\n"
+            next
+          end
 
-        if pricing_map.valid?
-          puts "New pricing map created for #{service.name}"
-          puts "  full_rate = $ #{pricing_map.full_rate / 100}"
-          puts "  corporate_rate = $ #{pricing_map.corporate_rate? ? (pricing_map.corporate_rate / 100) : 0}"
-          puts "  federal_rate = $ #{pricing_map.federal_rate? ? (pricing_map.federal_rate / 100) : 0}"
-          puts "  member_rate = $ #{pricing_map.member_rate? ? (pricing_map.member_rate / 100) : 0}"
-          puts "  other_rate = $ #{pricing_map.other_rate? ? (pricing_map.other_rate / 100) : 0}"
-          puts ""
-          imported_maps << [service.id, "New pricing map created for #{service.name}", '']
-          pricing_map.save
-        else
-          puts "#"*50
-          puts "Error importing pricing map"
-          puts service.inspect
-          puts pricing_map.inspect
-          imported_maps << [service.id, '', pricing_map.errors]
-          puts service.errors
-          puts pricing_map.errors
+          service_name_updated = false
+          if row['Service Name'] && row['Service Name'] != service.name
+            service.update_attribute(:name, row['Service Name'])
+            service_name_updated = true
+          end
+
+          pricing_map = service.pricing_maps.build(
+                                                :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                                :corporate_rate => (row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                                :federal_rate => (row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                                :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                                :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                                :unit_type => row['unit_type'],
+                                                :quantity_type => row['quantity_type'],
+                                                :otf_unit_type => row['otf_unit_type'],
+                                                :unit_factor => row['unit_factor'],
+                                                :unit_minimum => row['unit_minimum'],
+                                                :quantity_minimum => row['quantity_minimum'],
+                                                :units_per_qty_max => row['units_per_qty_max'],
+                                                :display_date => Date.strptime(row['display_date'], "%m/%d/%y"),
+                                                :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y")
+                                                )
+
+          if pricing_map.valid?
+            puts "New pricing map created for #{service.name}"
+            puts "  full_rate = $ #{pricing_map.full_rate / 100}"
+            puts "  corporate_rate = $ #{pricing_map.corporate_rate? ? (pricing_map.corporate_rate / 100) : 0}"
+            puts "  federal_rate = $ #{pricing_map.federal_rate? ? (pricing_map.federal_rate / 100) : 0}"
+            puts "  member_rate = $ #{pricing_map.member_rate? ? (pricing_map.member_rate / 100) : 0}"
+            puts "  other_rate = $ #{pricing_map.other_rate? ? (pricing_map.other_rate / 100) : 0}"
+            puts ""
+            pricing_maps << [service.id, service.name, service_name_updated, "New pricing map created for #{service.name}", pricing_map.full_rate, '']
+            pricing_map.save
+          else
+            puts "#"*50
+            puts "Error importing pricing map"
+            puts service.inspect
+            puts pricing_map.inspect
+            pricing_maps << [service.id, service.name, service_name_updated, '', '', pricing_map.errors]
+            puts service.errors
+            puts pricing_map.errors
+          end
         end
       end
+
+      CSV.open("tmp/imported_maps.csv", "w") do |csv|
+        csv << ['Service ID', 'Service Name', 'Service Name Updated', 'Map Created', 'Service Rate', 'Import Error']
+        pricing_maps.each do |pm|
+          csv << pm
+        end
+      end
+
     else
       puts "Import aborted, please start over"
       exit
     end
   end
 end
-

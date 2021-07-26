@@ -84,13 +84,13 @@ class ServiceCalendarsController < ApplicationController
     @line_items_visits  = @arm.line_items_visits.eager_load(line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol])
     @visit_groups       = @arm.visit_groups.paginate(page: @page.to_i, per_page: VisitGroup.per_page).eager_load(visits: { line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] } })
     @visits             = @line_items_visit.ordered_visits.eager_load(service: :pricing_maps)
-
-    all_research_billing = @arm.protocol.all_research_billing
     
     Visit.transaction do
       if params[:check]
         unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
-        @visits.each{ |v| v.update_attributes(quantity: unit_minimum, research_billing_qty: all_research_billing ? unit_minimum : 0, insurance_billing_qty: all_research_billing ? 0 : unit_minimum, effort_billing_qty: 0) }
+        set_billing_quantities(@arm.protocol.default_billing_type, unit_minimum)
+
+        @visits.each{ |v| v.update_attributes(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity) }
       elsif params[:uncheck]
         @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
       end
@@ -121,13 +121,14 @@ class ServiceCalendarsController < ApplicationController
       end
 
     @visits = @visit_group.visits.joins(:sub_service_request).where(sub_service_requests: { id: editable_ssrs }).eager_load(service: :pricing_maps, line_items_visit: { line_item: [:admin_rates, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, parent: :pricing_setups]]]], service_request: :protocol] })
-    all_research_billing = @arm.protocol.all_research_billing
 
     Visit.transaction do
       if params[:check]
         @visits.each do |v|
           unit_minimum = v.service.displayed_pricing_map.unit_minimum
-          v.update_attributes(quantity: unit_minimum, research_billing_qty: all_research_billing ? unit_minimum : 0, insurance_billing_qty: all_research_billing ? 0 : unit_minimum, effort_billing_qty: 0)
+          set_billing_quantities(@arm.protocol.default_billing_type, unit_minimum)
+
+          v.update_attributes(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
         end
       elsif params[:uncheck]
         @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
@@ -144,6 +145,12 @@ class ServiceCalendarsController < ApplicationController
   end
 
   private
+
+  def set_billing_quantities(type, unit_minimum)
+    @r_quantity = type == "r" ? unit_minimum : 0
+    @t_quantity = type == "t" ? unit_minimum : 0
+    @o_quantity = type == "o" ? unit_minimum : 0
+  end
 
   def preload_service_request
     ActiveRecord::Associations::Preloader.new.preload(@service_request, { sub_service_requests: { organization: [:editable_statuses, parent: [:editable_statuses, parent: [:editable_statuses, :parent]]] } })

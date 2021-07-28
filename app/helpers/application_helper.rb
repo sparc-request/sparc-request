@@ -67,6 +67,16 @@ module ApplicationHelper
     end
   end
 
+  def format_boolean(value)
+    if value.nil?
+      ""
+    elsif value
+      "Yes"
+    else
+      "No"
+    end
+  end
+
   def css_class(organization)
     case organization.type
     when 'Institution'

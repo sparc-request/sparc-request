@@ -1,0 +1,47 @@
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%main.card#pvCard
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t('admin.permissible_values.table.header')
+  #pvTableToolbar
+    = link_to new_admin_permissible_value_path, class: 'btn btn-success', remote: true do
+      - succeed t('admin.permissible_values.new') do
+        = icon('fas', 'plus mr-2')
+  %table.table#pvTable{ data: { toggle: 'table', url: admin_permissible_values_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'category', sort_order: 'asc', toolbar: '#pvTableToolbar' } }
+    %thead.bg-light
+      %tr
+        %th{ data: { field: 'category', sortable: 'true' } }
+          = PermissibleValue.human_attribute_name(:category)
+        %th{ data: { field: 'key', sortable: 'true' } }
+          = PermissibleValue.human_attribute_name(:key)
+        %th{ data: { field: 'value', sortable: 'true' } }
+          = PermissibleValue.human_attribute_name(:value)
+        %th{ data: { field: 'sort_order', align: 'center', sortable: 'true' } }
+          = PermissibleValue.human_attribute_name(:sort_order)
+        %th{ data: { field: 'default', align: 'center', sortable: 'true'} }
+          = PermissibleValue.human_attribute_name(:default)
+        %th{ data: { field: 'created_at', sortable: 'true', sorter: 'dateSorter' } }
+          = PermissibleValue.human_attribute_name(:created_at)
+        %th{ data: { field: 'updated_at', sortable: 'true', sorter: 'dateSorter' } }
+          = PermissibleValue.human_attribute_name(:updated_at)
+        %th{ data: { class: 'actions', align: 'center', field: 'actions' } }
+          = t('actions.actions')          

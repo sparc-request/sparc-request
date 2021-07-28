@@ -167,6 +167,14 @@ en:
         shared: "Share with administrators"
       option:
         content: "Option"
+      permissible:
+        category: "Category"
+        key: "Key"
+        value: "Value"
+        sort_order: "Sort Order"
+        default: "Is a Default Permissible Value?"
+        created_at: "Date Created"
+        updated_at: "Date Updated"
       project:
         id: "Project ID"
         title: "Project Title"

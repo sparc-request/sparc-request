@@ -40,10 +40,6 @@ class PermissibleValue < ApplicationRecord
     where(is_available: false)
   }
 
-  scope :uneditable, -> {
-    where(category: ['funding_status', 'funding_source', 'potential_funding_source', 'proxy_right'])
-  }
-
   def self.preload_values
     RequestStore.store[:permissible_values] ||= PermissibleValue.available.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h
   end

@@ -56,6 +56,16 @@
                 = format_boolean(permissible_value.default)
             %tr.d-flex
               %td.d-inline-block.col-3
+                = PermissibleValue.human_attribute_name(:is_available)
+              %td.d-inline-block.col-9
+                = format_boolean(permissible_value.is_available)
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = PermissibleValue.human_attribute_name(:reserved)
+              %td.d-inline-block.col-9
+                = format_boolean(permissible_value.reserved)
+            %tr.d-flex
+              %td.d-inline-block.col-3
                 = PermissibleValue.human_attribute_name(:created_at)
               %td.d-inline-block.col-9
                 = format_date(permissible_value.created_at)

@@ -28,9 +28,8 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-group
-          - categories = action_name == "edit" ? PermissibleValue.categories : PermissibleValue.categories - PermissibleValue.uneditable_categories
           = f.label :category, class: 'required'
-          = f.select :category, options_for_select(categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
+          = f.select :category, options_for_select(PermissibleValue.categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
         .form-group
           = f.label :key, class: 'required'
           = f.text_field :key, class: 'form-control'

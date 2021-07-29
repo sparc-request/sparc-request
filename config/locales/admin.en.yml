@@ -61,7 +61,7 @@ en:
       form:
         select_category: "Select a category"
         default: "Default?"
-        available: "Available?"
+        available: "Active?"
 
     navigation:
       applications: "Applications"

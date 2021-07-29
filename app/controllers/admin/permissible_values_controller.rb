@@ -22,7 +22,7 @@
 class Admin::PermissibleValuesController < Admin::BaseController
 
     def index
-      @permissible_values = PermissibleValue.where(is_available: true, category: ['status', 'user_role']).reorder('category , sort_order')
+      @permissible_values = PermissibleValue.reorder('category , is_available DESC, sort_order')
       respond_to :json, :html
     end
 
@@ -32,7 +32,7 @@ class Admin::PermissibleValuesController < Admin::BaseController
     end
 
     def new
-      @permissible_value = PermissibleValue.new(is_available: true)
+      @permissible_value = PermissibleValue.new(is_available: false)
       respond_to :js
     end
 

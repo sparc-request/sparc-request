@@ -26,7 +26,7 @@
     = link_to new_admin_permissible_value_path, class: 'btn btn-success', remote: true do
       - succeed t('admin.permissible_values.new') do
         = icon('fas', 'plus mr-2')
-  %table.table#pvTable{ data: { toggle: 'table', url: admin_permissible_values_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', side_pagination: 'server', page_size: '25', sort_name: 'category', sort_order: 'asc', toolbar: '#pvTableToolbar' } }
+  %table.table#pvTable{ data: { toggle: 'table', url: admin_permissible_values_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', page_size: '25', sort_name: 'category', sort_order: 'asc', toolbar: '#pvTableToolbar' } }
     %thead.bg-light
       %tr
         %th{ data: { field: 'category', sortable: 'true' } }

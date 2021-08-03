@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-class Admin::PermissibleValuesController < Admin::BaseController
+class Admin::PermissibleValuesController < Admin::ApplicationController
 
     def index
       @permissible_values = PermissibleValue.reorder('category , is_available DESC, sort_order')

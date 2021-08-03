@@ -27,11 +27,16 @@
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        .form-group
-          -# site admins should not be able to create new permissible value for any of the uneditable categories
-          - categories = action_name == "edit" ? PermissibleValue.categories : PermissibleValue.categories - PermissibleValue.uneditable_categories
-          = f.label :category, class: 'required'
-          = f.select :category, options_for_select(categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
+        -# Category should not be modified
+        - if action_name == "edit"
+          .form-group.text-center
+            %h5.mb-0
+              = t('admin.permissible_values.form.display_category', category: permissible_value.category)
+        - else
+          .form-group
+            -# site admins should not be able to create new permissible value for any of the uneditable categories
+            = f.label :category, class: 'required'
+            = f.select :category, options_for_select(PermissibleValue.categories - PermissibleValue.uneditable_categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
         .form-group
           = f.label :key, class: 'required'
           = f.text_field :key, class: 'form-control'

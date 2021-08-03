@@ -59,6 +59,7 @@ en:
         view: "View Details"
         default: "Default permissible values cannot be modified!"
       form:
+        display_category: "Category: %{category}"
         select_category: "Select a category"
         default: "Default?"
         available: "Active?"

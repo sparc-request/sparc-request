@@ -25,8 +25,8 @@ class PermissibleValue < ApplicationRecord
 
   acts_as_list column: :sort_order, scope: [:category]
 
-  validates_presence_of :key, :value, :category, :sort_order
-  validates :sort_order, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates_presence_of :key, :value, :category
+  validates :sort_order, numericality: { allow_blank: true, only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :key, uniqueness: { scope: :category }
 
@@ -105,8 +105,8 @@ class PermissibleValue < ApplicationRecord
   end
 
 
-  def self.categories
-    PermissibleValue.pluck(:category).uniq.sort!
+  def self.editable_categories
+    PermissibleValue.pluck(:category).uniq.sort! - self.uneditable_categories
   end
 
   ### Hard coded for those categories that should not be modified as they are tied to some

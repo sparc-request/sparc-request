@@ -36,7 +36,7 @@
           .form-group
             -# site admins should not be able to create new permissible value for any of the uneditable categories
             = f.label :category, class: 'required'
-            = f.select :category, options_for_select(PermissibleValue.categories - PermissibleValue.uneditable_categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
+            = f.select :category, options_for_select(PermissibleValue.editable_categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
         .form-group
           = f.label :key, class: 'required'
           = f.text_field :key, class: 'form-control'
@@ -44,7 +44,7 @@
           = f.label :value, class: 'required'
           = f.text_field :value, class: 'form-control'
         .form-group
-          = f.label :sort_order, class: 'required'
+          = f.label :sort_order
           = f.number_field :sort_order, class: 'form-control', min: 0
         .form-row
           .form-group.col-6

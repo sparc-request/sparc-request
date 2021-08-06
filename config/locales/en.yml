@@ -176,6 +176,16 @@ en:
         is_available: "Active"
         created_at: "Created"
         updated_at: "Updated"
+      setting:
+        key: "Key"
+        value: "Value"
+        data_type: "Data Type"
+        friendly_name: "Friendly Name"
+        description: "Description"
+        group: "Group"
+        version: "Version"
+        parent_key: "Parent Key"
+        parent_value: "Parent Value"
       project:
         id: "Project ID"
         title: "Project Title"

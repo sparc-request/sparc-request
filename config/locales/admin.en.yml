@@ -64,6 +64,19 @@ en:
         default: "Default?"
         available: "Active?"
 
+    settings:
+      edit: "Edd Setting: %{key}"
+      updated: "Setting Updated!"
+      view:
+        header: "Setting"
+      table:
+        header: "SPARC Settings"
+      tooltip:
+        view: "View Details"
+      form:
+        data_type: "Data Type: %{data_type}"
+
+
     navigation:
       applications: "Applications"
       permissible_values: "Permissible Values"

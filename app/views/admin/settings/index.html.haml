@@ -18,9 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-2
-  %nav.nav.nav-pills.flex-column.list-group.list-group-flush.list-group-blend{ role: 'tablist' }
-    = link_to t('admin.navigation.applications'), admin_applications_path, class: ['list-group-item list-group-item-action', controller_name == 'applications' ? 'active' : '']
-    = link_to t('admin.navigation.permissible_values'), admin_permissible_values_path, class: ['list-group-item list-group-item-action', controller_name == 'permissible_values' ? 'active' : '']
-    = link_to t('admin.navigation.settings'),  admin_settings_path, class: ['list-group-item list-group-item-action', controller_name == 'settings' ? 'active' : '']
-    = link_to t('admin.navigation.overlords'), 'javascript:void(0)', remote: true, class: ['list-group-item list-group-item-action disabled', controller_name == 'overlords' ? 'active' : '']
+.w-100
+  .row
+    = render 'layouts/admin/navigation'
+    .col-10.pl-0
+      = render 'table'

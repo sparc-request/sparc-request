@@ -18,9 +18,34 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-2
-  %nav.nav.nav-pills.flex-column.list-group.list-group-flush.list-group-blend{ role: 'tablist' }
-    = link_to t('admin.navigation.applications'), admin_applications_path, class: ['list-group-item list-group-item-action', controller_name == 'applications' ? 'active' : '']
-    = link_to t('admin.navigation.permissible_values'), admin_permissible_values_path, class: ['list-group-item list-group-item-action', controller_name == 'permissible_values' ? 'active' : '']
-    = link_to t('admin.navigation.settings'),  admin_settings_path, class: ['list-group-item list-group-item-action', controller_name == 'settings' ? 'active' : '']
-    = link_to t('admin.navigation.overlords'), 'javascript:void(0)', remote: true, class: ['list-group-item list-group-item-action disabled', controller_name == 'overlords' ? 'active' : '']
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for [:admin, setting], remote: true do |f|
+      .modal-header
+        %h3.modal-title
+          -# setting.key should be read-only
+          = t("admin.settings.#{action_name}", key: setting.key)
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-group
+          = f.label :value
+          = f.text_field :value, class: 'form-control'
+          %form-text.text-muted
+            = t('admin.settings.form.data_type', data_type: setting.data_type)
+        .form-group
+          = f.label :friendly_name
+          = f.text_field :friendly_name, class: 'form-control'
+        .form-group
+          = f.label :description
+          = f.text_field :description, class: 'form-control'
+        .form-group
+          = f.label :parent_key 
+          = f.text_field :parent_key, class: 'form-control'
+        .form-group
+          = f.label :parent_value
+          = f.text_field :parent_value, class: 'form-control'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

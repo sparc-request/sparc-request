@@ -77,7 +77,7 @@ class Visit < ApplicationRecord
   end
 
   def indicated?
-    (research_billing_qty > 0 || insurance_billing_qty > 0)
+    (research_billing_qty > 0 || insurance_billing_qty > 0 || effort_billing_qty > 0)
   end
 
   ### audit reporting methods ###

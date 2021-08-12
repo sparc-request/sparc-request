@@ -29,6 +29,8 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
 
     puts "Moving `#{service.name}` to `#{dest_org.name}`"
 
+    puts "\nService requests and sub service requests affected:"
+
     service.service_requests.each do |sr|
       # SSR's that contain LineItems that need to be moved
       ssrs = sr.sub_service_requests.
@@ -41,12 +43,15 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
           # Don't really need to move anything. Just move the SSR
           # to another Organization.
           ssr.update!(organization_id: dest_org_process_ssrs.id)
+          puts "SRID: #{sr.id} SSRID: #{ssr.id} (simple organization update)"
         else
           # Find a destination SSR for service. Use an existing one
           # or create one if necessary.
-          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization: process_ssrs_parent, status: ssr.status)
+          dest_ssr_exists = true
+          unless dest_ssr = ssr.service_request.sub_service_requests.find_by(organization: dest_org_process_ssrs, status: ssr.status)
+            dest_ssr_exists = false
             dest_ssr = ssr.service_request.sub_service_requests.create(
-              organization: process_ssrs_parent,
+              organization: dest_org_process_ssrs,
               status:       ssr.status
             )
 
@@ -55,19 +60,24 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
             # ! needed, since only it will return the _other_ attributes.
             copy_over_attributes = old_attributes.
               slice!(*%w(id ssr_id organization_id org_tree_display status))
-            dest_ssr.assign_attributes(copy_over_attributes, without_protection: true)
+            dest_ssr.assign_attributes(copy_over_attributes)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
           end
           # Move LineItems.
+          line_items_moved = []
           ssr.line_items.where(service: service).each do |li|
             li.update!(sub_service_request: dest_ssr)
+            line_items_moved << li.id
           end
+
+          puts "SRID: #{sr.id} Old SSRID: #{ssr.id},  Dest SSRID: #{dest_ssr.id} (#{dest_ssr_exists ? 'Existing' : 'New'}),  LIs Moved: #{line_items_moved.to_s}"
         end
       end
     end
     service.update!(organization_id: dest_org.id)
   end
+  puts "\nDone!"
 end
 
 def ssr_contains_just_this_service?(ssr, service)

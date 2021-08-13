@@ -21,4 +21,19 @@
 $("#modalContainer").html("<%= j render 'admin/settings/form', setting: @setting %>")
 $("#modalContainer").modal('show')
 
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+changeConfirmed = false
+$('#settingForm').on 'submit', (event) ->
+  form = document.getElementById('settingForm')
+  if !changeConfirmed
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    ConfirmSwal.fire(
+      title: I18n.t('admin.settings.form.confirm.save.title')
+      html: I18n.t('admin.settings.form.confirm.save.text')
+    ).then (result) ->
+      if result.value
+        changeConfirmed = true
+        Rails.fire(form, 'submit')
+  else
+    changeConfirmed = false
+    return true

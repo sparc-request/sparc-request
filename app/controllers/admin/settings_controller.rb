@@ -22,7 +22,7 @@
 class Admin::SettingsController < Admin::ApplicationController
 
     def index
-      @settings = Setting.all.order(:key)
+      @settings = Setting.order(:group, :key)
       respond_to :json, :html
     end
 
@@ -44,16 +44,15 @@ class Admin::SettingsController < Admin::ApplicationController
       else
         @errors = @setting.errors
       end
-
       respond_to :js
     end
-
 
     protected
 
     def setting_params
       params.require(:setting).permit(
         :value,
+        :data_type,
         :friendly_name,
         :description,
         :group,

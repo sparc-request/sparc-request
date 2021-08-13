@@ -36,14 +36,14 @@
                 = setting.key
             %tr.d-flex
               %td.d-inline-block.col-3
-                = Setting.human_attribute_name(:data_type)
-              %td.d-inline-block.col-9
-                = setting.data_type                
-            %tr.d-flex
-              %td.d-inline-block.col-3
                 = Setting.human_attribute_name(:value)
               %td.d-inline-block.col-9
-                = setting.value
+                = raw(setting.value).html_safe
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                = Setting.human_attribute_name(:data_type)
+              %td.d-inline-block.col-9
+                = setting.data_type
             %tr.d-flex
               %td.d-inline-block.col-3
                 = Setting.human_attribute_name(:friendly_name)

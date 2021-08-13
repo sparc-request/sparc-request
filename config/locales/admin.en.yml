@@ -68,13 +68,18 @@ en:
       edit: "Edd Setting: %{key}"
       updated: "Setting Updated!"
       view:
-        header: "Setting"
+        header: "Setting Details"
       table:
         header: "SPARC Settings"
       tooltip:
         view: "View Details"
       form:
         data_type: "Data Type: %{data_type}"
+        select_data_type: "Select a data type"
+        confirm:
+          save:
+            title: "Update this setting?"
+            text:  "Are you sure you want to proceed?"
 
 
     navigation:

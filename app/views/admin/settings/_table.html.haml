@@ -18,31 +18,31 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%main.card#pvCard
+%main.card#settingCard
   .card-header.bg-primary.text-white
     %h3.mb-0
       = t('admin.settings.table.header')
   #settingTableToolbar
-  %table.table#pvTable{ data: { toggle: 'table', url: admin_settings_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', page_size: '25', sort_name: 'key', sort_order: 'asc', toolbar: '#settingTableToolbar' } }
+  %table.table#settingTable{ data: { toggle: 'table', url: admin_settings_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', page_size: '25', sort_name: 'group', sort_order: 'desc', toolbar: '#settingTableToolbar' } }
     %thead.bg-light
       %tr
+        %th.w-15{ data: { field: 'group', sortable: 'true' } }
+          = Setting.human_attribute_name(:group)
         %th.w-15{ data: { field: 'key', sortable: 'true' } }
           = Setting.human_attribute_name(:key)
         %th.w-5{ data: { field: 'data_type', sortable: 'true' } }
           = Setting.human_attribute_name(:data_type)
         %th.w-15{ data: { field: 'value', sortable: 'true' } }
           = Setting.human_attribute_name(:value)
-        %th.w-15{ data: { field: 'friendly_name',sortable: 'false', } }
+        %th{ data: { field: 'friendly_name',sortable: 'false', visible: 'false' } }
           = Setting.human_attribute_name(:friendly_name)
-        %th.w-18{ data: { field: 'description',sortable: 'false', } }
+        %th.w-18{ data: { field: 'description',sortable: 'false', visible: 'false' } }
           = Setting.human_attribute_name(:description)
-        %th.w-10{ data: { field: 'parent_key', sortable: 'true', visible: 'false' } }
+        %th.w-10{ data: { field: 'parent_key', sortable: 'true' } }
+          = Setting.human_attribute_name(:parent_key)
+        %th.w-10{ data: { field: 'parent_value', sortable: 'false' } }
           = Setting.human_attribute_name(:parent_value)
-        %th.w-10{ data: { field: 'parent_value', sortable: 'false', visible: 'false' } }
-          = Setting.human_attribute_name(:parent_key)        
-        %th{ data: { field: 'group', sortable: 'true', visible: 'false' } }
-          = Setting.human_attribute_name(:group)
         %th{ data: { field: 'version', sortable: 'true', visible: 'false' } }
           = Setting.human_attribute_name(:version)
         %th.w-10{ data: { class: 'actions', align: 'center', field: 'actions' } }
-          = t('actions.actions')          
+          = t('actions.actions')

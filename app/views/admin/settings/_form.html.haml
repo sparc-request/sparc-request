@@ -20,7 +20,7 @@
 
 .modal-dialog{ role: 'document' }
   .modal-content
-    = form_for [:admin, setting], remote: true do |f|
+    = form_for [:admin, setting], remote: true, html: { id: 'settingForm' } do |f|
       .modal-header
         %h3.modal-title
           -# setting.key should be read-only
@@ -30,17 +30,22 @@
       .modal-body
         .form-group
           = f.label :value
-          = f.text_field :value, class: 'form-control'
-          %form-text.text-muted
-            = t('admin.settings.form.data_type', data_type: setting.data_type)
+          = f.text_area :value, rows:2, value: raw(setting.read_attribute(:value)).html_safe, class: 'form-control'
+        .form-group
+          - data_types = ['boolean', 'json', 'email', 'url', 'path', 'string']
+          = f.label :data_type
+          = f.select :data_type, options_for_select(data_types, setting.data_type), { prompt: t('admin.settings.form.select_data_type') }, class: 'selectpicker'
         .form-group
           = f.label :friendly_name
           = f.text_field :friendly_name, class: 'form-control'
         .form-group
           = f.label :description
-          = f.text_field :description, class: 'form-control'
+          = f.text_area :description, rows: 2, class: 'form-control'
         .form-group
-          = f.label :parent_key 
+          = f.label :group
+          = f.text_field :group, class: 'form-control'
+        .form-group
+          = f.label :parent_key
           = f.text_field :parent_key, class: 'form-control'
         .form-group
           = f.label :parent_value

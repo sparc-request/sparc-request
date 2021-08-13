@@ -27,7 +27,7 @@ $("[name='setting[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-v
 <% end %>
 <% end %>
 <% else %>
-$("#pvTable").bootstrapTable('refresh')
+$("#settingTable").bootstrapTable('refresh')
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 $("#modalContainer").modal('hide')
 <% end %>

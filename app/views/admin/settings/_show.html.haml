@@ -38,7 +38,7 @@
               %td.d-inline-block.col-3
                 = Setting.human_attribute_name(:value)
               %td.d-inline-block.col-9
-                = raw(setting.value).html_safe
+                = raw(setting[:value]).html_safe
             %tr.d-flex
               %td.d-inline-block.col-3
                 = Setting.human_attribute_name(:data_type)

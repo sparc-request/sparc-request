@@ -31,11 +31,11 @@ module Admin::SettingsHelper
 
   def display_setting_value(setting)
     if  setting.value.to_s.length > 45
-      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', placement: 'bottom', html: 'true', content: raw(setting.value) } do
-        truncate(setting.value.to_s, length: 42, separator: ' ')
+      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', placement: 'bottom', html: 'true', content: raw(setting[:value]) } do
+        truncate(setting[:value], length: 42, separator: ' ')
       end
     else
-      setting.value.to_s
+      setting[:value]
     end
   end
 

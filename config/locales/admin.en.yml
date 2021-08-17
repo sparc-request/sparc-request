@@ -81,6 +81,19 @@ en:
             title: "Update this setting?"
             text:  "Are you sure you want to proceed?"
 
+    overlords:
+      updated: "Overlord Updated"
+      added: "Overlord Added!"
+      search_placeholder: "Add new overlord"
+      add: "Add Overlord"
+      removed: "Overlord Removed!"
+      table:
+        header: "SPARC Catalog Overlords"
+        action: "Action"
+        remove: "Remove"
+      confirms: 
+        remove:
+          title: "Remove this overlord?"
 
     navigation:
       applications: "Applications"

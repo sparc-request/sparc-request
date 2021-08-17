@@ -18,49 +18,42 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+class Admin::OverlordsController < Admin::ApplicationController
 
-class Admin::SettingsController < Admin::ApplicationController
-
-    def index
-      @settings = Setting.order(:group, :key)
-      respond_to :json, :html
-    end
-
-    def show
-      @setting = Setting.find(params[:id])
-      respond_to :js
-    end
-
-    def edit
-      respond_to :js      
-      @setting = Setting.find(params[:id])
-    end
-
-    def update
-      @setting = Setting.find(params[:id])
-
-      if @setting.update_attributes(setting_params)
-        flash.now[:success] = t('admin.settings.updated')
-      else
-        @errors = @setting.errors
-      end
-
-      respond_to :js
-    end
-
-    protected
-
-    def setting_params
-      params.require(:setting).permit(
-        :value,
-        :data_type,
-        :friendly_name,
-        :description,
-        :group,
-        :version,
-        :parent_key,
-        :parent_value
-      )
-    end
-  
+  def index
+    @overlords = Identity.overlords
+    respond_to :json, :html
   end
+
+  def new
+    respond_to :js
+  end
+
+  def update
+    respond_to :js
+    if params[:identity_id] # if user selected
+      @overlord = Identity.find(params[:identity_id])
+      @overlord.toggle!(:catalog_overlord)
+      flash.now[:success] = t('admin.overlords.added')
+    end
+  end
+  
+  def remove_overlord
+    @overlord = Identity.find(params[:id])
+    if @overlord
+      @overlord.toggle!(:catalog_overlord)
+      flash.now[:success] = t('admin.overlords.removed')
+    end
+
+    respond_to :js
+  end
+
+  protected
+  
+  def identity_params
+    params.require(:identity).permit(
+      :catalog_overlord
+    )
+  end
+
+end

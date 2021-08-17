@@ -18,49 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-class Admin::SettingsController < Admin::ApplicationController
-
-    def index
-      @settings = Setting.order(:group, :key)
-      respond_to :json, :html
-    end
-
-    def show
-      @setting = Setting.find(params[:id])
-      respond_to :js
-    end
-
-    def edit
-      respond_to :js      
-      @setting = Setting.find(params[:id])
-    end
-
-    def update
-      @setting = Setting.find(params[:id])
-
-      if @setting.update_attributes(setting_params)
-        flash.now[:success] = t('admin.settings.updated')
-      else
-        @errors = @setting.errors
-      end
-
-      respond_to :js
-    end
-
-    protected
-
-    def setting_params
-      params.require(:setting).permit(
-        :value,
-        :data_type,
-        :friendly_name,
-        :description,
-        :group,
-        :version,
-        :parent_key,
-        :parent_value
-      )
-    end
-  
-  end
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$("#modalContainer").modal('hide')
+$('#overlordsTable').bootstrapTable('refresh')

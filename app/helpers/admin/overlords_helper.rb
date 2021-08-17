@@ -18,49 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-class Admin::SettingsController < Admin::ApplicationController
-
-    def index
-      @settings = Setting.order(:group, :key)
-      respond_to :json, :html
+module Admin::OverlordsHelper
+  def overlord_action(identity)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      remove_overlord_button(identity)
     end
-
-    def show
-      @setting = Setting.find(params[:id])
-      respond_to :js
-    end
-
-    def edit
-      respond_to :js      
-      @setting = Setting.find(params[:id])
-    end
-
-    def update
-      @setting = Setting.find(params[:id])
-
-      if @setting.update_attributes(setting_params)
-        flash.now[:success] = t('admin.settings.updated')
-      else
-        @errors = @setting.errors
-      end
-
-      respond_to :js
-    end
-
-    protected
-
-    def setting_params
-      params.require(:setting).permit(
-        :value,
-        :data_type,
-        :friendly_name,
-        :description,
-        :group,
-        :version,
-        :parent_key,
-        :parent_value
-      )
-    end
-  
   end
+
+  def remove_overlord_button(identity)
+    link_to icon('fas', 'trash-alt'), remove_overlord_admin_overlord_path(identity), remote: true, method: :patch, class: 'btn btn-danger remove-overlord', data: { confirm_swal: 'true', title: t('admin.overlords.confirms.remove.title') }
+  end 
+end

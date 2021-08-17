@@ -1,0 +1,17 @@
+.modal-dialog{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = t('admin.overlords.add')
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      .form-group
+        .input-group
+          .input-group-prepend
+            %span.input-group-text
+              = icon('fas', 'search')
+          = text_field_tag :user_search, "", placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control typeahead'
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

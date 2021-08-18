@@ -1,0 +1,59 @@
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for [:admin, permissible_value], remote: true do |f|
+      .modal-header
+        %h3.modal-title
+          = t("admin.permissible_values.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        -# Category should not be modified
+        - if action_name == "edit"
+          .form-group.text-center
+            %h5.mb-0
+              = t('admin.permissible_values.form.display_category', category: permissible_value.category)
+        - else
+          .form-group
+            -# site admins should not be able to create new permissible value for any of the uneditable categories
+            = f.label :category, class: 'required'
+            = f.select :category, options_for_select(PermissibleValue.editable_categories, permissible_value.category), { prompt: t('admin.permissible_values.form.select_category') }, class: 'selectpicker'
+        .form-group
+          = f.label :key, class: 'required'
+          = f.text_field :key, class: 'form-control'
+        .form-group
+          = f.label :value, class: 'required'
+          = f.text_field :value, class: 'form-control'
+        .form-group
+          = f.label :sort_order
+          = f.number_field :sort_order, class: 'form-control', min: 0
+        .form-row
+          .form-group.col-6
+            = f.check_box :default,  class: 'control-input'
+            = f.label t('admin.permissible_values.form.default'), title: t('admin.permissible_values.tooltip.default'), data: { toggle: 'tooltip' }
+          .form-group.col-6
+            = f.check_box :is_available, class: 'control-input'
+            = f.label t('admin.permissible_values.form.available')
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

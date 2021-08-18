@@ -18,13 +18,65 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Admin::ApplicationController < ApplicationController
-  layout 'admin/application' 
 
-  before_action :authenticate_identity!
-  before_action :authorize_site_admin
+class Admin::PermissibleValuesController < Admin::ApplicationController
 
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_admin'
+    def index
+      @permissible_values = PermissibleValue.reorder('category , is_available DESC, sort_order')
+      respond_to :json, :html
+    end
+
+    def show
+      @permissible_value = PermissibleValue.find(params[:id])
+      respond_to :js
+    end
+
+    def new
+      @permissible_value = PermissibleValue.new(is_available: false)
+      respond_to :js
+    end
+
+    def create
+      @permissible_value = PermissibleValue.new(permissible_value_params)
+      
+      if @permissible_value.save
+        flash.now[:success] = t('admin.permissible_values.created')
+      else
+        @errors = @permissible_value.errors
+      end
+
+      respond_to :js
+    end
+
+    def edit
+      respond_to :js      
+      @permissible_value = PermissibleValue.find(params[:id])
+    end
+
+    def update
+      @permissible_value = PermissibleValue.find(params[:id])
+
+      if @permissible_value.update_attributes(permissible_value_params)
+        flash.now[:success] = t('admin.permissible_values.updated')
+      else
+        @errors = @permissible_value.errors
+      end
+
+      respond_to :js
+    end
+
+
+    protected
+
+    def permissible_value_params
+      params.require(:permissible_value).permit(
+        :key,
+        :value,
+        :sort_order,
+        :category,
+        :is_available,
+        :default
+      )
+    end
+  
   end
-end

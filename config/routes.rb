@@ -194,7 +194,8 @@ SparcRails::Application.routes.draw do
 
       resources :access_requests, only: [:index]
     end
-
+    
+    resources :permissible_values,  except: [:destroy] 
     root to: 'applications#index'
   end
 

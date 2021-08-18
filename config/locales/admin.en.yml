@@ -44,7 +44,28 @@ en:
           title: "Regenerate %{secret_label}?"
           text: "Your external application must be updated with the new secret in order to access the SPARC API.<br><br>This action cannot be undone."
 
+    permissible_values:
+      new: "Add Permissible Value"
+      edit: "Edd Permissible Value"
+      created: "Permissible Value Added!"
+      updated: "Permissible Value Updated!"
+      view:
+        header: "Permissible Value"
+      table:
+        header: "SPARC Permissible Values"
+      action:
+        edit_disabled: "Default/Reserved Permissible Value, Edit Disabled"
+      tooltip:
+        view: "View Details"
+        default: "Default permissible values cannot be modified!"
+      form:
+        display_category: "Category: %{category}"
+        select_category: "Select a category"
+        default: "Default?"
+        available: "Active?"
+
     navigation:
       applications: "Applications"
       permissible_values: "Permissible Values"
       settings: "Settings"
+      overlords: "Catalog Overlords"

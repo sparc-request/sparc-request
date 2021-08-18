@@ -18,13 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Admin::ApplicationController < ApplicationController
-  layout 'admin/application' 
+module Admin::PermissibleValuesHelper
 
-  before_action :authenticate_identity!
-  before_action :authorize_site_admin
+  def pv_actions(permissible_value)
+    content_tag :div, class: 'd-flex justify-content-center' do
+      raw [
+        view_pv_button(permissible_value),
+        edit_pv_button(permissible_value)
+      ].join('')
+    end
+  end
 
-  def set_highlighted_link
-    @highlighted_link ||= 'sparc_admin'
+  def view_pv_button(pv)
+    link_to icon('fas', 'eye'), admin_permissible_value_path(pv), remote: true, class: 'btn btn-info mr-1', title: t('admin.permissible_values.tooltip.view'), data: { toggle: 'tooltip' }
+  end
+
+  def edit_pv_button(pv)
+    if pv.default || pv.reserved
+      content_tag :div, icon('fas', 'edit'), class: 'btn btn-light', title: t('admin.permissible_values.action.edit_disabled'), data: { toggle: 'tooltip' }    
+    else
+      link_to icon('fas', 'edit'), edit_admin_permissible_value_path(pv), remote: true, class: 'btn btn-warning mr-1', title: t('actions.edit'), data: { toggle: 'tooltip' }
+    end
   end
 end

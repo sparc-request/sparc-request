@@ -91,7 +91,7 @@ GEM
       activemodel (= 5.2.4.6)
       activesupport (= 5.2.4.6)
       arel (>= 9.0)
-    activerecord-import (1.1.0)
+    activerecord-import (1.2.0)
       activerecord (>= 3.2)
     activerecord-nulldb-adapter (0.7.0)
       activerecord (>= 5.2.0, < 6.3)
@@ -136,7 +136,7 @@ GEM
       execjs (~> 2.0)
     bcrypt (3.1.16)
     bluecloth (2.2.0)
-    bootsnap (1.7.5)
+    bootsnap (1.7.6)
       msgpack (~> 1.0)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
@@ -284,7 +284,7 @@ GEM
       multi_json (>= 1.3.2)
     gyoku (1.3.1)
       builder (>= 2.1.2)
-    haml (5.2.1)
+    haml (5.2.2)
       temple (>= 0.8.0)
       tilt
     hashdiff (1.0.1)
@@ -305,7 +305,7 @@ GEM
       socksify
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    i18n-js (3.8.3)
+    i18n-js (3.9.0)
       i18n (>= 0.6.6)
     i18n_data (0.13.0)
     icalendar (2.7.1)
@@ -342,7 +342,7 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.0.2)
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
@@ -366,10 +366,10 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (7.2.0)
     nio4r (2.5.7)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.12.3)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    nokogiri (1.11.7-x86_64-darwin)
+    nokogiri (1.12.3-x86_64-darwin)
       racc (~> 1.4)
     nori (2.6.0)
     nprogress-rails (0.2.0.2)
@@ -425,7 +425,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
-    puma (5.3.2)
+    puma (5.4.0)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -605,8 +605,8 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
       selenium-webdriver (>= 3.0, < 4.0)
-    webmock (3.13.0)
-      addressable (>= 2.3.6)
+    webmock (3.14.0)
+      addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     websocket-driver (0.7.3)
@@ -710,7 +710,7 @@ DEPENDENCIES
   premailer-rails
   progress_bar
   pry
-  puma (~> 5.3)
+  puma (~> 5.4)
   rack-mini-profiler
   rails (= 5.2.4.6)
   rails-controller-testing

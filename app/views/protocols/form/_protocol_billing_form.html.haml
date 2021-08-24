@@ -31,15 +31,15 @@
           = label_tag 'default_billing_type','Default Billing Type:', class: 'col-sm-4 control-label align-self-center'
           .col-sm-8
             .btn-group.btn-group-toggle{ role: 'group', data: {toggle: 'buttons'} }
-              %label{class: "btn btn-sm btn-info #{f.object.default_billing_type == "r" ? 'active' : ''} "}
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "r" ? 'active' : ''} "}
                 = f.radio_button :default_billing_type, 'r', {checked: f.object.default_billing_type == "r"}
                 = 'Research Coverage (R)'
-              %label{class: "btn btn-sm btn-info #{f.object.default_billing_type == "t" ? 'active' : ''} "}
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "t" ? 'active' : ''} "}
                 = f.radio_button :default_billing_type, 't', {checked: f.object.default_billing_type == "t"}
                 = 'Third Party (Insurance) Coverage (T)'
-              %label{class: "btn btn-sm btn-info #{f.object.default_billing_type == "o" ? 'active' : ''} "}
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "o" ? 'active' : ''} "}
                 = f.radio_button :default_billing_type, 'o', {checked: f.object.default_billing_type == "o"}
                 = 'Other Coverage (O)'
       .modal-footer
         %button.btn{data: {dismiss: 'modal'}, type: 'button'} Close
-        %input#create_service_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+        %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save], data: { disable_with: "Please wait..." }}

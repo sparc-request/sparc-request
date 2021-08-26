@@ -73,6 +73,7 @@ en:
         header: "SPARC Settings"
       tooltip:
         view: "View Details"
+        edit: "Edit Setting"
       form:
         data_type: "Data Type: %{data_type}"
         select_data_type: "Select a data type"

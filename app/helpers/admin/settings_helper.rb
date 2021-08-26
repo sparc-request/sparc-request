@@ -29,23 +29,15 @@ module Admin::SettingsHelper
     end
   end
 
-  def display_setting_value(setting)
-    if  setting.value.to_s.length > 45
-      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', placement: 'bottom', html: 'true', content: raw(setting[:value]) } do
-        truncate(setting[:value], length: 42, separator: ' ')
-      end
-    else
-      setting[:value]
-    end
+  def setting_key_link(setting)
+    content_tag(:span, setting.key) + link_to("", admin_setting_path(setting), remote: true, class: 'd-none')
   end
 
-  def format_string(str, max)
-    if  str.length > max
-      link_to 'javascript:void(0)', data: { toggle: 'popover', trigger: 'hover', placement: 'bottom', html: 'true', content: str } do
-        truncate(str, length: max, separator: ' ')
-      end
+  def display_setting_value(setting)
+    if setting[:value].length > 40
+      truncate(setting[:value], length: 40)
     else
-      str
+      setting[:value]
     end
   end
 
@@ -54,6 +46,6 @@ module Admin::SettingsHelper
   end
 
   def edit_setting_button(setting)
-    link_to icon('fas', 'edit'), edit_admin_setting_path(setting), remote: true, class: 'btn btn-warning mr-1', title: t('actions.edit'), data: { toggle: 'tooltip' }
+    link_to icon('fas', 'edit'), edit_admin_setting_path(setting), remote: true, class: 'btn btn-warning mr-1', title: t('admin.settings.tooltip.edit'), data: { toggle: 'tooltip' }
   end
 end

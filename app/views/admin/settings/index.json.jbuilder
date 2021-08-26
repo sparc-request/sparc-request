@@ -1,5 +1,5 @@
 json.(@settings) do |setting|
-  json.key            setting.key
+  json.key            setting_key_link(setting)
   json.data_type      setting.data_type
   json.value          display_setting_value(setting)
   json.friendly_name  setting.friendly_name

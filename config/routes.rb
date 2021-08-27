@@ -197,7 +197,8 @@ SparcRails::Application.routes.draw do
     
     resources :permissible_values, except: [:destroy]
     resources :settings,  only: [:index, :edit, :update, :show]
-    resources :overlords do
+
+    resources :overlords, only: [:index, :new, :update] do
       member do
         patch :remove_overlord
       end

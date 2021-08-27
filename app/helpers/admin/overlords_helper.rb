@@ -26,6 +26,6 @@ module Admin::OverlordsHelper
   end
 
   def remove_overlord_button(identity)
-    link_to icon('fas', 'trash-alt'), remove_overlord_admin_overlord_path(identity), remote: true, method: :patch, class: 'btn btn-danger remove-overlord', data: { confirm_swal: 'true', title: t('admin.overlords.confirms.remove.title') }
+    link_to icon('fas', 'trash-alt'), remove_overlord_admin_overlord_path(identity), remote: true, method: :patch, class: 'btn btn-danger remove-overlord', data: { confirm_swal: 'true', title: t('admin.overlords.confirms.remove.title'), html: t('admin.overlords.confirms.remove.text', user: identity.full_name) }
   end 
 end

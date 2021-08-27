@@ -22,6 +22,7 @@ class Admin::OverlordsController < Admin::ApplicationController
 
   def index
     @overlords = Identity.overlords
+
     respond_to :json, :html
   end
 
@@ -30,19 +31,19 @@ class Admin::OverlordsController < Admin::ApplicationController
   end
 
   def update
-    respond_to :js
     if params[:identity_id] # if user selected
       @overlord = Identity.find(params[:identity_id])
       @overlord.toggle!(:catalog_overlord)
-      flash.now[:success] = t('admin.overlords.added')
+      flash.now[:success] = t('admin.overlords.updated', action: 'added')
     end
+
+    respond_to :js
   end
   
   def remove_overlord
     @overlord = Identity.find(params[:id])
-    if @overlord
-      @overlord.toggle!(:catalog_overlord)
-      flash.now[:success] = t('admin.overlords.removed')
+    if @overlord.toggle!(:catalog_overlord)
+      flash.now[:success] = t('admin.overlords.updated', action: 'removed')
     end
 
     respond_to :js

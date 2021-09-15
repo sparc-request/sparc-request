@@ -246,6 +246,16 @@ en:
         status: "Status"
         forms: "Forms"
         previously_submitted: "Previously Submitted"
+      setting:
+        key: "Key"
+        value: "Value"
+        data_type: "Data Type"
+        friendly_name: "Friendly Name"
+        description: "Description"
+        group: "Group"
+        version: "Version"
+        parent_key: "Parent Key"
+        parent_value: "Parent Value"
       sub_service_request:
         srid: "SRID"
       short_interaction:

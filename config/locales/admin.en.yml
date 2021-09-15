@@ -64,6 +64,36 @@ en:
         default: "Default?"
         available: "Active?"
 
+    settings:
+      edit: "Edd Setting: %{key}"
+      updated: "Setting Updated!"
+      view:
+        header: "Setting Details"
+      table:
+        header: "SPARC Settings"
+      tooltip:
+        view: "View Details"
+        edit: "Edit Setting"
+      form:
+        select_data_type: "Select a data type"
+        confirm:
+          save:
+            title: "Update This Setting?"
+            text:  "Are you sure you want to save the changes?"
+
+    overlords:
+      updated: "Overlord %{action} successfully."
+      search_placeholder: "Add new overlord"
+      add: "Add Overlord"
+      table:
+        header: "SPARC Catalog Overlords"
+        action: "Action"
+        remove: "Remove"
+      confirms: 
+        remove:
+          title: "Remove This Overlord?"
+          text: "Overlord rights will be removed from %{user}, do you wish to continue?"
+
     navigation:
       applications: "Applications"
       permissible_values: "Permissible Values"

@@ -1,0 +1,17 @@
+%main.card#overlordCard
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t('admin.overlords.table.header')
+  #overlordsTableToolbar
+    = link_to  new_admin_overlord_path, remote: true, class: 'btn btn-success', id: 'addOverlord' do
+      - succeed t('admin.overlords.add') do
+        = icon('fas', 'plus mr-2')  
+  %table.table-interactive#overlordsTable{ data: { toggle: 'table', url: admin_overlords_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#overlordsTableToolbar' } }
+    %thead.bg-light
+      %tr
+        %th.w-30{ data: { field: 'name', sortable: 'true' } }
+          = Identity.human_attribute_name(:name)
+        %th.w-30{ data: { field: 'email', sortable: 'true' } }
+          = Identity.human_attribute_name(:email)
+        %th.w-10{ data: { field: 'action', align: 'center' } }
+          = t('admin.overlords.remove')

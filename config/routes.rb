@@ -195,7 +195,15 @@ SparcRails::Application.routes.draw do
       resources :access_requests, only: [:index]
     end
     
-    resources :permissible_values,  except: [:destroy] 
+    resources :permissible_values, except: [:destroy]
+    resources :settings,  only: [:index, :edit, :update, :show]
+
+    resources :overlords, only: [:index, :new, :update] do
+      member do
+        patch :remove_overlord
+      end
+    end
+
     root to: 'applications#index'
   end
 

@@ -84,6 +84,8 @@ class Identity < ApplicationRecord
 
   # validates_presence_of :reason, if: :new_record?
 
+  scope :overlords, -> { where(catalog_overlord: true) }
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################

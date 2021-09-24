@@ -195,16 +195,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def push_to_oncore
     if @protocol.is_a?(Study)
       oncore_protocol = OncoreProtocol.new(@protocol)
-      response = oncore_protocol.create_oncore_protocol
-      if response.success?
-        flash[:success] = I18n.t('protocols.summary.oncore.pushed_to_oncore')
-      else
-        if response['message'].try(:include?, ('already exists'))
-          @error = t('protocols.summary.oncore.already_exists', protocol_id: @protocol.id)
-        else
-          @error = "#{response.code}: #{response.message}"
-        end
-      end
+      @successful_oncore_push = oncore_protocol.create_oncore_protocol
+      @errors = oncore_protocol.errors.empty? ? nil : oncore_protocol.errors
     end
 
     respond_to :js

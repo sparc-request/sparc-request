@@ -99,7 +99,7 @@ class OncoreProtocol
     if !response.success? && response['message'].try(:include?, ('already exists'))
       @errors.add(:base, :already_exists)
       raise OncorePushError
-    elsif !response.success
+    elsif !response.success?
       @errors.add(:base, :post_protocols_failed, message: "#{response.code}: #{response.message}")
       raise OncorePushError
     end
@@ -171,19 +171,19 @@ class OncoreProtocol
   end
 
   def add_primary_pi
-    staff_response = self.class.post('/oncore-api/rest/protocolStaff',
+    response = self.class.post('/oncore-api/rest/protocolStaff',
                               headers: {
                                 'Accept' => 'application/json',
                                 'Content-Type' => 'application/json',
-                                'Authorization' => self.auth
+                                'Authorization' => @auth
                               },
                               body: {
-                                protocolId: self.protocol_id,
-                                contactId: contact_id,
-                                role: self.primary_pi_role
+                                protocolId: @protocol_id,
+                                contactId: @primary_pi_contact_id,
+                                role: @primary_pi_role
                               }.to_json)
 
-    log_request_and_response(staff_response)
+    log_request_and_response(response)
     unless response.success?
       @errors.add(:base, :post_protocol_staff_failed, message: "#{response.code}: #{response.message}")
       raise OncorePushError

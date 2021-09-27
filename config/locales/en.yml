@@ -72,6 +72,13 @@ en:
       feedback:
         typeofrequest: "Type of Request"
         sparc_request_id: "SRID"
+    errors:
+      models:
+        oncore_protocol:
+          attributes:
+            base:
+              already_exists: "Study already exists in OnCore."
+              pi_not_in_oncore: "PI does not exist in OnCore. Study still pushed to OnCore."
 
   ################
   # ACTIVERECORD #
@@ -378,11 +385,6 @@ en:
       system_survey: "Survey"
       sub_service_request: "Request"
 
-  errors:
-    attributes:
-      base:
-        already_exists: "Study already exists in OnCore."
-        pi_not_in_oncore: "PI does not exist in OnCore. Study still pushed to OnCore."
   ########
   # ARMS #
   ########

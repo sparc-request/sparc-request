@@ -21,6 +21,7 @@
 class OncoreProtocol
   # Required dependency for ActiveModel::Errors
   extend ActiveModel::Naming
+  extend ActiveModel::Translation
 
   include HTTParty
   base_uri Setting.get_value('oncore_api')
@@ -204,19 +205,6 @@ class OncoreProtocol
       raise OncorePushError
     end
     @auth = "Bearer " + JSON.parse(response.body)['access_token']
-  end
-
-  # Methods needed for implementing ActiveModel::Errors
-  def read_attribute_for_validation(attr)
-    send(attr)
-  end
-
-  def self.human_attribute_name(attr, options = {})
-    attr
-  end
-
-  def self.lookup_ancestors
-    [self]
   end
 
   private

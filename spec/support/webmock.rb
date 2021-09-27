@@ -59,6 +59,11 @@ RSpec.configure do |config|
       )
   end
 
+  config.before(:each, oncore_pi: :does_not_exist) do
+    stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/contacts\?email=(.+)&firstName=(.+)&lastName=(.+)/).
+      to_return(status: 200, body: [].to_json, headers: { 'Content-Type' => 'application/json' })
+  end
+
   config.before(:each, remote_service: :unavailable) do
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 500)

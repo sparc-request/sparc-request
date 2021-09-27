@@ -48,6 +48,10 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
         expect(a_request(:post, Setting.get_value("oncore_api")+protocol_institutions_path)).to have_been_made.once
         expect(a_request(:post, Setting.get_value("oncore_api")+protocol_staff_path)).to have_been_made.once
       end
+
+      it 'should show success message' do
+        expect(page).to have_content(I18n.t('protocols.summary.oncore.pushed_to_oncore'))
+      end
     end
 
     context 'and the protocol has already been pushed to OnCore', oncore_protocol: :exists do
@@ -57,7 +61,19 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
 
       it 'should display an error' do
         expect(page).to have_content(I18n.t('protocols.summary.oncore.error'))
-        expect(page).to have_content(I18n.t('protocols.summary.oncore.already_exists', protocol_id: @study.id))
+        expect(page).to have_content(I18n.t('errors.attributes.base.already_exists'))
+      end
+    end
+
+    context 'and the PI does not exist in OnCore', oncore_pi: :does_not_exist do
+      it 'should post a protocol to OnCore' do
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocols_path)).to have_been_made.once
+        expect(a_request(:post, Setting.get_value("oncore_api")+protocol_institutions_path)).to have_been_made.once
+      end
+
+      it 'should show success message with notice' do
+        expect(page).to have_content(I18n.t('protocols.summary.oncore.pushed_to_oncore'))
+        expect(page).to have_content(I18n.t('errors.attributes.base.pi_not_in_oncore'))
       end
     end
   end

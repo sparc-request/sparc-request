@@ -61,7 +61,7 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
 
       it 'should display an error' do
         expect(page).to have_content(I18n.t('protocols.summary.oncore.error'))
-        expect(page).to have_content(I18n.t('errors.attributes.base.already_exists'))
+        expect(page).to have_content(I18n.t('activemodel.errors.models.oncore_protocol.attributes.base.already_exists'))
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe 'User pushes a study to OnCore', js: true do
 
       it 'should show success message with notice' do
         expect(page).to have_content(I18n.t('protocols.summary.oncore.pushed_to_oncore'))
-        expect(page).to have_content(I18n.t('errors.attributes.base.pi_not_in_oncore'))
+        expect(page).to have_content(I18n.t('activemodel.errors.models.oncore_protocol.attributes.base.pi_not_in_oncore'))
       end
     end
   end

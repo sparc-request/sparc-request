@@ -123,8 +123,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
-    audited (5.0.1)
-      activerecord (>= 5.0, < 6.2)
+    audited (5.0.2)
+      activerecord (>= 5.0, < 7.1)
     autoprefixer-rails (9.5.0)
       execjs
     axlsx_rails (0.6.1)

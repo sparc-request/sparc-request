@@ -36,12 +36,12 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'grape', '1.5.3'
-gem 'grape-entity', '~> 0.9.0'
+gem 'grape-entity', '~> 0.10.0'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.19.0'
+gem 'httparty', '~> 0.20.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -68,7 +68,7 @@ gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.4'
+gem 'puma', '~> 5.5'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.4.6'
 gem 'rails-html-sanitizer' # Check usage

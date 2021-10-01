@@ -72,6 +72,13 @@ en:
       feedback:
         typeofrequest: "Type of Request"
         sparc_request_id: "SRID"
+    errors:
+      models:
+        oncore_protocol:
+          attributes:
+            base:
+              already_exists: "Study already exists in OnCore."
+              pi_not_in_oncore: "PI does not exist in OnCore. Study still pushed to OnCore."
 
   ################
   # ACTIVERECORD #
@@ -825,7 +832,6 @@ en:
         push_to_oncore: "Push to OnCore"
         pushed_to_oncore: "Study Pushed to OnCore!"
         error: "Unable to push Study to OnCore"
-        already_exists: "Study %{protocol_id} already exists in OnCore."
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"

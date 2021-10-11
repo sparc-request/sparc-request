@@ -45,8 +45,8 @@ en:
           text: "Your external application must be updated with the new secret in order to access the SPARC API.<br><br>This action cannot be undone."
 
     permissible_values:
-      new: "Add Permissible Value"
-      edit: "Edd Permissible Value"
+      new: "New Permissible Value"
+      edit: "Edit Permissible Value"
       created: "Permissible Value Added!"
       updated: "Permissible Value Updated!"
       view:
@@ -65,7 +65,7 @@ en:
         available: "Active?"
 
     settings:
-      edit: "Edd Setting: %{key}"
+      edit: "Edit Setting: %{key}"
       updated: "Setting Updated!"
       view:
         header: "Setting Details"
@@ -84,7 +84,7 @@ en:
     overlords:
       updated: "Overlord %{action} successfully."
       search_placeholder: "Add new overlord"
-      add: "Add Overlord"
+      add: "New Overlord"
       table:
         header: "SPARC Catalog Overlords"
         action: "Action"

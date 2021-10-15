@@ -204,6 +204,8 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :identities, only: [:index, :edit, :update, :show]
+
     root to: 'applications#index'
   end
 

@@ -21,6 +21,7 @@
 .col-2
   %nav.nav.nav-pills.flex-column.list-group.list-group-flush.list-group-blend{ role: 'tablist' }
     = link_to t('admin.navigation.applications'), admin_applications_path, class: ['list-group-item list-group-item-action', controller_name == 'applications' ? 'active' : '']
+    = link_to t('admin.navigation.overlords'), admin_overlords_path, class: ['list-group-item list-group-item-action', controller_name == 'overlords' ? 'active' : '']
     = link_to t('admin.navigation.permissible_values'), admin_permissible_values_path, class: ['list-group-item list-group-item-action', controller_name == 'permissible_values' ? 'active' : '']
     = link_to t('admin.navigation.settings'),  admin_settings_path, class: ['list-group-item list-group-item-action', controller_name == 'settings' ? 'active' : '']
-    = link_to t('admin.navigation.overlords'), admin_overlords_path, class: ['list-group-item list-group-item-action', controller_name == 'overlords' ? 'active' : '']
+    = link_to t('admin.navigation.identities'), admin_identities_path, class: ['list-group-item list-group-item-action', controller_name == 'identities' ? 'active' : '']

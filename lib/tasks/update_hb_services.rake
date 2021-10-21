@@ -59,6 +59,8 @@ task :update_hb_services => :environment do
   end
 
   def update_service_pricing(service, row)
+    errors = nil
+
     pricing_map = service.pricing_maps.build( full_rate: Service.dollars_to_cents(row['Service Rate'].to_s),
                                               corporate_rate: Service.dollars_to_cents(row['Corporate Rate'].to_s),
                                               federal_rate: Service.dollars_to_cents(row['Federal Rate'].to_s),
@@ -78,13 +80,13 @@ task :update_hb_services => :environment do
     if pricing_map.valid?
       pricing_map.save
     else
+      errors = "Pricing map errors - #{pricing_map.errors.messages.map{ |k,v| "#{k}: #{v}"}.join(', ')}"
       puts "#"*50
-      puts "Error importing pricing map"
-      puts service.inspect
-      puts pricing_map.inspect
-      puts service.errors.inspect
-      puts pricing_map.errors.inspect
+      puts "Error importing pricing map for Service #{service.id}"
+      puts errors
     end
+
+    return errors
   end
 
   revenue_codes = []
@@ -92,6 +94,7 @@ task :update_hb_services => :environment do
   is_available = []
   service_names = []
   pricing_maps = []
+  skipped_services = []
   puts ""
   puts "Reading in file..."
   input_file = Rails.root.join("db", "imports", get_file)
@@ -102,16 +105,13 @@ task :update_hb_services => :environment do
       CSV.foreach(input_file, :headers => true) do |row|
         puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
-        puts service.inspect
-        puts ""
-        puts ""
         updated = false
         
         if service
           unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
             revenue_codes << [service.id, service.revenue_code]
             puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
-            service.revenue_code = row['Revenue Code'].rjust(4, '0') 
+            service.revenue_code = row['Revenue Code'].rjust(4, '0')
             updated = true 
           end
 
@@ -134,65 +134,92 @@ task :update_hb_services => :environment do
           unless service.name == row['Procedure Name']
             service_names << [service.id, service.name]
             puts "Altering the name of service with an id of #{service.id} from #{service.name} to #{row['Procedure Name']}"
-            service.name = row['Procedure Name'] 
+            service.name = row['Procedure Name']
             updated = true
           end
 
           if (service.current_effective_pricing_map.full_rate != (row['Service Rate'].to_f * 100))
-            pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
             puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.full_rate} to #{row['Service Rate'].to_i * 100}"
-            update_service_pricing(service, row)
-            updated = true
+            pm_errors = update_service_pricing(service, row)
+            if pm_errors
+              skipped_services << [service.id, pm_errors]
+            else
+              pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
+              updated = true
+            end
           elsif (service.current_effective_pricing_map.federal_rate != (row['Federal Rate'].to_f * 100))
-            pricing_maps << [service.id, service.current_effective_pricing_map.federal_rate]
             puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.federal_rate} to #{row['Federal Rate'].to_i * 100}"
-            update_service_pricing(service, row)
-            updated = true
+            pm_errors = update_service_pricing(service, row)
+            if pm_errors
+              skipped_services << [service.id, pm_errors]
+            else
+              pricing_maps << [service.id, service.current_effective_pricing_map.federal_rate]
+              updated = true
+            end
           end
 
           if updated
             service.audit_comment = 'updated by script'
+          else
+            error_note = "No changes to Service #{service.id}"
+            puts "No changes to Service #{service.id}"
+            skipped_services << [service.id, error_note]
           end
 
           service.save
+        else
+          not_found_error = "Service #{row['Service ID']} not found."
+          puts not_found_error
+          skipped_services << [row['Service ID'], not_found_error]
         end
       end
     end
 
     CSV.open("tmp/altered_service_report.csv", "w+") do |csv|
-      csv << ['Service Name', 'Service Id', 'EAP ID', 'Column Changed', 'New Attribute', 'Old Attribute']
+      csv << ['Service Name', 'Service Id', 'EAP ID', 'Column Changed', 'New Attribute', 'Old Attribute', 'Error']
       unless revenue_codes.empty?
         revenue_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], service.eap_id, 'Revenue Code', service.revenue_code, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Revenue Code', service.revenue_code, id_and_code[1], nil]
         end
       end
 
       unless cpt_codes.empty?
         cpt_codes.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], service.eap_id, 'Cpt Code', service.cpt_code, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Cpt Code', service.cpt_code, id_and_code[1], nil]
         end
       end
 
       unless is_available.empty?
         is_available.each do |id_and_code|
           service = Service.find(id_and_code[0])
-          csv << [service.name, id_and_code[0], service.eap_id, 'Is Available', service.is_available, id_and_code[1]]
+          csv << [service.name, id_and_code[0], service.eap_id, 'Is Available', service.is_available, id_and_code[1], nil]
         end
       end
 
       unless service_names.empty?
         service_names.each do |id_and_name|
           service = Service.find(id_and_name[0])
-          csv << [service.name, id_and_name[0], service.eap_id, 'Procedure Name', service.name, id_and_name[1]]
+          csv << [service.name, id_and_name[0], service.eap_id, 'Procedure Name', service.name, id_and_name[1], nil]
         end
       end
 
       unless pricing_maps.empty?
         pricing_maps.each do |id_and_rate|
           service = Service.find(id_and_rate[0])
-          csv << [service.name, id_and_rate[0], service.eap_id, 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1]]
+          csv << [service.name, id_and_rate[0], service.eap_id, 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1], nil]
+        end
+      end
+
+      unless skipped_services.empty?
+        skipped_services.each do |id_and_error|
+          begin
+            service = Service.find(id_and_error[0])
+            csv << [service.name, id_and_error[0], service.eap_id, nil, nil, nil, id_and_error[1]]
+          rescue ActiveRecord::RecordNotFound
+            csv << [nil, id_and_error[0], nil, nil, nil, nil, id_and_error[1]]
+          end
         end
       end
     end

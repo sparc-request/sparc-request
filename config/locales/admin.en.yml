@@ -94,8 +94,25 @@ en:
           title: "Remove This Overlord?"
           text: "Overlord rights will be removed from %{user}, do you wish to continue?"
 
+    identities:
+      edit: "Edit User (Login ID: %{login})"
+      updated: "Profile updated successfully!"
+      view:
+        header: "User Profile: %{display_name}"
+        inactive_account: "This is an Inactive (Disapproved/Decatived) Account"
+      table:
+        header: "SPARC Users"
+      tooltips:
+        view: "View Details"
+        edit: "Edit Profile"
+        edit_disabled: "Disapproved/Deactivated Account, Edit Disabled"
+        deactive_account_warning: "Uncheck this checkbox will deactivate the account. This action cannot be undone."
+      form:
+        select_prompt: "Select One"
+
     navigation:
       applications: "Applications"
       permissible_values: "Permissible Values"
       settings: "Settings"
       overlords: "Catalog Overlords"
+      identities: "Users"

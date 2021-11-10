@@ -107,6 +107,14 @@ class Identity < ApplicationRecord
     "#{last_name.try(:humanize)}, #{first_name.try(:humanize)}"
   end
 
+  def display_credential_value
+    output =  "#{PermissibleValue.get_value('user_credential', credentials)}"
+    if credentials == "other" && credentials_other.present?
+      output = "Other (#{credentials_other})"
+    end
+    return output
+  end
+
  # Returns this user's first and last name humanized, with their email.
   def display_name
     "#{first_name.try(:humanize)} #{last_name.try(:humanize)} (#{email})".lstrip.rstrip

@@ -114,7 +114,7 @@ class ServicePricingReport < ReportingModule
     end
 
     if params[:rate_types]
-      service_pricing_date = Date.strptime(params[:services_pricing_date], "%m/%d/%Y")
+      service_pricing_date = params[:services_pricing_date] ? Date.strptime(params[:services_pricing_date], "%m/%d/%Y") : Date.today
 
       if params[:rate_types].include?("full_rate")
         attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").full_rate.to_f) rescue 'N/A'"

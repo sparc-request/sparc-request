@@ -86,6 +86,15 @@ class Identity < ApplicationRecord
 
   scope :overlords, -> { where(catalog_overlord: true) }
 
+  scope :sparc_users, ->{
+    uids =  (ProjectRole.pluck(:identity_id) +
+            ServiceProvider.pluck(:identity_id) +
+            SuperUser.pluck(:identity_id) +
+            CatalogManager.pluck(:identity_id) +
+            ClinicalProvider.pluck(:identity_id)).uniq
+    where(id: uids)
+  }
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################

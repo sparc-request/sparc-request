@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_195251) do
     t.boolean "imported_from_lbb", default: false
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
+    t.index ["first_name"], name: "index_identities_on_first_name"
     t.index ["last_name"], name: "index_identities_on_last_name"
     t.index ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true
     t.index ["reset_password_token"], name: "index_identities_on_reset_password_token", unique: true

@@ -21,7 +21,7 @@
 class Admin::IdentitiesController < Admin::ApplicationController
 
   def index
-    @identities = Identity.order(:last_name, :first_name)
+    @identities = Identity.sparc_users.order(:last_name, :first_name)
 
     respond_to :json, :html
   end

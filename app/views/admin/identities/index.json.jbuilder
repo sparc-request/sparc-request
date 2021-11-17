@@ -1,4 +1,5 @@
-json.(@identities) do |identity|
+json.total @total
+json.rows(@identities) do |identity|
   json.name           display_name(identity)
   json.email          identity.email
   json.phone          format_phone(identity.phone)

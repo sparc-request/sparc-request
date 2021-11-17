@@ -21,9 +21,14 @@
 class Admin::IdentitiesController < Admin::ApplicationController
 
   def index
-    @identities = Identity.sparc_users.order(:last_name, :first_name)
-
-    respond_to :json, :html
+    respond_to do |format|
+      format.html
+      format.json {
+        @identities =      Identity.sparc_users.search_query(params[:search])
+        @total = @identities.count
+        @identities = @identities.sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
+      }
+    end
   end
 
   def edit

@@ -95,6 +95,26 @@ class Identity < ApplicationRecord
     where(id: uids)
   }
 
+  scope :sorted, -> (sort, order) {
+    case sort
+    when 'name'
+      order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
+    when 'created_at'
+      order(Arel.sql("identities.created_at #{order}"))
+    end
+  }
+
+  scope :search_query, -> (term) {
+    return if term.blank?
+
+    identity_arel = Identity.arel_table
+    attrs = [:last_name, :first_name, :email]
+
+    where attrs
+      .map { |attr| identity_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+  }
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################

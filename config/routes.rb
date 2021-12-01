@@ -194,7 +194,7 @@ SparcRails::Application.routes.draw do
 
       resources :access_requests, only: [:index]
     end
-    
+
     resources :permissible_values, except: [:destroy]
     resources :settings,  only: [:index, :edit, :update, :show]
 
@@ -306,6 +306,7 @@ SparcRails::Application.routes.draw do
         get :display_requests
         get :request_access
         get :push_to_oncore
+        get :fee_agreement
         patch :archive
         patch :update_protocol_type
       end

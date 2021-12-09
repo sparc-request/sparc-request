@@ -85,6 +85,15 @@ RSpec.describe FeeAgreement::ClinicalServiceTable do
     @arm.reload
   end
 
+  after :all do
+    @protocol.destroy
+    @inst.destroy
+    @provider_ctrc.destroy
+    @program_outpatient_clinic.destroy
+    @program_nursing.destroy
+    @program_admin.destroy
+  end
+
   context('table initialization') do
     let(:table) {
       FeeAgreement::ClinicalServiceTable.new(

@@ -24,12 +24,12 @@ RSpec.describe FeeAgreement::NonClinicalServiceTable do
   # Setup data
   before :all do
     arm = create(:arm_without_validations)
-    org_C = create(:organization, process_ssrs: false, name: "C")
-    org_B = create(:organization, process_ssrs: true, name: "B", parent: org_C)
-    @org_A = create(:organization, :with_pricing_setup, process_ssrs: false, name: "A", parent: org_B)
+    @org_C = create(:organization, process_ssrs: false, name: "C")
+    @org_B = create(:organization, process_ssrs: true, name: "B", parent: @org_C)
+    @org_A = create(:organization, :with_pricing_setup, process_ssrs: false, name: "A", parent: @org_B)
     @service_request = create(:service_request_without_validations, :with_protocol)
-    @ssr1 = create(:sub_service_request, service_request: @service_request, organization: org_C, status: "not_draft")
-    @ssr2 = create(:sub_service_request, service_request: @service_request, organization: org_C, status: "active")
+    @ssr1 = create(:sub_service_request, service_request: @service_request, organization: @org_C, status: "not_draft")
+    @ssr2 = create(:sub_service_request, service_request: @service_request, organization: @org_C, status: "active")
 
     # per_patient_per_visit_line_item
     service_pppv = create(:service, :without_validations, organization: @org_A, one_time_fee: false)
@@ -58,6 +58,13 @@ RSpec.describe FeeAgreement::NonClinicalServiceTable do
     arm.reload
     @ssr1.reload
     @ssr2.reload
+  end
+
+  after :all do
+    @service_request.protocol.destroy
+    @org_A.destroy
+    @org_B.destroy
+    @org_C.destroy
   end
 
   it('constructs a row for every active otf line item') do

@@ -112,6 +112,15 @@ RSpec.describe FeeAgreement::Report do
     @arm2.reload
   end
 
+  after :all do
+    @protocol.destroy
+    @inst.destroy
+    @provider_ctrc.destroy
+    @program_outpatient_clinic.destroy
+    @program_nursing.destroy
+    @program_admin.destroy
+  end
+
   context 'report creation' do
     let(:report) { FeeAgreement::Report.new(@sr) }
 

@@ -708,7 +708,7 @@ en:
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
-      copyright: "&copy; 2011-2020 MUSC Foundation for Research Development"
+      copyright: "&copy; 2011-2021 MUSC Foundation for Research Development"
       github: "GitHub"
       about:
         header: "About"

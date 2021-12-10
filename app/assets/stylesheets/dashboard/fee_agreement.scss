@@ -18,13 +18,49 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//= link application.js
-//= link catalog_manager/application.js
-
-//= link application.css
-//= link catalog_manager/application.css
-
-//= link notification_email.css
-//= link dashboard/fee_agreement.css
-
-//= link_tree ../images/
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    body {
+      background-color: white !important;
+    }
+    #contentContainer, #contentContainer * {
+      visibility: visible;
+    }
+    #contentContainer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      margin-left: 0px;
+      margin-right: 0px;
+      padding-left: 0px;
+      padding-right: 0px;
+      background-color: white !important;
+    }
+    .card.no-print-border {
+      border: 0 !important;
+    }
+    .card.terms {
+      margin-top: 2rem;
+    }
+    table {
+      page-break-inside:auto;
+    }
+    tr {
+      page-break-inside:avoid !important;
+      page-break-after: auto;
+    }
+    .table tr.table-primary td {
+      background-color: #c1dae6 !important;
+    }
+    .table tr.table-secondary td {
+        background-color: #d6d8db !important;
+    }
+    .table tr.table-primary td.bg-info {
+        background-color: #72ABC5 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}

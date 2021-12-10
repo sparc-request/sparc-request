@@ -1,0 +1,65 @@
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.card.w-100#protocolSummaryCard
+  .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: '#protocolSummary' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = I18n.t('protocols.summary.header', protocol_type: protocol.model_name.human)
+
+  .collapse#protocolSummary.show
+    %table.table.mb-0
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0<
+            = protocol.class.human_attribute_name(:id)
+        %td.d-inline-block.col-10
+          = protocol.try(:id)
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0= Protocol.human_attribute_name(:short_title)
+        %td.d-inline-block.col-10
+          = protocol.short_title
+          = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0 IRB
+        %td.d-inline-block.col-10
+          = protocol.irb_records.map(&:pro_number).join("; ")
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0= t('dashboard.fee_agreement.settings.date')
+        %td.d-inline-block.col-10
+          = DateTime.now
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0= t('dashboard.fee_agreement.settings.primary_investigator')
+        %td.d-inline-block.col-10
+          = protocol.primary_pi.display_name
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0= t('dashboard.fee_agreement.settings.sponsor_name')
+        %td.d-inline-block.col-10
+          = protocol.sponsor_name
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0= t('dashboard.fee_agreement.settings.funding_source')
+        %td.d-inline-block.col-10
+          = protocol.display_funding_source_value

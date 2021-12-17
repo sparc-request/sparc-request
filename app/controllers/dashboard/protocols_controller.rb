@@ -115,7 +115,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def fee_agreement
-    session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
+    session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id, path_name: I18n.t('dashboard.fee_agreement.short_title'))
     params[:column_count] ||= 5
     visit_columns = params[:column_count].to_i
     filters = params[:filters] || {}

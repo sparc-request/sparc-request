@@ -126,12 +126,14 @@ RSpec.describe FeeAgreement::Report do
 
     it 'should create a table for non-clinical services' do
       expect(report.non_clinical_service_table.class).to eq(FeeAgreement::NonClinicalServiceTable)
+      expect(report.non_clinical_services_displayed?).to be(true)
     end
     it 'should create a row in the non-clinical service table for every active otf line item' do
       expect(report.non_clinical_service_table.rows.count).to eq(2)
     end
     it 'should create a clinical service table for each arm' do
       expect(report.clinical_service_tables.size).to eq(2)
+      expect(report.clinical_services_displayed?).to be(true)
     end
 
     it 'computes a clinical service total' do
@@ -200,6 +202,8 @@ RSpec.describe FeeAgreement::Report do
         expect(report.non_clinical_service_table.rows.count).to eq(0)
         expect(report.clinical_service_tables[0].rows.count).to eq(0)
         expect(report.clinical_service_tables[1].rows.count).to eq(1)
+        expect(report.non_clinical_services_displayed?).to be(false)
+        expect(report.clinical_services_displayed?).to be(true)
       end
 
       it 'should only include selected program data in computed totals' do

@@ -231,6 +231,14 @@ module FeeAgreement
       @grand_total = @clinical_total + @non_clinical_service_table.total
     end
 
+    def clinical_services_displayed?
+      @clinical_service_tables.any? {|table| !table.rows.empty? }
+    end
+
+    def non_clinical_services_displayed?
+      !@non_clinical_service_table.rows.empty?
+    end
+
     # @returns Hash of options to use for filtering data.
     def filter_options
       unless @filter_options

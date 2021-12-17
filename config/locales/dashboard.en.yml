@@ -55,6 +55,7 @@ en:
     ###################
     fee_agreement:
       title: "Consolidated Fee Agreement"
+      short_title: "Fee Agreement"
       settings:
         header: "Settings"
         report_configuration: "Report Configuration"
@@ -79,7 +80,7 @@ en:
         total_clinical_services_cost: "Total Clinical Services Cost"
         total_study_budget: "Total Study Budget"
       non_clinical_services:
-        header: "Non-Clinical Services and Initiation Fees"
+        header: "Non-Clinical Services"
         program: "Program"
         service_name: "Service Name"
         your_cost: "Your Cost"

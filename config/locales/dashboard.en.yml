@@ -55,6 +55,7 @@ en:
     ###################
     fee_agreement:
       title: "Consolidated Fee Agreement"
+      short_title: "Fee Agreement"
       settings:
         header: "Settings"
         report_configuration: "Report Configuration"
@@ -79,7 +80,7 @@ en:
         total_clinical_services_cost: "Total Clinical Services Cost"
         total_study_budget: "Total Study Budget"
       non_clinical_services:
-        header: "Non-Clinical Services and Initiation Fees"
+        header: "Non-Clinical Services"
         program: "Program"
         service_name: "Service Name"
         your_cost: "Your Cost"
@@ -99,10 +100,10 @@ en:
         arm_total: "Arm Total: %{total}"
       terms:
         header: "Terms and Conditions"
-        content: "<li>This fee covers the administrative and regulatory review for all protocols using CTRC services.</li>
-          <li>Prices are subject to change due to hospital and institution rate adjustments.</li>
-          <li>Cost estimates are subject to revision periodically and with any change in services requested. If this is a cost estimate for a grant please request an updated cost estimate for every resubmission as rates may change.</li>
-          <li>When budgeting for your project, please include a rate increase each calendar year. Also note that institution costs are subject to F&A.</li>"
+        content: "<li>Prices are subject to change due to hospital and institution rate adjustments.</li>
+        <li>Cost estimates are subject to revision periodically.</li>
+        <li>When budgeting for your protocol remember to consider adding a rate increase each calendar year.</li>
+        <li>In addition, research costs may be subject to F&A; refer to institutional F&A guidelines.</li>"
 
     #########
     # FORMS #

@@ -21,7 +21,8 @@
 %h1.mt-4= t('dashboard.fee_agreement.title')
 = render 'dashboard/protocols/fee_agreement/settings'
 = render 'dashboard/protocols/fee_agreement/study_information', protocol: @protocol
-= render 'dashboard/protocols/fee_agreement/arms', protocol: @protocol
+- if @fee_agreement.clinical_services_displayed?
+    = render 'dashboard/protocols/fee_agreement/arms', protocol: @protocol
 = render 'dashboard/protocols/fee_agreement/totals'
 - if @fee_agreement.non_clinical_services_displayed?
     = render 'dashboard/protocols/fee_agreement/non_clinical_services', protocol: @protocol

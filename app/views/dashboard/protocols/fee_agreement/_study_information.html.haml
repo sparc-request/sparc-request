@@ -47,7 +47,7 @@
         %td.d-inline-block.col-2
           %label.mb-0= t('dashboard.fee_agreement.settings.date')
         %td.d-inline-block.col-10
-          = DateTime.now
+          = DateTime.now.strftime('%-m/%d/%Y')
       %tr.d-flex
         %td.d-inline-block.col-2
           %label.mb-0= t('dashboard.fee_agreement.settings.primary_investigator')

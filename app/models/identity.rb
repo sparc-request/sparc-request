@@ -86,6 +86,35 @@ class Identity < ApplicationRecord
 
   scope :overlords, -> { where(catalog_overlord: true) }
 
+  scope :sparc_users, ->{
+    uids =  (ProjectRole.pluck(:identity_id) +
+            ServiceProvider.pluck(:identity_id) +
+            SuperUser.pluck(:identity_id) +
+            CatalogManager.pluck(:identity_id) +
+            ClinicalProvider.pluck(:identity_id)).uniq
+    where(id: uids)
+  }
+
+  scope :sorted, -> (sort, order) {
+    case sort
+    when 'name'
+      order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
+    when 'created_at'
+      order(Arel.sql("identities.created_at #{order}"))
+    end
+  }
+
+  scope :search_query, -> (term) {
+    return if term.blank?
+
+    identity_arel = Identity.arel_table
+    attrs = [:last_name, :first_name, :email]
+
+    where attrs
+      .map { |attr| identity_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+  }
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
@@ -105,6 +134,14 @@ class Identity < ApplicationRecord
 
   def last_name_first
     "#{last_name.try(:humanize)}, #{first_name.try(:humanize)}"
+  end
+
+  def display_credential_value
+    output =  "#{PermissibleValue.get_value('user_credential', credentials)}"
+    if credentials == "other" && credentials_other.present?
+      output = "Other (#{credentials_other})"
+    end
+    return output
   end
 
  # Returns this user's first and last name humanized, with their email.

@@ -106,6 +106,18 @@ RSpec.describe Dashboard::Breadcrumber do
         expect(breadcrumbs).to have_tag('li', text: "Edit")
         expect(breadcrumbs).to match(/Dashboard.*My Protocol.*Edit/) # expect correct order
       end
+
+      it 'should allow a custom path name option' do
+        @breadcrumber.add_crumbs(protocol_id: protocol.id, path_name: "Test")
+
+        breadcrumbs = @breadcrumber.breadcrumbs
+
+        expect(breadcrumbs).to have_tag('a', count: 2) # expect correct number of links, so the following is exhaustive
+        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols" }, text: "Dashboard")
+        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/#{protocol.id}" }, text: "(#{protocol.id}) My Protocol")
+        expect(breadcrumbs).to have_tag('li', text: "Test")
+        expect(breadcrumbs).to match(/Dashboard.*My Protocol.*Test/) # expect correct order
+      end
     end
   end
 end

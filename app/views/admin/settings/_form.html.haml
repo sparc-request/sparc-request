@@ -30,7 +30,7 @@
       .modal-body
         .form-group
           = f.label :value
-          = f.text_area :value, rows:2, value: raw(setting[:value]).html_safe, class: 'form-control'
+          = f.text_area :value, rows:2, value: raw(setting[:value]), class: 'form-control'
         .form-group
           - data_types = ['boolean', 'json', 'email', 'url', 'path', 'string']
           = f.label :data_type

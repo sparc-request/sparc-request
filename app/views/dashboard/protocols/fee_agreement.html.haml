@@ -18,39 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!!
-%html
-  %head
-    %title
-      = t(:proper)[:header]
-    = csrf_meta_tags
-    %meta{ charset: 'utf8' }
-    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }
-    = stylesheet_link_tag 'application', media: 'all'
-    = javascript_include_tag 'application'
-    - if content_for(:includes)
-      = yield(:includes)
-    = favicon_link_tag asset_path('favicon.ico')
-    = render 'layouts/i18n-js'
-  %body.bg-light
-    - unless Rails.env.production?
-      %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
-        = Rails.env.capitalize
-    = render 'layouts/header', location: @location || 'proper'
-    = render 'layouts/navbar'
-    - if content_for(:sub_header)
-      %subheader.container-fluid.mb-3#siteSubheader
-        = yield(:sub_header)
-    .container-fluid#contentContainer
-      - if @protocol
-        = hidden_field_tag :protocol_id, @protocol.id, disabled: true
-      - if @service_request
-        = hidden_field_tag :srid, @service_request.id, disabled: true
-      - if @sub_service_request
-        = hidden_field_tag :ssrid, @sub_service_request.id, disabled: true
-      - unless content_for?(:flash)
-        = render 'layouts/flash'
-      = content_for?(:content) ? yield(:content) : yield
-    = render 'layouts/footer'
-    = render 'layouts/back_to_top'
-    = render 'layouts/modal'
+%h1.mt-4= t('dashboard.fee_agreement.title')
+= render 'dashboard/protocols/fee_agreement/settings'
+= render 'dashboard/protocols/fee_agreement/study_information', protocol: @protocol
+- if @fee_agreement.clinical_services_displayed?
+    = render 'dashboard/protocols/fee_agreement/arms', protocol: @protocol
+= render 'dashboard/protocols/fee_agreement/totals'
+- if @fee_agreement.non_clinical_services_displayed?
+    = render 'dashboard/protocols/fee_agreement/non_clinical_services', protocol: @protocol
+- if @fee_agreement.clinical_services_displayed?
+    = render 'dashboard/protocols/fee_agreement/clinical_services_wrapped', protocol: @protocol, clinical_service_tables: @fee_agreement.clinical_service_tables
+= render 'dashboard/protocols/fee_agreement/terms'

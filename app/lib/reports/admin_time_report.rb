@@ -136,7 +136,7 @@ class AdminTimeReport < ReportingModule
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
 
     # submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
-    submitted_at = "2012-03-01".to_date..Date.today
+    submitted_at = "2012-03-01".to_date..Time.current
     statuses = args[:status] || PermissibleValue.get_key_list('status') # use all if none are selected
 
     return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:id => args[:service_id]}

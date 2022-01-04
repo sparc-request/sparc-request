@@ -1,0 +1,18 @@
+%main.card#identitiesCard
+  .card-header.bg-primary.text-white
+    %h3.mb-0
+      = t('admin.identities.table.header')
+  #identitiesTableToolbar
+  %table.table#identitiesTable{ data: { toggle: 'table', url: admin_identities_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true',  pagination: 'true', page_size: '25', side_pagination: 'server', sort_name: 'name', sort_order: 'asc', toolbar: '#identitiesTableToolbar' } }
+    %thead.bg-light
+      %tr
+        %th{ data: { field: 'name', sortable: 'true' } }
+          = Identity.human_attribute_name(:name)
+        %th{ data: { field: 'email' } }
+          = Identity.human_attribute_name(:email)
+        %th{ data: { field: 'phone' } }
+          = Identity.human_attribute_name(:phone)
+        %th.w-10{ data: { field: 'created_at', align: 'center', sortable: 'true', sorter: 'dateSorter' } }
+          = Identity.human_attribute_name(:created_at)
+        %th{ data: { class: 'actions', align: 'center', field: 'actions' } }
+          = t('actions.actions')

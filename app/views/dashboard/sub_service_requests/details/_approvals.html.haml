@@ -22,17 +22,17 @@
   .form-row
     .form-group.col-3
       .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-        = f.check_box :nursing_nutrition_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.nursing_nutrition_approved? }
+        = f.check_box :nursing_nutrition_approved?, { class: 'custom-control-input approval-check', disabled: sub_service_request.nursing_nutrition_approved? }, 'Nursing/Nutrition Approved'
         = f.label :nursing_nutrition_approved, class: 'custom-control-label'
     .form-group.col-3
       .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-        = f.check_box :lab_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.lab_approved? }
+        = f.check_box :lab_approved?, { class: 'custom-control-input approval-check', disabled: sub_service_request.lab_approved? }, 'Lab Approved'
         = f.label :lab_approved, class: 'custom-control-label'
     .form-group.col-3
       .custom-control.custom-checkbox.custom-control-lg.custom-control-inline<>
-        = f.check_box :imaging_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.imaging_approved? }
+        = f.check_box :imaging_approved?, { class: 'custom-control-input approval-check', disabled: sub_service_request.imaging_approved? }, 'Imaging Approved'
         = f.label :imaging_approved, class: 'custom-control-label'
     .form-group.col-3
       .custom-control.custom-checkbox.custom-control-lg.custom-control-inline.mr-0<>
-        = f.check_box :committee_approved, { class: 'custom-control-input approval-check', disabled: sub_service_request.committee_approved? }
+        = f.check_box :committee_approved?, { class: 'custom-control-input approval-check', disabled: sub_service_request.committee_approved? }, 'Committee Approved'
         = f.label :committee_approved, class: 'custom-control-label'

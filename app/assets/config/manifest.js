@@ -25,5 +25,6 @@
 //= link catalog_manager/application.css
 
 //= link notification_email.css
+//= link dashboard/fee_agreement.css
 
 //= link_tree ../images/

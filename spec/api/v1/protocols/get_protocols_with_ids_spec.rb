@@ -47,7 +47,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(JSON.parse(response.body)['protocols']).to eq(
             protocols.first(4).map{ |p| 
               p.attributes.
-              except('id', 'created_at', 'updated_at', 'deleted_at','study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email', 'all_research_billing').
+              except('id', 'created_at', 'updated_at', 'deleted_at','study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email', 'default_billing_type').
               merge({ 
                 'sparc_id'                      => p.id,
                 'callback_url'                  => p.remote_service_callback_url,
@@ -70,7 +70,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(JSON.parse(response.body)['protocols']).to eq(
             protocols.first(4).map{ |p| 
               p.attributes.
-              except('id', 'created_at', 'updated_at', 'deleted_at','study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email', 'all_research_billing').
+              except('id', 'created_at', 'updated_at', 'deleted_at','study_phase', 'research_master_id', 'sub_service_requests_count', 'rmid_validated', 'locked', 'budget_agreed_upon_date', 'initial_budget_sponsor_received_date', 'initial_amount', 'negotiated_amount', 'initial_amount_clinical_services', 'negotiated_amount_clinical_services', 'guarantor_contact', 'guarantor_phone', 'guarantor_email', 'default_billing_type').
               merge({ 
                 'sparc_id'                      => p.id,
                 'callback_url'                  => p.remote_service_callback_url,

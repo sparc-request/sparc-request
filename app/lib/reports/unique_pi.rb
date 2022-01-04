@@ -30,7 +30,7 @@ class UniquePiReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Time.current},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -121,7 +121,7 @@ class UniquePiReport < ReportingModule
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
 
-    return :sub_service_requests => {:organization_id => ssr_organization_ids}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return :sub_service_requests => {:organization_id => ssr_organization_ids}, :project_roles => {:role => 'primary-pi'}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for

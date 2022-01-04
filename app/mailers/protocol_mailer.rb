@@ -32,13 +32,14 @@ class ProtocolMailer < ActionMailer::Base
     @action               = params[:action]
     @service_request      = @protocol.service_requests.first
 
-    send_email(@recipient, t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
+    send_email(@recipient,
+               t("mailers.protocol_mailer.archive_email.#{@action}.subject", protocol_id: @protocol.id))
   end
 
   def request_access_email
     @recipient            = params[:recipient]
     @protocol             = params[:protocol]
-    @requester             = params[:requester]
+    @requester            = params[:requester]
     @service_request      = @protocol.service_requests.first
 
     send_email(@recipient,
@@ -46,11 +47,23 @@ class ProtocolMailer < ActionMailer::Base
                @requester)
   end
 
+  def merge_protocols_email
+    @recipient         = params[:recipient]
+    @protocol          = params[:protocol]
+    @merged_id         = params[:merged_id]
+    @service_request   = @protocol.service_requests.first
+
+    send_email(@recipient,
+               t("mailers.protocol_mailer.merge_protocols_email.subject", protocol_id: @protocol.id,  merged_id: @merged_id))
+  end
+
   private
 
   def send_email(recipient, subject, cc=nil)
-    @send_to = recipient
+    unless recipient.imported_from_lbb
+      @send_to = recipient
 
-    mail(to: recipient.email, subject: subject, cc: cc.try(:email))
+      mail(to: recipient.email, subject: subject, cc: cc.try(:email))
+    end
   end
 end

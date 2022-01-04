@@ -49,7 +49,7 @@ class TestReport < ReportingModule
   # :selectpicker => this adds the class of 'selectpicker' onto the item, for usage by the selectpicker dropdown js.
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Time.current, :required => true},
       Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},

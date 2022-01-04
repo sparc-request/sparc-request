@@ -27,16 +27,19 @@
         %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
-        .form-group.multi_toggle
-          = label_tag 'all_research_billing','', class: 'col-sm-4 control-label'
-          .col-sm-7
-            .btn-group{ role: 'group'}
-              %label.btn
-                = f.radio_button :all_research_billing, 'true', {checked: f.object.all_research_billing, class: 'hidden'}
+        .form-group.row
+          = label_tag 'default_billing_type','Default Billing Type:', class: 'col-sm-4 control-label align-self-center'
+          .col-sm-8
+            .btn-group.btn-group-toggle{ role: 'group', data: {toggle: 'buttons'} }
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "r" ? 'active' : ''} "}
+                = f.radio_button :default_billing_type, 'r', {checked: f.object.default_billing_type == "r"}
                 = 'Research Coverage (R)'
-              %label.btn{style: 'border-radius: 0 4px 4px 0;'}
-                = f.radio_button :all_research_billing, 'false', {checked: !f.object.all_research_billing, class: 'hidden'}
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "t" ? 'active' : ''} "}
+                = f.radio_button :default_billing_type, 't', {checked: f.object.default_billing_type == "t"}
                 = 'Third Party (Insurance) Coverage (T)'
+              %label{class: "btn btn-sm btn-outline-primary #{f.object.default_billing_type == "o" ? 'active' : ''} "}
+                = f.radio_button :default_billing_type, 'o', {checked: f.object.default_billing_type == "o"}
+                = 'Other Coverage (O)'
       .modal-footer
         %button.btn{data: {dismiss: 'modal'}, type: 'button'} Close
-        %input#create_service_submit.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+        %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save], data: { disable_with: "Please wait..." }}

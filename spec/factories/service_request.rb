@@ -21,7 +21,6 @@
 FactoryBot.define do
   factory :service_request do
     status               { Faker::Lorem.sentence(word_count: 3) }
-    approved             { false }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
@@ -29,10 +28,6 @@ FactoryBot.define do
 
     trait :with_protocol do
       protocol factory: :protocol_federally_funded
-    end
-
-    trait :approved do
-      approved {true}
     end
 
     trait :submitted do

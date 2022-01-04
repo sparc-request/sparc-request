@@ -25,6 +25,9 @@ class PermissibleValue < ApplicationRecord
 
   acts_as_list column: :sort_order, scope: [:category]
 
+  validates_presence_of :key, :value, :category
+  validates :sort_order, numericality: { allow_blank: true, only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :key, uniqueness: { scope: :category }
 
   default_scope { order(:sort_order) }
@@ -100,4 +103,16 @@ class PermissibleValue < ApplicationRecord
       end
     end
   end
+
+
+  def self.editable_categories
+    PermissibleValue.pluck(:category).uniq.sort! - self.uneditable_categories
+  end
+
+  ### Hard coded for those categories that should not be modified as they are tied to some
+  ### important pieces of the application logic.  
+  def self.uneditable_categories
+    ['funding_status', 'funding_source', 'potential_funding_source', 'proxy_right', 'user_role']
+  end
+
 end

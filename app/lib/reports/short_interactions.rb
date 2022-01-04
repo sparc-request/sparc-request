@@ -30,7 +30,7 @@ class ShortInteractionsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Created Date Range" => {:field_type => :date_range, :for => "short_interaction_created_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Created Date Range" => {:field_type => :date_range, :for => "short_interaction_created_at", :from => "2012-03-01".to_date, :to => Time.current},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},

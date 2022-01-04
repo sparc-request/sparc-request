@@ -40,15 +40,6 @@ module Dashboard::EpicQueuesHelper
     end
   end
 
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:dashboard)[:epic_queues][:date_formatter])
-    else
-      ''
-    end
-  end
-
   def format_epic_queue_created_at(epic_queue)
     created_at = epic_queue.created_at
     created_at.strftime(t(:dashboard)[:epic_queues][:date_formatter])

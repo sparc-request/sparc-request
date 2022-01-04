@@ -22,3 +22,5 @@ $("#modalContainer").html("<%= j render 'dashboard/study_level_activities/form',
 $("#modalContainer").modal('show')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+$('select#line_item_service_id').next('button.dropdown-toggle').prop('title', "")
+

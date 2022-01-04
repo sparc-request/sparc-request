@@ -19,6 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Admin::ApplicationController < ApplicationController
+  layout 'admin/application' 
+
+  before_action :authenticate_identity!
+  before_action :authorize_site_admin
+
   def set_highlighted_link
     @highlighted_link ||= 'sparc_admin'
   end

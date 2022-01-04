@@ -50,6 +50,60 @@ en:
       type: 'Type'
       actions: 'Actions'
 
+    ###################
+    #  FEE AGREEMENT  #
+    ###################
+    fee_agreement:
+      title: "Consolidated Fee Agreement"
+      short_title: "Fee Agreement"
+      settings:
+        header: "Settings"
+        report_configuration: "Report Configuration"
+        max_columns_per_table: "Max Visit Columns Per Table"
+        filters: "Filters"
+        status: "Status"
+        program: "Program"
+      study_info:
+        irb: "IRB"
+        date: "Date"
+        primary_investigator: "Primary Investigator"
+        sponsor_name: "Sponsor Name"
+        funding_source: "Funding Source"
+      arms:
+        header: "Arms"
+        total_count: "Total count of Arms: %{count}"
+        name: "Arm Name"
+        enrollment: "Enrollment"
+      budget_summary:
+        header: "Budget Summary"
+        total_non_clinical_services_cost: "Total Non-Clinical Services Cost"
+        total_clinical_services_cost: "Total Clinical Services Cost"
+        total_study_budget: "Total Study Budget"
+      non_clinical_services:
+        header: "Non-Clinical Services"
+        program: "Program"
+        service_name: "Service Name"
+        your_cost: "Your Cost"
+        quantity: "Quantity"
+        total: "Total"
+      clinical_services:
+        header: "Clinical Services"
+        program: "Program"
+        service_name: "Service Name"
+        service_cost: "Service Cost"
+        unit: "Unit"
+        enrollment: "Enrollment"
+        per_service_total: "Per Service Total"
+        service_notes: "Service Notes"
+        program_per_patient: "%{name} (Per Patient)"
+        total_visit_cost_per_patient: "Total Visit Cost (Per Patient)"
+        arm_total: "Arm Total: %{total}"
+      terms:
+        header: "Terms and Conditions"
+        content: "<li>Prices are subject to change due to hospital and institution rate adjustments.</li>
+        <li>Cost estimates are subject to revision periodically.</li>
+        <li>When budgeting for your protocol remember to consider adding a rate increase each calendar year.</li>
+        <li>In addition, research costs may be subject to F&A; refer to institutional F&A guidelines.</li>"
 
     #########
     # FORMS #
@@ -176,6 +230,7 @@ en:
         consolidated_all: "All Requests"
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
+        fee_agreement: "Fee Agreement"
         tooltips:
           consolidated_request: "Quick access to view all service requests"
           export_consolidated_request: "Quick access to export all service requests to Excel"
@@ -259,7 +314,7 @@ en:
           pushed: "Request sent to Epic!"
           failed: "Request has errors and"
         fulfillment:
-          header: "Fulfillment"
+          header: "SPARCFulfillment"
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           pending: "Pending"
@@ -306,6 +361,7 @@ en:
           new: "Add Non-Clinical Services related to the selected organization"
           view: "View Details"
           fulfillments: "View Fulfillments for this Service"
+          dropdown_disabled: "Has Fulfillments, Edit Disabled"
       history:
         header: "History"
         status_history:
@@ -331,6 +387,13 @@ en:
           actions:
             overridden: "Overridden"
             deleted: "Deleted"
+        rate_history:
+          header: "Modified Rate History"
+          date_changed: "Date Changed"
+          service_name: "Service Name"
+          modified_by: "Modified By"
+          cpt_code: "CPT Code"
+          modified_rate: "Modified Rate"
         tooltips:
           status_history: "Status log of request"
           approval_history: "Time stamp log of approvals"

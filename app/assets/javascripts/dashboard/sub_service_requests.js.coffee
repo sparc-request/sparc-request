@@ -95,14 +95,16 @@ $ ->
     ConfirmSwal.fire({}).then (result) ->
       if result.value
         $check.prop('checked', true)
-        data = $check.serialize()
+        approval = $check.val()
         $check.prop('disabled', true)
 
         $.ajax
           method: 'put'
           dataType: 'script'
-          url: "/dashboard/sub_service_requests/#{getSSRId()}"
-          data: data
+          url: "/dashboard/sub_service_requests/#{getSSRId()}/update_approval"
+          data:
+            sub_service_request:
+              approval: approval
 
   # Milestones
   $(document).on 'keyup', '#consultArrangedDatePicker input, #requesterContactedDatePicker input', (event) ->
@@ -145,7 +147,7 @@ $ ->
   ##############################
 
   $(document).on 'change', '#studyLevelActivitiesForm #line_item_service_id', ->
-    if $('#studyLevelActivitiesForm').hasClass('.new_line_item')
+    if $('#studyLevelActivitiesForm').hasClass('new_line_item')
       $.ajax
         method: 'get'
         dataType: 'script'

@@ -1,0 +1,70 @@
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.card.w-100.no-print-border
+  .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: '#clinicalServicesSummary' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      =t('dashboard.fee_agreement.clinical_services.header')
+
+  .collapse#clinicalServicesSummary.show
+    .card-body
+      - clinical_service_tables.each do |table|
+        .octri-clinical-service-table.mb-4
+          %h2= table.name
+          %table.table.table-sm.table-bordered
+            %tr
+              %th=t('dashboard.fee_agreement.clinical_services.program')
+              %th=t('dashboard.fee_agreement.clinical_services.service_name')
+              %th=t('dashboard.fee_agreement.clinical_services.service_cost')
+              %th=t('dashboard.fee_agreement.clinical_services.unit')
+              %th=t('dashboard.fee_agreement.clinical_services.enrollment')
+              - table.visit_columns.each do |visit_name|
+                %th= visit_name
+              - if table.last_table_for_arm
+                %th=t('dashboard.fee_agreement.clinical_services.per_service_total')
+                %th=t('dashboard.fee_agreement.clinical_services.service_notes')
+
+            %tbody
+              - table.rows_by_program.each do |program, rows|
+                - rows.each_with_index do |row, i|
+                  %tr
+                    %td=row.program_name
+                    %td=row.service_name
+                    %td=number_to_currency(row.displayed_service_cost)
+                    %td=row.unit
+                    %td=row.enrollment
+                    -row.visit_quantities.each do |visit_qty|
+                      %td=visit_qty
+                    - if table.last_table_for_arm
+                      %td= number_to_currency(row.per_service_total)
+                      %td=row.service_notes
+                %tr.table-secondary
+                  %td{colspan: 5}=t('dashboard.fee_agreement.clinical_services.program_per_patient', name: program)
+                  -table.visit_range.each do |visit_position|
+                    %td=number_to_currency(table.visit_subtotal(program, visit_position))
+                  - if table.last_table_for_arm
+                    %td{colspan: 2}
+              %tr.table-primary
+                %td{colspan: 5}=t('dashboard.fee_agreement.clinical_services.total_visit_cost_per_patient')
+                -table.visit_range.each do |visit_position|
+                  %td=number_to_currency(table.visit_total(visit_position))
+                - if table.last_table_for_arm
+                  %td.bg-info{colspan: 2}=t('dashboard.fee_agreement.clinical_services.arm_total', total: number_to_currency(table.total()))

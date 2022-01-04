@@ -18,12 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @error %>
-AlertSwal.fire(
-  type: 'error'
-  title: I18n.t('protocols.summary.oncore.error')
-  text: "<%= @error %>"
-)
+<% if @errors && !@successful_oncore_push %>
+icon = 'error'
+title = I18n.t('protocols.summary.oncore.error')
+text = "<%= @errors[:base].first %>"
+
+<% elsif @errors && @successful_oncore_push %>
+icon = 'info'
+title = I18n.t('protocols.summary.oncore.pushed_to_oncore')
+text = "<%= @errors[:base].first %>"
+
 <% else %>
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+icon = 'success'
+title = I18n.t('protocols.summary.oncore.pushed_to_oncore')
+text = ""
 <% end %>
+
+AlertSwal.fire(
+  icon: icon
+  title: title
+  text: text
+  showCloseButton: true
+  showConfirmButton: false
+  cancelButtonText: I18n.t('actions.close')
+)

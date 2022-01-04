@@ -47,10 +47,10 @@ task :update_related_services => :environment do
       CSV.foreach(input_file, headers: true) do |row|
         service = Service.where(id: row['Service ID'].to_i).first
         related_service_id = row['Related Service ID'].to_i
-        optional = row['Optional'].to_i
+        required = row['Required'].to_i
         if service
           puts "created service relation: service_id: #{service.id}, related_service_id: #{related_service_id}"
-          service.service_relations.create(related_service_id: related_service_id, optional: optional)
+          service.service_relations.create(related_service_id: related_service_id, required: required)
           service.save
           updated_service_relations_count += 1
         else

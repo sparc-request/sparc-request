@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User adds an visit to an arm', js: true do
+RSpec.describe 'User adds a visit to an arm', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -55,4 +55,62 @@ RSpec.describe 'User adds an visit to an arm', js: true do
     expect(@arm.reload.visit_groups.count).to eq(@vg_count + 1)
     expect(page).to have_selector('.visit-group td', text: 'No Visitors Allowed')
   end
+
+  it 'should calculate min and max values correctly' do
+    @visit_group1 = @arm.visit_groups.first
+    @visit_group2 = create(:visit_group, arm_id: @arm.id, name: 'Visit 2', position: 2, day: 10)
+
+    click_link I18n.t('visit_groups.new')
+    wait_for_javascript_to_finish
+
+    bootstrap_select '#visit_group_position', 2
+
+    min = @visit_group1.day + 1
+    max = @visit_group2.day - 1
+    expect(page).to have_content('Min: ' + min.to_s + ' Max: ' + max.to_s)
+  end
+
+  it 'should increment consecutive visits correctly when added between two consecutive visits' do
+    @visit_group1 = @arm.visit_groups.first
+    @visit_group2 = create(:visit_group, arm_id: @arm.id, name: 'Visit 2', position: 2, day: 2)
+
+    click_link I18n.t('visit_groups.new')
+    wait_for_javascript_to_finish
+
+    fill_in 'visit_group_name', with: 'Visit 3'
+    fill_in 'visit_group_day', with: 2
+    bootstrap_select '#visit_group_position', 2
+
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
+
+    @visit_group3 = VisitGroup.where(name: 'Visit 3').first
+
+    expect(@visit_group3.position).to eq(2)
+    expect(@visit_group2.reload.position).to eq(3)
+
+  end
+
+  it 'should set the day correctly for consecutive visits when added between two consecutive visits' do
+    @visit_group1 = @arm.visit_groups.first
+    @visit_group2 = create(:visit_group, arm_id: @arm.id, name: 'Visit 2', position: 2, day: 2)
+    @visit_group3 = create(:visit_group, arm_id: @arm.id, name: 'Visit 3', position: 3, day: 3)
+
+    click_link I18n.t('visit_groups.new')
+    wait_for_javascript_to_finish
+
+    fill_in 'visit_group_name', with: 'Visit 4'
+    fill_in 'visit_group_day', with: 2
+    bootstrap_select '#visit_group_position', 2
+
+    click_button I18n.t('actions.submit')
+    wait_for_javascript_to_finish
+
+    @visit_group4 = VisitGroup.where(name: 'Visit 4').first
+
+    expect(@visit_group2.reload.day).to eq(@visit_group4.day + 1)
+    expect(@visit_group3.reload.day).to eq(@visit_group2.reload.day + 1)
+
+  end
+
 end

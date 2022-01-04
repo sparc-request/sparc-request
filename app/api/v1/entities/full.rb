@@ -151,7 +151,6 @@ module V1
             :federal_grant_code_id,
             :federal_non_phs_sponsor,
             :federal_phs_sponsor,
-            :potential_funding_source_other,
             :funding_source_other,
             :last_epic_push_time,
             :last_epic_push_status,
@@ -206,8 +205,7 @@ module V1
     root 'service_requests', 'service_request'
 
     expose  :protocol_id,
-            :status,
-            :approved
+            :status
 
     with_options(format_with: :iso_timestamp) do
       expose :submitted_at
@@ -222,10 +220,6 @@ module V1
             :organization_id,
             :owner_id,
             :ssr_id,
-            :nursing_nutrition_approved,
-            :lab_approved,
-            :imaging_approved,
-            :committee_approved,
             :in_work_fulfillment,
             :routing,
             :org_tree_display,

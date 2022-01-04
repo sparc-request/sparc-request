@@ -6,7 +6,7 @@ gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
-gem 'audited', '~> 4.9'
+gem 'audited', '~> 5.0'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'babel-transpiler'
@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.14'
+gem 'capistrano', '~> 3.16'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -23,11 +23,11 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 0.9.10'
-gem 'deep_cloneable', '~> 3.0.0'
+gem 'curb', '~> 0.9.11'
+gem 'deep_cloneable', '~> 3.1.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.7'
+gem 'devise', '~> 4.8'
 gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
@@ -35,19 +35,19 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.4.0'
-gem 'grape-entity', '~> 0.8.1'
+gem 'grape', '1.5.3'
+gem 'grape-entity', '~> 0.10.1'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.18.1'
+gem 'httparty', '~> 0.20.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
-gem 'jbuilder', '~> 2.10'
+gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
@@ -58,7 +58,7 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.16.3'
+gem 'net-ldap', '~> 0.17.0'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
@@ -66,11 +66,11 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.3.0' # Check usage
+gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 5.5'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.2.4.6'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -94,7 +94,7 @@ group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.7.0' # Check usage
+  gem 'addressable', '~> 2.8.0' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage
@@ -106,7 +106,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'database_cleaner' # Consider removing https://stackoverflow.com/q/49246124
   gem 'email_spec' # Check usage
   gem 'factory_bot_rails'
   gem 'parallel_tests' # Check usage
@@ -117,12 +116,12 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 4.0'
+  gem 'rspec-rails', '~> 5.0'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.4'
+  gem 'webdrivers', '~> 4.6'
   gem 'webmock'
 end
 
@@ -147,5 +146,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof', '~> 1.4.1' # Check usage
+  gem 'ruby-prof', '~> 1.4.3' # Check usage
 end

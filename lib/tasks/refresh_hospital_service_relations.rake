@@ -18,21 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-RSpec.configure do |config|
-  config.before(:suite) do
-    DatabaseCleaner[:active_record, connection: :test].clean_with :truncation
+desc "Destroying all service relations on hospital services"
+task :refresh_hospital_service_relations => :environment do
 
-    # Ensure that this data is created after databasecleaner finishes
-    populate_settings_before_suite
-    populate_permissible_values_before_suite
+  def prompt(*args)
+    print(*args)
+    STDIN.gets.strip
   end
 
-  config.before(:each) do |example|
-    DatabaseCleaner[:active_record, connection: :test].strategy = :truncation, { except: %w[permissible_values settings] }
-    DatabaseCleaner.start
+  # Get linked services on hospital services: services where send_to_epic is true and cpt_code is not nil
+  hospital_service_relations = ServiceRelation.where(service_id: Service.where(send_to_epic: 1).where.not(cpt_code: nil).pluck(:id))
+  continue = prompt("Are you sure you want to destroy #{hospital_service_relations.count} service relations on hospital services? (Y/n): ")
+  if (continue == 'y') || (continue == 'Y')
+    ActiveRecord::Base.transaction do
+      puts "Destroying #{hospital_service_relations.count} service relations#{hospital_service_relations.count > 100 ? ', this may take a few moments' : ''}..."
+      hospital_service_relations.destroy_all
+
+      # Update service relations with update_related_services
+      Rake::Task["update_related_services"].invoke
+    end
+  else
+    puts "Exiting rake task..."
   end
 
-  config.append_after(:each) do
-    DatabaseCleaner.clean
-  end
 end

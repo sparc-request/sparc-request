@@ -58,7 +58,8 @@ class Dashboard::Breadcrumber
         protocol_label_and_url,
         edit_protocol_label_and_url,
         ssr_label_and_url,
-        notifications_label_and_url
+        notifications_label_and_url,
+        path_name_label_and_url
     ].compact!
 
     crumbs = [content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_path(@filters)))]
@@ -95,5 +96,10 @@ class Dashboard::Breadcrumber
   def edit_protocol_label_and_url
     protocol_id = @crumbs[:edit_protocol]
     protocol_id ? ["Edit", "/dashboard/protocols/#{protocol_id}/edit"] : nil
+  end
+
+  def path_name_label_and_url
+    name = @crumbs[:path_name]
+    name ? [name, nil] : nil
   end
 end

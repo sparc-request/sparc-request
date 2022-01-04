@@ -71,16 +71,18 @@ class ProtocolsController < ApplicationController
   end
 
   def update_billing
-    @protocol.all_research_billing = protocol_params[:all_research_billing]
+    old_billing_type = @protocol.default_billing_type
+    @protocol.default_billing_type = protocol_params[:default_billing_type]
     @protocol.save(validate: false)
     @service_request = @protocol.service_requests.first
     @tab = 'billing_strategy'
     setup_calendar_pages
-    research_billing = @protocol.all_research_billing
     @protocol.visits.each do |visit|
       if visit.indicated? 
-        indicated_quantity = determine_quantity(visit, research_billing)
-        visit.update_attributes(research_billing_qty: research_billing ? indicated_quantity : 0, insurance_billing_qty: research_billing ? 0 : indicated_quantity)
+        indicated_quantity = determine_visit_billing_quantity(visit, old_billing_type)
+        set_billing_quantities(protocol_params[:default_billing_type], indicated_quantity)
+
+        visit.update_attributes(research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
       end
     end
   end
@@ -191,6 +193,20 @@ class ProtocolsController < ApplicationController
 
   private
 
+  def set_billing_quantities(type, unit_minimum)
+    @r_quantity = type == "r" ? unit_minimum : 0
+    @t_quantity = type == "t" ? unit_minimum : 0
+    @o_quantity = type == "o" ? unit_minimum : 0
+  end
+
+  def determine_visit_billing_quantity(visit, billing_type)
+    case billing_type
+      when "r" then visit.research_billing_qty
+      when "t" then visit.insurance_billing_qty
+      when "o" then visit.effort_billing_qty
+    end
+  end
+
   def push_protocol_to_epic protocol
     # Run the push to epic call in a child thread, so that we can return
     # the confirmation page right away without blocking (in testing, the
@@ -224,9 +240,5 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
-  end
-
-  def determine_quantity(visit, research_billing)
-    research_billing ? visit.insurance_billing_qty : visit.research_billing_qty
   end
 end

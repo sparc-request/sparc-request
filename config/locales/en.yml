@@ -72,6 +72,13 @@ en:
       feedback:
         typeofrequest: "Type of Request"
         sparc_request_id: "SRID"
+    errors:
+      models:
+        oncore_protocol:
+          attributes:
+            base:
+              already_exists: "Study already exists in OnCore."
+              pi_not_in_oncore: "PI does not exist in OnCore. Study still pushed to OnCore."
 
   ################
   # ACTIVERECORD #
@@ -126,7 +133,7 @@ en:
         name: "Name"
         other_text: "Other"
       investigational_products_info:
-        exemption_type: "Exemption Type"
+        exemption_type: "Device Exemption Type"
         ind_number: "IND #"
         ind_on_hold: "IND on Hold?"
         inv_device_number: "Device #"
@@ -167,6 +174,15 @@ en:
         shared: "Share with administrators"
       option:
         content: "Option"
+      permissible_value:
+        category: "Category"
+        key: "Key"
+        value: "Value"
+        sort_order: "Sort Order"
+        default: "Default"
+        is_available: "Active"
+        created_at: "Created"
+        updated_at: "Updated"
       project:
         id: "Project ID"
         title: "Project Title"
@@ -237,6 +253,16 @@ en:
         status: "Status"
         forms: "Forms"
         previously_submitted: "Previously Submitted"
+      setting:
+        key: "Key"
+        value: "Value"
+        data_type: "Data Type"
+        friendly_name: "Friendly Name"
+        description: "Description"
+        group: "Group"
+        version: "Version"
+        parent_key: "Parent Key"
+        parent_value: "Parent Value"
       sub_service_request:
         srid: "SRID"
       short_interaction:
@@ -682,7 +708,7 @@ en:
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
-      copyright: "&copy; 2011-2020 MUSC Foundation for Research Development"
+      copyright: "&copy; 2011-2021 MUSC Foundation for Research Development"
       github: "GitHub"
       about:
         header: "About"
@@ -748,6 +774,9 @@ en:
       request_access_email:
         subject: "SPARCRequest %{requester} Requests Access to Protocol %{protocol_id}"
         introduction: "%{requester} is requesting access to protocol %{protocol_id}. You may review this protocol and grant protocol access via <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
+      merge_protocols_email:
+        subject: "SPARCRequest Protocols Merge Notification (Protocols %{merged_id}, %{protocol_id})"
+        introduction: "Protocol #%{merged_id} has been merged into #%{protocol_id} in SPARCRequest. You can access the protocol by <a href='%{link}' target='blank'>this direct link to SPARCDashboard</a>."
 
   ############
   # Messages #
@@ -803,7 +832,6 @@ en:
         push_to_oncore: "Push to OnCore"
         pushed_to_oncore: "Study Pushed to OnCore!"
         error: "Unable to push Study to OnCore"
-        already_exists: "Study %{protocol_id} already exists in OnCore."
       tooltips:
         notes: "Protocol notes viewable to Administrators and Authorized Users"
         details: "Quick access to protocol information"

@@ -63,7 +63,7 @@ module ProtocolsControllerShared
     end
 
     params.require(:protocol).permit(
-      :all_research_billing,
+      :default_billing_type,
       :archived,
       :arms_attributes,
       :billing_business_manager_static_email,
@@ -94,7 +94,6 @@ module ProtocolsControllerShared
       :negotiated_amount_clinical_services,
       :next_ssr_id,
       :potential_funding_source,
-      :potential_funding_source_other,
       :potential_funding_start_date,
       :requester_id,
       :research_master_id,

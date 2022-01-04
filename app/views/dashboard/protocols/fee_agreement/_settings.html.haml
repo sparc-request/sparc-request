@@ -1,0 +1,59 @@
+-# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- filters = params[:filters] || {}
+- selected_statuses = filters[:status] || []
+- selected_programs = filters[:program] || []
+
+.card.w-100.no-print
+  .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: '#settings' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr-2')
+      = t('dashboard.fee_agreement.settings.header')
+
+  .collapse#settings.show
+    .card-body
+      / .debug=debug params
+      = form_tag fee_agreement_dashboard_protocol_path(params[:id]), method: :get do
+        %h4= t('dashboard.fee_agreement.settings.report_configuration')
+        .form-group
+          %label{:for => 'column_count'}=t('dashboard.fee_agreement.settings.max_columns_per_table')
+          .form-group
+            %input#column_count{:name => 'column_count', :value => params[:column_count]}
+
+        %h4= t('dashboard.fee_agreement.settings.filters')
+        .form-group
+          = label_tag nil, t('dashboard.fee_agreement.settings.status'), class: ['mr-2']
+          .status-options
+            - @fee_agreement.filter_options[:status].each do |value, status_label|
+              = label_tag value, '', class: ['mr-3'] do
+                = check_box_tag 'filters[status][]', value, selected_statuses.include?(value), type: "checkbox", id: value
+                = status_label
+        .form-group
+          = label_tag nil, t('dashboard.fee_agreement.settings.program'), class: ['mr-2']
+          .program-options
+            - @fee_agreement.filter_options[:program].each do |value, program_label|
+              = label_tag "program-#{value}", '', class: ['mr-3'] do
+                = check_box_tag 'filters[program][]', value, selected_programs.include?(value.to_s), type: "checkbox", id: "program-#{value}"
+                = program_label
+
+
+        = submit_tag t(:actions)[:submit], class: "btn btn-success"
+        %a.btn.btn-link{href: fee_agreement_dashboard_protocol_path(params[:id])}= t(:actions)[:reset]

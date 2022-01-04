@@ -67,6 +67,16 @@ module ApplicationHelper
     end
   end
 
+  def format_boolean(value)
+    if value.nil?
+      ""
+    elsif value
+      "Yes"
+    else
+      "No"
+    end
+  end
+
   def css_class(organization)
     case organization.type
     when 'Institution'
@@ -230,5 +240,11 @@ module ApplicationHelper
 
   def request_referrer_controller
     Rails.application.routes.recognize_path(request.referrer)[:controller] rescue nil
+  end
+  
+  def set_billing_quantities(type, unit_minimum)
+    @r_quantity = type == "r" ? unit_minimum : 0
+    @t_quantity = type == "t" ? unit_minimum : 0
+    @o_quantity = type == "o" ? unit_minimum : 0
   end
 end

@@ -39,7 +39,7 @@ RSpec.describe 'User adds an arm to a request', js: true do
     wait_for_javascript_to_finish
   end
 
-  it 'should create the new arm' do
+  def create_new_arm
     click_link I18n.t('arms.new')
     wait_for_javascript_to_finish
 
@@ -47,8 +47,18 @@ RSpec.describe 'User adds an arm to a request', js: true do
 
     click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
+  end
+
+  it 'should create the new arm' do
+    create_new_arm
 
     expect(@protocol.reload.arms.count).to eq(2)
     expect(page).to have_selector('.service-calendar-container .card-header h3', text: 'Give me an Arm')
   end
+
+  it 'should have a blank visit day without errors' do
+    create_new_arm
+    expect(@protocol.reload.arms.last.visit_groups.first.day).to eq(nil)
+  end
+
 end

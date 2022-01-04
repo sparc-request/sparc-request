@@ -195,6 +195,17 @@ SparcRails::Application.routes.draw do
       resources :access_requests, only: [:index]
     end
 
+    resources :permissible_values, except: [:destroy]
+    resources :settings,  only: [:index, :edit, :update, :show]
+
+    resources :overlords, only: [:index, :new, :update] do
+      member do
+        patch :remove_overlord
+      end
+    end
+
+    resources :identities, only: [:index, :edit, :update, :show]
+
     root to: 'applications#index'
   end
 
@@ -295,6 +306,7 @@ SparcRails::Application.routes.draw do
         get :display_requests
         get :request_access
         get :push_to_oncore
+        get :fee_agreement
         patch :archive
         patch :update_protocol_type
       end
@@ -330,10 +342,12 @@ SparcRails::Application.routes.draw do
         put :push_to_epic
         put :resend_surveys
         put :synch_to_fulfillment
+        put :update_approval
         get :change_history_tab
         get :status_history
         get :approval_history
         get :subsidy_history
+        get :rate_history
         get :refresh_tab
       end
     end

@@ -44,7 +44,7 @@ class Funding::ServicesController < ApplicationController
     @table = params[:table]
     @service_id = params[:id]
     cookies["table-type-#{@service_id}"] = @table
-    @funding_documents = Document.joins(sub_service_requests: {line_items: :service}).where(services: {id: @service_id}, doc_type: @table).distinct
+    @funding_documents = Document.joins(protocol: {sub_service_requests: {line_items: :service}}).where(services: {id: @service_id}, doc_type: @table).distinct
 
     respond_to do |format|
       format.json

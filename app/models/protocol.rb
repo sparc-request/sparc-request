@@ -22,8 +22,8 @@ class Protocol < ApplicationRecord
   include RemotelyNotifiable
   include SanitizedData
 
-  sanitize_setter :short_title, :special_characters, :squish
-  sanitize_setter :title, :special_characters, :squish
+  sanitize_setter :short_title, :special_characters, :epic_special_characters, :squish
+  sanitize_setter :title, :special_characters, :epic_special_characters, :squish
   sanitize_setter :brief_description, :special_characters, :squish
 
   audited
@@ -113,6 +113,7 @@ class Protocol < ApplicationRecord
                         :funding_status
   validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
   validates_presence_of :potential_funding_source,  if: :pending_funding?
+  validates_presence_of :funding_source_other,      if: :internally_funded?
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
@@ -472,18 +473,12 @@ class Protocol < ApplicationRecord
   end
 
   def display_funding_source_value
-    if funding_status == "funded"
-      if funding_source == "internal"
-        "#{PermissibleValue.get_value('funding_source', funding_source)}: #{funding_source_other}"
-      else
-        "#{PermissibleValue.get_value('funding_source', funding_source)}"
+    if ['funded', 'pending_funding'].include?(funding_status)
+      source = funding_status == "funded" ? "#{PermissibleValue.get_value('funding_source', funding_source)}" : "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
+      if internally_funded?
+        source += ": #{funding_source_other}"
       end
-    elsif funding_status == "pending_funding"
-      if potential_funding_source == "internal"
-        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}: #{potential_funding_source_other}"
-      else
-        "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
-      end
+      return source
     end
   end
 

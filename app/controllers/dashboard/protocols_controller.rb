@@ -21,9 +21,9 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
   include ProtocolsControllerShared
 
-  before_action :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
-  before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
-  before_action :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
+  before_action :find_protocol,             only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
+  before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive]
+  before_action :protocol_authorizer_view,  only: [:show, :fee_agreement, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
 
@@ -35,7 +35,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are performing a search, check if user is looking for an old protocol
     # that has been merged and return the most current master protocol
-    if params.has_key?(:filterrific) && params[:filterrific].has_key?(:search_query)
+    if params.has_key?(:filterrific) && params[:filterrific].has_key?(:search_query) && params[:filterrific][:search_query][:search_drop] == "Protocol ID"
       search_term = params[:filterrific][:search_query][:search_text].to_i
       merge = search_protocol_merges(search_term)
       if merge
@@ -112,6 +112,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         send_data pdf.render, filename: "Cost Analysis (#{@protocol.id}).pdf", type: "application/pdf", disposition: "inline"
       }
     end
+  end
+
+  def fee_agreement
+    session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id, path_name: I18n.t('dashboard.fee_agreement.short_title'))
+    params[:column_count] ||= 5
+    visit_columns = params[:column_count].to_i
+    filters = params[:filters] || {}
+
+    service_request = @protocol.service_requests.first
+    @fee_agreement = FeeAgreement::Report.new(service_request, filters, visit_columns)
+    render layout: 'dashboard/fee_agreement'
   end
 
   def create
@@ -195,16 +206,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def push_to_oncore
     if @protocol.is_a?(Study)
       oncore_protocol = OncoreProtocol.new(@protocol)
-      response = oncore_protocol.create_oncore_protocol
-      if response.success?
-        flash[:success] = I18n.t('protocols.summary.oncore.pushed_to_oncore')
-      else
-        if response['message'].try(:include?, ('already exists'))
-          @error = t('protocols.summary.oncore.already_exists', protocol_id: @protocol.id)
-        else
-          @error = "#{response.code}: #{response.message}"
-        end
-      end
+      @successful_oncore_push = oncore_protocol.create_oncore_protocol
+      @errors = oncore_protocol.errors.empty? ? nil : oncore_protocol.errors
     end
 
     respond_to :js

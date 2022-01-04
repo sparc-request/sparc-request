@@ -32,41 +32,43 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, user_current, audit_report=nil, deleted_ssrs=nil, admin_delete_ssr=false)
-    @protocol = service_request.protocol
-    @service_request = service_request
-    @deleted_ssrs = deleted_ssrs
-
-    ### ATTACHMENTS ###
-    service_list_false = @service_request.service_list(false)
-    service_list_true = @service_request.service_list(true)
-    controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
-
-    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
-    ### END ATTACHMENTS ###
-
-    @status = status(admin_delete_ssr, audit_report.present?, @service_request)
-    @notes = @protocol.notes.eager_load(:identity)
     @identity = project_role.identity
-    @role = project_role.role
-    @full_name = @identity.full_name
-    @audit_report = audit_report
-    @portal_link = dashboard_protocol_url(@protocol)
+    unless @identity.imported_from_lbb
+      @protocol = service_request.protocol
+      @service_request = service_request
+      @deleted_ssrs = deleted_ssrs
 
-    if admin_delete_ssr
-      @ssrs_to_be_displayed = [@deleted_ssrs]
-    else
-      @ssrs_to_be_displayed = @service_request.sub_service_requests
+      ### ATTACHMENTS ###
+      service_list_false = @service_request.service_list(false)
+      service_list_true = @service_request.service_list(true)
+      controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, @service_request.line_items, @protocol)
+
+      xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
+      ### END ATTACHMENTS ###
+
+      @status = status(admin_delete_ssr, audit_report.present?, @service_request)
+      @notes = @protocol.notes.eager_load(:identity)
+      
+      @role = project_role.role
+      @full_name = @identity.full_name
+      @audit_report = audit_report
+      @portal_link = dashboard_protocol_url(@protocol)
+
+      if admin_delete_ssr
+        @ssrs_to_be_displayed = [@deleted_ssrs]
+      else
+        @ssrs_to_be_displayed = @service_request.sub_service_requests
+      end
+
+      if !admin_delete_ssr
+        attachments["service_request_#{@protocol.id}.xlsx"] = xls
+      end
+
+      subject = email_title(@status, @protocol, @deleted_ssrs)
+      recipient = @identity.email
+
+      mail(:to => recipient, :from => Setting.get_value("no_reply_from"), :subject => subject)
     end
-
-    if !admin_delete_ssr
-      attachments["service_request_#{@protocol.id}.xlsx"] = xls
-    end
-
-    # only send these to the correct person in the production env
-    email = @identity.email
-    subject = email_title(@status, @protocol, @deleted_ssrs)
-
-    mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
   def notify_admin(submission_email_address, user_current, ssr, audit_report=nil, ssr_destroyed=false)
@@ -105,66 +107,71 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_service_provider(service_provider, service_request, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false)
-    @protocol = service_request.protocol
-    @service_request = service_request
-    @notes = @protocol.notes.eager_load(:identity)
+    @identity = service_provider.identity
+    unless @identity.imported_from_lbb
 
-    @status = status(ssr_destroyed, request_amendment, @service_request)
+      @protocol = service_request.protocol
+      @service_request = service_request
+      @notes = @protocol.notes.eager_load(:identity)
 
-    @role = 'none'
-    @full_name = service_provider.identity.full_name
-    @audit_report = audit_report
+      @status = status(ssr_destroyed, request_amendment, @service_request)
 
-    @portal_link = dashboard_protocol_url(@protocol)
-    @portal_text = "Administrators/Service Providers, Click Here"
+      @role = 'none'
+      @full_name = @identity.full_name
+      @audit_report = audit_report
 
-    ### ATTACHMENTS ###
-    attachments_to_add = {}
-    service_list_true = @service_request.service_list(true, service_provider)
-    service_list_false = @service_request.service_list(false, service_provider)
+      @portal_link = dashboard_protocol_url(@protocol)
+      @portal_text = "Administrators/Service Providers, Click Here"
 
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
-    line_items = []
-    @service_request.sub_service_requests.each do |sub_service_request|
-      if service_provider.identity.is_service_provider?(sub_service_request)
-        line_items << sub_service_request.line_items
+      ### ATTACHMENTS ###
+      attachments_to_add = {}
+      service_list_true = @service_request.service_list(true, service_provider)
+      service_list_false = @service_request.service_list(false, service_provider)
+
+      # Retrieves the valid line items for service provider to calculate total direct cost in the xls
+      line_items = []
+      @service_request.sub_service_requests.each do |sub_service_request|
+        if @identity.is_service_provider?(sub_service_request)
+          line_items << sub_service_request.line_items
+        end
       end
-    end
 
-    line_items = line_items.flatten
-    controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, line_items, @protocol)
+      line_items = line_items.flatten
+      controller = set_instance_variables(user_current, @service_request, service_list_false, service_list_true, line_items, @protocol)
 
-    xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
-    attachments_to_add["service_request_#{@service_request.id}.xlsx"] = xls
+      xls = controller.render_to_string action: 'request_report', formats: [:xlsx]
+      attachments_to_add["service_request_#{@service_request.id}.xlsx"] = xls
 
-    ### END ATTACHMENTS ###
+      ### END ATTACHMENTS ###
 
-    # only display the ssrs that are associated with service_provider
-    @ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
+      # only display the ssrs that are associated with service_provider
+      @ssrs_to_be_displayed = [ssr] if @identity.is_service_provider?(ssr)
 
-    if !ssr_destroyed
-      attachments_to_add.each do |file_name, document|
-        next if document.nil?
-        attachments["#{file_name}"] = document
+      if !ssr_destroyed
+        attachments_to_add.each do |file_name, document|
+          next if document.nil?
+          attachments["#{file_name}"] = document
+        end
       end
+
+      # only send these to the correct person in the production env
+      email = @identity.email
+      subject = email_title(@status, @protocol, ssr)
+
+      mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
     end
-
-    # only send these to the correct person in the production env
-    email = service_provider.identity.email
-    subject = email_title(@status, @protocol, ssr)
-
-    mail(:to => email, :from => Setting.get_value("no_reply_from"), :subject => subject)
   end
 
   def account_status_change identity, approved
-    @approved = approved
+    unless identity.imported_from_lbb
+      @approved = approved
 
-    ##REVIEW: Why do we care what the from is?
-    email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
-    email_to = identity.email
-    subject = "#{t(:mailer)[:application_title]} account request - status change"
+      ##REVIEW: Why do we care what the from is?
+      email_from = Rails.env == 'production' ? Setting.get_value("admin_mail_to") : Setting.get_value("default_mail_to")
+      subject = "#{t(:mailer)[:application_title]} account request - status change"
 
-    mail(:to => email_to, :from => email_from, :subject => subject)
+      mail(:to => identity.email, :from => email_from, :subject => subject)
+    end
   end
 
   def provide_feedback feedback

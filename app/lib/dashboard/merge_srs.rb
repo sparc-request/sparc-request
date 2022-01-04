@@ -55,6 +55,8 @@ module Dashboard
 
         if latest_submitted_at
           recent_service_request.submitted_at = latest_submitted_at
+          # make sure the status is submitted
+          recent_service_request.status = 'submitted' unless recent_service_request.status == 'submitted'
           recent_service_request.audit_comment = 'merge_srs'
           recent_service_request.save(validate: false)
         end

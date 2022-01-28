@@ -63,6 +63,11 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
             dest_ssr.assign_attributes(copy_over_attributes)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
+
+            # Copy over past_statuses
+            ssr.past_statuses.each do |ps|
+              dest_ssr.past_statuses.create status: ps.status, date: ps.date, deleted_at: ps.deleted_at, changed_by_id: ps.changed_by_id, new_status: ps.new_status
+            end
           end
           # Move LineItems.
           line_items_moved = []

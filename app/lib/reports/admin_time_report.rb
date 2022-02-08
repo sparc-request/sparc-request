@@ -74,7 +74,7 @@ class AdminTimeReport < ReportingModule
       attrs[Service] = [params[:service_id], :name]
     end
 
-    attrs["Service Request Status"] = :formatted_status
+    attrs["Status"] = :formatted_status
 
     attrs["Service Request Owner"] = "owner.try(:full_name)"
 

@@ -57,7 +57,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   visit_count = (has_per_patient_per_visit_services ? @service_request.arms.map(&:visit_count).max : 0)
 
-  proxy_row += [""] * (visit_count*2)
+  proxy_row += [""] * (visit_count*2 - 1)
 
   sheet.add_row proxy_row, :style => sub_header_style
 
@@ -69,7 +69,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["Document Uploads"], :style => header_style
 
-  doc_row = ["Name", "Type", "", "", "Uploaded Date"] + ( [""] * (visit_count*2) )
+  doc_row = ["Name", "Type", "", "", "Uploaded Date"] + ( [""] * (visit_count*2 - 1) )
 
   sheet.add_row doc_row, :style => sub_header_style
 
@@ -92,7 +92,7 @@ wb.add_worksheet(name: "Review") do |sheet|
     arms_to_be_displayed.each do |arm|
       services_row = ["Selected Services", "CPT Code", "Order Code", "Notes"]
       #services_row << "# of Subjects"
-      arm_row = [arm.name, "", "", "", ""]
+      arm_row = [arm.name, "", "", ""]
 
       num_visits = arm.visit_count
       visit_group_name_sizes = []
@@ -125,7 +125,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       service_rows = []
       merge_arm_rows << sheet.add_row(arm_row, :style => name_header_style)
 
-      r_t_row = ["", "", "", "", ""]
+      r_t_row = ["", "", "", ""]
 
       num_visits.times do
         r_t_row << "R"
@@ -135,7 +135,6 @@ wb.add_worksheet(name: "Review") do |sheet|
       even_set = true
 
       styles_array = [centered, centered, centered, centered]
-      styles_array << centered
 
       2.step(visit_count*2, 2) do
         styles_array << (even_set ? rt_hdr_even_style : rt_hdr_odd_style)
@@ -186,7 +185,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           service_row += ["", ""] * (visit_count - num_visits)
 
-          styles_array = [bordered, centered_bordered, bordered, wrap_bordered, centered_bordered]
+          styles_array = [bordered, centered_bordered, bordered, wrap_bordered]
 
           2.step(visit_count*2, 2) do
             styles_array << (even_set ? rt_even_style : rt_odd_style)
@@ -208,7 +207,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   ############ end of arms.each
 
   services_row = ["Selected Services", "CPT Code"]
-  services_row += [""] * (visit_count * 2 + 3)
+  services_row += [""] * (visit_count * 2 + 2)
 
   services_row = sheet.add_row services_row, :style => header_style
   merge_services_row << services_row
@@ -278,7 +277,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   num_cols = (visit_count*2 + 5)
 
   alpha_array = sheet.get_headers(num_cols)
-  end_column = alpha_array[visit_count*2 + 4]
+  end_column = alpha_array[visit_count*2 + 3]
 
   sheet.merge_cells("A1:#{end_column}1") #info header
   sheet.merge_cells("B2:D2") #id
@@ -317,8 +316,8 @@ wb.add_worksheet(name: "Review") do |sheet|
     index = sheet.rows.index(services_row)
     #sheet.merge_cells("A#{index+1}:B#{index+1}")
     visit_count.times do |idx|
-      start_idx = 2 * idx + 5
-      end_idx = 2 * idx + 6
+      start_idx = 2 * idx + 4
+      end_idx = 2 * idx + 5
       sheet.merge_cells("#{alpha_array[start_idx]}#{index+1}:#{alpha_array[end_idx]}#{index+1}")
       sheet["#{alpha_array[start_idx]}#{index+1}"].style = header_centered_style
     end
@@ -369,5 +368,5 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ### setting some column widths
-  sheet.column_widths nil, 12, 12, 50, 15
+  sheet.column_widths nil, 12, 12, 50
 end

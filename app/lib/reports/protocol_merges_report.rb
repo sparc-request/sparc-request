@@ -30,11 +30,7 @@ class ProtocolMergesReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "protocol_merges_updated_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
-      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id', :required => true},
-      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id', :required => true},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      "Merged Date Range" => {:field_type => :date_range, :for => "protocol_merges_updated_at", :from => "2012-03-01".to_date, :to => Date.today}
     }
   end
 
@@ -42,7 +38,13 @@ class ProtocolMergesReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["Date of Merge"] = :display_id
+    attrs["Date of Merge"] = "self.created_at.try(:strftime, \"%D\")"
+    attrs["Master Protocol ID"] = :master_protocol_id
+    attrs["Subordinate Protocol ID"] = :merged_protocol_id
+    attrs["Merged By"] = "identity.full_name"
+    attrs["Short Title"] = :master_protocol
+    attrs["PI"] = ""
+    attrs["IRB#"] = ""
 
     attrs
 
@@ -64,21 +66,17 @@ class ProtocolMergesReport < ReportingModule
     ProtocolMerge
   end
 
+  def includes
+  end
+
   # Conditions
   def where args={}
 
-    organizations = Organization.all
-    selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id]
+    from_date = (args[:protocol_merges_updated_at_from].nil? ? self.default_options["Merged Date Range"][:from] : DateTime.strptime(args[:protocol_merges_updated_at_from], "%m/%d/%Y")).to_s(:db)
+    to_date = (args[:protocol_merges_updated_at_to].nil? ? self.default_options["Merged Date Range"][:to] : DateTime.strptime(args[:protocol_merges_updated_at_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
+    merged_date = from_date..to_date
 
-    ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
-
-    # get child organizations
-    if not ssr_organization_ids.empty?
-      org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
-    end
-
-    return :protocol_merges => {:organization_id => ssr_organization_ids}
+    return {:created_at => merged_date}
 
   end
 

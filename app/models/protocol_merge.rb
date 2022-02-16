@@ -21,6 +21,6 @@
 class ProtocolMerge < ApplicationRecord
 
   belongs_to :identity
-  has_one :master_protocol
+  belongs_to :master_protocol, class_name: 'Protocol'
 
 end

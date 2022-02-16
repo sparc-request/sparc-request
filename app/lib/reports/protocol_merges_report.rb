@@ -30,7 +30,7 @@ class ProtocolMergesReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Merged Date Range" => {:field_type => :date_range, :for => "protocol_merges_updated_at", :from => "2012-03-01".to_date, :to => Date.today}
+      "Merged Date Range" => {:field_type => :date_range, :for => "protocols_merged_date", :from => "2012-03-01".to_date, :to => Date.today}
     }
   end
 
@@ -38,14 +38,13 @@ class ProtocolMergesReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    attrs["Date of Merge"] = "self.created_at.try(:strftime, \"%D\")"
+    attrs["Date of Merge"] = "self.updated_at.try(:strftime, \"%D\")"
     attrs["Master Protocol ID"] = :master_protocol_id
     attrs["Subordinate Protocol ID"] = :merged_protocol_id
-    attrs["Merged By"] = "identity.full_name"
-    attrs["Short Title"] = :master_protocol
-    attrs["PI"] = ""
-    attrs["IRB#"] = ""
-
+    attrs["Merged By"] = "identity.try(:full_name)"
+    attrs["Short Title"] = "master_protocol.try(:short_title)"
+    attrs["PI"] = "master_protocol.try(:primary_pi).try(:full_name)"
+    attrs["IRB#"] = "master_protocol.try(:irb_records).length > 1 ? '1' : master_protocol.try(:irb_records).length == 1 ? master_protocol.try(:irb_records).first.try(:irb_of_record) : ' '"
     attrs
 
   end
@@ -72,23 +71,24 @@ class ProtocolMergesReport < ReportingModule
   # Conditions
   def where args={}
 
-    from_date = (args[:protocol_merges_updated_at_from].nil? ? self.default_options["Merged Date Range"][:from] : DateTime.strptime(args[:protocol_merges_updated_at_from], "%m/%d/%Y")).to_s(:db)
-    to_date = (args[:protocol_merges_updated_at_to].nil? ? self.default_options["Merged Date Range"][:to] : DateTime.strptime(args[:protocol_merges_updated_at_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
+    from_date = (args[:protocols_merged_date_from].nil? ? self.default_options["Merged Date Range"][:from] : DateTime.strptime(args[:protocols_merged_date_from], "%m/%d/%Y")).to_s(:db)
+    to_date = (args[:protocols_merged_date_to].nil? ? self.default_options["Merged Date Range"][:to] : DateTime.strptime(args[:protocols_merged_date_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
     merged_date = from_date..to_date
 
-    return {:created_at => merged_date}
+    return {:updated_at => merged_date}
 
   end
 
    # Return only uniq records for
   def uniq
+    :master_protocol_id
   end
 
   def group
   end
 
   def order
-    "protocol_merges.updated_at ASC"
+    "protocol_merges.master_protocol_id ASC"
   end
 
 

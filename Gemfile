@@ -24,7 +24,7 @@ gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
-gem 'deep_cloneable', '~> 3.1.0'
+gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.8'
@@ -51,7 +51,7 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.2'
+gem 'mysql2', '0.5.3'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
@@ -68,7 +68,7 @@ gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.5'
+gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
 gem 'rails', '5.2.4.6'
 gem 'rails-html-sanitizer' # Check usage
@@ -116,12 +116,12 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '~> 5.1'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.6'
+  gem 'webdrivers', '~> 5.0'
   gem 'webmock'
 end
 

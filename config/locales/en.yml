@@ -251,6 +251,7 @@ en:
         organization: "Organization"
         owner: "Owner"
         status: "Status"
+        submitted_at: "Submitted On"
         forms: "Forms"
         previously_submitted: "Previously Submitted"
       setting:

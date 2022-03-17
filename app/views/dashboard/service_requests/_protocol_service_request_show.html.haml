@@ -36,6 +36,8 @@
         = ServiceRequest.human_attribute_name(:owner)
       %th{ data: { field: 'status', align: 'left', sortable: 'true' } }
         = ServiceRequest.human_attribute_name(:status)
+      %th{ data: { field: 'submitted_on', align: 'left', sortable: 'true', sorter: "dateSorter" } }
+        = ServiceRequest.human_attribute_name(:submitted_at)
       %th{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
         = ServiceRequest.human_attribute_name(:forms)
       %th{ data: { field: 'actions', align: 'center' } }

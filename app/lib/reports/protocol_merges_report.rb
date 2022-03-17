@@ -88,7 +88,7 @@ class ProtocolMergesReport < ReportingModule
   end
 
   def order
-    "protocol_merges.master_protocol_id ASC"
+    "DATE(protocol_merges.updated_at) ASC, protocol_merges.master_protocol_id ASC"
   end
 
 

@@ -28,7 +28,7 @@
 %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id), striped: 'true', toolbar: ".service-requests-table-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC' } }
   %thead.bg-light
     %tr
-      %th{ data: { field: 'srid', align: 'left', sortable: 'true' } }
+      %th.w-10{ data: { field: 'srid', align: 'left', sortable: 'true' } }
         = ServiceRequest.human_attribute_name(:id)
       %th{ data: { field: 'organization', align: 'left', sortable: 'true' } }
         = ServiceRequest.human_attribute_name(:organization)
@@ -36,7 +36,7 @@
         = ServiceRequest.human_attribute_name(:owner)
       %th{ data: { field: 'status', align: 'left', sortable: 'true' } }
         = ServiceRequest.human_attribute_name(:status)
-      %th{ data: { field: 'submitted_on', align: 'left', sortable: 'true', sorter: "dateSorter" } }
+      %th.w-10{ data: { field: 'submitted_on', align: 'left', sortable: 'true', sorter: "dateSorter" } }
         = ServiceRequest.human_attribute_name(:submitted_at)
       %th{ data: { field: 'surveys', align: 'center', visible: (!protocol.all_forms_completed?).to_s, switchable: 'false' } }
         = ServiceRequest.human_attribute_name(:forms)

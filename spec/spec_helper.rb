@@ -27,6 +27,7 @@ require 'paperclip/matchers'
 require 'email_spec'
 require 'rspec/rails'
 require 'faker'
+require 'rspec/retry'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -73,6 +74,14 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+
+  config.default_sleep_interval = 2
+  config.verbose_retry = true
+  config.default_retry_count = 4
+
+  config.retry_callback = proc do |ex|
+    Capybara.reset!
   end
 
 # The settings below are suggested to provide a good initial experience

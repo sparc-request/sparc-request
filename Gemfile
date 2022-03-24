@@ -123,6 +123,7 @@ group :development, :test do
   gem 'site_prism'
   gem 'webdrivers', '~> 5.0'
   gem 'webmock'
+  gem 'rspec-retry'
 end
 
 group :development do

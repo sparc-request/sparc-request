@@ -511,6 +511,8 @@ GEM
       rspec-expectations (~> 3.10)
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.10.3)
     ruby-graphviz (1.2.5)
       rexml
@@ -725,6 +727,7 @@ DEPENDENCIES
   rspec-collection_matchers
   rspec-html-matchers
   rspec-rails (~> 5.1)
+  rspec-retry
   ruby-prof (~> 1.4.3)
   rubyzip (>= 1.2.1)
   sanitized_data!
@@ -752,4 +755,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   2.2.15
+   2.3.7

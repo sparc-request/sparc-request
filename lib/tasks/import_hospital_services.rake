@@ -133,8 +133,8 @@ namespace :data do
                 puts "Error importing service"
                 puts service.inspect
                 puts pricing_map.inspect
-                puts service.errors
-                puts pricing_map.errors
+                puts service.errors.inspect
+                puts pricing_map.errors.inspect
 
                 all_errors = service.errors.messages.merge(pricing_map.errors.messages)
 

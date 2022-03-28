@@ -28,8 +28,16 @@ module Features
     end
 
     def bootstrap_select(class_or_id, choice)
-      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      retries = 0
+      begin
+        retries ||= 0
+        expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+        bootstrap_select = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError, Capybara::ElementNotFound
+        sleep 1
+        retry if (retries += 1) < 5
+      end
+
       bootstrap_select.click
 
       expect(page).to have_selector('.dropdown-menu.show')
@@ -38,8 +46,16 @@ module Features
     end
 
     def bootstrap_multiselect(class_or_id, selections = ['all'])
-      expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
-      bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      retries = 0
+      begin
+        retries ||= 0
+        expect(page).to have_selector(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+        bootstrap_multiselect = page.first(".bootstrap-select select#{class_or_id} + .dropdown-toggle")
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError, Capybara::ElementNotFound
+        sleep 1
+        retry if (retries += 1) < 5
+      end
+      
       bootstrap_multiselect.click
 
       expect(page).to have_selector('.dropdown-menu.show')

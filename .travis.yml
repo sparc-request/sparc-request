@@ -32,7 +32,6 @@ before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/sparc_db.yml.example config/sparc_db.yml
   - cp config/klok_db.yml.example config/klok_db.yml
-  # - cp config/faye.yml.example config/faye.yml
   - cp dotenv.example .env
   - RAILS_ENV=test bundle exec rake db:migrate
   - cd ../sparc-request

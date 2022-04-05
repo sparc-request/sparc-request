@@ -282,8 +282,9 @@ GEM
     grape-entity (0.10.1)
       activesupport (>= 3.0.0)
       multi_json (>= 1.3.2)
-    gyoku (1.3.1)
+    gyoku (1.4.0)
       builder (>= 2.1.2)
+      rexml (~> 3.0)
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt

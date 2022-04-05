@@ -44,7 +44,7 @@ class ProtocolMergesReport < ReportingModule
     attrs["Merged By"] = "identity.try(:full_name)"
     attrs["Short Title"] = "master_protocol.try(:short_title)"
     attrs["PI"] = "master_protocol.try(:primary_pi).try(:full_name)"
-    attrs["IRB#"] = "master_protocol.try(:irb_records).length > 1 ? '1' : master_protocol.try(:irb_records).length == 1 ? master_protocol.try(:irb_records).first.try(:pro_number) : ' '"
+    attrs["IRB#"] = "master_protocol.try(:irb_records).nil? ? '' : master_protocol.try(:irb_records).first.try(:pro_number)"
     attrs
 
   end

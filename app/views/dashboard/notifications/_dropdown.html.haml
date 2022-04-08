@@ -20,7 +20,7 @@
 
 - tooltip = controller_name == 'sub_service_requests' ? 'table_button' : 'main_button'
 
-.tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', boundary: 'window' } }
+.tooltip-wrapper{ title: t("dashboard.notifications.tooltips.#{tooltip}"), data: { toggle: 'tooltip', boundary: 'window', trigger: 'hover' } }
   .dropdown.no-caret
     %button.btn.btn-success.dropdown-toggle.send-notification{ class: in_admin? ? 'btn-block' : '', id: "sendNotificationRequest#{sub_service_request.id}", role: 'button', data: { toggle: 'dropdown', boundary: 'window' }, aria: { haspopup: 'true', expanded: 'false' } }<
       = icon('far', 'envelope', class: in_admin? ? 'mr-2' : '')

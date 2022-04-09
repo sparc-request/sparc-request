@@ -16,7 +16,7 @@
     "corejs-typeahead": "^1.2.1",
     "jquery": "^3.5.0",
     "js-cookie": "^2.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.25",
     "nprogress": "^0.2.0",
     "popper.js": "^1.16.1",

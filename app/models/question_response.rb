@@ -27,11 +27,11 @@ class QuestionResponse < ApplicationRecord
   validates_format_of :content, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'phone' }
   validates_format_of :content, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'email' }
   validates_format_of :content, with: /\A[0-9]{5}(?:-[0-9]{4})?\z/, allow_blank: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'zipcode' }
-  
-  validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
+
+  validates_numericality_of :content, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
   validates_presence_of :content, if: Proc.new{ |qr| qr.must_be_answered? }
   validate :checkbox_presence, if: Proc.new{ |qr| qr.must_be_answered? && (qr.question.question_type == 'checkbox' || qr.question.question_type == 'multiple_dropdown') }
-  
+
   # Callbacks occur after validation. Any blank responses at this point must
   # have a depender that was not selected, therefore we don't want to save
   # a response for the particular question. Replaces old controller logic.

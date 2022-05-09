@@ -8,11 +8,15 @@
       %tr
         %th{ data: { field: 'name', sortable: 'true' } }
           = Identity.human_attribute_name(:name)
+        %th{ data: { field: 'institution', sortable: 'true' } }
+          = Identity.human_attribute_name(:institution)
         %th{ data: { field: 'email' } }
           = Identity.human_attribute_name(:email)
-        %th{ data: { field: 'phone' } }
-          = Identity.human_attribute_name(:phone)
         %th.w-10{ data: { field: 'created_at', align: 'center', sortable: 'true', sorter: 'dateSorter' } }
           = Identity.human_attribute_name(:created_at)
+        %th.w-10{ data: { field: 'last_sign_in_at', align: 'center', sortable: 'true', sorter: 'dateSorter' } }
+          = Identity.human_attribute_name(:current_sign_in_at)
+        %th{ data: { field: 'sign_in_count', sortable: 'true' } }
+          = Identity.human_attribute_name(:sign_in_count)
         %th{ data: { class: 'actions', align: 'center', field: 'actions' } }
           = t('actions.actions')

@@ -11,7 +11,7 @@ services:
 
 before_install:
   - "export TZ=America/New_York"
-  - nvm install node 12.10.0
+  - nvm install node 14.19.2
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml

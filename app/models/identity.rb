@@ -26,6 +26,7 @@ class Identity < ApplicationRecord
 
   audited
 
+  before_save :update_institution
   after_create :send_admin_mail
 
   #Version.primary_key = 'id'
@@ -101,6 +102,12 @@ class Identity < ApplicationRecord
       order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
     when 'created_at'
       order(Arel.sql("identities.created_at #{order}"))
+    when 'last_sign_in_at'
+      order(Arel.sql("identities.current_sign_in_at #{order}"))
+    when 'sign_in_count'
+      order(Arel.sql("identities.sign_in_count #{order}"))
+    when 'institution'
+      order(Arel.sql("identities.institution #{order}"))
     end
   }
 
@@ -108,11 +115,12 @@ class Identity < ApplicationRecord
     return if term.blank?
 
     identity_arel = Identity.arel_table
-    attrs = [:last_name, :first_name, :email]
+    attrs = [:last_name, :first_name, :email, :institution]
 
-    where attrs
+    where (attrs
       .map { |attr| identity_arel[attr].matches("%#{term}%")}
       .inject(:or)
+     )
   }
 
   ###############################################################################
@@ -422,5 +430,11 @@ class Identity < ApplicationRecord
 
   def unread_notification_count(sub_service_request_id=nil)
     Notification.of_ssr(sub_service_request_id).unread_by(self).count
+  end
+
+  private
+
+  def update_institution
+    self.institution = self.professional_org_lookup('institution') if professional_organization_id_changed?
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_27_195251) do
+ActiveRecord::Schema.define(version: 2022_03_09_210040) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -300,9 +300,11 @@ ActiveRecord::Schema.define(version: 2021_05_27_195251) do
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
+    t.text "institution"
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["first_name"], name: "index_identities_on_first_name"
+    t.index ["institution"], name: "index_identities_on_institution", length: 55
     t.index ["last_name"], name: "index_identities_on_last_name"
     t.index ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true
     t.index ["reset_password_token"], name: "index_identities_on_reset_password_token", unique: true

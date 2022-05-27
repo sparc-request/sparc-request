@@ -103,5 +103,5 @@ def get_references model
 end
 
 def column_is_integer? model, name
-  model.columns_hash[name].sql_type == 'int(11)'
+  (model.columns_hash[name].sql_type == 'int(11)' || model.columns_hash[name].sql_type == 'int')
 end

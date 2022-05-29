@@ -42,8 +42,14 @@
               = Form.human_attribute_name(:surveyable)
             %th{ data: { field: "title", align: "left", sortable: "true" } }
               = Form.human_attribute_name(:title)
-            %th{ data: { field: "completed", align: "center", sortable: "false" } }
-              = Form.human_attribute_name(:completed)
+            - if !in_dashboard?
+              %th{ data: { field: "completed", align: "center", sortable: "false" } }
+                = Form.human_attribute_name(:completed)
+            - if in_dashboard?
+              %th{ data: { field: "by", align: "left", sortable: "false" } }
+                = Form.human_attribute_name(:by)
+              %th{ data: { field: "completion_date", align: "center", sortable: "false" } }
+                = Form.human_attribute_name(:date)
             %th{ data: { field: "actions", align: "center", sortable: "false" } }
               = t('actions.actions')
     - else

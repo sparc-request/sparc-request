@@ -108,6 +108,8 @@ en:
         surveyable: "Association"
         title: "Title"
         completed: "Completed"
+        by: "By"
+        completion_date: "Date"
       fulfillment:
         date: "Date Fulfilled"
         time: "Quantity"

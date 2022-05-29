@@ -108,6 +108,8 @@ en:
         surveyable: "Association"
         title: "Title"
         completed: "Completed"
+        by: "By"
+        completion_date: "Date"
       fulfillment:
         date: "Date Fulfilled"
         time: "Quantity"
@@ -116,10 +118,13 @@ en:
         nct_number: "National Clinical Trials (NCT) #"
         irb_records: "IRB Records"
       identity:
+        created_at: "Created"
         credentials: "Credentials"
+        current_sign_in_at: "Last Sign-In"
         email: "Email"
         era_commons_name: "ERA Commons Name"
         first_name: "First Name"
+        institution: "Institution"
         last_name: "Last Name"
         ldap_uid: "Login"
         name: "Name"
@@ -128,6 +133,7 @@ en:
         password: "Password"
         password_confirmation: "Confirm Password"
         reason: "Reason for Account Request"
+        sign_in_count: "Sign-In Count"
         subspecialty: "Subspecialty"
       impact_areas:
         name: "Name"

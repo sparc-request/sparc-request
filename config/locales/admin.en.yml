@@ -105,8 +105,7 @@ en:
       tooltips:
         view: "View Details"
         edit: "Edit Profile"
-        edit_disabled: "Disapproved/Deactivated Account, Edit Disabled"
-        deactive_account_warning: "Uncheck this checkbox will deactivate the account. This action cannot be undone."
+        deactivate_account_warning: "Uncheck this checkbox will deactivate the account. This action cannot be undone."
       form:
         select_prompt: "Select One"
 

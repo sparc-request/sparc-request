@@ -5,9 +5,11 @@ class AddInstitutionToIdentities < ActiveRecord::Migration[5.2]
 
     Identity.reset_column_information
 
-    Identity.all.each do |identity|
+    progress_bar = ProgressBar.new(Identity.count)
+    Identity.find_each do |identity|
       identity.institution = identity.professional_org_lookup('institution')
       identity.save(validate: false)
+      progress_bar.increment!
     end
 
   end

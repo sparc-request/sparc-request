@@ -18,6 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+- disable_left = visit.visit_group.first?
+- disable_right = visit.visit_group.last?
+
 .modal-dialog{ role: 'document' }
   .modal-content
     = form_for visit, remote: true do |f|
@@ -34,16 +37,22 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-row
-          .form-group.col-4.mb-0
+          .form-group.col-1.mb-0.d-flex
+            %button.btn.btn-white.rounded-0.d-flex.align-items-center.change-billing-visit-btn{ type: 'submit', title: disable_left ? '' : t('visit_groups.form.previous', name: visit.visit_group.higher_item.name), disabled: disable_left, data: { toggle: 'tooltip', placement: 'left', new_visit: 'previous'} }
+              = icon('fas', 'chevron-left')
+          .form-group.col-3.mb-0
             = f.label :research_billing_qty, class: 'required'
             = f.text_field :research_billing_qty, class: 'form-control'
           .form-group.col-4.mb-0
             = f.label :insurance_billing_qty, class: 'required'
             = f.text_field :insurance_billing_qty, class: 'form-control'
-          .form-group.col-4.mb-0
+          .form-group.col-3.mb-0
             = f.label :effort_billing_qty, class: 'required'
             = f.text_field :effort_billing_qty, class: 'form-control'
+          .form-group.col-1.mb-0.d-flex
+            %button.btn.btn-white.rounded-0.d-flex.align-items-center.order-last.change-billing-visit-btn{ type: 'submit', title: disable_right ? '' : t('visit_groups.form.next', name: visit.visit_group.lower_item.name), disabled: disable_right, data: { toggle: 'tooltip', placement: 'right', new_visit: 'next' } }
+              = icon('fas', 'chevron-right')
       .modal-footer
-        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        %button.btn.btn-secondary.btn-close{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')
         = f.submit t('actions.submit'), class: 'btn btn-primary'

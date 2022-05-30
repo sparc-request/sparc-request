@@ -42,6 +42,7 @@ class VisitsController < ApplicationController
 
     if @visit.update_attributes(visit_params)
       @visit.sub_service_request.set_to_draft unless @in_admin
+      flash[:success] = t('visit_groups.updated')
     else
       @errors = @visit.errors
     end

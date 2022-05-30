@@ -27,12 +27,12 @@ class Visit < ApplicationRecord
 
   belongs_to :visit_group
   belongs_to :line_items_visit
-  
+
   has_one :arm, through: :visit_group
   has_one :line_item, through: :line_items_visit
   has_one :service, through: :line_item
   has_one :sub_service_request, through: :line_item
-  
+
   ########################
   ### CWF Associations ###
   ########################
@@ -71,7 +71,15 @@ class Visit < ApplicationRecord
     return self.visit_group.position
   end
 
-  #TODO It does not look like this is being used any longer.  
+  def higher_item_visit(service)
+    self.visit_group.higher_item.visits.includes(:service).where(services: {id: service.id}) if self.visit_group.higher_item.present?
+  end
+
+  def lower_item_visit(service)
+    self.visit_group.lower_item.visits.includes(:service).where(services: {id: service.id}) if self.visit_group.lower_item.present?
+  end
+
+  #TODO It does not look like this is being used any longer.
   def to_be_performed?
     self.research_billing_qty > 0
   end

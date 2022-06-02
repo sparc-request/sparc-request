@@ -727,7 +727,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_210040) do
     t.string "guarantor_contact"
     t.string "guarantor_phone"
     t.string "guarantor_email"
-    t.boolean "all_research_billing", default: true
+    t.string "default_billing_type", default: "r"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
@@ -983,10 +983,6 @@ ActiveRecord::Schema.define(version: 2022_03_09_210040) do
     t.datetime "deleted_at"
     t.datetime "consult_arranged_date"
     t.datetime "requester_contacted_date"
-    t.boolean "nursing_nutrition_approved", default: false
-    t.boolean "lab_approved", default: false
-    t.boolean "imaging_approved", default: false
-    t.boolean "committee_approved", default: false
     t.boolean "in_work_fulfillment", default: false
     t.string "routing"
     t.text "org_tree_display"

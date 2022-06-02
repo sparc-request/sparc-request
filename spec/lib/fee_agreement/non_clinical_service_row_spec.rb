@@ -26,6 +26,8 @@ RSpec.describe FeeAgreement::NonClinicalServiceRow do
   let(:line_item) { create(:line_item_with_service, :one_time_fee, service: service, protocol: protocol) }
 
   context('initialization from a line item') do
+    stub_config("use_fee_agreement", true)
+
     let(:row) { FeeAgreement::NonClinicalServiceRow.new(line_item) }
 
     it('sets the program name') do

@@ -95,6 +95,8 @@ RSpec.describe FeeAgreement::ClinicalServiceTable do
   end
 
   context('table initialization') do
+    stub_config("use_fee_agreement", true)
+
     let(:table) {
       FeeAgreement::ClinicalServiceTable.new(
         service_request: @service_request,

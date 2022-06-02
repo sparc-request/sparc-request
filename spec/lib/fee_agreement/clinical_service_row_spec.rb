@@ -38,6 +38,8 @@ RSpec.describe FeeAgreement::ClinicalServiceRow do
   let(:visit2_pppv1) { create(:visit, line_items_visit: liv_pppv1, research_billing_qty: 2) }
 
   context('construction from a LineItemsVisit and list of Visits') do
+    stub_config("use_fee_agreement", true)
+
     context('without summary information') do
       let(:row) { FeeAgreement::ClinicalServiceRow.build(liv_pppv1, [visit1_pppv1, visit2_pppv1], show_summary = false) }
       it('sets the program name') do

@@ -41,7 +41,7 @@ class LineItemsVisitsController < ApplicationController
     if @line_items_visit.update_attributes(line_items_visit_params)
       unless @in_admin
         @line_items_visit.sub_service_request.update_attribute(:status, 'draft')
-        @service_request.update_attribute(:status, 'draft')
+        @service_request.update_attribute(:status, 'draft') unless (@service_request.submitted? || @service_request.previously_submitted?)
       end
     else
       @errors = @line_items_visit.errors

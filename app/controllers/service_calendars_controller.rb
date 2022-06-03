@@ -99,7 +99,7 @@ class ServiceCalendarsController < ApplicationController
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @in_admin
       @line_items_visit.sub_service_request.update_attribute(:status, "draft")
-      @service_request.update_attribute(:status, "draft")
+      @service_request.update_attribute(:status, "draft") unless (@service_request.submitted? || @service_request.previously_submitted?)
     end
 
     respond_to :js
@@ -138,7 +138,7 @@ class ServiceCalendarsController < ApplicationController
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @in_admin
       editable_ssrs.where.not(status: 'draft').update_all(status: 'draft')
-      @service_request.update_attribute(:status, "draft")
+      @service_request.update_attribute(:status, "draft") unless (@service_request.submitted? || @service_request.previously_submitted?)
     end
 
     respond_to :js

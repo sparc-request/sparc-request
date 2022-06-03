@@ -940,6 +940,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_fee_agreement",
+    "value":          "false",
+    "friendly_name":  "Use Fee Agreement Report",
+    "description":    "This determines whether the application will use the Fee Agreement Report. When turned off, there will be no Fee Agreement button.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "use_feedback_link",
     "value":          "false",
     "friendly_name":  "Use Feedback Link",

@@ -67,6 +67,8 @@ RSpec.describe FeeAgreement::NonClinicalServiceTable do
     @org_C.destroy
   end
 
+  stub_config("use_fee_agreement", true)
+
   it('constructs a row for every active otf line item') do
     table = FeeAgreement::NonClinicalServiceTable.new(@service_request)
     expect(table.rows.count).to eq(2)

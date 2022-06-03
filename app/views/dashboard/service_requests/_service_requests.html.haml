@@ -52,8 +52,9 @@
         = link_to dashboard_protocol_path(protocol, format: :pdf), target: :_blank, class: 'btn btn-success cost-analysis mr-1' do
           = succeed t('dashboard.protocols.service_requests.cost_analysis_report') do
             = icon('fas', 'file-pdf mr-2')
-        = link_to fee_agreement_dashboard_protocol_path(protocol, format: :html), class: 'btn btn-success' do
-          = succeed t('dashboard.protocols.service_requests.fee_agreement') do
-            = icon('fas', 'eye mr-2')
+        - if Setting.get_value('use_fee_agreement')
+          = link_to fee_agreement_dashboard_protocol_path(protocol, format: :html), class: 'btn btn-success' do
+            = succeed t('dashboard.protocols.service_requests.fee_agreement') do
+              = icon('fas', 'eye mr-2')
     .collapse.show{ class: "service-request-#{sr.id}" }
       = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit

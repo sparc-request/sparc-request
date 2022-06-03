@@ -126,6 +126,8 @@ RSpec.describe FeeAgreement::Report do
     @program_admin.destroy
   end
 
+  stub_config("use_fee_agreement", true)
+
   context 'report creation' do
     let(:report) { FeeAgreement::Report.new(@sr) }
 

@@ -69,7 +69,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         ssr = @notification.sub_service_request
         @notifications = Notification.belonging_to(current_user, params[:sub_service_request_id])
 
-        UserMailer.notification_received(@recipient, ssr, current_user).deliver unless @recipient.email.blank?
+        UserMailer.notification_received(@recipient, ssr, current_user, @notification).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
       else
         @errors = @message.errors

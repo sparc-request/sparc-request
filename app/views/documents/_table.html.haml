@@ -27,12 +27,16 @@
     #documentsTableToolbar
       - if in_dashboard?
         = new_document_button(protocol_id: protocol.id, permission: permission_to_edit)
+        = link_to icon('fas', 'download mr-2') + t('documents.download'), bulk_download_documents_path(protocol_id: protocol.id, format: :zip), target: :_blank, class: 'btn btn-success download-documents disabled', title: t('documents.tooltips.new'), data: { protocol_id: protocol.id, toggle: 'tooltip' }
+
       - elsif !in_review?
         = new_document_button(srid: service_request.id)
     - url = in_dashboard? ? dashboard_documents_path(format: :json, protocol_id: protocol.id) : documents_path(format: :json, srid: service_request.id)
     %table#documentsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
       %thead.bg-light
         %tr
+          - if in_dashboard?
+            %th{ data: { field: 'select', align: "left" } }
           %th{ data: { field: 'document', align: "left", sortable: "true" } }
             = Document.human_attribute_name(:document)
           %th{ data: { field: 'type', align: "left", sortable: "true" } }

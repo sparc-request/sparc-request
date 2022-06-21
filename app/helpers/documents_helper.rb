@@ -81,4 +81,9 @@ module DocumentsHelper
   def document_file_types_as_string
     Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
   end
+
+  def display_check_box(document)
+    check_box_tag "select-document-#{document.id}", "#{document.id}"
+  end
+
 end

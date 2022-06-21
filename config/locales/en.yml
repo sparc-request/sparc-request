@@ -616,6 +616,7 @@ en:
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"
+    download: "Download Selected Documents"
     form:
       supported_types: "Supported File Types:<br>%{file_types}"
       select_type: "Please Select Type"

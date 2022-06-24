@@ -77,6 +77,8 @@ class Identity < ApplicationRecord
 
   validates_presence_of :first_name, :last_name, :email
 
+  validates_presence_of :credentials_other, if: Proc.new{ |i| i.credentials == 'other' }
+
   validates_format_of :email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: :email_changed?
   validates_format_of :phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: :phone_changed?
 

@@ -74,7 +74,6 @@ class ProjectRole < ApplicationRecord
 
   def validate_other_selections
     role_other_filled = true
-    credentials_other_filled = true
 
     if self.role == 'other'
       if self.role_other.nil? || (!self.role_other.nil? && self.role_other.blank?)
@@ -82,15 +81,7 @@ class ProjectRole < ApplicationRecord
         errors.add(:must, "specify this User's Role.")
       end
     end
-
-    if self.identity.credentials == 'other'
-      if self.identity.credentials_other.nil? || (!self.identity.credentials_other.nil? && self.identity.credentials_other.blank?)
-        credentials_other_filled = false
-        errors.add(:must, "specify this User's Credentials.")
-      end
-    end
-
-    return role_other_filled && credentials_other_filled
+    return role_other_filled
   end
 
   def validate_one_primary_pi

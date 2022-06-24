@@ -58,7 +58,7 @@ gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.17.0'
+gem 'net-ldap', '~> 0.17.1'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'

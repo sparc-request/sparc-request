@@ -25,7 +25,7 @@ $(document).ready ->
     else
       $('#doc-type-other-field').addClass('d-none')
 
-  $(document).on 'change', '#document_document', -> 
+  $(document).on 'change', '#document_document', ->
    fileName = $(this).val().split('\\').pop()
    $(this).next('.custom-file-label').addClass("selected").html(fileName)
 
@@ -36,3 +36,24 @@ $(document).ready ->
     else
       $('#org_ids').parents('.form-group').removeClass('d-none').addClass('d-flex')
       $('#org_ids').prop('disabled', false).selectpicker('refresh')
+
+  $(document).on 'change', '#documentsTable input[type="checkbox"]', ->
+
+    if $('#documentsTable input[type="checkbox"]:checked').length == 0
+      $('.download-documents').addClass('disabled')
+    else
+      $('.download-documents').removeClass('disabled')
+
+  $(document).on 'click', '.download-documents', ->
+
+    selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes
+    document_ids = $.map(selections, (c) -> return c.value) # get ids of all selected documents
+
+    protocol_id = $(this).data( 'protocol-id')
+    href = '/documents/bulk_download.zip?protocol_id=' + protocol_id #build the paramaters to the url
+
+    for id in document_ids
+      href += "&document_ids[]=" + id
+
+    $('.download-documents').attr("href", href)
+

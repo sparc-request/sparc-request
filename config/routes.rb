@@ -161,7 +161,13 @@ SparcRails::Application.routes.draw do
   resources :visit_groups, only: [:new, :create, :edit, :update, :destroy]
   resources :visits, only: [:edit, :update, :destroy]
 
-  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
+  # resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
+    collection do
+      get :bulk_download
+    end
+  end
+
 
   resources :notes, only: [:index, :create, :edit, :update, :destroy]
 

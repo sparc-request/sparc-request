@@ -27,7 +27,11 @@ class Dashboard::MessagesController < Dashboard::BaseController
     @messages     = @notification.messages
     @message      = Message.new(notification: @notification, sender: current_user, recipient: recipient)
 
-    respond_to :js
+    # respond_to :js
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def new
@@ -45,7 +49,7 @@ class Dashboard::MessagesController < Dashboard::BaseController
     if @message.save
       recipient = @message.recipient
       @notification.set_read_by(recipient, false)
-      UserMailer.notification_received(recipient, @notification.sub_service_request, current_user).deliver unless recipient.email.blank?
+      UserMailer.notification_received(recipient, @notification.sub_service_request, current_user, @notification).deliver unless recipient.email.blank?
 
       @messages = @notification.messages
       @message  = Message.new(notification: @notification, sender: current_user, recipient: recipient)

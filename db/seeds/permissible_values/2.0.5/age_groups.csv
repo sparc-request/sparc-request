@@ -1,0 +1,6 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,18_34,Below 35,,,1,age_group,,,1
+,35_49,35-49,,,2,age_group,,,1
+,50_64,50-64,,,3,age_group,,,1
+,65+,65+,,,4,age_group,,,1
+,not_to_answer,Prefer not to answer,,,5,age_group,,,1

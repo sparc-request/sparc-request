@@ -73,7 +73,10 @@ class Identity < ApplicationRecord
   has_many :protocol_service_requests, through: :protocols, source: :service_requests
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
 
-  cattr_accessor :current_user
+  has_many :races
+  accepts_nested_attributes_for :races, :allow_destroy => true
+
+  attr_accessor :updater_id
 
   validates_presence_of :first_name, :last_name, :email
 
@@ -84,8 +87,9 @@ class Identity < ApplicationRecord
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  # personal demographics are only required on Edit Profile page
+  validate :validate_demographics, if: Proc.new { |i| i.id == i.updater_id && i.sign_in_count > 0 }
 
-  # validates_presence_of :reason, if: :new_record?
 
   scope :overlords, -> { where(catalog_overlord: true) }
 
@@ -133,6 +137,13 @@ class Identity < ApplicationRecord
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
   end
 
+  def validate_demographics
+    errors.add(:age_group, "must select one") if Setting.get_value("displayed_demographics_fields").include?("age_group") && !self.age_group.present?
+    errors.add(:gender, "must select one") if Setting.get_value("displayed_demographics_fields").include?("gender") && !self.gender.present?
+    errors.add(:ethnicity, "must select one") if Setting.get_value("displayed_demographics_fields").include?("ethnicity") && !self.ethnicity.present?
+    errors.add(:races, "Must select one or more") if Setting.get_value("displayed_demographics_fields").include?("race") && self.races.reject(&:marked_for_destruction?).empty?
+  end
+
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################
@@ -173,6 +184,25 @@ class Identity < ApplicationRecord
     professional_organization ? professional_organization.parents_and_self.select{|org| org.org_type == org_type}.first.try(:name) : ""
   end
 
+  def display_races
+    races = ""
+    self.races.each do |race|
+      races += races.blank? ? race.display_name : "; #{race.display_name}"
+    end
+    return races
+  end
+
+  def display_gender
+    gender.present? ?  PermissibleValue.get_value('gender', gender) : ""
+  end
+
+  def display_age_group
+    age_group.present? ?  PermissibleValue.get_value('age_group', age_group) : ""
+  end
+
+  def display_ethnicity
+    ethnicity.present? ?  PermissibleValue.get_value('ethnicity', ethnicity) : ""
+  end
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
@@ -419,6 +449,22 @@ class Identity < ApplicationRecord
       end
     end
     name
+  end
+
+  def populate_for_edit
+    self.setup_races
+  end
+
+  def setup_races
+    position = 1
+    obj_names = PermissibleValue.get_key_list('race')
+    obj_names.each do |obj_name|
+      race = races.detect{|obj| obj.name == obj_name}
+      race = races.build(:name => obj_name, :new => true) unless race
+      race.position = position
+      position += 1
+    end
+    races.sort_by(&:position)
   end
 
   ###############################################################################

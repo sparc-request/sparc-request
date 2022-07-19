@@ -47,10 +47,12 @@ class Identities::RegistrationsController < Devise::RegistrationsController
 
   def edit
     store_location_for(resource, request.referrer)
+    @identity.populate_for_edit
   end
 
   def update
     @identity = current_user
+    @identity.updater_id = current_user.id
     if @identity.update_attributes(identity_params)
       flash[:success] = t(:devise)[:profile][:updated]
       @path = stored_location_for(resource) || root_path

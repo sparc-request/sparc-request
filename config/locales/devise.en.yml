@@ -136,7 +136,7 @@ en:
       credentials_prompt: "Select One"
       email: "Email"
       era_commons_name: "ERA Commons Name"
-      ethnicity: "Are you of Hispanic, Latino/a ethnicity or Spanish origin?"
+      ethnicity: "Hispanic, Latino or Spanish origin?"
       full_name: "Full Name"
       gender: "What is your sex/gender?"
       orcid: "ORCID"

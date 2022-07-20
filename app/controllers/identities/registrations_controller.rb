@@ -83,7 +83,12 @@ class Identities::RegistrationsController < Devise::RegistrationsController
       :era_commons_name,
       :professional_organization_id,
       :phone,
-      :subspecialty
+      :subspecialty,
+      :gender,
+      :gender_other,
+      :age_group,
+      :ethnicity,
+      races_attributes: [:id, :name, :other_text, :new, :position, :_destroy]
     )
   end
 end

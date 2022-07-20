@@ -72,21 +72,21 @@
 
   = render "associated_users/professional_organizations", professional_organization: identity.professional_organization
 
-  .form-row
-    .form-group.col-12.col-xl-4#ageContainer{ class: display_age ? '' : 'd-none' }
+  .form-row.mt-3
+    .form-group.col-4#ageContainer{ class: display_age ? '' : 'd-none' }
       = f.label :age_group, t('devise.profile.age_group'), class: 'required'
       = f.select :age_group, options_for_select(PermissibleValue.get_inverted_hash('age_group'), identity.age_group), { include_blank: t(:devise)[:profile][:select_age] }, class: 'selectpicker'
-    .form-group.col-12.col-xl-4#genderContainer{ class: display_gender ? '' : 'd-none' }
+    .form-group.col-4#genderContainer{ class: display_gender ? '' : 'd-none' }
       = f.label :gender, t('devise.profile.gender'), class: 'required'
       = f.select :gender, options_for_select(PermissibleValue.get_inverted_hash('gender'), identity.gender), { include_blank: t(:devise)[:profile][:select_prompt] }, class: 'selectpicker'
-    .form-group.col-xl-4#genderOtherContainer{ class: f.object.gender == 'other' ? '' : 'd-none' }
+    .form-group.col-4#genderOtherContainer{ class: f.object.gender == 'other' ? '' : 'd-none' }
       = f.label :gender_other, t('constants.prompts.please_specify')
       = f.text_field :gender_other, class: 'form-control'
-    .form-group#ethnicityContainer{ class: display_ethnicity ? '' : 'd-none'  }
+    .form-group.col-4#ethnicityContainer{ class: display_ethnicity ? '' : 'd-none'  }
       = f.label :ethnicity, t('devise.profile.ethnicity'), class: 'required'
       = f.select :ethnicity, options_for_select(PermissibleValue.get_inverted_hash('ethnicity'), identity.ethnicity), { include_blank: t(:devise)[:profile][:select_prompt] }, class: 'selectpicker'
 
-  .form-row.mb-2#raceContainer{ class: display_race ? '' : 'd-none' }
+  .form-row.mb-3#raceContainer{ class: display_race ? '' : 'd-none' }
     .form-group
       = f.label :race, t('devise.profile.race'), class: 'required'
 

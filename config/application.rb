@@ -52,6 +52,14 @@ module SparcRails
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.time_zone = ENV['time_zone'] || 'Eastern Time (US & Canada)'
 
+    # https://discuss.rubyonrails.org/t/cve-2022-32224-possible-rce-escalation-bug-with-serialized-columns-in-active-record/81017
+    # CVE_2022-32224 Fixed releases version change the default YAML deserializer to use YAML.safe_load,
+    # which prevents deserialization of possibly dangerous objects. This may introduce backwards compatibility
+    # issues with existing data. In order to cope with that situation, the released version also contains
+    # two new Active Record configuration options. The configuration options are as follows:
+    config.active_record.use_yaml_unsafe_load = true
+    config.active_record.yaml_column_permitted_classes = [Symbol, Date, Time]
+
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de

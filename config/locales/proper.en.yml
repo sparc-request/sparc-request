@@ -37,7 +37,8 @@ en:
     catalog:
       accordion:
         header: "Browse Service Catalog"
-        search_placeholder: "Search by Name, CPT Code, or EAP ID"
+        search_placeholder: "Search for service"
+        search_tooltip: "You can search for services by service name, abbreviation, description, or CPT/EAP Codes"
       center:
         header: "Welcome to SPARCRequest"
         subheader: "Storefront of Research Services"

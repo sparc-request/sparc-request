@@ -29,7 +29,7 @@ $(document).ready ->
    fileName = $(this).val().split('\\').pop()
    $(this).next('.custom-file-label').addClass("selected").html(fileName)
 
-  $(document).on 'change', '#document_share_all', ->
+  $(document).on 'change', '#document_share_all, #share_all_access', ->
     if $(this).prop('checked')
       $('#org_ids').parents('.form-group').addClass('d-none').removeClass('d-flex')
       $('#org_ids').prop('disabled', true).selectpicker('refresh')
@@ -39,10 +39,19 @@ $(document).ready ->
 
   $(document).on 'change', '#documentsTable input[type="checkbox"]', ->
 
-    if $('#documentsTable input[type="checkbox"]:checked').length == 0
+    if $('#documentsTable input[type="checkbox"][name^="select-document"]:checked').length == 0
       $('.download-documents').addClass('disabled')
+      $('.edit-documents').addClass('disabled')
+      $('#documentsTable #select-all').prop('checked', false)
     else
       $('.download-documents').removeClass('disabled')
+      $('.edit-documents').removeClass('disabled')
+
+  $(document).on 'click', '#documentsTable #select-all', ->
+    checked = $(this).prop('checked')
+    $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
+      $(this).prop('checked', checked)
+
 
   $(document).on 'click', '.download-documents', ->
 
@@ -56,4 +65,42 @@ $(document).ready ->
       href += "&document_ids[]=" + id
 
     $('.download-documents').attr("href", href)
+
+
+  $(document).on 'click', '.edit-documents', (event) ->
+    event.preventDefault()
+    
+    selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes
+    document_ids = $.map(selections, (c) -> return c.value) # get ids of all selected documents
+
+    protocol_id = $(this).data('protocol-id')
+    url = '/documents/bulk_edit?protocol_id=' + protocol_id #build the paramaters to the url
+
+    for id in document_ids
+      url += "&document_ids[]=" + id
+
+    $.ajax
+      url:    url
+      method: 'GET'
+
+
+  $(document).on 'click', '#documentsModal .btn-primary', ->
+    protocol_id  = $(this).data('protocol-id')
+    document_ids = $(this).data('document-ids')
+    share_all    = $('#share_all_access').prop('checked')
+    org_ids      = []
+    if(!share_all)
+      org_ids = $('#org_ids').val()
+
+    $.ajax
+      url:    '/documents/bulk_update'
+      method: 'PUT'
+      data: 
+        protocol_id : protocol_id
+        document_ids: document_ids
+        share_all   : share_all
+        org_ids     : org_ids
+
+
+
 

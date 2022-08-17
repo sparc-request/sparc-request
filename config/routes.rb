@@ -165,6 +165,8 @@ SparcRails::Application.routes.draw do
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
     collection do
       get :bulk_download
+      get :bulk_edit
+      put :bulk_update
     end
   end
 

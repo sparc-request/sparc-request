@@ -18,17 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='document']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
-<% @errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='document[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
-<% end %>
-<% else %>
-$("#documentsTable").bootstrapTable('refresh')
-$('#documentsTable #select-all').prop('checked', false)
-$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
-$("#modalContainer").modal('hide')
-<% end %>
+$("#modalContainer").html("<%= j render 'documents/table_form', protocol: @protocol%>")
+$("#modalContainer").modal('show')
+
+if $('#share_all_access').prop('checked')
+	$('#org_ids').parents('.form-group').addClass('d-none').removeClass('d-flex')
+	$('#org_ids').prop('disabled', true).selectpicker('refresh')
+else
+	$('#org_ids').parents('.form-group').removeClass('d-none').addClass('d-flex')
+	$('#org_ids').prop('disabled', false).selectpicker('refresh')

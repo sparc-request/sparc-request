@@ -38,7 +38,6 @@ $(document).ready ->
       $('#org_ids').prop('disabled', false).selectpicker('refresh')
 
   $(document).on 'change', '#documentsTable input[type="checkbox"]', ->
-
     if $('#documentsTable input[type="checkbox"][name^="select-document"]:checked').length == 0
       $('.download-documents').addClass('disabled')
       $('.edit-documents').addClass('disabled')
@@ -52,6 +51,11 @@ $(document).ready ->
     $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
       $(this).prop('checked', checked)
 
+
+  $(document).on 'click', '#documentsTable #select-all', ->
+    checked = $(this).prop('checked')
+    $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
+      $(this).prop('checked', checked);
 
   $(document).on 'click', '.download-documents', ->
 

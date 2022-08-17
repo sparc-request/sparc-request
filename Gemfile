@@ -10,6 +10,7 @@ gem 'audited', '~> 5.0'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
 gem 'babel-transpiler'
+gem 'bcrypt_pbkdf'
 gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
@@ -31,6 +32,7 @@ gem 'devise', '~> 4.8'
 gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
+gem 'ed25519'
 gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'

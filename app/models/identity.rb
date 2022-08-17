@@ -88,9 +88,11 @@ class Identity < ApplicationRecord
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  
+  # validates_presence_of :reason, if: :new_record?
+  
   # personal demographics are only required on Edit Profile page
   validate :validate_demographics, if: Proc.new { |i| i.id == i.updater_id && i.sign_in_count > 0 }
-
 
   scope :overlords, -> { where(catalog_overlord: true) }
 

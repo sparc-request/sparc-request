@@ -76,6 +76,7 @@ class Identity < ApplicationRecord
   has_many :races
   accepts_nested_attributes_for :races, :allow_destroy => true
 
+  cattr_accessor :current_user
   attr_accessor :updater_id
 
   validates_presence_of :first_name, :last_name, :email

@@ -43,10 +43,13 @@ class DocumentsController < ApplicationController
         format.zip do
           Zip::OutputStream.open(temp_file) { |zos| } #initialize the temp file as a zip file
 
+          n = 1 #to avoid duplicate entry error
           Zip::File.open(temp_file.path, Zip::File::CREATE) do |zip| #add files to zip file
             @documents.each do |doc|
               doc_path = File.expand_path('../../../public' + doc.document.url, __FILE__)
-              zip.add("#{doc.document_file_name}", doc_path)
+              # zip.add("#{doc.document_file_name}", doc_path)
+              zip.add(n.to_s + "_" + "#{doc.document_file_name}", doc_path) #zip file doesn't allow duplicates, so added n before the file name
+              n += 1
             end
           end
 

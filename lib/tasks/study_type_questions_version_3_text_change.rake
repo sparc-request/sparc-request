@@ -18,7 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc "study_type_questions_version_3_text_changes"
-task :study_type_questions_version_3_text_changes => :environment do
-	puts "WORKS!"
+desc "study_type_questions_version_3_text_change"
+task :study_type_questions_version_3_text_change => :environment do
+
+	# Updating question #4
+	new_question = "4. Is it appropriate to display the yellow \"Research Participant\" advisory for all study participants?"
+	StudyTypeQuestion.where(study_type_question_group_id: 3, friendly_id: 'research_active').first.update_attributes(question: new_question)
+
 end

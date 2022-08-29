@@ -28,6 +28,7 @@ $("[name='document[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-
 <% end %>
 <% else %>
 $("#documentsTable").bootstrapTable('refresh')
+$('#documentsTable #select-all').prop('checked', false)
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 $("#modalContainer").modal('hide')
 <% end %>

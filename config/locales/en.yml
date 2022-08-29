@@ -327,6 +327,10 @@ en:
               spoofed_media_type: "File type does not match file content"
             document_file_name:
               invalid: "Invalid file type"
+        epic_user:
+          attributes:
+            base:
+              epic_user_api_down: "Epic user interface is currently down."
         form:
           attributes:
             active:

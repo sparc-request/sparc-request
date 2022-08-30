@@ -36,7 +36,6 @@ class EpicUser < ActiveResource::Base
   def self.for_identity(identity)
     begin
       @result = get(:viewuser, userid: identity.ldap_uid.split('@').first)
-      @result["Silly_Name"] = @result.delete("UserID")
 
       unless @result.present? && @result.is_a?(Hash) and @result.keys == ["UserID", "UserName", "IsExist", "IsActive", "IsBlocked", "IsPasswordChangeRequired", "IsSER"]
         raise StandardError.new I18n.t("activerecord.errors.models.epic_user.attributes.base.epic_user_api_down")

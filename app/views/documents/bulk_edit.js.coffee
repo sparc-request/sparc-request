@@ -18,26 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='message']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
+$("#modalContainer").html("<%= j render 'documents/table_form', protocol: @protocol%>")
+$("#modalContainer").modal('show')
 
-<% @errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='message[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
-<% end %>
-<% else %>
-$("#modalContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
-$('.notifications-table').bootstrapTable 'refresh'
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
-
-# If the url is from the notification email 
-$("#contentContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
-
-url = new URL(window.location.href)
-if url.searchParams.get('notification_id')
-	$('.btn-secondary').hide()
-
-<% end %>
+if $('#share_all_access').prop('checked')
+	$('#org_ids').parents('.form-group').addClass('d-none').removeClass('d-flex')
+	$('#org_ids').prop('disabled', true).selectpicker('refresh')
+else
+	$('#org_ids').parents('.form-group').removeClass('d-none').addClass('d-flex')
+	$('#org_ids').prop('disabled', false).selectpicker('refresh')

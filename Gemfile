@@ -36,7 +36,7 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'grape', '1.5.3'
-gem 'grape-entity', '~> 0.10.1'
+gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
@@ -51,7 +51,7 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.3'
+gem 'mysql2', '0.5.4'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
@@ -70,7 +70,7 @@ gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.8'
+gem 'rails', '5.2.8.1'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -81,7 +81,7 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.12.1'
 gem 'slack-notifier'
-gem 'sprockets', '~> 4.0'
+gem 'sprockets', '~> 4.1'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
@@ -103,6 +103,8 @@ group :development, :test, :profile do
   gem 'launchy' # Check usage
   gem 'timecop'
   gem 'progress_bar'
+  gem 'bcrypt_pbkdf'
+  gem 'ed25519'
 end
 
 group :development, :test do

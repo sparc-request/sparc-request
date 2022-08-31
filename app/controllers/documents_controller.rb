@@ -23,6 +23,7 @@ require('zip')
 class DocumentsController < ApplicationController
   before_action :initialize_service_request
   before_action :authorize_identity
+  skip_before_action :verify_authenticity_token
 
   include DocumentsControllerShared
 
@@ -34,8 +35,6 @@ class DocumentsController < ApplicationController
 
       @documents = Protocol.find(@protocol_id).documents.where(id: @document_ids) #filter the checked documents
 
-      puts @documents
-
       file_name = "bulk_download_#{@protocol_id}.zip"
       temp_file = Tempfile.new(file_name)
 
@@ -43,10 +42,13 @@ class DocumentsController < ApplicationController
         format.zip do
           Zip::OutputStream.open(temp_file) { |zos| } #initialize the temp file as a zip file
 
+          n = 1 #to avoid duplicate entry error
           Zip::File.open(temp_file.path, Zip::File::CREATE) do |zip| #add files to zip file
             @documents.each do |doc|
               doc_path = File.expand_path('../../../public' + doc.document.url, __FILE__)
-              zip.add("#{doc.document_file_name}", doc_path)
+              # zip.add("#{doc.document_file_name}", doc_path)
+              zip.add(n.to_s + "_" + "#{doc.document_file_name}", doc_path) #zip file doesn't allow duplicates, so added n before the file name
+              n += 1
             end
           end
 
@@ -60,8 +62,41 @@ class DocumentsController < ApplicationController
       end
 
     end
+  end
 
+  def bulk_edit
 
+    @protocol = Protocol.find(params[:protocol_id])
+    @documents = @protocol.documents.eager_load(:organizations)
+
+    if params[:document_ids]
+      @document_ids = params[:document_ids]
+      @documents = @documents.where(id: @document_ids) #filter the checked documents
+    end
+
+    respond_to do |format|
+      format.js
+    end
 
   end
+
+  def bulk_update
+
+    protocol = Protocol.find(params[:protocol_id])
+    document_ids = params[:document_ids]
+
+    if document_ids
+      document_ids.each do |id|
+        doc = Document.find(id)
+        doc.update_attributes(share_all: params[:share_all])
+        doc.sub_service_requests = protocol.sub_service_requests.where(organization_id: params[:org_ids])
+      end
+    end
+
+    respond_to do |format|
+      format .js { render :update }
+    end
+
+  end
+
 end

@@ -1,4 +1,5 @@
 json.(@documents) do |doc|
+  json.checkbox     display_check_box(doc)
   json.document     display_document_title(doc)
   json.type         doc.display_document_type
   json.uploaded     format_date(doc.document_updated_at)

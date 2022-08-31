@@ -24,6 +24,6 @@
       .form-group.input-group.mb-0
         %span.input-group-icon
           = icon('fas', 'search fa-lg text-muted')
-        = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:accordion][:search_placeholder], class: "form-control form-control-lg"
+        = text_field_tag 'serviceQuery', nil, placeholder: t(:proper)[:catalog][:accordion][:search_placeholder], class: "form-control form-control-lg", title: t(:proper)[:catalog][:accordion][:search_tooltip], data: { toggle: 'tooltip', disable: true }
     .card-body
       = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : []

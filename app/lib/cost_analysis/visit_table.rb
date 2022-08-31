@@ -70,9 +70,10 @@ module CostAnalysis
     def summarized_by_service
       table = TableWithGroupHeaders.new
       table.add_column_labels([
-        {:colspan => 2, :content => self.arm_name},
-        "Current",
-        "Your Price",
+        self.arm_name,
+        "Quantity Type",
+        "Service Rate",
+        "Your Cost",
         "Qty",
         "Per Patient",
         "Per Study"
@@ -181,7 +182,7 @@ module CostAnalysis
           end
         end
       end
-      static_rows = [{content: "Per Patient", colspan: 5, :align => :right, :font_style => :bold}] 
+      static_rows = [{content: "Per Patient", colspan: 5, :align => :right, :font_style => :bold}]
       dynamic_rows = summary_column.map do |value|
         {:content => to_money(value), :align => :right, :font_style => :bold}
       end

@@ -78,8 +78,8 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
           # checking for and assigning research types, impact areas, and affiliations...
           if has_research?(@merged_protocol, 'human_subjects') && !has_research?(@master_protocol, 'human_subjects')
-            @merged_protocol.human_subjects_info.update_attributes(protocol_id: @master_protocol.id)
             @master_protocol.research_types_info.update_attributes(human_subjects: true)
+            @merged_protocol.irb_records.each { |irb_record| irb_record.update_attributes(human_subjects_info_id: @master_protocol.human_subjects_info.id) }
           elsif has_research?(@merged_protocol, 'vertebrate_animals') && !has_research?(@master_protocol, 'vertebrate_animals')
             @merged_protocol.vertebrate_animals_info.update_attributes(protocol_id: @master_protocol.id)
           elsif has_research?(@merged_protocol, 'investigational_products') && !has_research?(@master_protocol, 'investigational_products')

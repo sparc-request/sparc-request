@@ -94,7 +94,7 @@ group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.8.0' # Check usage
+  gem 'addressable', '~> 2.8.1' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

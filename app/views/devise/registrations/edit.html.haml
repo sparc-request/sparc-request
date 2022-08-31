@@ -20,4 +20,5 @@
 
 %h1.text-center.mb-4
   = t('devise.profile.header')
+= render 'layouts/required_fields'
 = render 'profile_form', identity: current_user

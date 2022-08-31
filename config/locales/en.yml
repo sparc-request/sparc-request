@@ -118,12 +118,15 @@ en:
         nct_number: "National Clinical Trials (NCT) #"
         irb_records: "IRB Records"
       identity:
+        age_group: "Age"
         created_at: "Created"
         credentials: "Credentials"
         current_sign_in_at: "Last Sign-In"
         email: "Email"
         era_commons_name: "ERA Commons Name"
+        ethnicity: "Hispanic or Lantino?"
         first_name: "First Name"
+        gender: "Gender"
         institution: "Institution"
         last_name: "Last Name"
         ldap_uid: "Login"
@@ -132,6 +135,7 @@ en:
         phone: "Phone"
         password: "Password"
         password_confirmation: "Confirm Password"
+        races: "Race"
         reason: "Reason for Account Request"
         sign_in_count: "Sign-In Count"
         subspecialty: "Subspecialty"
@@ -385,6 +389,7 @@ en:
               out_of_order: "must be in order"
       messages:
         spoofed_media_type: "invalid file type"
+      blank: "Can't be blank"
     models:
       service:
         one: "Service"
@@ -569,6 +574,7 @@ en:
     yes_select: "Yes"
     no_select: "No"
     na: "N/A"
+    check_all: "(Check all that apply)"
     prompts:
       any: "- Any -"
       check_all: "Check all that apply"

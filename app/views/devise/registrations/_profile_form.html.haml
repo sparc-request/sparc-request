@@ -21,6 +21,10 @@
 - first_name_disabled = Setting.get_value("noneditable_identity_fields").include?("first_name")
 - last_name_disabled = Setting.get_value("noneditable_identity_fields").include?("last_name")
 - email_disabled = Setting.get_value("noneditable_identity_fields").include?("email")
+- display_age = Setting.get_value("displayed_demographics_fields").include?("age_group")
+- display_gender = Setting.get_value("displayed_demographics_fields").include?("gender")
+- display_ethnicity = Setting.get_value("displayed_demographics_fields").include?("ethnicity")
+- display_race = Setting.get_value("displayed_demographics_fields").include?("race")
 
 = form_for resource, as: resource_name, url: registration_path(resource_name), remote: true, method: :put do |f|
   .form-row
@@ -48,15 +52,16 @@
   .form-row
     .form-group.col-12.col-xl-6
       = f.label :orcid, class: 'col-form-label'
-      = f.text_field :orcid, class: 'form-control', placeholder: t(:devise)[:profile][:placeholders][:orcid], maxlength: 19
+      = f.text_field :orcid, class: 'form-control', placeholder: t('devise.profile.placeholders.orcid'), maxlength: 19
       %small.form-text
-        = link_to t(:devise)[:profile][:links][:orcid], t(:devise)[:profile][:links][:orcid], target: :_blank
+        = link_to t('devise.profile.links.orcid'), t('devise.profile.links.orcid'), target: :_blank
     .form-group.col-12.col-xl-6
-      = f.label :era_commons_name, t(:devise)[:profile][:era_commons_name], class: 'col-form-label'
+      = f.label :era_commons_name, t('devise.profile.era_commons_name'), class: 'col-form-label'
       = f.text_field :era_commons_name, class: 'form-control'
+
   .form-row
     .form-group.col-4
-      = f.label :credentials, t(:devise)[:profile][:credentials], class: 'col-form-label'
+      = f.label :credentials, t('devise.profile.credentials'), class: 'col-form-label'
       = f.select :credentials, options_for_select(PermissibleValue.get_inverted_hash('user_credential'), identity.credentials), { include_blank: t(:devise)[:profile][:credentials_prompt] }, class: 'selectpicker'
     .form-group.col-4#credentialsOtherContainer{ class: f.object.credentials == 'other' ? '' : 'd-none' }
       = f.label :credentials_other, t('constants.prompts.please_specify'), class: 'col-form-label'
@@ -65,8 +70,36 @@
       = f.label :subspecialty, t(:devise)[:profile][:subspecialty], class: 'col-form-label'
       = f.select :subspecialty, options_for_select(PermissibleValue.get_inverted_hash('subspecialty'), identity.subspecialty), { include_blank: t(:devise)[:profile][:subspecialty_prompt] }, class: 'selectpicker'
 
-
   = render "associated_users/professional_organizations", professional_organization: identity.professional_organization
+
+  .form-row.mt-3
+    .form-group.col-4#ageContainer{ class: display_age ? '' : 'd-none' }
+      = f.label :age_group, t('devise.profile.age_group'), class: 'required'
+      = f.select :age_group, options_for_select(PermissibleValue.get_inverted_hash('age_group'), identity.age_group), { include_blank: t(:devise)[:profile][:select_age] }, class: 'selectpicker'
+    .form-group.col-4#genderContainer{ class: display_gender ? '' : 'd-none' }
+      = f.label :gender, t('devise.profile.gender'), class: 'required'
+      = f.select :gender, options_for_select(PermissibleValue.get_inverted_hash('gender'), identity.gender), { include_blank: t(:devise)[:profile][:select_prompt] }, class: 'selectpicker'
+    .form-group.col-4#genderOtherContainer{ class: f.object.gender == 'other' ? '' : 'd-none' }
+      = f.label :gender_other, t('constants.prompts.please_specify')
+      = f.text_field :gender_other, class: 'form-control'
+    .form-group.col-4#ethnicityContainer{ class: display_ethnicity ? '' : 'd-none'  }
+      = f.label :ethnicity, t('devise.profile.ethnicity'), class: 'required'
+      = f.select :ethnicity, options_for_select(PermissibleValue.get_inverted_hash('ethnicity'), identity.ethnicity), { include_blank: t(:devise)[:profile][:select_prompt] }, class: 'selectpicker'
+
+  .form-row.mb-3#raceContainer{ class: display_race ? '' : 'd-none' }
+    .form-group
+      = f.label :race, t('devise.profile.race'), class: 'required'
+
+      .row
+        = f.fields_for :races, identity.races.sort_by(&:position) do |r_form|
+          - checked = !r_form.object.new && !r_form.object.marked_for_destruction?
+          .col-6
+            = r_form.hidden_field :name, value: r_form.object.name
+            .custom-control.custom-checkbox
+              = r_form.check_box :_destroy, { checked: checked, class: 'custom-control-input race' }, false, true
+              = r_form.label :_destroy, PermissibleValue.get_value('race', r_form.object.name), class: 'custom-control-label'
+            - if r_form.object.name == "other"
+              = r_form.text_field :other_text, placeholder: t('constants.prompts.please_specify'), class: [('form-control'), checked ? '' : 'd-none']
 
 - content_for :footer do
   %footer.card.w-100.mt-3
@@ -75,4 +108,4 @@
         = link_to :back, class: 'btn btn-lg btn-link px-0' do
           - succeed t('actions.back') do
             = icon('fas', 'arrow-left mr-2')
-        = submit_tag t(:devise)[:profile][:update], class: 'btn btn-lg btn-outline-success', form: 'edit_identity'
+        = submit_tag t('devise.profile.update'), class: 'btn btn-lg btn-outline-success', form: 'edit_identity'

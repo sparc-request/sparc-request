@@ -1,0 +1,8 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,native_american_alaskan,American Indian or Alaska Native,,,1,race,,,1
+,asian,Asian,,,2,race,,,1
+,black,Black or African American,,,3,race,,,1
+,pacific_islander,Native Hawaiian or Other Pacific Islander,,,4,race,,,1
+,white,White,,,5,race,,,1
+,not_to_answer,Prefer not to answer,,,6,race,,,1
+,other,Prefer to Self-Describe,,,100,race,,,1

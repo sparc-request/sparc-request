@@ -67,6 +67,22 @@ class UniquePiReport < ReportingModule
     attrs["Division"]    = "try(:professional_org_lookup, 'division')"
     attrs["ERA Commons Name"] = :era_commons_name
     attrs["ORCID"] = :orcid
+
+    if Setting.get_value("displayed_demographics_fields").include?("gender")
+      attrs["Gender"] = "self.display_gender"
+    end
+
+    if Setting.get_value("displayed_demographics_fields").include?("age_group")
+      attrs["Age Group"] = "self.display_age_group"
+    end
+
+    if Setting.get_value("displayed_demographics_fields").include?("ethnicity")
+      attrs["Hispanic/Latino?"] = "self.display_ethnicity"
+    end
+
+    if Setting.get_value("displayed_demographics_fields").include?("race")
+      attrs["Race"] = "self.display_races"
+    end
     attrs
   end
 
@@ -133,6 +149,7 @@ class UniquePiReport < ReportingModule
   end
 
   def order
+    "last_name, first_name"
   end
 
   ##################  END QUERY SETUP   #####################

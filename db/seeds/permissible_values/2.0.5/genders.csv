@@ -1,0 +1,5 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,male,Male,,,1,gender,,,1
+,female,Female,,,2,gender,,,1
+,other,Prefer to Self-Describe,,,3,gender,,,1
+,not_to_answer,Prefer not to answer,,,4,gender,,,1

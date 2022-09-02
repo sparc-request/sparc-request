@@ -18,8 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ApplicationService
-  def self.call(*args, &block)
-    new(*args, &block).call
+require "rails_helper"
+
+RSpec.describe ArmCopier, type: :model do
+	describe '#call' do
+    let(:protocol)   { create(:protocol_without_validations) }
+    let(:copied_arm) { create(:arm, protocol: protocol, visit_count: 3, subject_count: 5) }
+    let(:new_arm)    { create(:arm, protocol: protocol, visit_count: 1, subject_count: 1) }
+
+    it 'copies an arm with all visit groups' do
+    	expect { ArmCopier.call(new_arm, copied_arm) }.to change { new_arm.visit_groups.count }.from(1).to(3)
+    end
   end
 end

@@ -26,8 +26,18 @@ RSpec.describe ArmCopier, type: :model do
     let(:copied_arm) { create(:arm, protocol: protocol, visit_count: 3, subject_count: 5) }
     let(:new_arm)    { create(:arm, protocol: protocol, visit_count: 1, subject_count: 1) }
 
-    it 'copies an arm with all visit groups' do
+    it 'copies the given arm with all visit groups' do
     	expect { ArmCopier.call(new_arm, copied_arm) }.to change { new_arm.visit_groups.count }.from(1).to(3)
+    end
+
+    it 'copies the given arm info to the new arm' do
+    	expect { ArmCopier.call(new_arm, copied_arm) }.to change { new_arm.subject_count }.from(1).to(5)
+    end
+
+    it 'copies over visit info (quantity types, etc) to the new visits' do
+    	Visit.create(quantity: 1, research_billing_qty: 1, visit_group_id: copied_arm.visit_groups.first.id)
+    	Visit.create(quantity: 0, research_billing_qty: 0, visit_group_id: new_arm.visit_groups.first.id)
+    	expect { ArmCopier.call(new_arm, copied_arm) }.to change { new_arm.visit_groups.first.visits.first.research_billing_qty}.from(0).to(1)
     end
   end
 end

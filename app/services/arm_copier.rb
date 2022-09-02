@@ -1,11 +1,11 @@
-class ArmCopier
+class ArmCopier < ApplicationService
 
   def initialize(new_arm, copied_arm)
     @new_arm = new_arm
     @copied_arm = copied_arm
   end
 
-  def copy_arm
+  def call
     @new_arm.update_attributes(subject_count: @copied_arm.subject_count, new_with_draft: @copied_arm.new_with_draft,
                                minimum_visit_count: @copied_arm.minimum_visit_count, minimum_subject_count: @copied_arm.minimum_subject_count)
     visit_groups = @copied_arm.visit_groups

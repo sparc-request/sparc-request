@@ -51,8 +51,7 @@ class ArmsController < ApplicationController
 
     if @arm.save
       if copied_arm_id
-        arm_copier = ArmCopier.new(@arm, Arm.find(copied_arm_id))
-        @arm = arm_copier.copy_arm
+        @arm = ArmCopier.call(@arm, Arm.find(copied_arm_id))
       end
       @service_request.reload
       flash[:success] = copied_arm_id ? t('arms.copied') : t('arms.created')

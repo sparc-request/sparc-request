@@ -43,9 +43,10 @@ class ArmsController < ApplicationController
   end
 
   def create
-    copied_arm_id = params[:copied_arm_id]
-    @tab = params[:tab]
     @arm = @service_request.protocol.arms.new(arm_params)
+    @tab = params[:tab]
+    copied_arm_id = params[:copied_arm_id]
+    
 
     setup_calendar_pages
 

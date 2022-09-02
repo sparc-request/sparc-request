@@ -37,6 +37,7 @@ scratch
 *.war
 public/assets
 public/system
+storage/
 *~
 config/alfresco.yml
 config/database.yml

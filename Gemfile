@@ -79,7 +79,7 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.13.0'
+gem 'savon', '~> 2.13.1'
 gem 'slack-notifier'
 gem 'sprockets', '~> 4.1'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge

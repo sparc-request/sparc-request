@@ -403,7 +403,9 @@ en:
   arms:
     new: "Add Arm"
     edit: "Edit Arm"
+    copy: "Copy Arm"
     delete: "Delete Arm"
+    copied: "Arm Copied!"
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"

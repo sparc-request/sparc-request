@@ -45,12 +45,17 @@ class ArmsController < ApplicationController
   def create
     @arm = @service_request.protocol.arms.new(arm_params)
     @tab = params[:tab]
+    copied_arm_id = params[:copied_arm_id]
+    
 
     setup_calendar_pages
 
     if @arm.save
+      if copied_arm_id
+        @arm = ArmCopier.call(@arm, Arm.find(copied_arm_id))
+      end
       @service_request.reload
-      flash[:success] = t('arms.created')
+      flash[:success] = copied_arm_id ? t('arms.copied') : t('arms.created')
     else
       @errors = @arm.errors
     end
@@ -59,6 +64,16 @@ class ArmsController < ApplicationController
   end
 
   def edit
+    @tab = params[:tab]
+
+    setup_calendar_pages
+
+    respond_to :js
+  end
+
+  def copy
+    @new_arm = @service_request.protocol.arms.new
+    @copied_arm_id = params[:arm_id]
     @tab = params[:tab]
 
     setup_calendar_pages

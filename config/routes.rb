@@ -142,7 +142,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :arms, except: [:show]
+  resources :arms, except: [:show] do
+    get :copy
+  end
 
   resource :service_calendars, only: [] do
     member do

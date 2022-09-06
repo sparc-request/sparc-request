@@ -18,19 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors %>
-$("[name^='identity']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
-$('.form-error').remove()
-
-<% @errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='identity[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% if attr == :races %>
-$('.race').parents('.form-group').removeClass('is-valid').addClass('is-invalid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
-<% end %>
-<% end %>
-<% else %>
-
-window.location = "<%= @path %>"
-<% end %>
+$("#modalContainer").html("<%= j render 'arms/form', arm: @new_arm, service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
+$("#modalContainer").modal('show')

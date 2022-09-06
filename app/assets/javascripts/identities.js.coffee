@@ -56,6 +56,21 @@ $(document).ready ->
     else
       $('#credentialsOtherContainer').addClass('d-none')
 
+  $(document).on 'changed.bs.select', '#identity_gender',  ->
+    if $(this).val() == 'other'
+      $('#genderOtherContainer').removeClass('d-none')
+    else
+      $('#genderOtherContainer').addClass('d-none')
+
+  $(document).on 'change', '.race', ->
+    $specifyField = $('#' + $(this).prop('id').replace('__destroy', '_other_text'))
+
+    if $specifyField.length > 0
+      if $(this).prop('checked')
+        $specifyField.removeClass('d-none')
+      else
+        $specifyField.addClass('d-none')
+
   $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
     last_selected = $(this).val()
     po_selected_id = $(this).closest('select').attr('id')

@@ -301,6 +301,10 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
     t.text "institution"
+    t.string "age_group"
+    t.string "gender"
+    t.string "ethnicity"
+    t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["first_name"], name: "index_identities_on_first_name"
@@ -764,7 +768,16 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+    t.bigint "identity_id"
+    t.string "name", null: false
+    t.string "other_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_races_on_identity_id"
+  end
+
+  create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.string "xlsx_file_name"
     t.string "xlsx_content_type"
@@ -1140,6 +1153,7 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
   add_foreign_key "oauth_access_requests", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "races", "identities"
   add_foreign_key "options", "questions"
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"

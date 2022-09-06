@@ -1,0 +1,5 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,non_hispanic,No,,,1,ethnicity,,,1
+,hispanic,Yes,,,2,ethnicity,,,1
+,do_not_know,Don't Know,,,3,ethnicity,,,1
+,not_to_answer,Prefer not to answer,,,4,ethnicity,,,1

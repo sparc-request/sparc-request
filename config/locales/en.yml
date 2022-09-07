@@ -621,7 +621,7 @@ en:
     none: "No Documents Found"
     new: "Add Document"
     edit: "Edit Document"
-    edit_selected: "Edit Selected Documents"
+    edit_selected: "Edit Document Access"
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"

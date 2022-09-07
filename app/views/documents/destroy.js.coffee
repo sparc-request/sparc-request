@@ -20,3 +20,6 @@
 
 $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
 $("#documentsTable").bootstrapTable('refresh')
+$('#documentsTable #select-all').prop('checked', false)
+$('.download-documents').addClass('disabled')
+$('.edit-documents').addClass('disabled')

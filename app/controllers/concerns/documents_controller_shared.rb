@@ -102,7 +102,8 @@ module DocumentsControllerShared
       :doc_type,
       :doc_type_other,
       :protocol_id,
-      :share_all
+      :share_all,
+      :version
     )
   end
 end

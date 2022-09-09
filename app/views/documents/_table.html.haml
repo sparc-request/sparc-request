@@ -49,6 +49,8 @@
             = Document.human_attribute_name(:document_updated_at)
           %th{ data: { field: 'shared_with', align: "left" } }
             = Document.human_attribute_name(:org_ids)
+          %th{ data: { field: 'version', align: "left", sortable: "true" } }
+            = t(:activerecord)[:attributes][:document][:version_date]
           - unless in_review?
             %th{ data: { field: 'actions', align: "center" } }
               = t('actions.actions')

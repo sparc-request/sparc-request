@@ -45,6 +45,11 @@
             = f.label :doc_type_other, t('constants.prompts.please_specify'), class: 'required'
             = f.text_field :doc_type_other, class: 'form-control'
         .form-row
+          .form-group.col
+            = f.label :version_date
+            .form-row
+              = f.date_field(:version)
+        .form-row
           .form-group.col-4
             = f.label :org_ids, title: t('documents.tooltips.access', protocol_type: document.protocol.model_name.human), data: { toggle: 'tooltip' }
             .custom-control.custom-checkbox.mt-2.mb-1

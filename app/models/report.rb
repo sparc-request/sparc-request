@@ -27,7 +27,7 @@ class Report < ApplicationRecord
   ### audit reporting methods ###
 
   def audit_excluded_fields
-    {'create' => ['sub_service_request_id', 'xlsx_file_name', 'xlsx_content_type', 'xlsx_file_size', 'xlsx_updated_at']}
+    {'create' => ['sub_service_request_id', 'xlsx.filename', 'xlsx.content_type', 'xlsx.byte_size', 'updated_at']}
   end
 
   ### end audit reporting methods ###

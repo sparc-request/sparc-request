@@ -30,10 +30,12 @@ module DocumentsHelper
   end
 
   def display_document_title(document, opts={})
-    if in_dashboard? && !opts[:permission]
-      document.document_file_name
-    else
-      link_to document.document_file_name, document.document.url, target: :_blank
+    if document.document.attached?
+      if in_dashboard? && !opts[:permission]
+        document.document.filename
+      else
+        link_to document.document.filename, rails_blob_path(document.document, disposition: 'attachment'), target: :_blank
+      end
     end
   end
 

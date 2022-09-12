@@ -46,7 +46,7 @@
           %th{ data: { field: 'type', align: "left", sortable: "true" } }
             = Document.human_attribute_name(:doc_type)
           %th{ data: { field: 'uploaded', align: "left", sortable: "true", sorter: "dateSorter" } }
-            = Document.human_attribute_name(:document_updated_at)
+            = Document.human_attribute_name(:updated_at)
           %th{ data: { field: 'shared_with', align: "left" } }
             = Document.human_attribute_name(:org_ids)
           - unless in_review?

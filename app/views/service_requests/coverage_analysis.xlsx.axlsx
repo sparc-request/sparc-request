@@ -74,7 +74,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row doc_row, :style => sub_header_style
 
   @service_request.protocol.documents.each do |doc|
-    sheet.add_row [doc.document_file_name, PermissibleValue.get_value('document_type', doc.doc_type), "", "", doc.updated_at.strftime('%m/%d/%y')], :style => default
+    sheet.add_row [doc.document.filename, PermissibleValue.get_value('document_type', doc.doc_type), "", "", doc.updated_at.strftime('%m/%d/%y')], :style => default
   end
 
   sheet.add_row

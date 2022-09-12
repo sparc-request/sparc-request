@@ -19,8 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Document < ApplicationRecord
-  include Paperclip::Glue
-
   audited
 
   SUPPORTED_FILE_TYPES = [
@@ -35,12 +33,12 @@ class Document < ApplicationRecord
   has_and_belongs_to_many :sub_service_requests
   has_many :organizations, through: :sub_service_requests
   
-  has_attached_file :document #, :preserve_files => true
+  has_one_attached :document, dependent: :destroy
 
-  validates_attachment_file_name :document, matches: Document::SUPPORTED_FILE_TYPES
-
-  validates :doc_type, :document, presence: true
+  validates :document, :doc_type, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
+
+  validate :supported_file_types
 
   def display_document_type
     self.doc_type == "other" ? self.doc_type_other : PermissibleValue.get_value('document_type', self.doc_type)
@@ -51,6 +49,15 @@ class Document < ApplicationRecord
       self.protocol.sub_service_requests.map(&:org_tree).flatten.uniq
     else
       self.sub_service_requests.map(&:org_tree).flatten.uniq
+    end
+  end
+
+  private
+
+  def supported_file_types
+    if document.attached? && !document.content_type.in?(%w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff))
+      document.purge_later
+      errors.add(:document, 'file type is not supported.')
     end
   end
 end

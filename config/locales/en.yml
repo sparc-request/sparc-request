@@ -92,7 +92,7 @@ en:
       document:
         doc_type: "Document Type"
         document: "Document"
-        document_updated_at: "Uploaded"
+        updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
         share_all: "Share with all providers"
       doorkeeper/access_request:
@@ -325,7 +325,7 @@ en:
           attributes:
             document:
               spoofed_media_type: "File type does not match file content"
-            document_file_name:
+            document.filename:
               invalid: "Invalid file type"
         form:
           attributes:

@@ -59,14 +59,14 @@ RSpec.describe DocumentsHelper, type: :helper do
 
       context 'with permission' do
         it 'should render the title as a link' do
-          expect(helper).to receive(:link_to).with(document.document_file_name, document.document.url, any_args)
+          expect(helper).to receive(:link_to).with(document.document.filename, rails_blob_path(document.document), any_args)
           helper.display_document_title(document, permission: true)
         end
       end
 
       context 'without permission' do
         it 'should render the title as plain text' do
-          expect(helper.display_document_title(document, permission: false)).to eq(document.document_file_name)
+          expect(helper.display_document_title(document, permission: false)).to eq(document.document.filename)
         end
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe DocumentsHelper, type: :helper do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(false) }
 
       it 'should render the title as a link' do
-        expect(helper).to receive(:link_to).with(document.document_file_name, document.document.url, any_args)
+        expect(helper).to receive(:link_to).with(document.document.filename, rails_blob_path(document.document), any_args)
         helper.display_document_title(document)
       end
     end

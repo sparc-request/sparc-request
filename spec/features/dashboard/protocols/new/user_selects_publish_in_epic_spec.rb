@@ -52,7 +52,7 @@ RSpec.describe 'User edits study type questions', js: true do
           bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
           wait_for_javascript_to_finish
 
-          expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
+          expect(page).to have_content('Full Epic Functionality: no notification, no yellow advisory, no MyChart access.')
         end
       end
 

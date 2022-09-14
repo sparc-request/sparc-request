@@ -51,12 +51,6 @@ $(document).ready ->
     $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
       $(this).prop('checked', checked)
 
-
-  $(document).on 'click', '#documentsTable #select-all', ->
-    checked = $(this).prop('checked')
-    $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
-      $(this).prop('checked', checked);
-
   $(document).on 'click', '.download-documents', ->
 
     selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes

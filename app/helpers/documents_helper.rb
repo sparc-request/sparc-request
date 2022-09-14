@@ -86,15 +86,4 @@ module DocumentsHelper
     check_box_tag "select-document-#{document.id}", "#{document.id}"
   end
 
-  def get_service_providers(documents)
-    org_ids = []
-    @documents.each do |doc| 
-      doc.sub_service_requests.pluck(:organization_id).each do |org_id|
-        org_ids << org_id
-      end
-    end
-
-    org_ids
-  end
-
 end

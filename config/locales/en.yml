@@ -95,6 +95,7 @@ en:
         document_updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
         share_all: "Share with all providers"
+        version_date: "Version Date"
       doorkeeper/access_request:
         created_at: "Access Time"
         failure_reason: "Failure Reason"
@@ -625,7 +626,7 @@ en:
     none: "No Documents Found"
     new: "Add Document"
     edit: "Edit Document"
-    edit_selected: "Edit Selected Documents"
+    edit_selected: "Edit Document Access"
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_29_140715) do
+ActiveRecord::Schema.define(version: 2022_09_07_153451) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -179,6 +179,7 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
+    t.date "version"
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
@@ -300,9 +301,9 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
-    t.text "institution"
     t.string "age_group"
     t.string "gender"
+    t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
@@ -768,7 +769,7 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.bigint "identity_id"
     t.string "name", null: false
     t.string "other_text"
@@ -777,7 +778,7 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
     t.index ["identity_id"], name: "index_races_on_identity_id"
   end
 
-  create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.string "xlsx_file_name"
     t.string "xlsx_content_type"
@@ -1153,7 +1154,6 @@ ActiveRecord::Schema.define(version: 2022_08_29_140715) do
   add_foreign_key "oauth_access_requests", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "races", "identities"
   add_foreign_key "options", "questions"
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"

@@ -41,6 +41,8 @@
           = PermissibleValue.human_attribute_name(:default)
         %th{ data: { field: 'is_available', align: 'center', sortable: 'true'} }
           = PermissibleValue.human_attribute_name(:is_available)
+        %th{ data: { field: 'reserved', align: 'center', sortable: 'true', visible: 'false' } }
+          = PermissibleValue.human_attribute_name(:reserved)
         %th{ data: { field: 'created_at', align: 'center', sortable: 'true', sorter: 'dateSorter', visible: 'false' } }
           = PermissibleValue.human_attribute_name(:created_at)
         %th{ data: { field: 'updated_at', sortable: 'true', sorter: 'dateSorter' } }

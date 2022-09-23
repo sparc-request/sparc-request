@@ -47,6 +47,7 @@ class EpicUser < ActiveResource::Base
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
 
       message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
+      message += "\n#{@result}\n"
       message += "\n```#{e.class}\n"
       message += "#{e.message}\n"
       message += "#{e.backtrace[0..5]}```"

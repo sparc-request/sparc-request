@@ -693,7 +693,6 @@ DEPENDENCIES
   momentjs-rails (>= 2.8.1)
   msteams-ruby-client
   mysql2 (= 0.5.4)
-
   nested_form
   nested_form_fields
   net-ldap (~> 0.17.1)

@@ -373,6 +373,7 @@ en:
               blank: "You must create Arms before proceeding to the Service Calendar"
             line_items:
               blank: "You must add services to your cart before continuing"
+              pushed_to_fulfillment: "Requests that have already been pushed to Fulfillment cannot be deleted"
             protocol:
               blank: "You must create a Protocol before continuing"
         system_survey:

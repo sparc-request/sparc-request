@@ -72,15 +72,6 @@ class SubServiceRequest < ApplicationRecord
   after_save :update_org_tree
   after_save :update_past_status
 
-  # Users should not be able to delete a request that has been pushed
-  # to Fulfillment
-  before_destroy do
-    if self.in_work_fulfillment?
-      errors[:base] << "This request has been pushed to SPARC Fulfillment and cannot be deleted."
-      throw(:abort)
-    end
-  end
-
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
   scope :imported_to_fulfillment, -> { where(imported_to_fulfillment: true) }
 

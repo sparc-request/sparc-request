@@ -29,13 +29,17 @@
         .list-group-item.line-item
           .row
             .col-10.d-flex.align-items-center.pr-0
-              %h6.mb-0{ class: ssr.is_complete? ? 'text-success' : ssr.is_locked? ? 'text-danger' : '' }<
+              %h6.mb-0{ class: ssr.is_complete? ? 'text-success' : ssr.is_locked? ? 'text-danger' : '' }
                 = li.service.abbreviation
                 - if li.service.cpt_code.present?
                   %strong
                     = "(#{li.service.cpt_code})"
                 - unless li.service.is_available
                   = inactive_tag
-            - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
+            - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name) && li != ssr.line_items.last && !ssr.in_work_fulfillment
               .col-2.pl-0.text-right
                 = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }
+            - else
+              .col-2.pl-0.text-right
+                = button_tag(icon('fas', 'trash-alt'), type: 'button',
+                title: t(:activerecord)[:errors][:models][:service_request] [:attributes][:line_items][:pushed_to_fulfillment], class: "btn btn-danger btn-sm btn-sq disabled", data: { toggle: 'tooltip', disable: true })

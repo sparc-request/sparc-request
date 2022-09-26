@@ -33,6 +33,7 @@ class ArmCopier < ApplicationService
     visit_groups.each_with_index do |group, group_index|
       if group_index == 0
         update_first_group(group)
+        update_subject_counts
       else
         create_groups_and_visits(group)
       end
@@ -62,6 +63,13 @@ class ArmCopier < ApplicationService
                               research_billing_qty: group.visits[visit_index].research_billing_qty,
                               insurance_billing_qty: group.visits[visit_index].insurance_billing_qty,
                               effort_billing_qty: group.visits[visit_index].effort_billing_qty)
+    end
+  end
+
+  # Update new arm's line items visits with the correct subject count
+  def update_subject_counts
+    @copied_arm.line_items_visits.each_with_index do |line_items_visit, index|
+      @new_arm.line_items_visits[index].update_attribute(:subject_count, line_items_visit.subject_count)
     end
   end
 end

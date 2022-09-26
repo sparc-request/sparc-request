@@ -101,8 +101,10 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
           end
 
           @merged_protocol.affiliations.each do |affiliation|
-            affiliation.protocol_id = @master_protocol.id
-            affiliation.save(validate: false)
+            if !@master_protocol.affiliations.map{ |x| x.name}.include?(affiliation.name)
+              affiliation.protocol_id = @master_protocol.id
+              affiliation.save(validate: false)
+            end
           end
 
           # assigning service requests...

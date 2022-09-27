@@ -21,10 +21,7 @@
 $(document).ready( function() {
   NProgress.remove()
 
-  NProgress.configure({ 
-    trickleRate: 0.025, 
-    trickleSpeed: 100,
-    template: '<div class="bar" role="bar" style="height: 20px;"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>' });
+  NProgress.configure({ trickleRate: 0.025, trickleSpeed: 100 });
 
   $(document).on('ajaxSend ajax:send', function(event) {
     if (event.target.tagName != 'A' || event.target.getAttribute('href').charAt(0) !== '#')

@@ -22,7 +22,7 @@
 ConfirmSwal.fire(
   icon: 'question'
   title: I18n.t('proper.catalog.new_request.header')
-  text: I18n.t('proper.catalog.new_request.warning')
+  text: " ",
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
   cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
 ).then (result) ->

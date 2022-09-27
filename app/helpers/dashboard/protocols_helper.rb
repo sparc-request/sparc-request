@@ -19,17 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::ProtocolsHelper
-  def break_before_parenthetical(s)
-    i = s.index('(')
-    if i.present?
-      beginning = s[0...i]
-      ending = s[i..-1]
-      raw(beginning +'<br>'+ ending)
-    else
-      s
-    end
-  end
-
   def protocol_id_link(protocol, access)
     if access
       link_to protocol.id, dashboard_protocol_path(protocol)

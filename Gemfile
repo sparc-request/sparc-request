@@ -45,6 +45,7 @@ gem 'httparty', '~> 0.20.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem "image_processing", ">= 1.2"
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.11'

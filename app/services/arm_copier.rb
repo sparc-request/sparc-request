@@ -26,6 +26,7 @@ class ArmCopier < ApplicationService
   end
 
   def call
+    @copied_arm.line_items.first.sub_service_request.update(status: "draft")
     @new_arm.update_attributes(subject_count: @copied_arm.subject_count, new_with_draft: @copied_arm.new_with_draft,
                                minimum_visit_count: @copied_arm.minimum_visit_count, minimum_subject_count: @copied_arm.minimum_subject_count)
     visit_groups = @copied_arm.visit_groups

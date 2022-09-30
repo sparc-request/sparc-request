@@ -285,8 +285,9 @@ GEM
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
-    haml (5.2.2)
-      temple (>= 0.8.0)
+    haml (6.0.3)
+      temple (>= 0.8.2)
+      thor
       tilt
     hashdiff (1.0.1)
     hashery (2.1.2)
@@ -393,7 +394,7 @@ GEM
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
     parallel (1.22.1)
-    parallel_tests (3.11.0)
+    parallel_tests (3.13.0)
       parallel
     pdf-core (0.9.0)
     pdf-inspector (1.3.0)
@@ -577,7 +578,7 @@ GEM
       climate_control (>= 0.0.3, < 1.0)
     thor (1.2.1)
     thread_safe (0.3.6)
-    tilt (2.0.10)
+    tilt (2.0.11)
     timecop (0.9.5)
     traceroute (0.8.1)
       rails (>= 3.0.0)

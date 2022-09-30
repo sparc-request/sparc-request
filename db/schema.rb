@@ -12,27 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2022_09_23_161842) do
 
-  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
-  end
-
-  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.bigint "byte_size", null: false
-    t.string "checksum", null: false
-    t.datetime "created_at", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.integer "admin_cost"
@@ -193,9 +172,14 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.string "doc_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "document_file_name"
+    t.string "document_content_type"
+    t.integer "document_file_size"
+    t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
+    t.date "version"
     t.index ["protocol_id"], name: "index_documents_on_protocol_id"
   end
 
@@ -317,7 +301,11 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
+    t.string "age_group"
+    t.string "gender"
     t.text "institution"
+    t.string "ethnicity"
+    t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["first_name"], name: "index_identities_on_first_name"
@@ -576,6 +564,10 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.bigint "payment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
     t.index ["payment_id"], name: "index_payment_uploads_on_payment_id"
   end
 
@@ -777,8 +769,21 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.bigint "identity_id"
+    t.string "name", null: false
+    t.string "other_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_races_on_identity_id"
+  end
+
   create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
+    t.string "xlsx_file_name"
+    t.string "xlsx_content_type"
+    t.integer "xlsx_file_size"
+    t.datetime "xlsx_updated_at"
     t.string "report_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1142,7 +1147,6 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.index ["visit_group_id"], name: "index_visits_on_visit_group_id"
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

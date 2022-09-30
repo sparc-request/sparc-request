@@ -124,7 +124,7 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 5.0'
+  gem 'webdrivers', '~> 5.2'
   gem 'webmock'
   gem 'rspec-retry'
 end

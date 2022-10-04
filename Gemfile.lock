@@ -194,7 +194,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.10)
-    connection_pool (2.2.5)
+    connection_pool (2.3.0)
     countries (5.1.0)
       sixarm_ruby_unaccent (~> 1.1)
     country_select (8.0.0)
@@ -365,7 +365,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (7.0.1)
     netrc (0.11.0)
-    newrelic_rpm (8.10.0)
+    newrelic_rpm (8.10.1)
     nio4r (2.5.8)
     nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
@@ -404,7 +404,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
-    pdfkit (0.8.6)
+    pdfkit (0.8.7)
     prawn (2.4.0)
       pdf-core (~> 0.9.0)
       ttfunk (~> 1.7)
@@ -559,7 +559,7 @@ GEM
     sixarm_ruby_unaccent (1.2.0)
     slack-notifier (2.4.0)
     socksify (1.7.1)
-    spring (4.0.0)
+    spring (4.1.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (4.1.1)

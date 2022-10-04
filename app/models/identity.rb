@@ -196,7 +196,12 @@ class Identity < ApplicationRecord
   end
 
   def display_gender
-    gender.present? ?  PermissibleValue.get_value('gender', gender) : ""
+    gender_display = gender.present? ?  PermissibleValue.get_value('gender', gender) : ""
+    if gender == "other" && self.gender_other.present?
+      gender_display  += " (#{self.gender_other})"
+    end
+
+    return gender_display
   end
 
   def display_age_group

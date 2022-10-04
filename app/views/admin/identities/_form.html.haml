@@ -78,7 +78,7 @@
           .form-group.col-12.col-xl-4#genderContainer{ class: display_gender ? '' : 'd-none' }
             = f.label :gender, class: 'col-form-label'
             = f.select :gender, options_for_select(PermissibleValue.get_inverted_hash('gender'), identity.gender), { include_blank: t(:devise)[:profile][:select_prompt] }, class: 'selectpicker'
-          .form-group.col-xl-4#genderOtherContainer{ class: f.object.gender == 'other' ? '' : 'd-none' }
+          .form-group.col-xl-4#genderOtherContainer{ class: display_gender && f.object.gender == 'other' ? '' : 'd-none' }
             = f.label :gender_other, t('constants.prompts.please_specify'), class: 'col-form-label'
             = f.text_field :gender_other, class: 'form-control'
           .form-group.col-12.col-xl-4#ethnicityContainer{ class: display_ethnicity ? '' : 'd-none'  }

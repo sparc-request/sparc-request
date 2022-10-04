@@ -25,6 +25,6 @@
     .form-row{ id: "study_type_answer_#{ff_sta.object.study_type_question.friendly_id}", class: display_study_type_question?(protocol, ff_sta.object) ? '' : 'd-none' }
       .form-group.col-9
         = ff_sta.hidden_field :study_type_question_id
-        = ff_sta.label :answer, break_before_parenthetical(ff_sta.object.study_type_question.question)
+        = ff_sta.label :answer, ff_sta.object.study_type_question.question.html_safe
       .form-group.col-3
         = ff_sta.select :answer, options_for_select([[t('constants.yes_select'), true], [t('constants.no_select'), false]], ff_sta.object.answer), { include_blank: true }, { class: 'selectpicker', id: "study_type_answer_#{ff_sta.object.study_type_question.friendly_id}_answer" }

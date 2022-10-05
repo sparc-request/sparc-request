@@ -37,7 +37,7 @@
             %td.w-75
               = protocol.display_funding_source_value
         - if protocol.is_a?(Study)
-          - if protocol.funded?
+          - if protocol.funded? || protocol.pending_funding?
             %tr
               %td.w-25
                 = label :protocol, :funding_start_date, class: 'mb-0'

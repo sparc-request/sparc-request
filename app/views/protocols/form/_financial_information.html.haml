@@ -31,7 +31,7 @@
           = f.label :funding_status, class: 'required', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
           .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
             = f.select :funding_status,options_for_select(PermissibleValue.get_inverted_hash('funding_status'), protocol.funding_status), { include_blank: true }, class: 'selectpicker', disabled: protocol.locked?
-        .form-group.col-3#fundingSourceContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
+        .form-group.col-3#fundingSourceContainer{ class: protocol.new_record? || (protocol.funded? || protocol.pending_funding?) ? '' : 'd-none' }
           = f.label :funding_source, class: 'required', title: t('protocols.tooltips.funding_source'), data: { toggle: 'tooltip', placement: 'right' }
           .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
             = f.select :funding_source, options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record? || protocol.locked?
@@ -46,7 +46,7 @@
                 = f.label :indirect_cost_rate, t('constants.currency'), class: 'input-group-text'
               = f.text_field :indirect_cost_rate, class: 'form-control'
         - if protocol.is_a?(Study)
-          .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || protocol.funded? ? '' : 'd-none' }
+          .form-group.col-3#fundingStartDateContainer{ class: protocol.new_record? || (protocol.funded? || protocol.pending_funding?) ? '' : 'd-none' }
             = f.label :funding_start_date
             .input-group.datetimepicker.date#fundingStartDatePicker{ data: { target_input: 'nearest' } }
               = f.text_field :funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.funding_start_date), data: { target: '#fundingStartDatePicker' }, readonly: protocol.new_record?

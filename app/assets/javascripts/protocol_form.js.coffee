@@ -245,9 +245,7 @@ resetRmidFields = () ->
   $('#irbRecords .irb-record').remove()
 
 fundingSource             = ""
-potentialFundingSource    = ""
 fundingStartDate          = ""
-potentialFundingStartDate = ""
 
 toggleFundingSource = (val) ->
   if val == ''

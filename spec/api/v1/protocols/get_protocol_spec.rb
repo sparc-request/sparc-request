@@ -50,7 +50,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
             'start_date'                    => protocol.start_date.to_s(:iso8601),
             'end_date'                      => protocol.end_date.to_s(:iso8601),
             'funding_start_date'            => protocol.funding_start_date.to_s(:iso8601),
-            'potential_funding_start_date'  => protocol.potential_funding_start_date.to_s(:iso8601),
             'indirect_cost_rate'            => protocol.indirect_cost_rate.to_f.to_s
           })
         )
@@ -71,7 +70,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
             'start_date'                    => protocol.start_date.to_s(:iso8601),
             'end_date'                      => protocol.end_date.to_s(:iso8601),
             'funding_start_date'            => protocol.funding_start_date.to_s(:iso8601),
-            'potential_funding_start_date'  => protocol.potential_funding_start_date.to_s(:iso8601),
             'indirect_cost_rate'            => protocol.indirect_cost_rate.to_f.to_s,
             'arms'                          => [],
             'project_roles'                 => [],

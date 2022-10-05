@@ -829,34 +829,6 @@ RSpec.describe EpicInterface do
 
       expect(node[2]).to be_equivalent_to(expected.root)
     end
-
-    it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
-      study.update_attributes(potential_funding_source: 'other')
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="RGCL1" />
-            <value value="GOV" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      expect(node[2]).to be_equivalent_to(expected.root)
-    end
-
   end # send_study_creation
 
   describe 'emitting a subjectOf for an version 3 study type' do
@@ -1018,33 +990,6 @@ RSpec.describe EpicInterface do
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="RGCL1" />
             <value value="CORP" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      expect(node[2]).to be_equivalent_to(expected.root)
-    end
-
-    it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
-      study.update_attributes(potential_funding_source: 'other')
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="RGCL1" />
-            <value value="GOV" />
           </studyCharacteristic>
         </subjectOf>
       END

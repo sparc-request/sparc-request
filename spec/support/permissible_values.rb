@@ -26,7 +26,6 @@ def populate_permissible_values_before_suite
     build_user_roles
     build_proxy_rights
     build_funding_sources
-    build_potential_funding_sources
     build_user_credentials
     build_document_types
     build_funding_statuses
@@ -88,16 +87,6 @@ def build_funding_sources
   FactoryBot.create(:permissible_value, category: 'funding_source', key: 'investigator', value: 'Investigator-Initiated/Industry-Sponsored')
   FactoryBot.create(:permissible_value, category: 'funding_source', key: 'internal', value: 'Internal Funded Pilot Project')
   FactoryBot.create(:permissible_value, category: 'funding_source', key: 'unfunded', value: 'Student Funded Research')
-end
-
-def build_potential_funding_sources
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'college', value: 'College Department')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'federal', value: 'Federal')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'foundation', value: 'Foundation/Organization')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'industry', value: 'Industry-Initiated/Industry-Sponsored')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'investigator', value: 'Investigator-Initiated/Industry-Sponsored')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'internal', value: 'Internal Funded Pilot Project')
-  FactoryBot.create(:permissible_value, category: 'potential_funding_source', key: 'unfunded', value: 'Student Funded Research')
 end
 
 def build_user_credentials

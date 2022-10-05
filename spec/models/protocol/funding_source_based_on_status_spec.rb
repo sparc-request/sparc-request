@@ -23,19 +23,17 @@ require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
   describe 'funding_source_based_on_status' do
-    it 'should return the potential funding source if funding status is pending_funding' do
+    it 'should return the funding source if funding status is pending_funding' do
       study = Study.create(attributes_for(:protocol))
       study.funding_status = 'pending_funding'
       study.funding_source = 'college'
-      study.potential_funding_source = 'foundation'
-      expect(study.funding_source_based_on_status).to eq 'foundation'
+      expect(study.funding_source_based_on_status).to eq 'college'
     end
 
     it 'should return the funding source if funding status is funded' do
       study = Study.create(attributes_for(:protocol))
       study.funding_status = 'funded'
       study.funding_source = 'college'
-      study.potential_funding_source = 'foundation'
       expect(study.funding_source_based_on_status).to eq 'college'
     end
   end

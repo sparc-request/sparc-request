@@ -35,10 +35,6 @@
           = f.label :funding_source, class: 'required', title: t('protocols.tooltips.funding_source'), data: { toggle: 'tooltip', placement: 'right' }
           .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
             = f.select :funding_source, options_for_select(PermissibleValue.get_inverted_hash('funding_source'), protocol.funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record? || protocol.locked?
-        .form-group.col-3#potentialFundingSourceContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
-          = f.label :potential_funding_source, class: 'required', title: t('protocols.tooltips.potential_funding_source'), data: { toggle: 'tooltip', placement: 'right' }
-          .tooltip-wrapper{ title: protocol.locked? ? t('calendar_structure.funding_locked', protocol_type: protocol.model_name.human) : "", data: { toggle: 'tooltip' } }
-            = f.select :potential_funding_source, options_for_select(PermissibleValue.get_inverted_hash('potential_funding_source'), protocol.potential_funding_source), { include_blank: true }, class: 'selectpicker', disabled: protocol.new_record? || protocol.locked?
         .form-group.col-3#fundingSourceOtherContainer{ class: protocol.internally_funded? ? '' : 'd-none' }
           = f.label :funding_source_other, t('constants.prompts.please_specify'), class: 'required'
           = f.text_field :funding_source_other, class: 'form-control'
@@ -57,14 +53,6 @@
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#fundingStartDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
-          .form-group.col-3#potentialFundingStartDateContainer{ class: protocol.pending_funding? ? '' : 'd-none' }
-            = f.label :potential_funding_start_date
-            .input-group.datetimepicker.date#potentialFundingStartDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :potential_funding_start_date, class: 'datetimepicker-input form-control', value: format_date(protocol.potential_funding_start_date), data: { target: '#potentialFundingStartDatePicker' }, readonly: protocol.new_record?
-              .input-group-append{ data: { toggle: 'datetimepicker', target: '#potentialFundingStartDatePicker' } }
-                %span.input-group-text
-                  = icon('fas', 'calendar-alt')
-
       - if protocol.is_a?(Study)
         .form-group
           = f.label :sponsor_name, class: 'required', title: t('protocols.tooltips.sponsor_name'), data: { toggle: 'tooltip', placement: 'right' }

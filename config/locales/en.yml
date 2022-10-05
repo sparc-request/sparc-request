@@ -230,8 +230,6 @@ en:
         negotiated_amount_clinical_services: "Negotiated Amount Per Patient"
         primary_pi: "Primary PI"
         principal_investigators: "PI(s)"
-        potential_funding_source: "Potential Funding Source"
-        potential_funding_start_date: "Est. Funding Start Date"
         recruitment_end_date: "Estimated Recruitment End Date"
         recruitment_start_date: "Estimated Recruitment Start Date"
         requests: "Requests"

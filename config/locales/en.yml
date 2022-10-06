@@ -925,7 +925,6 @@ en:
         Choose "New Study" for a Research Study with defined aims and outcomes.
       new_project: >
         Choose "New Project" for non-study-specific requests or anything that is not a Research Study.
-      potential_funding_source: "Funding source that has been applied for but not yet obtained, which also drives research pricing."
       pro_number: "Institutional Review Board (IRB) Unique Identifier."
       recruitment_end_date: "When your %{protocol_type} is estimated to stop recruiting participants."
       recruitment_start_date: "When your %{protocol_type} is estimated to start recruiting participants."

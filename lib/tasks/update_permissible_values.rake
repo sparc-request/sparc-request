@@ -1,7 +1,7 @@
 desc "Update permissible values reserved attribute"
 task update_permissible_values: :environment do
 
-  reserved_categories = [ 'funding_status', 'funding_source', 'potential_funding_source', 'proxy_right' ]
+  reserved_categories = [ 'funding_status', 'funding_source', 'proxy_right' ]
   values_grouped_by_category = PermissibleValue.all.group_by(&:category)
 
   values_grouped_by_category.each do |category, values|

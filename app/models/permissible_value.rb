@@ -112,7 +112,7 @@ class PermissibleValue < ApplicationRecord
   ### Hard coded for those categories that should not be modified as they are tied to some
   ### important pieces of the application logic.  
   def self.uneditable_categories
-    ['funding_status', 'funding_source', 'potential_funding_source', 'proxy_right', 'user_role']
+    ['funding_status', 'funding_source', 'proxy_right', 'user_role']
   end
 
 end

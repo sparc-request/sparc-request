@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,9 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- ssr_ids = get_service_providers(@documents)
-- share_all = ssr_ids.any? ? false : true
-
 #documentsModal.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     .modal-header
@@ -33,10 +30,10 @@
         .form-group.col-4 
           = label_tag :org_ids, t('documents.form.org_ids'), title: t('documents.tooltips.access', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip' }
           %div.mt-2.mb-1 
-            = check_box_tag :share_all_access, t('documents.form.share_all'), share_all
+            = check_box_tag :share_all_access, t('documents.form.share_all'), true
             = label_tag :share_all_access,  t('documents.form.share_all'), title: t('documents.tooltips.share_all', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip' }
-        .form-group.col-8.align-items-end{ class: share_all ? 'd-none' : 'd-flex' }
-          = select_tag :org_ids, options_from_collection_for_select(protocol.organizations.distinct.order(:name), :id, :name, ssr_ids), class: 'selectpicker', multiple: true, data: { actions_box: 'true', none_selected_text: t('documents.form.select_providers') }       
+        .form-group.col-8.align-items-end{ class: 'd-none'}
+          = select_tag :org_ids, options_from_collection_for_select(protocol.organizations.distinct.order(:name), :id, :name), class: 'selectpicker', multiple: true, data: { actions_box: 'true', none_selected_text: t('documents.form.select_providers') }       
       %br    
       .form-row
         %b.mb-3

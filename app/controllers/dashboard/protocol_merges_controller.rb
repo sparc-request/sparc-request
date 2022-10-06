@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -101,8 +101,10 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
           end
 
           @merged_protocol.affiliations.each do |affiliation|
-            affiliation.protocol_id = @master_protocol.id
-            affiliation.save(validate: false)
+            if !@master_protocol.affiliations.map{ |x| x.name}.include?(affiliation.name)
+              affiliation.protocol_id = @master_protocol.id
+              affiliation.save(validate: false)
+            end
           end
 
           # assigning service requests...

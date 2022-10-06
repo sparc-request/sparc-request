@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -41,6 +41,12 @@ module ArmsHelper
     end
   end
 
+  def copy_arm_button(arm, opts={})
+    link_to arm_copy_path(arm, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-success mr-1 copy-arm'], title: t('arms.copy'), data: { toggle: 'tooltip' } do
+      icon('far', 'copy mr-2') + t('arms.copy')
+    end
+  end
+
   def delete_arm_button(arm, opts={})
     link_to arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid]), remote: true, method: :delete,
     class: ['btn btn-danger delete-arm', opts[:count] && opts[:count] > 1 ? '' : 'disabled'],
@@ -53,6 +59,7 @@ module ArmsHelper
     raw([
       new_visit_group_button(arm, opts),
       edit_arm_button(arm, opts),
+      copy_arm_button(arm, opts),
       delete_arm_button(arm, opts)
     ].join(''))
   end

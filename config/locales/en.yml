@@ -95,6 +95,7 @@ en:
         updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
         share_all: "Share with all providers"
+        version_date: "Version Date"
       doorkeeper/access_request:
         created_at: "Access Time"
         failure_reason: "Failure Reason"
@@ -118,12 +119,15 @@ en:
         nct_number: "National Clinical Trials (NCT) #"
         irb_records: "IRB Records"
       identity:
+        age_group: "Age"
         created_at: "Created"
         credentials: "Credentials"
         current_sign_in_at: "Last Sign-In"
         email: "Email"
         era_commons_name: "ERA Commons Name"
+        ethnicity: "Hispanic or Lantino?"
         first_name: "First Name"
+        gender: "Gender"
         institution: "Institution"
         last_name: "Last Name"
         ldap_uid: "Login"
@@ -132,6 +136,7 @@ en:
         phone: "Phone"
         password: "Password"
         password_confirmation: "Confirm Password"
+        races: "Race"
         reason: "Reason for Account Request"
         sign_in_count: "Sign-In Count"
         subspecialty: "Subspecialty"
@@ -327,6 +332,10 @@ en:
               spoofed_media_type: "File type does not match file content"
             document.filename:
               invalid: "Invalid file type"
+        epic_user:
+          attributes:
+            base:
+              epic_user_api_down: "Epic user interface is currently down."
         form:
           attributes:
             active:
@@ -373,6 +382,7 @@ en:
               blank: "You must create Arms before proceeding to the Service Calendar"
             line_items:
               blank: "You must add services to your cart before continuing"
+              pushed_to_fulfillment: "Requests that have already been pushed to Fulfillment cannot be deleted"
             protocol:
               blank: "You must create a Protocol before continuing"
         system_survey:
@@ -385,6 +395,7 @@ en:
               out_of_order: "must be in order"
       messages:
         spoofed_media_type: "invalid file type"
+      blank: "Can't be blank"
     models:
       service:
         one: "Service"
@@ -398,7 +409,9 @@ en:
   arms:
     new: "Add Arm"
     edit: "Edit Arm"
+    copy: "Copy Arm"
     delete: "Delete Arm"
+    copied: "Arm Copied!"
     created: "Arm Created!"
     updated: "Arm Updated!"
     destroyed: "Arm Destroyed!"
@@ -569,6 +582,7 @@ en:
     yes_select: "Yes"
     no_select: "No"
     na: "N/A"
+    check_all: "(Check all that apply)"
     prompts:
       any: "- Any -"
       check_all: "Check all that apply"
@@ -613,7 +627,7 @@ en:
     none: "No Documents Found"
     new: "Add Document"
     edit: "Edit Document"
-    edit_selected: "Edit Selected Documents"
+    edit_selected: "Edit Document Access"
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"

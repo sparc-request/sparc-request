@@ -6,5 +6,6 @@ json.(@documents) do |doc|
   json.type        doc.display_document_type
   json.uploaded    format_datetime(doc.updated_at)
   json.shared_with display_document_providers(doc)
+  json.version     format_date(doc.version)
   json.actions     document_actions(doc, permission: permission)
 end

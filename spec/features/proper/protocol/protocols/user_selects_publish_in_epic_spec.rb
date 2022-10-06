@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,7 @@ RSpec.describe 'User edits study type questions', js: true do
           bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
           wait_for_javascript_to_finish
 
-          expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
+          expect(page).to have_content('Full Epic Functionality: no notification, no yellow advisory, no MyChart access.')
         end
       end
 

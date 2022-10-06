@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -122,7 +122,8 @@ module CostAnalysis
 
     def build_header_row
       static_columns = [
-        {:colspan => 2, :content => self.arm_name, :width => 150},
+        {:colspan => 1, :content => self.arm_name},
+        {:content => "Quantity Type", :align => :center, :single_line => false, :overflow => :shrink_to_fit, :width => 40},
         {:content => "Current", :size => 5, :width => 40, :align => :center, :valign => :middle},
         {:content => "Your Price",:size => 5, :width => 40, :align => :center, :valign => :middle},
         {:content => "Subject", :width => 40, :align => :center, :valign => :middle, :size => 8}

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def edit
     @identity = Identity.find(params[:id])
+    @identity.populate_for_edit
   end
 
   def show
@@ -42,6 +43,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def update
     @identity = Identity.find(params[:id])
+    @identity.updater_id = current_user.id
     if @identity.update_attributes(identity_params)
       flash[:success] = t('admin.identities.updated')
     else
@@ -67,7 +69,13 @@ class Admin::IdentitiesController < Admin::ApplicationController
       :era_commons_name,
       :professional_organization_id,
       :phone,
-      :subspecialty
+      :subspecialty,
+      :gender,
+      :gender_other,
+      :age_group,
+      :ethnicity,
+      races_attributes: [:id, :name, :other_text, :new, :position, :_destroy]
+
     )
   end
 

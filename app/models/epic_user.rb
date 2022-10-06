@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -35,17 +35,31 @@ class EpicUser < ActiveResource::Base
 
   def self.for_identity(identity)
     begin
-      get(:viewuser, userid: identity.ldap_uid.split('@').first)
-    rescue => e
-      epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+      @result = get(:viewuser, userid: identity.ldap_uid.split('@').first)
 
-      if epic_error_webhook.present?
-        notifier = Slack::Notifier.new(epic_error_webhook)
-        message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
-        message += "\n```#{e.class}\n"
-        message += "#{e.message}\n"
-        message += "#{e.backtrace[0..5]}```"
+      unless @result.present? && @result.is_a?(Hash) and @result.keys == ["UserID", "UserName", "IsExist", "IsActive", "IsBlocked", "IsPasswordChangeRequired", "IsSER"]
+        raise StandardError.new I18n.t("activerecord.errors.models.epic_user.attributes.base.epic_user_api_down")
+      else
+        return @result
+      end
+    rescue => e
+      slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+      teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
+
+      message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
+      message += "\n#{@result}\n"
+      message += "\n```#{e.class}\n"
+      message += "#{e.message}\n"
+      message += "#{e.backtrace[0..5]}```"
+
+      if slack_epic_error_webhook.present?
+        notifier = Slack::Notifier.new(slack_epic_error_webhook)
         notifier.ping(message)
+      end
+
+      if teams_epic_error_webhook.present?
+        notifier = Teams.new(teams_epic_error_webhook)
+        notifier.post(message)
       end
 
       return nil

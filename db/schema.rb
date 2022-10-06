@@ -1,23 +1,3 @@
-# Copyright © 2011-2022 MUSC Foundation for Research Development~
-# All rights reserved.~
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
-# disclaimer in the documentation and/or other materials provided with the distribution.~
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
-# derived from this software without specific prior written permission.~
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -30,7 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_19_141351) do
+ActiveRecord::Schema.define(version: 2022_09_23_161842) do
+
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -192,10 +193,6 @@ ActiveRecord::Schema.define(version: 2022_09_19_141351) do
     t.string "doc_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "document_file_name"
-    t.string "document_content_type"
-    t.integer "document_file_size"
-    t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
@@ -584,10 +581,6 @@ ActiveRecord::Schema.define(version: 2022_09_19_141351) do
     t.bigint "payment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "file_file_name"
-    t.string "file_content_type"
-    t.integer "file_file_size"
-    t.datetime "file_updated_at"
     t.index ["payment_id"], name: "index_payment_uploads_on_payment_id"
   end
 
@@ -800,10 +793,6 @@ ActiveRecord::Schema.define(version: 2022_09_19_141351) do
 
   create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
-    t.string "xlsx_file_name"
-    t.string "xlsx_content_type"
-    t.integer "xlsx_file_size"
-    t.datetime "xlsx_updated_at"
     t.string "report_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1167,6 +1156,7 @@ ActiveRecord::Schema.define(version: 2022_09_19_141351) do
     t.index ["visit_group_id"], name: "index_visits_on_visit_group_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

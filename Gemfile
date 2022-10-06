@@ -64,6 +64,7 @@ gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
 gem 'omniauth-rails_csrf_protection'
+gem 'paperclip'  # Being replaced with ActiveStorage
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.4.0' # Check usage

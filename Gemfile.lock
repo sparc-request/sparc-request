@@ -184,6 +184,7 @@ GEM
     childprocess (4.1.0)
     choice (0.2.0)
     chronic (0.10.2)
+    climate_control (0.2.0)
     coderay (1.1.3)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
@@ -389,6 +390,12 @@ GEM
       omniauth (>= 1.0.0)
     options (2.3.2)
     orm_adapter (0.5.0)
+    paperclip (6.1.0)
+      activemodel (>= 4.2.0)
+      activesupport (>= 4.2.0)
+      mime-types
+      mimemagic (~> 0.3.0)
+      terrapin (~> 0.6.0)
     parallel (1.22.1)
     parallel_tests (3.13.0)
       parallel
@@ -574,6 +581,8 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     temple (0.8.2)
+    terrapin (0.6.0)
+      climate_control (>= 0.0.3, < 1.0)
     thor (1.2.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -705,6 +714,7 @@ DEPENDENCIES
   omniauth-cas
   omniauth-rails_csrf_protection
   omniauth-shibboleth
+  paperclip
   parallel_tests
   pdf-inspector
   pdfkit

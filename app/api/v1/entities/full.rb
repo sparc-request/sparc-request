@@ -144,7 +144,6 @@ module V1
             :udak_project_number,
             :funding_rfa,
             :funding_status,
-            :potential_funding_source,
             :funding_source,
             :federal_grant_serial_number,
             :federal_grant_title,
@@ -162,7 +161,6 @@ module V1
     with_options(format_with: :iso_timestamp) do
       expose :start_date
       expose :end_date
-      expose :potential_funding_start_date
       expose :funding_start_date
       expose :recruitment_start_date
       expose :recruitment_end_date

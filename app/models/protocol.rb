@@ -113,8 +113,7 @@ class Protocol < ApplicationRecord
             length: { maximum: 255 }
   validates_presence_of :title,
                         :funding_status
-  validates_presence_of :funding_source,            if: Proc.new{ |p| p.funded? || p.funding_status.blank? }
-  validates_presence_of :potential_funding_source,  if: :pending_funding?
+  validates_presence_of :funding_source,            if: Proc.new{ |p| (p.funded? || p.pending_funding?) || p.funding_status.blank? }
   validates_presence_of :funding_source_other,      if: :internally_funded?
   validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
@@ -476,7 +475,7 @@ class Protocol < ApplicationRecord
 
   def display_funding_source_value
     if ['funded', 'pending_funding'].include?(funding_status)
-      source = funding_status == "funded" ? "#{PermissibleValue.get_value('funding_source', funding_source)}" : "#{PermissibleValue.get_value('potential_funding_source', potential_funding_source)}"
+      source = "#{PermissibleValue.get_value('funding_source', funding_source)}"
       if internally_funded?
         source += ": #{funding_source_other}"
       end
@@ -485,10 +484,8 @@ class Protocol < ApplicationRecord
   end
 
   def funding_source_based_on_status
-    if self.funded?
+    if self.funded? || self.pending_funding?
       self.funding_source
-    elsif self.pending_funding?
-      self.potential_funding_source
     else
       'unfunded'  ## for other status options
     end

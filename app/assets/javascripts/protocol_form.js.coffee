@@ -41,14 +41,14 @@ $(document).ready ->
   $(document).on 'change', '#protocol_funding_status', ->
     toggleFundingSource($(this).val())
 
-  $(document).on 'change', '#protocol_funding_source, #protocol_potential_funding_source', ->
+  $(document).on 'change', '#protocol_funding_source', ->
     toggleFederalFields($(this).val())
     toggleFundingSourceOther($(this).val())
 
     if $(this).val() == ''
-      $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
+      $('#protocol_funding_start_date').prop('readonly', true).datetimepicker('clear')
     else
-      $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', false)
+      $('#protocol_funding_start_date').prop('readonly', false)
 
   $(document).on 'change', '#protocol_federal_phs_sponsor', ->
     if $('#protocol_federal_non_phs_sponsor').val()
@@ -245,58 +245,38 @@ resetRmidFields = () ->
   $('#irbRecords .irb-record').remove()
 
 fundingSource             = ""
-potentialFundingSource    = ""
 fundingStartDate          = ""
-potentialFundingStartDate = ""
 
 toggleFundingSource = (val) ->
   if val == ''
     $('#fundingSourceContainer').removeClass('d-none')
-    $('#potentialFundingSourceContainer').addClass('d-none')
-    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', true).selectpicker('val', '').selectpicker('refresh')
-    $('#protocol_funding_start_date, #protocol_potential_funding_start_date').prop('readonly', true).datetimepicker('clear')
+    $('#protocol_funding_source').attr('disabled', true).selectpicker('val', '').selectpicker('refresh')
+    $('#protocol_funding_start_date').prop('readonly', true).datetimepicker('clear')
   else
     if val == 'pending_funding'
       fundingSource     = $('#protocol_funding_source').val()
       fundingStartDate  = $('#protocol_funding_start_date').val()
 
-      $('#fundingSourceContainer').addClass('d-none')
-      $('#potentialFundingSourceContainer').removeClass('d-none')
-      $('#protocol_funding_source').selectpicker('val', '')
-      $('#protocol_potential_funding_source').selectpicker('val', potentialFundingSource)
-      $('#fundingStartDateContainer').addClass('d-none')
-      $('#potentialFundingStartDateContainer').removeClass('d-none')
-      $('#protocol_funding_start_date').datetimepicker('clear')
-      $('#protocol_potential_funding_start_date').val(potentialFundingStartDate)
       $('#fundingRfaContainer').removeClass('d-none')
-
-      toggleFederalFields(potentialFundingSource)
-      toggleFundingSourceOther(potentialFundingSource)
-    else if val == 'funded'
-      potentialFundingSource    = $('#protocol_potential_funding_source').val()
-      potentialFundingStartDate = $('#protocol_potential_funding_start_date').val()
-
-      $('#fundingSourceContainer').removeClass('d-none')
-      $('#potentialFundingSourceContainer').addClass('d-none')
       $('#protocol_funding_source').selectpicker('val', fundingSource)
-      $('#protocol_potential_funding_source').selectpicker('val', '')
-      $('#fundingStartDateContainer').removeClass('d-none')
-      $('#potentialFundingStartDateContainer').addClass('d-none')
       $('#protocol_funding_start_date').val(fundingStartDate)
-      $('#protocol_potential_funding_start_date').datetimepicker('clear')
+
+      toggleFederalFields(fundingSource)
+      toggleFundingSourceOther(fundingSource)
+    else if val == 'funded'
+      $('#protocol_funding_source').selectpicker('val', fundingSource)
+      $('#protocol_funding_start_date').val(fundingStartDate)
       $('#fundingRfaContainer').addClass('d-none')
 
       toggleFederalFields(fundingSource)
       toggleFundingSourceOther(fundingSource)
     else
       $('#fundingSourceContainer').addClass('d-none')
-      $('#potentialFundingSourceContainer').addClass('d-none')
       $('#fundingSourceOtherContainer').addClass('d-none')
       $('#fundingRfaContainer').addClass('d-none')
       $('#fundingStartDateContainer').addClass('d-none')
-      $('#potentialFundingStartDateContainer').addClass('d-none')
       $('#federalGrantInformation').addClass('d-none')
-    $('#protocol_funding_source, #protocol_potential_funding_source').attr('disabled', false).selectpicker('refresh')
+    $('#protocol_funding_source').attr('disabled', false).selectpicker('refresh')
 
 
 federalGrantCode          = ""

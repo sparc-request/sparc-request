@@ -124,8 +124,8 @@ module CostAnalysis
       static_columns = [
         {:colspan => 1, :content => self.arm_name},
         {:content => "Quantity Type", :align => :center, :single_line => false, :overflow => :shrink_to_fit, :width => 40},
-        {:content => "Current", :size => 5, :width => 40, :align => :center, :valign => :middle},
-        {:content => "Your Price",:size => 5, :width => 40, :align => :center, :valign => :middle},
+        {:content => "Service Rate", :size => 5, :width => 40, :align => :center, :valign => :middle},
+        {:content => "Your Cost",:size => 5, :width => 40, :align => :center, :valign => :middle},
         {:content => "Subject", :width => 40, :align => :center, :valign => :middle, :size => 8}
       ]
       dynamic_columns = @visit_labels.map do |visit_label|

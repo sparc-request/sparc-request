@@ -28,11 +28,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
 
   def index
-
+    @came_from_proper = params[:came_from_proper]
     admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
-
-    @default_filter_params  = { show_archived: 0 }
+    @default_filter_params  = { show_archived: 0,  }
 
     # if we are performing a search, check if user is looking for an old protocol
     # that has been merged and return the most current master protocol
@@ -43,25 +42,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         if merge
           params[:filterrific][:search_query][:search_text] = merge.master_protocol_id.to_s
         end
-     end
-    end
-
-    # if we are general user who clicked "No or Unsure" button on "Is this a new request?" modal, set protocol filter to "All Protocols"
-   if URI(request.referer).path == '/'
-      @default_filter_params[:admin_filter] = "for_all"
+      end
     end
 
     # if we are an admin we want to default to admin organizations
+    # but show "All Protocols" if coming from SPARC proper
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).admin_organizations_with_protocols
-      @default_filter_params[:admin_filter] = "for_admin #{current_user.id}"
+      @default_filter_params[:admin_filter] = @came_from_proper ? "for_all" : "for_admin #{current_user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).general_user_organizations_with_protocols
-      if URI(request.referer).path == '/service_request/add_service'
-        @default_filter_params[:admin_filter] = "for_all"
-      else
-        @default_filter_params[:admin_filter] = "for_identity #{current_user.id}"
-      end
+      @default_filter_params[:admin_filter] = @came_from_proper ? "for_all" : "for_identity #{current_user.id}"
     end
 
     @filterrific =

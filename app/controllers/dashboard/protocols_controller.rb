@@ -31,7 +31,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @came_from_proper = params[:came_from_proper]
     admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
-    @default_filter_params  = { show_archived: 0,  }
+    @default_filter_params  = { show_archived: 0 }
 
     # if we are performing a search, check if user is looking for an old protocol
     # that has been merged and return the most current master protocol

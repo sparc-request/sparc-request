@@ -28,7 +28,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
 
   def index
-    @came_from_proper = params[:came_from_proper]
+    @existing_request = params[:existing_request]
     admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
     @default_filter_params  = { show_archived: 0,  }
@@ -49,10 +49,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # but show "All Protocols" if coming from SPARC proper
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).admin_organizations_with_protocols
-      @default_filter_params[:admin_filter] = @came_from_proper ? "for_all" : "for_admin #{current_user.id}"
+      @default_filter_params[:admin_filter] = @existing_request ? "for_all" : "for_admin #{current_user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).general_user_organizations_with_protocols
-      @default_filter_params[:admin_filter] = @came_from_proper ? "for_all" : "for_identity #{current_user.id}"
+      @default_filter_params[:admin_filter] = @existing_request ? "for_all" : "for_identity #{current_user.id}"
     end
 
     @filterrific =

@@ -35,7 +35,7 @@ ConfirmSwal.fire(
         service_id: "<%= params[:service_id] %>"
         confirmed: "true"
   else if result.dismiss == 'cancel'
-    window.location = "<%= dashboard_root_path(came_from_proper: "true") %>"
+    window.location = "<%= dashboard_root_path(existing_request: "true") %>"
 <% elsif @duplicate_service %>
 AlertSwal.fire(
   icon: 'error'

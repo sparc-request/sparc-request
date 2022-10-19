@@ -22,7 +22,7 @@ class Report < ApplicationRecord
   audited
   belongs_to :sub_service_request
 
-  has_attached_file :xlsx
+  has_one_attached :xlsx
 
   ### audit reporting methods ###
 

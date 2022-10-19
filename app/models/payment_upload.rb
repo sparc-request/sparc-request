@@ -21,5 +21,5 @@
 class PaymentUpload < ApplicationRecord
   audited
   belongs_to :payment
-  has_attached_file :file
+  has_one_attached :file
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_23_161842) do
+ActiveRecord::Schema.define(version: 2022_10_05_201755) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
@@ -709,8 +709,6 @@ ActiveRecord::Schema.define(version: 2022_09_23_161842) do
     t.string "udak_project_number"
     t.string "funding_rfa"
     t.string "funding_status"
-    t.string "potential_funding_source"
-    t.datetime "potential_funding_start_date"
     t.string "funding_source"
     t.datetime "funding_start_date"
     t.string "federal_grant_serial_number"

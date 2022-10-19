@@ -28,7 +28,6 @@ FactoryBot.define do
     indirect_cost_rate           { Random.rand(1..1000) }
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
-    potential_funding_start_date { Time.now + 1.year }
     funding_start_date           { '2015-10-15' }
     federal_grant_serial_number  { Random.rand(200000).to_s }
     federal_grant_title          { Faker::Lorem.sentence(word_count: 2) }
@@ -59,7 +58,6 @@ FactoryBot.define do
 
     trait :federal do
       funding_source           {"federal"}
-      potential_funding_source {"federal"}
     end
 
     trait :archived do
@@ -72,7 +70,6 @@ FactoryBot.define do
 
     trait :blank_funding_start_dates do
       funding_start_date {""}
-      potential_funding_start_date {""}
     end
 
     trait :blank_start_and_end_dates do

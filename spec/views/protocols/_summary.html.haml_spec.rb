@@ -90,28 +90,6 @@ RSpec.describe 'protocols/summary', type: :view do
       end
     end
 
-    context 'Study has potential funding source' do
-      it 'should display Study ID, Title, Short Title, and potential funding source' do
-        protocol = build_stubbed(:study_federally_funded,
-          primary_pi: jug2,
-          id: 9999,
-          title: 'My Awesome Full Title',
-          short_title: 'My Awesome Short Title',
-          potential_funding_source: 'federal',
-          funding_source: 'college',
-          funding_status: 'pending_funding')
-
-        render_summary_for protocol
-
-        expect(response).to have_content('9999')
-        expect(response).to have_content('My Awesome Full Title')
-        expect(response).to have_content('My Awesome Short Title')
-
-        expect(response).to have_content('Potential Funding Source')
-        expect(response).to have_content('Federal')
-      end
-    end
-
     context 'Study has a funding source' do
       it 'should display Study ID, Title, Short Title, and potential funding source' do
         protocol = build_stubbed(:study_federally_funded,
@@ -119,7 +97,6 @@ RSpec.describe 'protocols/summary', type: :view do
           id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
 
@@ -128,8 +105,6 @@ RSpec.describe 'protocols/summary', type: :view do
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')
         expect(response).to have_content('My Awesome Short Title')
-
-        expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
       end
@@ -195,28 +170,6 @@ RSpec.describe 'protocols/summary', type: :view do
       end
     end
 
-    context 'Project has potential funding source' do
-      it 'should display Project ID, Title, Short Title, and potential funding source' do
-        protocol = build_stubbed(:project_federally_funded,
-          primary_pi: jug2,
-          id: 9999,
-          title: 'My Awesome Full Title',
-          short_title: 'My Awesome Short Title',
-          potential_funding_source: 'federal',
-          funding_source: 'college',
-          funding_status: 'pending_funding')
-
-        render_summary_for protocol
-
-        expect(response).to have_content('9999')
-        expect(response).to have_content('My Awesome Full Title')
-        expect(response).to have_content('My Awesome Short Title')
-
-        expect(response).to have_content('Potential Funding Source')
-        expect(response).to have_content('Federal')
-      end
-    end
-
     context 'Project has a funding source' do
       it 'should display Project ID, Title, Short Title, and potential funding source' do
         protocol = build_stubbed(:project_federally_funded,
@@ -224,7 +177,6 @@ RSpec.describe 'protocols/summary', type: :view do
           id: 9999,
           title: 'My Awesome Full Title',
           short_title: 'My Awesome Short Title',
-          potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
 
@@ -233,8 +185,6 @@ RSpec.describe 'protocols/summary', type: :view do
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')
         expect(response).to have_content('My Awesome Short Title')
-
-        expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
       end

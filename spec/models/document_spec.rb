@@ -21,7 +21,8 @@
 require 'rails_helper'
 
 RSpec.describe Document, type: :model do
-  it { should belong_to(:protocol) }
+  it { is_expected.to have_one(:document) }
+  it { is_expected.to belong_to(:protocol) }
   
   # See https://github.com/thoughtbot/shoulda-matchers/issues/1210
   # it { should have_and_belong_to_many(:sub_service_requests) }

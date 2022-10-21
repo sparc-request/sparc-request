@@ -21,6 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe PaymentUpload, type: :model do
-  it { is_expected.to have_attached_file(:file) }
+  it { is_expected.to have_one(:file) }
   it { is_expected.to belong_to(:payment) }
 end

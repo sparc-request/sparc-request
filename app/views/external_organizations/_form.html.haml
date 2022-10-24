@@ -32,11 +32,11 @@
       .modal-body
         .form-row
           .form-group.col-4
-            = f.label :name, class: 'required'
-            = f.select :name, options_for_select(PermissibleValue.get_inverted_hash('name'), f.object.name), { include_blank: true }, class: 'selectpicker'
+            = f.label :collaborating_org_name, class: 'required'
+            = f.select :collaborating_org_name, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_name'), f.object.collaborating_org_name), { include_blank: true }, class: 'selectpicker'
           .form-group.col-4
-            = f.label :type, class: 'required'
-            = f.select :name, options_for_select(PermissibleValue.get_inverted_hash('type'), f.object.type), { include_blank: true }, class: 'selectpicker'
+            = f.label :collaborating_org_type, class: 'required'
+            = f.select :collaborating_org_type, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_type'), f.object.collaborating_org_type), { include_blank: true }, class: 'selectpicker'
         .form-row
           .form-group.col-6
             = f.label :comments

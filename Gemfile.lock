@@ -569,7 +569,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.5.2)
+    sqlite3 (1.5.3)
       mini_portile2 (~> 2.8.0)
     sshkit (1.21.2)
       net-scp (>= 1.1.2)

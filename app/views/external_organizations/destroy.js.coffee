@@ -18,15 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Affiliation < ApplicationRecord
-  audited
+$("#external_organization<%= params[:index] %>").removeClass('d-flex').addClass('d-none').append("<%= j render 'external_organizations/destroy', index: params[:index] %>")
 
-  attr_accessor :new
-  attr_accessor :position
-
-  belongs_to :protocol
-  TYPES = PermissibleValue.get_hash('affiliation_type')
-
-  def external_organizations
-  end
-end
+if $('.external-organization:not(.d-none)').length == 1
+  $('.primary-external-organization .delete-external-organization').addClass('text-danger').removeClass('text-muted').
+    prop('disabled', false).
+    attr('data-original-title', I18n.t('external_organizations.tooltips.delete'))
+else if $('.external-organization:not(.d-none)').length == 0
+  newUrl = new URL($('#newExternalOrganization').prop('href'))
+  newUrl.searchParams.set('primary', 'true')
+  $('#newExternalOrganization').prop('href', newUrl.href)

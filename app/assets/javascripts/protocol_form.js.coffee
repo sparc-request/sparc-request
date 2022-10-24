@@ -60,6 +60,7 @@ $(document).ready ->
 
   $(document).on 'change', '.research-involving', ->
     target = $(this).data('target')
+    console.log(target, "line 65")
 
     $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
     $(target).find('.form-error').remove()
@@ -109,6 +110,23 @@ $(document).ready ->
         $specifyField.parents('.form-group').removeClass('d-none')
       else
         $specifyField.parents('.form-group').addClass('d-none')
+
+  # 'Involved External Organizations' subsection
+  $(document).on 'change', 'input[id$="external_organizations"]', ->
+    # set var 'target'
+    target = $(this).data('target')
+
+    $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
+    $(target).find('.form-error').remove()
+
+    if $(this).prop('checked')
+      $(target).removeClass('d-none')
+    else
+      $(target).addClass('d-none')
+
+  $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
+    if $(this).prop('checked')
+      $(target).removeClass('d-none')
 
   ############################
   ### Primary PI Typeahead ###

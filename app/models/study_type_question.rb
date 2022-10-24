@@ -20,8 +20,8 @@
 
 class StudyTypeQuestion < ApplicationRecord
   audited
-  
-  default_scope { order('`order`') }
+
+  default_scope { order(Arel.sql('`order`')) }
   belongs_to :study_type_question_group
   has_many :study_type_answers
 

@@ -1,14 +1,14 @@
 
 .list-group-item.d-flex.border.flex-column.collapsed.mb-3.external-organization{ class: primary ? 'list-group-item-success primary-external-organization' : 'list-group-item-info', id: "externalOrganization#{index}", data: { toggle: 'collapse', target: "#externalOrganization#{index}Collapse" } }
-  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][name]", external_organization.name
-  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][type]", external_organization.type
+  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_name]", external_organization.collaborating_org_name
+  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_type]", external_organization.collaborating_org_type
   = hidden_field_tag "protocol[external_organizations_attributes][#{index}][comments]", external_organization.comments
   .d-flex.justify-content-between
     %h4.mb-0.collapsed
       = icon('fas', 'caret-down mr-2')
-      = @external_organization.name
+      = @external_organization.collaborating_org_name
     .d-flex.align-items-center
-      = link_to edit_external_organization_path(id: @external_organization.id, index: index, primary: primary.to_s, external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip' } do
+      = link_to edit_external_organization_path(id: external_organization.id, index: index, primary: primary.to_s, external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip' } do
         = icon('fas', 'edit fa-lg')
       - disable_delete = @external_organization_count && @external_organization > 1 && primary
       = link_to external_organizations_path(id: external_organization.id, index: index), remote: true, method: :delete, class: ['delete-external-organization', disable_delete ? 'text-muted' : 'text-danger'], title: disable_delete ? t('external_organizations.tooltips.cant_delete_primary') : t('external_organizations.tooltips.delete'), disabled: disable_delete, data: { toggle: 'tooltip' } do
@@ -18,9 +18,9 @@
       .form-row
         .form-group.col-4
           %label.mb-0.font-weight-bold
-            = ExternalOrganization.human_attribute_name(:type)
+            = ExternalOrganization.human_attribute_name(:collaborating_org_type)
         .form-group.col-4
-          = external_organization.type.present? ? PermissibleValue.get_value('external_organization_type', external_organization.external_organization_type) : t('constants.na')
+          = external_organization.collaborating_org_type.present? ? PermissibleValue.get_value('external_organization_type', external_organization.external_organization_type) : t('constants.na')
       .form-row
         .form-group.col-4
           %label.mb-0.font-weight-bold

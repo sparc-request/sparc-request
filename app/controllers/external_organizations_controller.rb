@@ -46,7 +46,6 @@ class ExternalOrganizationsController < ApplicationController
 
   def find_protocol
     @protocol = params[:protocol_id].present? ? Protocol.find(params[:protocol_id]) : Study.new
-    Rails.logger.info "#"*100 + "#{@protocol.inspect}"
   end
 
   def find_external_organization
@@ -55,8 +54,8 @@ class ExternalOrganizationsController < ApplicationController
 
   def external_organization_params
     params.require(:external_organization).permit(
-      :name,
-      :type,
+      :collaborating_org_name,
+      :collaborating_org_type,
       :comments
     )
   end

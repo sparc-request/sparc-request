@@ -35,12 +35,11 @@
         = link_to icon('fas', 'edit mr-2') + t('documents.edit_selected'), bulk_edit_documents_path(protocol_id: protocol.id, format: :js), class: 'btn btn-success edit-documents disabled', title: t('documents.tooltips.new'), data: { protocol_id: protocol.id, toggle: 'tooltip'}
 
     - url = in_dashboard? ? dashboard_documents_path(format: :json, protocol_id: protocol.id) : documents_path(format: :json, srid: service_request.id)
-    %table#documentsTable{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
+    %table#documentsTable{ data: { "checkbox-header" => "true", "click-to-select" => "true", toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: url, toolbar: "#documentsTableToolbar" } }
       %thead.bg-light
         %tr
           - if !in_review?
-            %th{ data: { field: 'checkbox', align: 'left'} }
-              = check_box_tag "select-all"
+            %th{ data: { field: 'state', checkbox: 'true', id: "select-all" } }
           %th{ data: { field: 'document', align: "left", sortable: "true" } }
             = Document.human_attribute_name(:document)
           %th{ data: { field: 'type', align: "left", sortable: "true" } }

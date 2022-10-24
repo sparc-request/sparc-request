@@ -18,15 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Affiliation < ApplicationRecord
-  audited
+<% if @errors %>
+$("[name^='external_organization']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-  attr_accessor :new
-  attr_accessor :position
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='external_organization[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+$("#externalOrganization<%= params[:index] %>").replaceWith("<%= j render 'external_organizations/external_organization', protocol: @protocol, external_organization: @external_organization, index: params[:index], primary: params[:primary] == 'true' %>")
 
-  belongs_to :protocol
-  TYPES = PermissibleValue.get_hash('affiliation_type')
+if $('.external-organization:not(.d-none)').length > 1
+  $('.primary-external-organization .delete-external-organization').addClass('text-muted').removeClass('text-danger').
+    attr('disabled', true).
+    attr('data-original-title', I18n.t('external_organizations.tooltips.cant_delete_primary'))
 
-  def external_organizations
-  end
-end
+if $('#modalContainer').hasClass('show')
+  $("#modalContainer").modal('hide')
+<% end %>

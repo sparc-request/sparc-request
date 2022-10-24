@@ -25,7 +25,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :fee_agreement, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
-  before_action :bypass_rmid_validations?,  only: [:update, :edit]
+  before_action :bypass_rmid_validations?,  only: [:show, :update, :edit]
 
   def index
     @existing_request = params[:existing_request]

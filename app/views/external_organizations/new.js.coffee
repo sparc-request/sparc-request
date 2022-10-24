@@ -18,15 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Affiliation < ApplicationRecord
-  audited
-
-  attr_accessor :new
-  attr_accessor :position
-
-  belongs_to :protocol
-  TYPES = PermissibleValue.get_hash('affiliation_type')
-
-  def external_organizations
-  end
-end
+$("#modalContainer").html("<%= j render 'external_organizations/form', external_organization: @external_organization %>")
+$("#modalContainer").modal('show')

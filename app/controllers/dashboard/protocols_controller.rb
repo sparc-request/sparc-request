@@ -28,9 +28,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :bypass_rmid_validations?,  only: [:update, :edit]
 
   def index
+    @existing_request = params[:existing_request]
     admin_orgs = current_user.authorized_admin_organizations
     @admin     = admin_orgs.any?
-
     @default_filter_params  = { show_archived: 0 }
 
     # if we are performing a search, check if user is looking for an old protocol
@@ -46,12 +46,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     # if we are an admin we want to default to admin organizations
+    # but show "All Protocols" if coming from SPARC proper
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).admin_organizations_with_protocols
-      @default_filter_params[:admin_filter] = "for_admin #{current_user.id}"
+      @default_filter_params[:admin_filter] = @existing_request ? "for_all" : "for_admin #{current_user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(current_user.id).general_user_organizations_with_protocols
-      @default_filter_params[:admin_filter] = "for_identity #{current_user.id}"
+      @default_filter_params[:admin_filter] = @existing_request ? "for_all" : "for_identity #{current_user.id}"
     end
 
     @filterrific =

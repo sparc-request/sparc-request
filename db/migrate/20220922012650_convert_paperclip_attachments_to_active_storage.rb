@@ -1,5 +1,6 @@
 class ConvertPaperclipAttachmentsToActiveStorage < ActiveRecord::Migration[5.2]
   require 'open-uri'
+  require File.join(Rails.root, 'app/models/setting')
 
   def change
     get_blob_id = 'LAST_INSERT_ID()'

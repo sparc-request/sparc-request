@@ -23,10 +23,16 @@ class Affiliation < ApplicationRecord
 
   attr_accessor :new
   attr_accessor :position
+  attr_accessor :external_organization
 
   belongs_to :protocol
   TYPES = PermissibleValue.get_hash('affiliation_type')
 
+  def has_children_types?
+    self.external_organizations
+  end
+
   def external_organizations
+    protocol.external_organizations
   end
 end

@@ -66,7 +66,6 @@ class IrbRecordsController < ApplicationController
 
   def find_protocol
     @protocol = params[:protocol_id].present? ? Protocol.find(params[:protocol_id]) : Study.new
-    Rails.logger.info "#"*100 + "irb_rectods_controller#find_protocol @protocol== #{@protocol.inspect}################"
   end
 
   def find_human_subjects_info

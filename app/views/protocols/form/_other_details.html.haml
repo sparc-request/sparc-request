@@ -65,12 +65,13 @@
 
         .form-row
           = f.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |ff_a|
+            - Rails.logger.info "#{protocol.inspect} ###### #{protocol.affiliations.sort_by(&:position)}"
+            - Rails.logger.info "#"*100 + "#{ff_a.object.name}"
             - checked = !ff_a.object.new_record? && !ff_a.object.marked_for_destruction?
             .form-group.col-6
-              - if ff_a.object.name == "external_orgs"
+              - if ff_a.object == protocol.affiliations.sort_by(&:position).last
                 .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
                   = ff_a.check_box :external_organizations, class: 'custom-control-input affiliation', data: { target: '#externalOrganizationsContainer' }
-                  - Rails.logger.info "#"*100 + "#{:external_organizations}"
                   = ff_a.label :external_organizations, PermissibleValue.get_value( 'affiliiation_type', ff_a.object.name), class: 'custom-control-label'
               - else
                 = ff_a.hidden_field :name, value: ff_a.object.name

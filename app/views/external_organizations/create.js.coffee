@@ -32,7 +32,7 @@ $('#externalOrganizations').append("<%= j render 'external_organizations/externa
 $('#externalOrganization').replaceWith("<%= j render 'external_organizations/new_external_organization', protocol: @protocol, index: params[:index].to_i + 1, primary: false %>")
 
 <% if params[:primary] == 'false' %>
-$('.primary-irb .delete-irb').addClass('text-muted').removeClass('text-danger').
+$('.primary-external-organization .delete-external-organization').addClass('text-muted').removeClass('text-danger').
   attr('disabled', true).
   attr('data-original-title', I18n.t('irb_records.tooltips.cant_delete_primary'))
 <% end %>

@@ -27,16 +27,16 @@ module NewsFeed
     # Abstract Method
     #
     # Retrieves content from the provided URL
-    #def get
-      #raise NoMethodError
-    #end
+    def get
+      raise NoMethodError
+    end
 
     # Abstract Method
     #
     # Parses the API response to create a collection
     # of posts to be displayed on the News Feed.
-    #def posts
-      #raise NoMethodError
-    #end
+    def posts
+      raise NoMethodError
+    end
   end
 end

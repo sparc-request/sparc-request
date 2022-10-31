@@ -25,6 +25,8 @@ $(document).ready ->
     else
       $('#doc-type-other-field').addClass('d-none')
 
+  $('div.dropdown-menu input[type="checkbox"][name="select-all"]').replaceWith( '<span>Multi-select Documents</span>')
+
   $(document).on 'change', '#document_document', ->
    fileName = $(this).val().split('\\').pop()
    $(this).next('.custom-file-label').addClass("selected").html(fileName)
@@ -67,7 +69,7 @@ $(document).ready ->
 
   $(document).on 'click', '.edit-documents', (event) ->
     event.preventDefault()
-    
+
     selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes
     document_ids = $.map(selections, (c) -> return c.value) # get ids of all selected documents
 
@@ -93,7 +95,7 @@ $(document).ready ->
     $.ajax
       url:    '/documents/bulk_update'
       method: 'PUT'
-      data: 
+      data:
         protocol_id : protocol_id
         document_ids: document_ids
         share_all   : share_all

@@ -20,10 +20,8 @@
 
 .modal-dialog{ role: 'document' }
   .modal-content
-    = form_for external_organization, url: external_organizations_path, method: action_name == 'new' ? :post : :put, remote: true do |f|
+    = form_for external_organization, url: external_organizations_path, method: action_name == 'new' ? :post : put, remote: true do |f|
       = hidden_field_tag :protocol_id, params[:protocol_id]
-      = hidden_field_tag :index, params[:index]
-      = hidden_field_tag :primary, params[:primary]
       .modal-header
         %h3.modal-title
           = t("external_organizations.form.#{action_name}")
@@ -31,11 +29,11 @@
           %span{ aria: { hidden: 'true' } } &times;
       .modal-body
         .form-row
-          .form-group.col-4
-            = f.label :collaborating_org_name, class: 'required'
+          .form-group.col-6
+            = f.label :collaborating_org_name, title: t('Collaborating Org Name'), class: 'required'
             = f.select :collaborating_org_name, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_name'), f.object.collaborating_org_name), { include_blank: true }, class: 'selectpicker'
-          .form-group.col-4
-            = f.label :collaborating_org_type, class: 'required'
+          .form-group.col-6
+            = f.label :collaborating_org_type, title: t('Collaborating Org Type'), class: 'required'
             = f.select :collaborating_org_type, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_type'), f.object.collaborating_org_type), { include_blank: true }, class: 'selectpicker'
         .form-row
           .form-group.col-6

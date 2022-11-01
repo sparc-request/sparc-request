@@ -1,4 +1,3 @@
-%br
-= link_to new_external_organization_path(protocol_kd: protocol.id, index: index, primary: primary), remote: true, class: 'btn btn-success', id: 'newExternalOrganization' do
+= link_to new_external_organization_path(protocol_id: protocol.id), remote: true, class: 'btn btn-success', id: 'newExternalOrganization' do
   = icon('fas', 'plus')
   = t('external_organizations.add')

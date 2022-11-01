@@ -1,9 +1,8 @@
-%section.mt-3#externalOrganizationsContainer{ class: '.d-none' }
+%section.mt-3#externalOrganizationsContainer{ class: 'd-none' }
   .form-group
     %h4.pb-2.mb-2.border-bottom
-      = t('Involved External Organizations')
-    .w-100#externalOrganizations
-      = f.fields_for :external_organizations do |ff_eo|
-        - @external_organization_count = ff_eo.object.length
-        = render 'external_organizations/external_organization', protocol: protocol, external_organization: ff_eo.object, index: ff_eo.index, primary: ff_eo.index == 0
-    = render 'external_organizations/new_external_organization', protocol: protocol, index: @external_organization_count, primary: @external_organization_count == 0
+      = t('protocols.form.other_details.subheader')
+  .w-100#externalOrganizations
+    = f.fields_for :external_organizations do |ff_eo|
+      = render 'external_organizations/external_organization', protocol: protocol, external_organization: ff_eo.object
+  = render 'external_organizations/new_external_organization', protocol: protocol

@@ -105,8 +105,8 @@ en:
         secret: "Client Secret"
         uid: "Client ID"
       external_organization:
-        name: "Collaborating Org Name"
-        type: "Collaborating Org Type"
+        collaborating_org_name: "Collaborating Org Name"
+        collaborating_org_type: "Collaborating Org Type"
       form:
         respondable_id: "SRID"
         surveyable: "Association"
@@ -932,6 +932,7 @@ en:
         study_types: "Study Types"
         impact_areas: "Impact Areas"
         affiliations: "Affiliations, Collaborations, & Memberships"
+        subheader: "Involved External Organizations"
     tooltips:
       external_organization_name: "Collaborating Org Name"
       end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"

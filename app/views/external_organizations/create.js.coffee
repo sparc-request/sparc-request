@@ -28,8 +28,8 @@ $("[name='external_organization[<%= attr.to_s %>]']").parents('.form-group').rem
 <% end %>
 <% end %>
 <% else %>
-$('#externalOrganizations').append("<%= j render 'external_organizations/external_organization', protocol: @protocol, external_organization: @external_organization, index: params[:index], primary: params[:primary] == 'true' %>")
-$('#externalOrganization').replaceWith("<%= j render 'external_organizations/new_external_organization', protocol: @protocol, index: params[:index].to_i + 1, primary: false %>")
+$('#externalOrganizations').append("<%= j render 'external_organizations/external_organization', protocol: @protocol %>")
+$('#newExternalOrganization').replaceWith("<%= j render 'external_organizations/new_external_organization', protocol: @protocol %>")
 
 <% if params[:primary] == 'false' %>
 $('.primary-external-organization .delete-external-organization').addClass('text-muted').removeClass('text-danger').

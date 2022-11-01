@@ -1,11 +1,8 @@
 class ExternalOrganization < ApplicationRecord
 
-    # audited
+  audited
+  belongs_to :protocol
 
-    # attr_accessor :new
-    # attr_accessor :position
-
-    belongs_to :protocol
-    # TYPES = PermissibleValue.get_hash('external_organization_type')
-
+  attr_accessor :new
+  attr_accessor :position
 end

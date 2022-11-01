@@ -2,24 +2,17 @@ class ExternalOrganizationsController < ApplicationController
   before_action :find_protocol
   before_action :find_external_organization, only: [:edit, :update, :destroy]
 
-  def protocol_id
-    @protocol.id
-    Rails.logger.info "#"*50 + "#{@protocol.id} #############"
-  end
-
   def new
     respond_to :js
-    @external_organization = ExternalOrganization.new
-    Rails.logger.info "#"*50 + "#{@external_organization} #############"
+
+    @external_organization = @protocol.external_organizations.new
   end
 
   def create
     respond_to :js
-    @external_organization = ExternalOrganization.new(external_organization_params)
-    Rails.logger.info "#"*50 + "#{@external_organization} #############"
-
+    @external_organization = @protocol.external_organizations.new(external_organization_params)
     unless @external_organization.valid?
-        @errors = @external_organization.errors
+      @errors = @external_organization.errors
     end
   end
 
@@ -39,7 +32,6 @@ class ExternalOrganizationsController < ApplicationController
     unless @external_organization.valid?
         @errors = @external_organization.errors
     end
-    Rails.logger.info "#"*50 + "#{@external_organization} #############"
   end
 
   def destroy
@@ -50,12 +42,10 @@ class ExternalOrganizationsController < ApplicationController
 
   def find_protocol
     @protocol = params[:protocol_id].present? ? Protocol.find(params[:protocol_id]) : Study.new
-    Rails.logger.info "#"*50 + "#{@protocol} #############"
   end
 
   def find_external_organization
-    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : ExternalOrganization.new
-    Rails.logger.info "#"*50 + "find_external_organization = @external_organization"
+    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : @protocol.external_organizations.new
   end
 
   def external_organization_params

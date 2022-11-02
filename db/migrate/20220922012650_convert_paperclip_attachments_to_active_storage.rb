@@ -1,6 +1,5 @@
 class ConvertPaperclipAttachmentsToActiveStorage < ActiveRecord::Migration[5.2]
   require 'open-uri'
-  require File.join(Rails.root, 'app/models/setting')
 
   def change
     get_blob_id = 'LAST_INSERT_ID()'
@@ -17,8 +16,7 @@ class ConvertPaperclipAttachmentsToActiveStorage < ActiveRecord::Migration[5.2]
       ) VALUES (?, ?, ?, #{get_blob_id}, ?)
     SQL
 
-    Rails.application.eager_load!
-    models = ActiveRecord::Base.descendants.reject(&:abstract_class?)
+    models = [Document, PaymentUpload, Report]
 
     transaction do
       models.each do |model|

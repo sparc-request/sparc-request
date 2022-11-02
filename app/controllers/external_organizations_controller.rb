@@ -1,6 +1,6 @@
 class ExternalOrganizationsController < ApplicationController
   before_action :find_protocol
-  before_action :find_external_organization, only: [:edit, :update, :destroy]
+  before_action :find_external_organization
 
   def new
     respond_to :js
@@ -10,7 +10,9 @@ class ExternalOrganizationsController < ApplicationController
 
   def create
     respond_to :js
+
     @external_organization = @protocol.external_organizations.new(external_organization_params)
+
     unless @external_organization.valid?
       @errors = @external_organization.errors
     end
@@ -18,11 +20,8 @@ class ExternalOrganizationsController < ApplicationController
 
   def edit
     respond_to :js
-    if params[:external_organization]
-      @external_organization.assign_attributes(external_organization_params)
-    else
-      @external_organization = ExternalOrganization.new
-    end
+
+    @external_organization.assign_attributes(external_organization_params) if params[:external_organization]
   end
 
   def update
@@ -45,14 +44,15 @@ class ExternalOrganizationsController < ApplicationController
   end
 
   def find_external_organization
-    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : @protocol.external_organizations.new
+    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : @protocol.external_organizations.build
   end
 
   def external_organization_params
     params.require(:external_organization).permit(
       :collaborating_org_name,
       :collaborating_org_type,
-      :comments
+      :comments,
+      :protocol_id
     )
   end
 end

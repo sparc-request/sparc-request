@@ -4,5 +4,5 @@
       = t('protocols.form.other_details.subheader')
   .w-100#externalOrganizations
     = f.fields_for :external_organizations do |ff_eo|
-      = render 'external_organizations/external_organization', protocol: protocol, external_organization: ff_eo.object
+      = render 'external_organizations/external_organization', protocol: protocol, f: f
   = render 'external_organizations/new_external_organization', protocol: protocol

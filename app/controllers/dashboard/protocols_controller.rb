@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ProtocolsController < Dashboard::BaseController
-  include ProtocolsControllerShared
+include ProtocolsControllerShared
 
   before_action :find_protocol,             only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive]

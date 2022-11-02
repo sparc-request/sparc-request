@@ -103,7 +103,7 @@ module ProtocolsControllerShared
       :type,
       :udak_project_number,
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
-      external_organizations_attributes: [:id, :collaborating_org_name, :collaborating_org_type, :comments, :protocol_id],
+      external_organizations_attributes: ExternalOrganization.attribute_names.map(&:to_sym).push(:_destroy),
       human_subjects_info_attributes: [
         :id,
         :nct_number,

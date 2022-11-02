@@ -1,7 +1,6 @@
 class RemovePaperclipGeneratedColumnsFromDatabase < ActiveRecord::Migration[5.2]
   def change
-    Rails.application.eager_load!
-    models = ActiveRecord::Base.descendants.reject(&:abstract_class?)
+    models = [Document, PaymentUpload, Report]
 
     models.each do |model|
       paperclip_columns = []

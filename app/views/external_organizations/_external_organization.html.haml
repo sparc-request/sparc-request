@@ -1,12 +1,12 @@
-.list-group-item.d-flex.border.flex-column.collapsed.mb-3.external-organization{ class: 'list-group-item-success primary-external-organization', id: "externalOrganization", data: { toggle: 'collapse', target: "#externalOrganizationCollapse" } }
+.list-group-item.d-flex.border.flex-column.collapsed.mb-3.external-organization{ class: 'list-group-item-success external-organization', id: "externalOrganization", data: { toggle: 'collapse', target: "#externalOrganizationCollapse" } }
   .d-flex.justify-content-between
     %h4.mb-0.collapsed
       = icon('fas', 'caret-down mr-2')
       = PermissibleValue.get_value('collaborating_org_name', @external_organization.collaborating_org_name)
     .d-flex.align-items-center
-      = link_to edit_external_organization_path(id: 1, protocol: protocol, external_organization: @external_organization, remote: true, external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), class: 'text-warning mr-2 edit-external-organization', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip' } do
+      = link_to edit_external_organization_path(id: @external_organization.id ||= '', external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), remote: true, class: 'text-warning mr-2 edit-external-organization', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip' } do
         = icon('fas', 'edit fa-lg')
-      = link_to external_organization_path(id: 1, remote: true, method: :delete, class: 'delete-external-organization text-danger', title: t('external_organizations.tooltips.delete'), data: { toggle: 'tooltip' }) do
+      = link_to external_organization_path(id: @external_organization.id ||= '', remote: true, method: :delete, class: 'delete-external-organization text-danger', title: t('external_organizations.tooltips.delete'), data: { toggle: 'tooltip' }) do
         = icon('fas', 'trash-alt fa-lg')
   .collapse{ id: "externalOrganizationCollapse" }
     .w-100.pt-3
@@ -15,8 +15,10 @@
           %label.mb-0.font-weight-bold
             = ExternalOrganization.human_attribute_name(:collaborating_org_type)
         .form-group.col-4
-          = @external_organization.collaborating_org_type.present? ? PermissibleValue.get_value('external_organization_type', @external_organization.collaborating_org_type) : t('constants.na')
+          = PermissibleValue.get_value('collaborating_org_type', @external_organization.collaborating_org_type)
       .form-row
         .form-group.col-4
           %label.mb-0.font-weight-bold
             = ExternalOrganization.human_attribute_name(:comments)
+        .form-group.col-4
+          = @external_organization.comments.present? ? @external_organization.comments : t('constants.na')

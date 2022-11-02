@@ -65,8 +65,6 @@
 
         .form-row
           = f.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |ff_a|
-            - Rails.logger.info "#{protocol.inspect} ###### #{protocol.affiliations.sort_by(&:position)}"
-            - Rails.logger.info "#"*100 + "#{ff_a.object.name}"
             - checked = !ff_a.object.new_record? && !ff_a.object.marked_for_destruction?
             .form-group.col-6
               - if ff_a.object == protocol.affiliations.sort_by(&:position).last

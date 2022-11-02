@@ -17,7 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .list-group-item.d-flex.border.flex-column.collapsed.mb-3.irb-record{ class: primary ? 'list-group-item-success primary-irb' : 'list-group-item-info', id: "irb#{index}", data: { toggle: 'collapse', target: "#irb#{index}Collapse" } }
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][pro_number]", irb_record.pro_number
   = hidden_field_tag "protocol[human_subjects_info_attributes][irb_records_attributes][#{index}][irb_of_record]", irb_record.irb_of_record

@@ -89,12 +89,12 @@ class Protocol < ApplicationRecord
 
   mattr_accessor :rmid_server_down
 
-  accepts_nested_attributes_for :external_organizations
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
   accepts_nested_attributes_for :vertebrate_animals_info
   accepts_nested_attributes_for :investigational_products_info
   accepts_nested_attributes_for :ip_patents_info
+  accepts_nested_attributes_for :external_organizations,        allow_destroy: true
   accepts_nested_attributes_for :study_types,                   allow_destroy: true
   accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
   accepts_nested_attributes_for :affiliations,                  allow_destroy: true
@@ -102,11 +102,11 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
-  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
-  validates :research_master_id, presence: true, if: :rmid_requires_validation?
+  #validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+  #validates :research_master_id, presence: true, if: :rmid_requires_validation?
 
-  validate :validate_existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
-  validate :validate_unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  #validate :validate_existing_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
+  #validate :validate_unique_rmid, if: -> protocol { Setting.get_value('research_master_enabled') && protocol.research_master_id.present? }
 
   validates :indirect_cost_rate, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 1000 }, allow_blank: true, if: :indirect_cost_enabled
 

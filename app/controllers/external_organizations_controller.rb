@@ -12,6 +12,7 @@ class ExternalOrganizationsController < ApplicationController
     respond_to :js
 
     @external_organization = @protocol.external_organizations.new(external_organization_params)
+    Rails.logger.info "#"*100+"@external_organization in create action > #{@external_organization}"
 
     unless @external_organization.valid?
       @errors = @external_organization.errors
@@ -21,7 +22,12 @@ class ExternalOrganizationsController < ApplicationController
   def edit
     respond_to :js
 
-    @external_organization.assign_attributes(external_organization_params) if params[:external_organization]
+    if params[:external_organization]
+      @external_organization.assign_attributes(external_organization_params)
+    else
+      @external_organization = ExternalOrganization.new
+    end
+
   end
 
   def update
@@ -44,7 +50,7 @@ class ExternalOrganizationsController < ApplicationController
   end
 
   def find_external_organization
-    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : @protocol.external_organizations.build
+    @external_organization = params[:id].present? ? ExternalOrganization.find(params[:id]) : ExternalOrganization.new
   end
 
   def external_organization_params

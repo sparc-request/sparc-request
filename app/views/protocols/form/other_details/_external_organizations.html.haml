@@ -1,8 +1,0 @@
-%section.mt-3#externalOrganizationsContainer{ class: 'd-none' }
-  .form-group
-    %h4.pb-2.mb-2.border-bottom
-      = t('protocols.form.other_details.subheader')
-  .w-100#externalOrganizations
-    = f.fields_for :external_organizations do |ff_eo|
-      = render 'external_organizations/external_organization', protocol: protocol, f: f
-  = render 'external_organizations/new_external_organization', protocol: protocol

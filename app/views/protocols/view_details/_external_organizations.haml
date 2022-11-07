@@ -18,23 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog.modal-xl{ role: 'document' }
-  .modal-content
-    .modal-header
-      %h3.modal-title
-        = "#{protocol.model_name.human} ##{protocol.id}"
-        %small.text-muted
-          = protocol.short_title
-      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-        %span{ aria: { hidden: 'true' } } &times;
-    .modal-body
-      = render 'protocols/view_details/protocol_information', protocol: protocol
-      = render 'protocols/view_details/financial_information', protocol: protocol
+%section.pt-3#externalOrganizations
+  .card
+    .card-header.bg-primary.text-white
+      %h3.mb-0
+        = t('protocols.form.external_organizations.header')
+    %table.table.mb-0
+      %tbody
+        %tr.bg-light
+          %td
+            %h6.mb-0
+              - if protocol.external_organizations.any?
+                = protocol.external_organizations.each do |external_organization|
+                  = external_organization.collaborating_org_name.upcase
+          %td.d-inline-block.col-9
+            = protocol.external_organizations.any? ? protocol.external_organizations.first.collaborating_org_name : t('constants.na')
+        %tr.d-flex
+          %td.d-inline-block.col-3
+            = label :protocol, 'Type', class: 'mb-0'
+          %td.d-inline-block.col-9
+            = protocol.external_organizations.present? ? protocol.external_organizations : t('constants.na')
+        %tr.d-flex
+          %td.d-inline-block.col-3
+            = label :protocol, ExternalOrganization.human_attribute_name(:comments), class: 'mb-0'
+          %td.d-inline-block.col-9
+            = protocol.external_organizations.present? ? protocol.external_organizations.first.comments : t('constants.na')
 
-      - if protocol.is_a?(Study)
-        = render 'protocols/view_details/research_involving', protocol: protocol
-        = render 'protocols/view_details/other_details', protocol: protocol
-      = render 'protocols/view_details/external_organizations', protocol: protocol
-    .modal-footer
-      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-        = t('actions.close')
+

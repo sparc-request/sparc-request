@@ -35,6 +35,7 @@ class IrbRecordsController < ApplicationController
 
     @irb_record = @human_subjects_info.irb_records.new(irb_record_params)
 
+    Rails.logger.info "#"*100+"@irb_record in create action > #{@irb_record}"
     unless @irb_record.valid?
       @errors = @irb_record.errors
     end

@@ -917,6 +917,8 @@ en:
         header: "Confidentiality and Epic Questions"
       confidentiality_questions:
         header: "Confidentiality Questions"
+      external_organizations:
+        header: "Involved External Organizations"
       financial_information:
         header: "Financial Information"
         guarantor_header: "Guarantor Information"

@@ -25,7 +25,7 @@
     = link_to t(:funding)[:download][:loi], '#loi', class: 'nav-link h4 mb-0 active', data: { toggle: 'tab' }
     = link_to t(:funding)[:download][:application], '#application', class: 'nav-link h4 mb-0', data: { toggle: 'tab' }
   .tab-content
-    .tab-pane.fade.show.active#loi{ role: 'tabpanel' }
-      = render "loi_table"
     .tab-pane.fade#application{ role: 'tabpanel' }
-      = render "application_table"
+      = render "table", table: "application"
+    .tab-pane.fade#loi.show.active{ role: 'tabpanel' }
+      = render "table", table: "loi"

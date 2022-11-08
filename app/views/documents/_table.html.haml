@@ -39,8 +39,8 @@
       %thead.bg-light
         %tr
           - if !in_review?
-            %th{ data: { field: 'checkbox', align: 'left'} }
-              = check_box_tag "select-all"
+            %th{ data: { field: 'checkbox', align: 'left' } }
+              = check_box_tag 'select-all'
           %th{ data: { field: 'document', align: "left", sortable: "true" } }
             = Document.human_attribute_name(:document)
           %th{ data: { field: 'type', align: "left", sortable: "true" } }

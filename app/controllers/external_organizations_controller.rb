@@ -12,8 +12,6 @@ class ExternalOrganizationsController < ApplicationController
     respond_to :js
 
     @external_organization = @protocol.external_organizations.new(external_organization_params)
-    Rails.logger.info "#"*100+"@external_organization in create action > #{@external_organization}"
-
     unless @external_organization.valid?
       @errors = @external_organization.errors
     end

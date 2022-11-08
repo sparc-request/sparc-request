@@ -34,7 +34,6 @@
       - if protocol.is_a?(Study)
         = render 'protocols/view_details/research_involving', protocol: protocol
         = render 'protocols/view_details/other_details', protocol: protocol
-      = render 'protocols/view_details/external_organizations', protocol: protocol
     .modal-footer
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
         = t('actions.close')

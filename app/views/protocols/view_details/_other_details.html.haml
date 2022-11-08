@@ -58,3 +58,30 @@
                 .col-3<
                   = protocol.affiliations.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
                   = v
+        %tr.bg-light
+          %td
+            %h6.mb-0
+              = t('protocols.form.external_organizations.header')
+        - if protocol.external_organizations
+          - protocol.external_organizations.each do |external_organization|
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                %label.mb-0
+                  = ExternalOrganization.human_attribute_name :collaborating_org_name
+              %td.d-inline-block.col-9
+                %strong
+                  = get_name external_organization
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                %label.mb-0
+                  = ExternalOrganization.human_attribute_name :collaborating_org_type
+              %td.d-inline-block.col-9
+                = get_type external_organization
+            %tr.d-flex
+              %td.d-inline-block.col-3
+                %label.mb-0
+                  = ExternalOrganization.human_attribute_name :comments
+              %td.d-inline-block.col-9
+                = external_organization.comments.present? ? external_organization.comments : t('constants.na')
+        - else
+          = t('constants.na')

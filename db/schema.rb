@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_29_182709) do
+ActiveRecord::Schema.define(version: 2022_11_08_202241) do
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
@@ -238,6 +238,8 @@ ActiveRecord::Schema.define(version: 2022_10_29_182709) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "protocol_id"
+    t.string "collaborating_org_name_other"
+    t.string "collaborating_org_type_other"
     t.index ["protocol_id"], name: "index_external_organizations_on_protocol_id"
   end
 

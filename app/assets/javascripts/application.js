@@ -83,6 +83,7 @@
 //= require protocol_form
 //= require associated_users
 //= require associated_users_form
+//= require external_organizations
 //= require subsidies
 //= require documents
 //= require review

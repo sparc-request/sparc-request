@@ -31,18 +31,19 @@
           .form-group.col-6
             = f.label :collaborating_org_name, title: t('external_organization.collaborating_org_name'), class: 'required'
             = f.select :collaborating_org_name, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_name'), f.object.collaborating_org_name), { include_blank: true }, class: 'selectpicker'
-            -# TODO # Add 'other' textbox  = Rails.logger.info "#"*100 + "f.object #{f.object}"
-            -#  - if f.object.name == 'other'
-            -#  .form-group.col-6{ class: [checked ? '' : 'd-none', f.options[:child_index].odd? ? 'offset-6' : ''] }
+          .form-group.col-6#collaboratingOrgNameOtherContainer{ class: f.object.collaborating_org_name == 'other' ? '' : 'd-none' }
+            = f.label :collaborating_org_name_other, t('constants.prompts.please_specify')
+            = f.text_field :collaborating_org_name_other, class: 'form-control'
           .form-group.col-6
             = f.label :collaborating_org_type, title: t('external_organization.collaborating_org_type'), class: 'required'
             = f.select :collaborating_org_type, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_type'), f.object.collaborating_org_type), { include_blank: true }, class: 'selectpicker'
-            -# TODO # Add 'other' textbox  - if f.object.name == 'other'
-            -#  .form-group.col-6{ class: [checked ? '' : 'd-none', f.options[:child_index].odd? ? 'offset-6' : ''] }
+          .form-group.col-6#collaboratingOrgTypeOtherContainer{ class: f.object.collaborating_org_type == 'other' ? '' : 'd-none' }
+            = f.label :collaborating_org_type_other, t('constants.prompts.please_specify')
+            = f.text_field :collaborating_org_type_other, class: 'form-control'
         .form-row
           .form-group.col-6
             = f.label :comments
-            = f.text_field :comments, class: 'form-control'
+            = f.text_area :comments, class: 'form-control'
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

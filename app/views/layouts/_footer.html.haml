@@ -25,7 +25,7 @@
         .col-4.col-xs-12.d-flex.flex-column.justify-content-between
           %div
             %p.mb-1
-              = t('layout.footer.copyright').html_safe
+              = Setting.get_value("copyright_language")
             %p.mb-0
               = t('layout.footer.version', version: ENV['sparc_version'])
           %p.mb-0

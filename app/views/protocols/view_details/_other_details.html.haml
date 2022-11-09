@@ -64,13 +64,12 @@
               = t('protocols.form.external_organizations.header')
         - if protocol.external_organizations.any?
           - protocol.external_organizations.each do |external_organization|
-            %tr.d-flex
+            %tr.d-flex.alert-success
               %td.d-inline-block.col-3
                 %label.mb-0
                   = ExternalOrganization.human_attribute_name :collaborating_org_name
               %td.d-inline-block.col-9
-                %strong
-                  = get_name external_organization
+                = get_name external_organization
             %tr.d-flex
               %td.d-inline-block.col-3
                 %label.mb-0

@@ -56,7 +56,9 @@ class ExternalOrganizationsController < ApplicationController
       :collaborating_org_name,
       :collaborating_org_type,
       :comments,
-      :protocol_id
+      :protocol_id,
+      :collaborating_org_name_other,
+      :collaborating_org_type_other
     )
   end
 end

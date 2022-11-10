@@ -1,13 +1,15 @@
 .list-group-item.d-flex.border.flex-column.collapsed.mb-3.external-organization{ class: 'list-group-item-success external-organization', id: "externalOrganization#{index}", data: { toggle: 'collapse', target: "#externalOrganization#{index}Collapse" }}
   = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_name]", external_organization.collaborating_org_name
+  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_name_other]", external_organization.collaborating_org_name_other
   = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_type]", external_organization.collaborating_org_type
+  = hidden_field_tag "protocol[external_organizations_attributes][#{index}][collaborating_org_type_other]", external_organization.collaborating_org_type_other
   = hidden_field_tag "protocol[external_organizations_attributes][#{index}][comments]", external_organization.comments
   .d-flex.justify-content-between
     %h4.mb-0.collapsed
       = icon('fas', 'caret-down mr-2')
-      = PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name)
+      = PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name) == 'Other' ? external_organization.collaborating_org_name_other : PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name)
     .d-flex.align-items-center
-      = link_to edit_external_organizations_path(id: external_organization.id, index: index,  external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), remote: true, class: 'text-warning mr-2 edit-external-organization', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip'} do
+      = link_to edit_external_organizations_path(id: external_organization.id, index: index,  external_organization: params[:external_organization].present? ? params[:external_organization].permit! : {}), remote: true, class: 'text-warning mr-2 edit-external-organization', title: t('external_organizations.tooltips.edit'), data: { toggle: 'tooltip' } do
         = icon('fas', 'edit fa-lg')
       = link_to external_organizations_path(id: external_organization.id, index: index), remote: true, method: :delete, class: ['delete-external-organization',  'text-danger'], title: t('external_organizations.tooltips.delete'), data: { toggle: 'tooltip' } do
         = icon('fas', 'trash-alt fa-lg')
@@ -18,7 +20,7 @@
           %label.mb-0.font-weight-bold
             = ExternalOrganization.human_attribute_name(:collaborating_org_type)
         .form-group.col-4
-          = PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type)
+          = PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type) == 'Other' ? external_organization.collaborating_org_type_other : PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type)
       .form-row
         .form-group.col-4
           %label.mb-0.font-weight-bold

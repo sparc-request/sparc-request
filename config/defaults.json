@@ -940,6 +940,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_external_organizations",
+    "value":          "true",
+    "friendly_name":  "Use External Organizations",
+    "description":    "This determines whether the application will display External Organizations section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "use_faq_link",
     "value":          "false",
     "friendly_name":  "Use FAQ Link",

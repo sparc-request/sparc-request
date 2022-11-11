@@ -1,0 +1,4 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,clemson_university,Clemson University,,,,collaborating_org_name,,,1
+,college_of_charleston,College of Charleston,,,,collaborating_org_name,,,1
+,other,Other,,,,collaborating_org_name,,,1

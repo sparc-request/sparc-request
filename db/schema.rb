@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2022_11_11_170132) do
-=======
-ActiveRecord::Schema.define(version: 2022_11_08_202241) do
->>>>>>> 732c08b4e5a166b74b9b4c9e9de6e4fc35481dcf
 
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"

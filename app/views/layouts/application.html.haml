@@ -37,7 +37,6 @@
       %h4.alert.alert-danger.rounded-0.text-center.m-0{ role: 'alert' }
         = Rails.env.capitalize
     = render 'layouts/header', location: @location || 'proper'
-    = debug(params)
     = render 'layouts/navbar'
     - if content_for(:sub_header)
       %subheader.container-fluid.mb-3#siteSubheader

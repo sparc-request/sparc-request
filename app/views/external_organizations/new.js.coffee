@@ -18,41 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @confirm_new_request %>
-ConfirmSwal.fire(
-  icon: 'question'
-  title: I18n.t('proper.catalog.new_request.header')
-  text: " ",
-  confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
-  cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
-).then (result) ->
-  if result.value
-    $.ajax
-      type: 'post'
-      dataType: 'script'
-      url: '/service_request/add_service'
-      data:
-        service_id: "<%= params[:service_id] %>"
-        confirmed: "true"
-  else if result.dismiss == 'cancel'
-    window.location = "<%= dashboard_root_path(existing_request: "true") %>"
-<% elsif @duplicate_service %>
-AlertSwal.fire(
-  icon: 'error'
-  title: I18n.t('proper.cart.duplicate_service.header')
-)
-<% else %>
-$('.profile').replaceWith("<%= j render 'layouts/profile' %>")
-$('#stepsNav').replaceWith("<%= j render 'service_requests/navigation/steps' %>")
-$('#cart').replaceWith("<%= j render 'service_requests/cart/cart', service_request: @service_request %>")
-
-url = new URL(window.location.href)
-if !url.searchParams.get('srid')
-  url.searchParams.append('srid', "<%= @service_request.id %>")
-  window.history.pushState({}, null, url.href)
-  $('input[name=srid]').val("<%= @service_request.id %>")
-  $('#loginLink').attr('href', "<%= new_identity_session_path(srid: @service_request.id) %>")
-  $('#serviceCatalogForm').attr('action', "<%= navigate_service_request_path(srid: @service_request.id) %>")
-
-  $("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
-<% end %>
+$("#modalContainer").html("<%= j render 'external_organizations/form', external_organization: @external_organization %>")
+$("#modalContainer").modal('show')

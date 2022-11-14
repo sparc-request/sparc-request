@@ -62,6 +62,7 @@ class Protocol < ApplicationRecord
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
+  has_many :external_organizations,       dependent: :destroy
 
   has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
@@ -93,6 +94,7 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :vertebrate_animals_info
   accepts_nested_attributes_for :investigational_products_info
   accepts_nested_attributes_for :ip_patents_info
+  accepts_nested_attributes_for :external_organizations,        allow_destroy: true
   accepts_nested_attributes_for :study_types,                   allow_destroy: true
   accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
   accepts_nested_attributes_for :affiliations,                  allow_destroy: true

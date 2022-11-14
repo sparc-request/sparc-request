@@ -108,3 +108,6 @@ habitat/*/results
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.byebug_history
+.vscode/
+config/initializers/rack_profiler.rb

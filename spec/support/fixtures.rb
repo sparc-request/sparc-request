@@ -179,7 +179,7 @@ def build_per_patient_per_visit_services
 end
 
 def build_service_request
-  let!(:service_request) { 
+  let!(:service_request) {
     protocol =
       if defined?(protocol) && protocol.present?
         protocol
@@ -311,3 +311,5 @@ def build_service_request_with_services
   let!(:pricing_map2) { create(:pricing_map, service_id: service2.id, display_date: Time.now - 1.day, effective_date: Time.now - 1.day, unit_type: 'Per patient/visit', unit_factor: 1, full_rate: 636,
                                exclude_from_indirect_cost: 0, unit_minimum: 1) }
 end
+
+

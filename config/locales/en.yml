@@ -104,6 +104,9 @@ en:
         created_at: "Date Created"
         secret: "Client Secret"
         uid: "Client ID"
+      external_organization:
+        collaborating_org_name: "Collaborating Org Name"
+        collaborating_org_type: "Collaborating Org Type"
       form:
         respondable_id: "SRID"
         surveyable: "Association"
@@ -665,13 +668,28 @@ en:
       header: "Uh, oh.  You've hit an"
       error: "Internal Server Error (500)"
 
+  ##########################
+  # EXTERNAL ORGANIZATIONS #
+  ##########################
+  external_organizations:
+    external_organization_header: " (%{external_organization})"
+    add: "Add New"
+    edit: "Edit External Organization"
+    delete: "Delete External Organization"
+    form:
+      new: "New External Organization"
+      edit: "Edit External Organization"
+    tooltips:
+      edit: "Edit External Organization"
+      delete: "Delete External Organization"
+      cant_delete_primary: "The Primary External Organization cannot be deleted"
+
   ############
   # FEEDBACK #
   ############
   feedback:
     header: "Feedback"
     sent: "Thank you for providing your feedback!"
-
 
   #########
   # FORMS #
@@ -733,7 +751,6 @@ en:
         protocol_merge: "Merge Protocols"
     footer:
       version: "SPARCRequest %{version}"
-      copyright: "&copy; 2011-2021 MUSC Foundation for Research Development"
       github: "GitHub"
       about:
         header: "About"
@@ -899,6 +916,8 @@ en:
         header: "Confidentiality and Epic Questions"
       confidentiality_questions:
         header: "Confidentiality Questions"
+      external_organizations:
+        header: "Involved External Organizations"
       financial_information:
         header: "Financial Information"
         guarantor_header: "Guarantor Information"
@@ -914,7 +933,9 @@ en:
         study_types: "Study Types"
         impact_areas: "Impact Areas"
         affiliations: "Affiliations, Collaborations, & Memberships"
+        subheader: "Involved External Organizations"
     tooltips:
+      external_organization_name: "Collaborating Org Name"
       end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"
       epic: "Defines whether record will interface to Epic EMR."
       funding_source: "Funding source which drives research pricing for your Study/Project"

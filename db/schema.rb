@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_05_201755) do
+ActiveRecord::Schema.define(version: 2022_11_11_170132) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
@@ -318,9 +318,9 @@ ActiveRecord::Schema.define(version: 2022_10_05_201755) do
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
+    t.text "institution"
     t.string "age_group"
     t.string "gender"
-    t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
@@ -1156,6 +1156,7 @@ ActiveRecord::Schema.define(version: 2022_10_05_201755) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "editable_statuses", "organizations"
+  add_foreign_key "external_organizations", "protocols"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_requests", "oauth_access_tokens", column: "access_token_id"

@@ -22,12 +22,12 @@ $(document).ready ->
   $('#docTabs .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
   $(document).on 'click', '#loi .export button', ->
-    url = new URL($('#loi-table').data('url'), window.location.origin)
+    url = new URL($('#loiTable').data('url'), window.location.origin)
     url.pathname = url.pathname.replace('json', 'csv')
     window.location = url
 
   $(document).on 'click', '#application .export button', ->
-    url = new URL($('#app-table').data('url'), window.location.origin)
+    url = new URL($('#applicationTable').data('url'), window.location.origin)
     url.pathname = url.pathname.replace('json', 'csv')
     window.location = url
 

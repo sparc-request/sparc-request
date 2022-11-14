@@ -18,58 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%section.pt-3#otherDetails
+%section.pt-3#externalOrganizations
   .card
     .card-header.bg-primary.text-white
       %h3.mb-0
-        = t('protocols.form.other_details.header')
+        = t('protocols.form.external_organizations.header')
     %table.table.mb-0
       %tbody
-        %tr.bg-light
-          %td
-            %h6.mb-0
-              = t('protocols.form.other_details.study_types')
-        %tr
-          %td
-            .row
-              - PermissibleValue.get_hash('study_type').each do |k, v|
-                .col-3<
-                  = protocol.study_types.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                  = v
-        %tr.bg-light
-          %td
-            %h6.mb-0
-              = t('protocols.form.other_details.impact_areas')
-        %tr
-          %td
-            .row
-              - PermissibleValue.get_hash('impact_area').each do |k, v|
-                .col-3<
-                  = protocol.impact_areas.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                  = v
-        %tr.bg-light
-          %td
-            %h6.mb-0
-              = t('protocols.form.other_details.affiliations')
-        %tr
-          %td
-            .row
-              - PermissibleValue.get_hash('affiliation_type').each do |k, v|
-                .col-3<
-                  = protocol.affiliations.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                  = v
-        %tr.bg-light
-          %td
-            %h6.mb-0
-              = t('protocols.form.external_organizations.header')
         - if protocol.external_organizations.any?
           - protocol.external_organizations.each do |external_organization|
-            %tr.d-flex.alert-success
-              %td.d-inline-block.col-3
-                %label.mb-0
-                  = ExternalOrganization.human_attribute_name :collaborating_org_name
-              %td.d-inline-block.col-9
-                = get_name external_organization
+            %tr.bg-light
+              %td{ colspan: 2 }
+                %h6.mb-0
+                  = get_name external_organization
             %tr.d-flex
               %td.d-inline-block.col-3
                 %label.mb-0
@@ -83,7 +44,6 @@
               %td.d-inline-block.col-9
                 = external_organization.comments.present? ? external_organization.comments : t('constants.na')
         - else
-          %tr.d-flex
-            %td.d-inline-block.col-3
-              %label.mb-0
-                = t('constants.na')
+          = t('constants.na')
+
+

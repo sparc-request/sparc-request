@@ -74,10 +74,6 @@ $(document).ready ->
       $('#protocol_research_master_id').siblings('label').addClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
-      if $('#protocol_selected_for_epic_false').prop('checked')
-        $('#studyTypeQuestionsContainer').removeClass('d-none')
-        hideStudyTypeQuestion($(certificateOfConfidence))
-        showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
@@ -109,6 +105,23 @@ $(document).ready ->
         $specifyField.parents('.form-group').removeClass('d-none')
       else
         $specifyField.parents('.form-group').addClass('d-none')
+
+  # 'Involved External Organizations' subsection
+  $(document).on 'change', 'input[id$="external_organizations"]', ->
+    # set var 'target'
+    target = $(this).data('target')
+
+    $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
+    $(target).find('.form-error').remove()
+
+    if $(this).prop('checked')
+      $(target).removeClass('d-none')
+    else
+      $(target).addClass('d-none')
+
+  $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
+    if $(this).prop('checked')
+      $(target).removeClass('d-none')
 
   ############################
   ### Primary PI Typeahead ###
@@ -156,13 +169,6 @@ $(document).ready ->
       setRequiredFields()
       hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
       showStudyTypeQuestion($(certificateOfConfidence))
-    else if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
-      if $('#studyTypeQuestionsContainer').hasClass('d-none')
-        $('#studyTypeQuestionsContainer').removeClass('d-none')
-      $('label[for=protocol_study_type_questions]').removeClass('required')
-      setRequiredFields()
-      hideStudyTypeQuestion($(certificateOfConfidence))
-      showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
     else
       $('#studyTypeQuestionsContainer').addClass('d-none')
 

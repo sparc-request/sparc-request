@@ -18,6 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- use_external_organizations = Setting.get_value("use_external_organizations")
 %section.pt-3#otherDetails
   .card
     .card-body.p-5
@@ -71,5 +72,13 @@
               .custom-control.custom-checkbox.custom-control-lg
                 = ff_a.check_box :_destroy, { checked: checked, class: 'custom-control-input affiliation' }, false, true
                 = ff_a.label :_destroy, PermissibleValue.get_value('affiliation_type', ff_a.object.name), class: 'custom-control-label'
-
-
+      - if use_external_organizations
+        %section.mt-3#externalOrganizationsContainer
+          .form-group
+            %h4.pb-2.mb-2.border-bottom
+              = t('protocols.form.other_details.external_organizations')
+          .w-100#externalOrganizations
+            - @eo_count = f.object.external_organizations.length
+            = f.fields_for :external_organizations do |ff_eo|
+              = render 'external_organizations/external_organization', protocol: protocol, f: f, external_organization: ff_eo.object, index: ff_eo.index
+          = render 'external_organizations/new_external_organization', protocol: protocol, index: @eo_count

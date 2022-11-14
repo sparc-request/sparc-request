@@ -50,6 +50,22 @@ RSpec.describe DocumentsHelper, type: :helper do
   end
 
 
+  describe 'set select-all attributes on checkbox column' do
+    let(:document) { create(:document) }
+
+    context 'in dashboard' do
+      before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
+
+      context 'with permission' do
+        it 'should render checkbox with name^="select-document" id' do
+          expect(helper).to receive(:check_box_tag).with("select-document-#{document.id}", "#{document.id}")
+          helper.display_check_box(document)
+        end
+      end
+    end
+  end
+
+
   describe '#display_document_title' do
     let(:document) { create(:document) }
 

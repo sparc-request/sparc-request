@@ -49,7 +49,6 @@ RSpec.describe DocumentsHelper, type: :helper do
     end
   end
 
-
   describe 'set select-all attributes on checkbox column' do
     let(:document) { create(:document) }
 
@@ -65,8 +64,7 @@ RSpec.describe DocumentsHelper, type: :helper do
     end
   end
 
-
-  describe '#display_document_title' do
+ describe '#display_document_title' do
     let(:document) { create(:document) }
 
     context 'in dashboard' do
@@ -95,6 +93,7 @@ RSpec.describe DocumentsHelper, type: :helper do
       end
     end
   end
+
 
 
   describe '#edit_document_button' do
@@ -126,6 +125,7 @@ RSpec.describe DocumentsHelper, type: :helper do
       end
     end
   end
+
 
 
   describe '#delete_document_button' do

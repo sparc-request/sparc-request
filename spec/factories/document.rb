@@ -22,11 +22,16 @@ FactoryBot.define do
   factory :document do
     doc_type              { 'other' }
     doc_type_other        { Faker::Lorem.word }
-    filename              { Faker::Lorem.word + '.docx' }
-    content_type          { 'application/msword' }
-    byte_size             { Random.rand(100000) }
     created_at            { Time.now }
     updated_at            { Time.now }
     share_all             { false }
+
+    after(:build) do |document|
+      document.document.attach(
+        io: File.open(<path/to/file>),
+        filename: Faker::Lorem.word + '.docx',
+        content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+    end
   end
 end

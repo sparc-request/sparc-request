@@ -1128,5 +1128,16 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "copyright_language",
+    "value":          "© 2011-2022 MUSC Foundation for Research Development",
+    "friendly_name":  "Copyright Language.",
+    "description":    "Current copyright year in the site footer.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
+
 ]

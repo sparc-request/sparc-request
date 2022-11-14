@@ -15,4 +15,5 @@ RSpec.describe ExternalOrganization, type: :model do
     expect(ExternalOrganization.count).to eq 1
   end
 
+  it 
 end

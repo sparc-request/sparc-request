@@ -60,7 +60,6 @@ $(document).ready ->
 
   $(document).on 'change', '.research-involving', ->
     target = $(this).data('target')
-    console.log(target, "line 65")
 
     $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
     $(target).find('.form-error').remove()

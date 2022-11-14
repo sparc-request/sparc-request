@@ -78,7 +78,7 @@ RSpec.configure do |config|
 
   config.default_sleep_interval = 2
   config.verbose_retry = true
-  config.default_retry_count = 4
+  #config.default_retry_count = 4
 
   config.retry_callback = proc do |ex|
     Capybara.reset!

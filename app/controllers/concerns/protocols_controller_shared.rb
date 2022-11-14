@@ -117,7 +117,7 @@ module ProtocolsControllerShared
       study_phase_ids: [],
       study_types_attributes: [:id, :name, :new, :position, :_destroy],
       study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy],
-      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date],
+      vertebrate_animals_info_attributes: [:id, :iacuc_number, :name_of_iacuc, :iacuc_approval_date, :iacuc_expiration_date]
     )
   end
 end

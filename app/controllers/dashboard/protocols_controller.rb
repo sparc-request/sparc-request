@@ -19,13 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ProtocolsController < Dashboard::BaseController
-include ProtocolsControllerShared
+  include ProtocolsControllerShared
 
   before_action :find_protocol,             only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive, :request_access, :push_to_oncore]
   before_action :find_admin_for_protocol,   only: [:show, :edit, :update, :fee_agreement, :update_protocol_type, :display_requests, :archive]
   before_action :protocol_authorizer_view,  only: [:show, :fee_agreement, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type, :archive]
-  before_action :bypass_rmid_validations?,  only: [:show, :update, :edit]
+  before_action :bypass_rmid_validations?,  only: [:update, :edit]
 
   def index
     @existing_request = params[:existing_request]

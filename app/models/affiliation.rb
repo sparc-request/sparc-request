@@ -26,5 +26,4 @@ class Affiliation < ApplicationRecord
 
   belongs_to :protocol
   TYPES = PermissibleValue.get_hash('affiliation_type')
-
 end

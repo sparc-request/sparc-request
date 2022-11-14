@@ -39,7 +39,7 @@ RSpec.describe Document, type: :model do
     it 'is attached' do
       @document.file.attach(
         io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt')),
-        filename: 'text_document.txt'
+        filename: 'text_document.txt',
         content_type: 'text/plain'
       )
       expect(@document.file).to be_attached

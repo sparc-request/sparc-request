@@ -1,7 +1,7 @@
 id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
-,academic_collaborator,Academic collaborator,,,,collaborating_org_type,,,1
-,ctsa_collaborator,CTSA collaborator,,,,collaborating_org_type,,,1
-,community_collaborator,Community collaborator,,,,collaborating_org_type,,,1
-,hub_partner,Hub partner,,,,collaborating_org_type,,,1
-,healthcare_enterprise_partner,Healthcare enterprise partner,,,,collaborating_org_type,,,1
-,other,Other,,,,collaborating_org_type,,,1
+,academic_collaborator,Academic collaborator,,,1,collaborating_org_type,,,1
+,ctsa_collaborator,CTSA collaborator,,,2,collaborating_org_type,,,1
+,community_collaborator,Community collaborator,,,3,collaborating_org_type,,,1
+,hub_partner,Hub partner,,,4,collaborating_org_type,,,1
+,healthcare_enterprise_partner,Healthcare enterprise partner,,,5,collaborating_org_type,,,1
+,other,Other,,,6,collaborating_org_type,,,1

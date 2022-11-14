@@ -60,5 +60,5 @@ SparcRails::Application.configure do
   config.active_storage.service = :local
 
   # Bug fix for Rspec MySQL connection disruption during Travis build while running document tests
-  config.active_job.queue_adapter = :inline
+  config.active_job.queue_adapter = :test
 end

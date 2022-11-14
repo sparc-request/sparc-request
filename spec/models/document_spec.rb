@@ -21,7 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe Document, type: :model do
-  it { is_expected.to have_one(:document) }
   it { is_expected.to belong_to(:protocol) }
   
   # See https://github.com/thoughtbot/shoulda-matchers/issues/1210
@@ -30,6 +29,22 @@ RSpec.describe Document, type: :model do
   it 'should create a document' do
     doc = Document.create()
     expect(doc).to be_an_instance_of Document
+  end
+
+  describe 'attachment' do
+    before do
+      subject.
+        file.
+        attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'docx_document.docx')),
+          filename: 'docx_document.docx',
+          content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+    end
+
+    it 'is valid' do
+      expect(subject.file).to be_attached
+    end
   end
 
   describe 'display_document_type' do

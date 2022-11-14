@@ -63,5 +63,6 @@ SparcRails::Application.configure do
     DeviseFilters.add_filters
   end
 
+  # ActiveStorage config
   config.active_storage.service = :local
 end

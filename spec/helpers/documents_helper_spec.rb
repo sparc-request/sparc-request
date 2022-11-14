@@ -50,7 +50,6 @@ RSpec.describe DocumentsHelper, type: :helper do
   end
 
 
-
   describe '#display_document_title' do
     let(:document) { create(:document) }
 
@@ -82,7 +81,6 @@ RSpec.describe DocumentsHelper, type: :helper do
   end
 
 
-
   describe '#edit_document_button' do
     let(:document) { create(:document) }
 
@@ -112,7 +110,6 @@ RSpec.describe DocumentsHelper, type: :helper do
       end
     end
   end
-
 
 
   describe '#delete_document_button' do

@@ -31,19 +31,18 @@ RSpec.describe Document, type: :model do
     expect(doc).to be_an_instance_of Document
   end
 
-  describe 'attachment' do
-    before do
-      subject.
-        file.
-        attach(
-          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'docx_document.docx')),
-          filename: 'docx_document.docx',
-          content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        )
+  context 'with a valid file' do
+    before :each do
+      @document = create(:document)
     end
 
-    it 'is valid' do
-      expect(subject.file).to be_attached
+    it 'is attached' do
+      @document.file.attach(
+        io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt')),
+        filename: 'text_document.txt'
+        content_type: 'text/plain'
+      )
+      expect(@document.file).to be_attached
     end
   end
 

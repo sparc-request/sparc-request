@@ -57,8 +57,5 @@ SparcRails::Application.configure do
   config.action_mailer.default_url_options = { host: 'localhost', port: '3000' }
 
   # ActiveStorage config
-  config.active_storage.service = :local
-
-  # Bug fix for Rspec MySQL connection disruption during Travis build while running document tests
-  config.active_job.queue_adapter = :test
+  config.active_storage.service = :test
 end

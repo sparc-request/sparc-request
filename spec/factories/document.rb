@@ -28,7 +28,7 @@ FactoryBot.define do
 
     after(:build) do |document|
       document.document.attach(
-        io: File.open(Rails.root.join('spec', 'fixtures', 'docx_document.docx')),
+        io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'docx_document.docx')),
         filename: 'docx_document.docx',
         content_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )

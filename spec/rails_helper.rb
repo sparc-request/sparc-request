@@ -62,3 +62,7 @@ RSpec.configure do |config|
     end
   end
 end
+
+FactoryBot::SyntaxRunner.class_eval do
+  include ActionDispatch::TestProcess
+end

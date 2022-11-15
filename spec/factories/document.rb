@@ -25,12 +25,9 @@ FactoryBot.define do
     created_at            { Time.now }
     updated_at            { Time.now }
     share_all             { false }
-    after(:build) do |document|
-      document.document.attach(
-        io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt')),
-        filename: 'text_document.txt',
-        content_type: 'text/plain'
-        )
+
+    trait :with_document do
+      document { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt'), 'text/plain')}
     end
   end
 end

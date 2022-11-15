@@ -1,6 +1,6 @@
 class ExternalOrganizationsController < ApplicationController
   before_action :find_protocol
-  before_action :find_external_organization
+  before_action :find_external_organization, only: [:edit, :update, :destroy]
 
   def new
     respond_to :js
@@ -20,12 +20,7 @@ class ExternalOrganizationsController < ApplicationController
   def edit
     respond_to :js
 
-    if params[:external_organization]
-      @external_organization.assign_attributes(external_organization_params)
-    else
-      @external_organization = ExternalOrganization.new
-    end
-
+    @external_organization.assign_attributes(external_organization_params) if params[:external_organization]
   end
 
   def update

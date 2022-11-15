@@ -85,6 +85,7 @@ en:
         service_name: "Service Name"
         your_cost: "Your Cost"
         quantity: "Quantity"
+        service_notes: "Service Notes"
         total: "Total"
       clinical_services:
         header: "Clinical Services"

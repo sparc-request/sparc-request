@@ -33,6 +33,7 @@
           %th=t('dashboard.fee_agreement.non_clinical_services.your_cost')
           %th=t('dashboard.fee_agreement.non_clinical_services.quantity')
           %th=t('dashboard.fee_agreement.non_clinical_services.total')
+          %th=t('dashboard.fee_agreement.non_clinical_services.service_notes')
         %tbody
           - @fee_agreement.non_clinical_service_table.rows.each do |row|
             %tr
@@ -41,10 +42,11 @@
               %td= number_to_currency(row.displayed_service_cost)
               %td= row.quantity
               %td= number_to_currency(row.total)
+              %td= row.notes
           %tr.table-primary
             %td=t('dashboard.fee_agreement.non_clinical_services.total')
             %td
             %td
             %td
-            %td=number_to_currency(@fee_agreement.non_clinical_service_table.total)
+            %td{colspan: 2}=number_to_currency(@fee_agreement.non_clinical_service_table.total)
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_15_015244) do
+ActiveRecord::Schema.define(version: 2022_11_15_054054) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
@@ -193,10 +193,6 @@ ActiveRecord::Schema.define(version: 2022_11_15_015244) do
     t.string "doc_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "document_file_name"
-    t.string "document_content_type"
-    t.integer "document_file_size"
-    t.datetime "document_updated_at"
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
@@ -597,10 +593,6 @@ ActiveRecord::Schema.define(version: 2022_11_15_015244) do
     t.bigint "payment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "file_file_name"
-    t.string "file_content_type"
-    t.integer "file_file_size"
-    t.datetime "file_updated_at"
     t.index ["payment_id"], name: "index_payment_uploads_on_payment_id"
   end
 
@@ -811,10 +803,6 @@ ActiveRecord::Schema.define(version: 2022_11_15_015244) do
 
   create_table "reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
-    t.string "xlsx_file_name"
-    t.string "xlsx_content_type"
-    t.integer "xlsx_file_size"
-    t.datetime "xlsx_updated_at"
     t.string "report_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

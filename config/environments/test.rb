@@ -59,6 +59,5 @@ SparcRails::Application.configure do
   # Paperclip
   Paperclip::Attachment.default_options[:path] = "#{Rails.root}/spec/test_files/:class/:id_partition/:style.:extension"
 
-  # ActiveStorage config
   config.active_storage.service = :local
 end

@@ -41,7 +41,7 @@ class ProtocolsController < ApplicationController
       @protocol.service_requests << @service_request
       @service_request.sub_service_requests.each{ |ssr| @protocol.sub_service_requests << ssr }
       recent_protocol = Protocol.last
-      # We have a duplicate situation and must delete (need to save the service request) 
+      # We have a duplicate situation and must delete (need to save the service request)
       # the most recent protocol for the new one
       if recent_protocol.service_requests.first.id == @protocol.service_requests.first.id
         recent_protocol.delete
@@ -78,7 +78,7 @@ class ProtocolsController < ApplicationController
     @tab = 'billing_strategy'
     setup_calendar_pages
     @protocol.visits.each do |visit|
-      if visit.indicated? 
+      if visit.indicated?
         indicated_quantity = determine_visit_billing_quantity(visit, old_billing_type)
         set_billing_quantities(protocol_params[:default_billing_type], indicated_quantity)
 
@@ -98,7 +98,7 @@ class ProtocolsController < ApplicationController
           EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)
         end
       end
-      
+
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors

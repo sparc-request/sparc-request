@@ -134,6 +134,7 @@ SparcRails::Application.routes.draw do
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
+  resource :external_organizations
   resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
 
   resources :associated_users, except: [:show] do
@@ -163,7 +164,6 @@ SparcRails::Application.routes.draw do
   resources :visit_groups, only: [:new, :create, :edit, :update, :destroy]
   resources :visits, only: [:edit, :update, :destroy]
 
-  # resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
     collection do
       get :bulk_download

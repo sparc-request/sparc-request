@@ -18,59 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::EpicQueuesController < Dashboard::BaseController
-  before_action :get_epic_queue, only: [:destroy]
-  before_action :authorize_epic_queue_access, :check_for_epic_connection
+<% if @errors %>
+$("[name^='external_organization']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
+$('.form-error').remove()
 
-  def index
-    respond_to do |format|
-      format.html
-      format.json {
-        @epic_queues =
-          if params[:user_change]
-            EpicQueue.where(
-              attempted_push: false,
-              user_change: true
-            )
-          else
-            EpicQueue.where(attempted_push: false, user_change: false)
-          end.eager_load(:identity, protocol: :principal_investigators).
-              search(params[:search]).ordered(params[:sort], params[:order])
-      }
-    end
-  end
+<% @errors.messages.each do |attr, messages| %>
+<% messages.each do |message| %>
+$("[name='external_organization[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
+<% end %>
+<% else %>
+$("#externalOrganization<%= params[:index] %>").replaceWith("<%= j render 'external_organizations/external_organization', protocol: @protocol, external_organization: @external_organization, index: params[:index], primary: params[:primary] == 'true' %>")
 
-  def destroy
-    respond_to do |format|
-      format.js do
-        @epic_queue.destroy
+if $('.external-organization:not(.d-none)').length > 1
+  $('.primary-external-organization .delete-external-organization').addClass('text-muted').removeClass('text-danger').
+    attr('disabled', true).
+    attr('data-original-title', I18n.t('external_organizations.tooltips.cant_delete_primary'))
 
-        render
-      end
-    end
-  end
-
-  private
-
-  # Check to see if user has rights to view epic queues
-  def authorize_epic_queue_access
-    unless Setting.get_value("use_epic") && Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
-      authorization_error('You do not have access to view the Epic Queues')
-    end
-  end
-
-  def check_for_epic_connection
-    @epic_user = EpicUser.for_identity(current_user)
-    @epic_connection = nil
-
-    if @epic_user.present?
-      @epic_connection = true 
-    else
-      @epic_connection = false 
-    end
-  end
-
-  def get_epic_queue
-    @epic_queue = EpicQueue.find(params[:id])
-  end
-end
+if $('#modalContainer').hasClass('show')
+  $("#modalContainer").modal('hide')
+<% end %>

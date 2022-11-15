@@ -34,13 +34,7 @@
           = f.label :document, class: 'required'
           .custom-file
             = f.file_field :document, class: 'custom-file-input'
-            -#= f.label :document, document.document.filename || 'No file selected', class: 'custom-file-label text-truncate'
-            - if document.document.attached?
-              = f.label :document, document.document.filename, class: 'custom-file-label text-truncate'
-            - elsif document.document_file_name? #REMOVE AFTER MIGRATION
-              = f.label :document, document.document_file_name, class: 'custom-file-label text-truncate'
-            - else
-              = f.label :document, 'No file selected', class: 'custom-file-label text-truncate'
+            = f.label :document, document.document.filename || 'No file selected', class: 'custom-file-label text-truncate'
           %small.form-text.text-muted
             = raw t('documents.form.supported_types', file_types: document_file_types_as_string)
         .form-row

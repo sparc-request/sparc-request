@@ -71,6 +71,7 @@ module DocumentsControllerShared
   def destroy
     respond_to :js
 
+    @document.document.purge
     DocumentRemover.new(@document)
     flash.now[:success] = t(:documents)[:destroyed]
   end

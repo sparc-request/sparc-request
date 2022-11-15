@@ -75,7 +75,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
       expect(@protocol.project_roles.count).to eq(1)
       expect(page).to have_no_content(jug2.full_name)
       expect(page).to have_no_content(I18n.t('dashboard.service_requests.modify_request'))
-      expect(page).to have_no_selector('a', text: @document.document_file_name)
+      expect(page).to have_no_selector('a', text: @document.document.filename)
     end
   end
 

@@ -70,7 +70,7 @@ class Funding::ServicesController < ApplicationController
       documents.each do |d|
         ssr = d.share_all ? d.protocol.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first : d.sub_service_requests.where(organization_id: Setting.get_value("funding_org_ids")).first
         p = ssr.protocol
-        csv << [ssr.display_id, p.primary_pi.last_name_first, p.primary_pi.try(:professional_org_lookup, 'institution'), p.short_title, d.document.filename.humanize, d.document_updated_at.strftime('%D %l:%M %p'), PermissibleValue.get_value('status', ssr.status)]
+        csv << [ssr.display_id, p.primary_pi.last_name_first, p.primary_pi.try(:professional_org_lookup, 'institution'), p.short_title, d.document.filename.humanize, d.updated_at.strftime('%D %l:%M %p'), PermissibleValue.get_value('status', ssr.status)]
       end
     end
   end

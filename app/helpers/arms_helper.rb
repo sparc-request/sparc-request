@@ -59,7 +59,6 @@ module ArmsHelper
     raw([
       new_visit_group_button(arm, opts),
       edit_arm_button(arm, opts),
-      copy_arm_button(arm, opts),
       delete_arm_button(arm, opts)
     ].join(''))
   end

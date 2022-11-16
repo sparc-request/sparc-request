@@ -58,7 +58,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
                         create(:project_role, :approve, protocol: @protocol, identity: jug2, role: 'consultant')
                         create(:super_user, organization: org, identity: jug2)
 
-      @document = create(:document, protocol: @protocol)
+      @document = create(:document, :with_document, protocol: @protocol)
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish

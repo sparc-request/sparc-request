@@ -27,7 +27,7 @@ FactoryBot.define do
     share_all             { false }
 
     trait :with_document do
-      document { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt'), 'text/plain')}
+      document { Rack::Test::UploadedFile.new('spec/fixtures/files/text_document.txt', 'text/plain') }
     end
   end
 end

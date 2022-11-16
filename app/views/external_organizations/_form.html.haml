@@ -20,7 +20,8 @@
 .modal-dialog{ role: 'document' }
   .modal-content
     = form_for external_organization, url: external_organizations_path, method: action_name == 'new' ? :post : :put, remote: true do |f|
-      -#= hidden_field_tag :protocol_id, params[:protocol_id]
+      = hidden_field_tag :protocol_id, params[:protocol_id]
+      = hidden_field_tag :index, params[:index]
       .modal-header
         %h3.modal-title
           = t("external_organizations.form.#{action_name}")

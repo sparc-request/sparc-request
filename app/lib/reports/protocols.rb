@@ -62,11 +62,6 @@ class ProtocolsReport < ReportingModule
     attrs["IRB of Record"]                = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_of_record]}}.try(:join, ', ') : irb_records.first.try(:irb_of_record)"
     attrs["Study Phase"]                  = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.study_phases.map(&:phase).join(', ')]}}.try(:join, ', ') : irb_records.first.try{study_phases.map(&:phase).join(', ')}"
     attrs["IRB Expiration Date"]          = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_expiration_date.try(:strftime, '%D').to_s]}}.try(:join, ', ') : irb_records.first.try(:irb_expiration_date).try(:strftime, '%D')"
-
-    if Setting.get_value("use_external_organizations")
-      attrs["External Organizations"]       = "external_organizations.length > 1 ? external_organizations.try{map{|m| [m.collaborating_org_name + ' - ' + m.collaborating_org_type + ' - ' + m.comments]}}.try(:join, ', ') : external_organizations.first.try([:collaborating_org_name + ' - ' + :collaborating_org_type + ' - ' + :comments])"
-    end
-    
     attrs["Primary PI Last Name"]         = "primary_pi.try(:last_name)"
     attrs["Primary PI First Name"]        = "primary_pi.try(:first_name)"
     attrs["Primary PI Email"]             = "primary_pi.try(:email)"

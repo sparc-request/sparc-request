@@ -59,6 +59,20 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
     end
   end
 
+<<<<<<< HEAD
+  def check_for_epic_connection
+    @epic_user = EpicUser.for_identity(current_user)
+    @epic_connection = nil
+
+    if @epic_user.present?
+      @epic_connection = true
+    else
+      @epic_connection = false
+    end
+  end
+
+=======
+>>>>>>> 1f46ca7a385f47715eed9983556c57e588936a54
   def get_epic_queue
     @epic_queue = EpicQueue.find(params[:id])
   end

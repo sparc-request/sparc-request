@@ -26,7 +26,6 @@ class ArmCopier < ApplicationService
   end
 
   def call
-    @copied_arm.line_items.first.sub_service_request.update(status: "draft")
     @new_arm.update_attributes(subject_count: @copied_arm.subject_count, new_with_draft: @copied_arm.new_with_draft,
                                minimum_visit_count: @copied_arm.minimum_visit_count, minimum_subject_count: @copied_arm.minimum_subject_count)
     visit_groups = @copied_arm.visit_groups
@@ -34,7 +33,6 @@ class ArmCopier < ApplicationService
     visit_groups.each_with_index do |group, group_index|
       if group_index == 0
         update_first_group(group)
-        update_subject_counts
       else
         create_groups_and_visits(group)
       end
@@ -64,13 +62,6 @@ class ArmCopier < ApplicationService
                               research_billing_qty: group.visits[visit_index].research_billing_qty,
                               insurance_billing_qty: group.visits[visit_index].insurance_billing_qty,
                               effort_billing_qty: group.visits[visit_index].effort_billing_qty)
-    end
-  end
-
-  # Update new arm's line items visits with the correct subject count
-  def update_subject_counts
-    @copied_arm.line_items_visits.each_with_index do |line_items_visit, index|
-      @new_arm.line_items_visits[index].update_attribute(:subject_count, line_items_visit.subject_count)
     end
   end
 end

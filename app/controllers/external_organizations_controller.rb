@@ -21,11 +21,18 @@ class ExternalOrganizationsController < ApplicationController
     respond_to :js
 
     @external_organization.assign_attributes(external_organization_params) if params[:external_organization]
+   # if @external_organization.collaborating_org_name_other
+      #@external_organization.collaborating_org_name = ""
+    #end
+    #if @external_organization.collaborating_org_type_other
+      #@external_organization.collaborating_org_type = ""
+    #end
+
   end
 
   def update
     respond_to :js
-     @external_organization.assign_attributes(external_organization_params)
+    @external_organization.assign_attributes(external_organization_params)
 
     unless @external_organization.valid?
         @errors = @external_organization.errors

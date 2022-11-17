@@ -20,7 +20,7 @@
 
 class Dashboard::EpicQueuesController < Dashboard::BaseController
   before_action :get_epic_queue, only: [:destroy]
-  before_action :authorize_epic_queue_access, :check_for_epic_connection
+  before_action :authorize_epic_queue_access, :ensure_epic_connection
 
   def index
     respond_to do |format|
@@ -59,7 +59,8 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
     end
   end
 
-  def check_for_epic_connection
+  
+  def ensure_epic_connection
     @epic_user = EpicUser.for_identity(current_user)
     @epic_connection = nil
 

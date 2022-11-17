@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -20,8 +20,8 @@
 
 class StudyTypeQuestion < ApplicationRecord
   audited
-  
-  default_scope { order('`order`') }
+
+  default_scope { order(Arel.sql('`order`')) }
   belongs_to :study_type_question_group
   has_many :study_type_answers
 

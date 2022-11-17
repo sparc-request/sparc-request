@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -78,7 +78,7 @@ RSpec.configure do |config|
 
   config.default_sleep_interval = 2
   config.verbose_retry = true
-  config.default_retry_count = 4
+  #config.default_retry_count = 4
 
   config.retry_callback = proc do |ex|
     Capybara.reset!

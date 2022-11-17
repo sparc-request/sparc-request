@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,6 @@ class ProtocolsReport < ReportingModule
     attrs["Protocol Title"]               = "title"
     attrs["Number of Requests"]           = "sub_service_requests.length"
     attrs["Funding Source"]               = "funding_source.present? ? PermissibleValue.get_value('funding_source', funding_source) : ''"
-    attrs["Potential Funding Source"]     = "potential_funding_source.present? ? PermissibleValue.get_value('potential_funding_source', potential_funding_source) : ''"
     attrs["Sponsor Name"]                 = "sponsor_name"
     attrs["Financial Account"]            = "udak_project_number.try{prepend(' ')}"
 
@@ -63,7 +62,6 @@ class ProtocolsReport < ReportingModule
     attrs["IRB of Record"]                = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_of_record]}}.try(:join, ', ') : irb_records.first.try(:irb_of_record)"
     attrs["Study Phase"]                  = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.study_phases.map(&:phase).join(', ')]}}.try(:join, ', ') : irb_records.first.try{study_phases.map(&:phase).join(', ')}"
     attrs["IRB Expiration Date"]          = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_expiration_date.try(:strftime, '%D').to_s]}}.try(:join, ', ') : irb_records.first.try(:irb_expiration_date).try(:strftime, '%D')"
-
     attrs["Primary PI Last Name"]         = "primary_pi.try(:last_name)"
     attrs["Primary PI First Name"]        = "primary_pi.try(:first_name)"
     attrs["Primary PI Email"]             = "primary_pi.try(:email)"
@@ -114,9 +112,9 @@ class ProtocolsReport < ReportingModule
     [:service_requests, sub_service_requests: { line_items: :service }]
   end
 
-  # Other tables to prload
+  # Other tables to preload
   def preload
-    [:billing_managers, :coordinators, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }]
+    [:billing_managers, :coordinators, :external_organizations, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }]
   end
 
   # Conditions

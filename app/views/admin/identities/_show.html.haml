@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,6 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- display_age = Setting.get_value("displayed_demographics_fields").include?("age_group")
+- display_gender = Setting.get_value("displayed_demographics_fields").include?("gender")
+- display_ethnicity = Setting.get_value("displayed_demographics_fields").include?("ethnicity")
+- display_race = Setting.get_value("displayed_demographics_fields").include?("race")
 
 .modal-dialog{ role: 'document' }
   .modal-content
@@ -43,6 +48,30 @@
                 = Identity.human_attribute_name(:phone)
               %td.d-inline-block.col-7
                 = format_phone(identity.phone)
+            - if display_age
+              %tr.d-flex
+                %td.d-inline-block.col-5
+                  = Identity.human_attribute_name(:age_group)
+                %td.d-inline-block.col-7
+                  = identity.display_age_group
+            - if display_gender
+              %tr.d-flex
+                %td.d-inline-block.col-5
+                  = Identity.human_attribute_name(:gender)
+                %td.d-inline-block.col-7
+                  = identity.display_gender
+            - if display_ethnicity
+              %tr.d-flex
+                %td.d-inline-block.col-5
+                  = Identity.human_attribute_name(:ethnicity)
+                %td.d-inline-block.col-7
+                  = identity.display_ethnicity
+            - if display_race
+              %tr.d-flex
+                %td.d-inline-block.col-5
+                  = Identity.human_attribute_name(:races)
+                %td.d-inline-block.col-7
+                  = identity.display_races
             %tr.d-flex
               %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:orcid)
@@ -52,7 +81,7 @@
               %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:era_commons_name)
               %td.d-inline-block.col-7
-                = identity.era_commons_name             
+                = identity.era_commons_name
             %tr.d-flex
               %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:credentials)
@@ -67,7 +96,7 @@
               %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:institution)
               %td.d-inline-block.col-7
-                = identity.professional_org_lookup('institution')
+                = identity.institution
             %tr.d-flex
               %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:college)

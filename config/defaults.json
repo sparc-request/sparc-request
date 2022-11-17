@@ -120,6 +120,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "displayed_demographics_fields",
+    "value":          "[\"age_group\", \"gender\", \"ethnicity\", \"race\"]",
+    "friendly_name":  "Displayed profile demographics fields",
+    "description":    "This determines which demographics fields will be displayed on the profile page. Available demographics attributes are: age_group, gender, ethnicity, race.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "epic_endpoint",
     "value":          "http://TODO/",
     "friendly_name":  "Epic Endpoint",
@@ -274,7 +284,7 @@
     "value":          "false",
     "friendly_name":  "Use SPARCFunding Module",
     "description":    "This determines whether the application will use the SPARCFunding module.",
-    "group":          "",
+    "group":          "SPARCFunding",
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
@@ -283,8 +293,8 @@
     "key":            "funding_admins",
     "value":          "[]",
     "friendly_name":  "Funding Admins",
-    "description":    "This is a list of users who will have full access to the SPARCFunding module.",
-    "group":          "",
+    "description":    "This is a list of users (ldap_uid) who will have full access to the SPARCFunding module.",
+    "group":          "SPARCFunding",
     "version":        "",
     "parent_key":     "use_funding_module",
     "parent_value":   "true"
@@ -293,8 +303,8 @@
     "key":            "funding_org_ids",
     "value":          "[]",
     "friendly_name":  "Funding Opportunities Organizations",
-    "description":    "This is a list of organization ids that are offering SPARCFunding opportunities.",
-    "group":          "",
+    "description":    "This is a list of organization ids (in database) that are offering SPARCFunding opportunities.",
+    "group":          "SPARCFunding",
     "version":        "",
     "parent_key":     "use_funding_module",
     "parent_value":   "true"
@@ -930,6 +940,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_external_organizations",
+    "value":          "true",
+    "friendly_name":  "Use External Organizations",
+    "description":    "This determines whether the application will display External Organizations section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "use_faq_link",
     "value":          "false",
     "friendly_name":  "Use FAQ Link",
@@ -1118,5 +1138,16 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "copyright_language",
+    "value":          "© 2011-2022 MUSC Foundation for Research Development",
+    "friendly_name":  "Copyright Language.",
+    "description":    "Current copyright year in the site footer.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
+
 ]

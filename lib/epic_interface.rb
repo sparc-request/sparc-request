@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -241,7 +241,7 @@ class EpicInterface
     # GOV - college, federal, foundation, investigator, internal, other
     # CORP - industry
 
-    if study.funding_source.blank? and study.potential_funding_source.blank?
+    if study.funding_source.blank?
       error_string = "Protocol #{study.id} does not have a funding source."
       @errors[:no_funding_source] = [] unless @errors[:no_funding_source]
       @errors[:no_funding_source] << error_string unless @errors[:no_funding_source].include?(error_string)
@@ -250,7 +250,7 @@ class EpicInterface
 
     sources = ['industry']
 
-    if sources.include?(study.funding_source) || sources.include?(study.potential_funding_source)
+    if sources.include?(study.funding_source)
       grouper = 'CORP'
     else
       grouper = 'GOV'

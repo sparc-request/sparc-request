@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -55,6 +55,21 @@ $(document).ready ->
       $('#credentialsOtherContainer').removeClass('d-none')
     else
       $('#credentialsOtherContainer').addClass('d-none')
+
+  $(document).on 'changed.bs.select', '#identity_gender',  ->
+    if $(this).val() == 'other'
+      $('#genderOtherContainer').removeClass('d-none')
+    else
+      $('#genderOtherContainer').addClass('d-none')
+
+  $(document).on 'change', '.race', ->
+    $specifyField = $('#' + $(this).prop('id').replace('__destroy', '_other_text'))
+
+    if $specifyField.length > 0
+      if $(this).prop('checked')
+        $specifyField.removeClass('d-none')
+      else
+        $specifyField.addClass('d-none')
 
   $(document).on 'changed.bs.select', '#professionalOrganizationForm select', ->
     last_selected = $(this).val()

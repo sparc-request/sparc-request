@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -53,7 +53,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
               'start_date'                    => p.start_date.to_s(:iso8601),
               'end_date'                      => p.end_date.to_s(:iso8601),
               'funding_start_date'            => p.funding_start_date.to_s(:iso8601),
-              'potential_funding_start_date'  => p.potential_funding_start_date.to_s(:iso8601),
               'indirect_cost_rate'            => p.indirect_cost_rate.to_f.to_s
             })
           }
@@ -76,7 +75,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
               'start_date'                    => p.start_date.to_s(:iso8601),
               'end_date'                      => p.end_date.to_s(:iso8601),
               'funding_start_date'            => p.funding_start_date.to_s(:iso8601),
-              'potential_funding_start_date'  => p.potential_funding_start_date.to_s(:iso8601),
               'indirect_cost_rate'            => p.indirect_cost_rate.to_f.to_s,
               'arms'                          => [],
               'project_roles'                 => [],

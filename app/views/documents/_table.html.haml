@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -39,8 +39,8 @@
       %thead.bg-light
         %tr
           - if !in_review?
-            %th{ data: { field: 'checkbox', align: 'left'} }
-              = check_box_tag "select-all"
+            %th{ data: { field: 'checkbox', align: 'left' } }
+              = check_box_tag 'select-all'
           %th{ data: { field: 'document', align: "left", sortable: "true" } }
             = Document.human_attribute_name(:document)
           %th{ data: { field: 'type', align: "left", sortable: "true" } }
@@ -49,6 +49,8 @@
             = Document.human_attribute_name(:document_updated_at)
           %th{ data: { field: 'shared_with', align: "left" } }
             = Document.human_attribute_name(:org_ids)
+          %th{ data: { field: 'version', align: "left", sortable: "true", visible: "false" } }
+            = t(:activerecord)[:attributes][:document][:version_date]
           - unless in_review?
             %th{ data: { field: 'actions', align: "center" } }
               = t('actions.actions')

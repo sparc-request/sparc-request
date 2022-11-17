@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,8 @@ $(document).ready ->
       $('#doc-type-other-field').removeClass('d-none')
     else
       $('#doc-type-other-field').addClass('d-none')
+
+  $('div.dropdown-menu input[type="checkbox"][name="select-all"]').replaceWith( '<span>Multi-select Documents</span>')
 
   $(document).on 'change', '#document_document', ->
    fileName = $(this).val().split('\\').pop()
@@ -51,12 +53,6 @@ $(document).ready ->
     $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
       $(this).prop('checked', checked)
 
-
-  $(document).on 'click', '#documentsTable #select-all', ->
-    checked = $(this).prop('checked')
-    $('#documentsTable tbody tr input[type="checkbox"]').each (index, row) ->
-      $(this).prop('checked', checked);
-
   $(document).on 'click', '.download-documents', ->
 
     selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes
@@ -73,7 +69,7 @@ $(document).ready ->
 
   $(document).on 'click', '.edit-documents', (event) ->
     event.preventDefault()
-    
+
     selections = $('#documentsTable input[type="checkbox"]:checked') # get all selected checkboxes
     document_ids = $.map(selections, (c) -> return c.value) # get ids of all selected documents
 
@@ -99,7 +95,7 @@ $(document).ready ->
     $.ajax
       url:    '/documents/bulk_update'
       method: 'PUT'
-      data: 
+      data:
         protocol_id : protocol_id
         document_ids: document_ids
         share_all   : share_all

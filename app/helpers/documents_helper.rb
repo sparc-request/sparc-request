@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -84,17 +84,6 @@ module DocumentsHelper
 
   def display_check_box(document)
     check_box_tag "select-document-#{document.id}", "#{document.id}"
-  end
-
-  def get_service_providers(documents)
-    org_ids = []
-    @documents.each do |doc| 
-      doc.sub_service_requests.pluck(:organization_id).each do |org_id|
-        org_ids << org_id
-      end
-    end
-
-    org_ids
   end
 
 end

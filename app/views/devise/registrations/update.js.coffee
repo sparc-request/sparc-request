@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -25,8 +25,12 @@ $('.form-error').remove()
 <% @errors.messages.each do |attr, messages| %>
 <% messages.each do |message| %>
 $("[name='identity[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% if attr == :races %>
+$('.race').parents('.form-group').removeClass('is-valid').addClass('is-invalid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+<% end %>
 <% end %>
 <% end %>
 <% else %>
+
 window.location = "<%= @path %>"
 <% end %>

@@ -37,7 +37,7 @@ class EpicUser < ActiveResource::Base
     begin
       @result = get(:viewuser, userid: identity.ldap_uid.split('@').first)
 
-      unless @result.present? && @result.is_a?(Hash) and @result.keys == ["UserID", "UserName", "IsExist", "IsActive", "IsBlocked", "IsPasswordChangeRequired", "IsSER"]
+      unless @result.present? && @result.is_a?(Hash) and @result.keys == ["UserID", "IsExist", "IsActive", "IsSER"]
         raise StandardError.new I18n.t("activerecord.errors.models.epic_user.attributes.base.epic_user_api_down")
       else
         return @result

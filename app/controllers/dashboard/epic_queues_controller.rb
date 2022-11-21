@@ -20,7 +20,7 @@
 
 class Dashboard::EpicQueuesController < Dashboard::BaseController
   before_action :get_epic_queue, only: [:destroy]
-  before_action :authorize_epic_queue_access
+  before_action :authorize_epic_queue_access, :ensure_epic_connection
 
   def index
     respond_to do |format|
@@ -56,6 +56,17 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   def authorize_epic_queue_access
     unless Setting.get_value("use_epic") && Setting.get_value("epic_queue_access").include?(current_user.ldap_uid)
       authorization_error('You do not have access to view the Epic Queues')
+    end
+  end
+
+  def ensure_epic_connection
+    @epic_user = EpicUser.for_identity(current_user)
+    @epic_connection = nil
+
+    if @epic_user.present?
+      @epic_connection = true 
+    else
+      @epic_connection = false 
     end
   end
 

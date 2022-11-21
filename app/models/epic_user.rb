@@ -35,13 +35,7 @@ class EpicUser < ActiveResource::Base
 
   def self.for_identity(identity)
     begin
-      @result = get(:viewuser, userid: identity.ldap_uid.split('@').first)
-
-      unless @result.present? && @result.is_a?(Hash) and @result.keys == ["UserID", "IsExist", "IsActive", "IsSER"]
-        raise StandardError.new I18n.t("activerecord.errors.models.epic_user.attributes.base.epic_user_api_down")
-      else
-        return @result
-      end
+      get(:viewuser, userid: identity.ldap_uid.split('@').first)
     rescue => e
       slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")

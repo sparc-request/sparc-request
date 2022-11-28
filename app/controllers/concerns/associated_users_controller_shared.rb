@@ -41,10 +41,6 @@ module AssociatedUsersControllerShared
 
       if use_and_validate_epic_users?
         @epic_user = EpicUser.for_identity(@identity)
-
-        if @epic_user.nil?
-          @protocol_role.errors.add(:base, :epic_api_down)
-        end
       end
 
       unless @protocol_role.unique_to_protocol? && @protocol_role.errors.empty?

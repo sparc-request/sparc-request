@@ -105,8 +105,8 @@ en:
         secret: "Client Secret"
         uid: "Client ID"
       external_organization:
-        collaborating_org_name: "Collaborating Org Name"
-        collaborating_org_type: "Collaborating Org Type"
+        collaborating_org_name: "Collaborating Organization Name"
+        collaborating_org_type: "Collaborating Organization Type"
       form:
         respondable_id: "SRID"
         surveyable: "Association"

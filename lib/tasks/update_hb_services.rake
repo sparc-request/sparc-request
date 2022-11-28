@@ -105,20 +105,20 @@ task :update_hb_services => :environment do
         puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
         updated = false
-        
+
         if service
           unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
             revenue_codes << [service.id, service.revenue_code]
             puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
             service.revenue_code = row['Revenue Code'].rjust(4, '0')
-            updated = true 
+            updated = true
           end
 
           unless service.cpt_code == row['CPT Code']
             cpt_codes << [service.id, service.cpt_code]
             puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
-            service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code'] 
-            updated = true    
+            service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']
+            updated = true
           end
 
           service_is_available = service.is_available
@@ -127,7 +127,7 @@ task :update_hb_services => :environment do
             is_available << [service.id, service_is_available]
             puts "Altering the service's is_available status with an id of #{service.id} from #{service_is_available} to #{row_is_available}"
             service.is_available = row_is_available
-            updated = true    
+            updated = true
           end
 
           unless service.name == row['Procedure Name']

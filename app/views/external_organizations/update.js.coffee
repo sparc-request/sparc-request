@@ -28,7 +28,7 @@ $("[name='external_organization[<%= attr.to_s %>]']").parents('.form-group').rem
 <% end %>
 <% end %>
 <% else %>
-$("#externalOrganization<%= params[:index] %>").replaceWith("<%= j render 'external_organizations/external_organization', protocol: @protocol, external_organization: @external_organization, index: params[:index], primary: params[:primary] == 'true' %>")
+$("#externalOrganization<%= params[:index] %>").replaceWith("<%= j render 'external_organizations/external_organization', protocol: @protocol, external_organization: @external_organization, index: params[:index] %>")
 
 if $('.external-organization:not(.d-none)').length > 1
   $('.primary-external-organization .delete-external-organization').addClass('text-muted').removeClass('text-danger').

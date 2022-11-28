@@ -72,7 +72,7 @@
                   %td{ colspan: 2 }
                     .row
                       %label.col-11.mb-0
-                        = answer.study_type_question.question
+                        = answer.study_type_question.question.html_safe
                       .col-1
                         = answer.answer? ? t('constants.yes_select') : t('constants.no_select')
 

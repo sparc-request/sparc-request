@@ -22,9 +22,6 @@
   .card-header.bg-primary.text-white
     %h3.mb-0
       = t(:dashboard)[:epic_queues][:headers][:past]
-  - if @epic_connection == false
-    .alert.alert-danger.text-center
-      = I18n.t("activerecord.errors.models.epic_user.attributes.base.epic_user_api_down")
   %table.table-interactive.epic-queue-records-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-export' => 'true', pagination: 'true', side_pagination: 'server', url: dashboard_epic_queue_records_path } }
     %thead.bg-light
       %tr

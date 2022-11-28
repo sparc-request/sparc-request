@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,6 @@ module ProtocolsControllerShared
     params[:protocol][:recruitment_start_date]                = sanitize_date params[:protocol][:recruitment_start_date]                if params[:protocol][:recruitment_start_date]
     params[:protocol][:recruitment_end_date]                  = sanitize_date params[:protocol][:recruitment_end_date]                  if params[:protocol][:recruitment_end_date]
     params[:protocol][:funding_start_date]                    = sanitize_date params[:protocol][:funding_start_date]                    if params[:protocol][:funding_start_date]
-    params[:protocol][:potential_funding_start_date]          = sanitize_date params[:protocol][:potential_funding_start_date]          if params[:protocol][:potential_funding_start_date]
 
     # Sanitize phone formats
     params[:protocol][:guarantor_phone] = sanitize_phone params[:protocol][:guarantor_phone] if params[:protocol][:guarantor_phone]
@@ -93,8 +92,6 @@ module ProtocolsControllerShared
       :negotiated_amount,
       :negotiated_amount_clinical_services,
       :next_ssr_id,
-      :potential_funding_source,
-      :potential_funding_start_date,
       :requester_id,
       :research_master_id,
       :selected_for_epic,
@@ -106,6 +103,7 @@ module ProtocolsControllerShared
       :type,
       :udak_project_number,
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+      external_organizations_attributes: [:id, :collaborating_org_name, :collaborating_org_type, :comments, :collaborating_org_name_other, :collaborating_org_type_other, :_destroy],
       human_subjects_info_attributes: [
         :id,
         :nct_number,

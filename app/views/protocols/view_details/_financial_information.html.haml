@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,22 +33,16 @@
         - if protocol.funded? || protocol.pending_funding?
           %tr
             %td.w-25
-              = label :protocol, protocol.funded? ? :funding_source : :potential_funding_source, class: 'mb-0', title: protocol.funded? ? t(:protocols)[:tooltips][:funding_source] : t(:protocols)[:tooltips][:potential_funding_source], data: { toggle: 'tooltip', placement: 'right' }
+              = label :protocol, :funding_source, class: 'mb-0', title: t(:protocols)[:tooltips][:funding_source], data: { toggle: 'tooltip', placement: 'right' }
             %td.w-75
               = protocol.display_funding_source_value
         - if protocol.is_a?(Study)
-          - if protocol.funded?
+          - if protocol.funded? || protocol.pending_funding?
             %tr
               %td.w-25
                 = label :protocol, :funding_start_date, class: 'mb-0'
               %td.w-75
                 = protocol.funding_start_date.present? ? format_date(protocol.funding_start_date) : t('constants.na')
-          - elsif protocol.pending_funding?
-            %tr
-              %td.w-25
-                = label :protocol, :potential_funding_start_date, class: 'mb-0'
-              %td.w-75
-                = protocol.potential_funding_start_date.present? ? format_date(protocol.potential_funding_start_date) : t('constants.na')
           %tr
             %td.w-25
               = label :protocol, :sponsor_name, class: 'mb-0'

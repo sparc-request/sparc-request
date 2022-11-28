@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,7 @@ $ ->
   $(document).on('hide.bs.collapse', '.service-calendar-container .collapse', ->
     $(this).find('.service-calendar-table thead tr th').css('top', 0)
     $('.visit-group-popover').popover('dispose')
+    $('.visit-popover').popover('dispose')
   ).on('shown.bs.collapse', '.service-calendar-container .collapse', ->
     adjustCalendarHeaders()
   )
@@ -54,6 +55,7 @@ $ ->
   $(document).on 'click keyup', 'th.visit-group, td.visit.billing-strategy-visit, td.notes, td.displayed-cost, td.subject-count, td.units-per-quantity, td.quantity', (event) ->
     if !$(this).hasClass('visit-group')
       hideVisitGroupPopover()
+
     # Click or press <return> to open
     if ((event.type == 'click' && event.target.tagName != 'A') || (event.type == 'keyup' && event.keyCode == 13)) && $(this).hasClass('editable') && $link = $(this).find('a:not(.disabled)')
       $.ajax
@@ -121,6 +123,13 @@ $ ->
   $(document).on 'click', '.change-visit-btn', (e) ->
     $form = $(this).parents('form')
     $form.append("<input type='hidden' name='change_visit' value=#{$(this).data('new-visit')}>")
+
+  $(document).on 'click', '.change-billing-visit-btn', (e) ->
+    $form = $(this).parents('form')
+    $form.append("<input type='hidden' name='change_billing_visit' value=#{$(this).data('new-visit')}>")
+
+  $(document).on 'click', '.visit-popover .btn-close', ->
+    $(this).parents('.visit-popover').popover('dispose')
 
   ################################
   # Calendar Tab Services Toggle #

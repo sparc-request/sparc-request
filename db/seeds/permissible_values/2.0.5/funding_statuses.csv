@@ -1,4 +1,5 @@
 id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
-,pending_funding,Pending Funding,,,1,funding_status,,,1
-,funded,Funded,,,2,funding_status,,,1
-,not_funded,Not Funded,,,3,funding_status,,,
+,pending_funding,Pending Funding,,,1,funding_status,,1,1
+,funded,Funded,,,2,funding_status,,1,1
+,not_funded,Not Funded,,,3,funding_status,,1,
+

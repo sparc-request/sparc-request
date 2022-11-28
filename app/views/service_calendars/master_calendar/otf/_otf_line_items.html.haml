@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 - line_items = Dashboard::ServiceCalendars.otf_line_items_to_display(service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft)
 
-- if line_items.empty? && merged 
+- if line_items.empty? && merged
   %tr
     %td.alert-warning.text-center{ colspan: 11 }
       = t('calendars.no_line_items')
@@ -31,15 +31,17 @@
   - editable      = !(complete || locked)
   - text_context  = complete ? 'success' : locked ? 'danger' : ''
   - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
+  - ssr_id        = ssr.ssr_id
 
   -# SSR Header Row
-  %tr{ class: "alert-#{bg_context}" }
+  %tr.p-0{ class: "alert-#{bg_context}", data: {toggle: 'collapse', target: ".ssr-#{ssr_id}"} }
     %th{ colspan: 11 }
+      = icon('fas', 'caret-down pr-1 mr-2')
       = display_org_name(line_items[0].service.organization_hierarchy, ssr, locked, complete)
 
   -# Line Items
   - line_items.each do |line_item|
-    %tr{ class: ["line-item-#{line_item.id}", "text-#{text_context}"] }
+    %tr{ class: ["line-item-#{line_item.id}", "text-#{text_context}", "ssr-#{ssr_id}"] }
       %td.service-name{ colspan: 2, title: calendar_service(line_item), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(line_item)
       %td.notes.editable.text-center{ title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -52,26 +52,7 @@ RSpec.describe 'User edits study type questions', js: true do
           bootstrap_select '#study_type_answer_restrict_sending_answer', 'No'
           wait_for_javascript_to_finish
 
-          expect(page).to have_content('Full Epic Functionality: no notification, no pink header, no MyChart access.')
-        end
-      end
-
-      context 'selects "No" to "Publish Study in Epic"' do
-        context 'Human Subjects is checked' do
-          it 'should show certificate of confidentiality questions without Epic language' do
-            find("[for='protocol_selected_for_epic_false']").click
-            wait_for_javascript_to_finish
-
-            find('#protocol_research_types_info_attributes_human_subjects + label').click
-            wait_for_javascript_to_finish
-
-            expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[5], normalize_ws: true)
-
-            bootstrap_select '#study_type_answer_certificate_of_conf_no_epic_answer', 'No'
-            wait_for_javascript_to_finish
-
-            expect(page).to have_content(STUDY_TYPE_QUESTIONS_VERSION_3[6], normalize_ws: true)
-          end
+          expect(page).to have_content('Full Epic Functionality: no notification, no yellow advisory, no MyChart access.')
         end
       end
     end

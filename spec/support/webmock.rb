@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -30,6 +30,11 @@ RSpec.configure do |config|
 
     stub_request(:post, /#{Setting.get_value("remote_service_notifier_host")}/).
       to_return(status: 201)
+
+    #### EpicUser Stubs ####
+    stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=jug2").
+      with(headers: {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+      to_return(status: 200, body: {"UserID" => "jug2", "IsExist" => true, "IsActive" => true, "IsSER" => "false"}.to_json, headers: { 'Content-Type' => 'application/json' })
 
     ##### OnCore Stubs #####
     stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/protocols\?protocolNo=STUDY([0-9])+/).

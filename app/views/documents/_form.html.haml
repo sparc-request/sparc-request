@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -44,6 +44,11 @@
           .form-group.col#doc-type-other-field{ class: document.doc_type == 'other' ? '' : 'd-none' }
             = f.label :doc_type_other, t('constants.prompts.please_specify'), class: 'required'
             = f.text_field :doc_type_other, class: 'form-control'
+        .form-row
+          .form-group.col
+            = f.label :version_date
+            .form-row
+              = f.date_field(:version)
         .form-row
           .form-group.col-4
             = f.label :org_ids, title: t('documents.tooltips.access', protocol_type: document.protocol.model_name.human), data: { toggle: 'tooltip' }

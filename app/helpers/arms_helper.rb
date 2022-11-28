@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,12 @@ module ArmsHelper
   def edit_arm_button(arm, opts={})
     link_to edit_arm_path(arm, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-warning mr-1 edit-arm'], title: t('arms.edit'), data: { toggle: 'tooltip' } do
       icon('far', 'edit mr-2') + t('arms.edit')
+    end
+  end
+
+  def copy_arm_button(arm, opts={})
+    link_to arm_copy_path(arm, srid: opts[:srid], ssrid: opts[:ssrid], tab: opts[:tab], page: opts[:page], pages: opts[:pages]), remote: true, class: ['btn btn-success mr-1 copy-arm'], title: t('arms.copy'), data: { toggle: 'tooltip' } do
+      icon('far', 'copy mr-2') + t('arms.copy')
     end
   end
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,7 @@
 ConfirmSwal.fire(
   icon: 'question'
   title: I18n.t('proper.catalog.new_request.header')
-  text: I18n.t('proper.catalog.new_request.warning')
+  text: " ",
   confirmButtonText: I18n.t('proper.catalog.new_request.yes_button')
   cancelButtonText: I18n.t('proper.catalog.new_request.no_button')
 ).then (result) ->
@@ -35,7 +35,7 @@ ConfirmSwal.fire(
         service_id: "<%= params[:service_id] %>"
         confirmed: "true"
   else if result.dismiss == 'cancel'
-    window.location = "<%= dashboard_root_path %>"
+    window.location = "<%= dashboard_root_path(existing_request: "true") %>"
 <% elsif @duplicate_service %>
 AlertSwal.fire(
   icon: 'error'

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -66,6 +66,7 @@ class Study < Protocol
     super
     self.build_research_types_info              unless self.research_types_info
     self.build_human_subjects_info              unless self.human_subjects_info
+    self.build_external_organizations           unless self.external_organizations
     self.build_vertebrate_animals_info          unless self.vertebrate_animals_info
     self.build_investigational_products_info    unless self.investigational_products_info
     self.build_ip_patents_info                  unless self.ip_patents_info

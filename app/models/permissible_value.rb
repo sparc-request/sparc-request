@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -112,7 +112,7 @@ class PermissibleValue < ApplicationRecord
   ### Hard coded for those categories that should not be modified as they are tied to some
   ### important pieces of the application logic.  
   def self.uneditable_categories
-    ['funding_status', 'funding_source', 'potential_funding_source', 'proxy_right', 'user_role']
+    ['funding_status', 'funding_source', 'proxy_right', 'user_role']
   end
 
 end

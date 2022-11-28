@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -44,7 +44,7 @@ class ProtocolMergesReport < ReportingModule
     attrs["Merged By"] = "identity.try(:full_name)"
     attrs["Short Title"] = "master_protocol.try(:short_title)"
     attrs["PI"] = "master_protocol.try(:primary_pi).try(:full_name)"
-    attrs["IRB#"] = "master_protocol.try(:irb_records).length > 1 ? '1' : master_protocol.try(:irb_records).length == 1 ? master_protocol.try(:irb_records).first.try(:irb_of_record) : ' '"
+    attrs["IRB#"] = "master_protocol.try(:irb_records).nil? ? '' : master_protocol.try(:irb_records).first.try(:pro_number)"
     attrs
 
   end
@@ -88,7 +88,7 @@ class ProtocolMergesReport < ReportingModule
   end
 
   def order
-    "protocol_merges.master_protocol_id ASC"
+    "DATE(protocol_merges.updated_at) ASC, protocol_merges.master_protocol_id ASC"
   end
 
 

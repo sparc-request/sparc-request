@@ -1,8 +1,7 @@
-# Copyright © 2011-2019 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
-
 # 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
 
 # 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
@@ -102,7 +101,7 @@ task :update_hb_services => :environment do
 
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
-      CSV.foreach(input_file, :headers => true) do |row|
+      CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
         puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
         updated = false

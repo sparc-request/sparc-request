@@ -1,6 +1,6 @@
 language: ruby
 cache: bundler
-dist: xenial
+dist: focal
 addons:
   firefox: latest
 env:
@@ -11,7 +11,7 @@ services:
 
 before_install:
   - "export TZ=America/New_York"
-  - nvm install node 12.10.0
+  - nvm install node 14.19.2
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml
@@ -24,7 +24,7 @@ before_script:
   - cd ..
   - git clone https://github.com/sparc-request/sparc-fulfillment.git
   - cd sparc-fulfillment
-  - git checkout v3.2.0
+  - git checkout v3.4.0
   - rvm use $(< .ruby-version) --install --binary --fuzzy
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - mkdir -p tmp
@@ -32,7 +32,6 @@ before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/sparc_db.yml.example config/sparc_db.yml
   - cp config/klok_db.yml.example config/klok_db.yml
-  - cp config/faye.yml.example config/faye.yml
   - cp dotenv.example .env
   - RAILS_ENV=test bundle exec rake db:migrate
   - cd ../sparc-request

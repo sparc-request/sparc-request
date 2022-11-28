@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -81,4 +81,9 @@ module DocumentsHelper
   def document_file_types_as_string
     Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
   end
+
+  def display_check_box(document)
+    check_box_tag "select-document-#{document.id}", "#{document.id}"
+  end
+
 end

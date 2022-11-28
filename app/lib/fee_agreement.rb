@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -222,7 +222,8 @@ module FeeAgreement
     #   columns.
     def initialize(service_request, filters = {}, max_visit_columns_per_table = 5)
       @service_request = service_request
-      @filters = filters
+      @filters = init_filters(filters)
+
       @visit_columns = max_visit_columns_per_table
 
       @clinical_service_tables = init_clinical_service_tables()
@@ -237,6 +238,16 @@ module FeeAgreement
 
     def non_clinical_services_displayed?
       !@non_clinical_service_table.rows.empty?
+    end
+
+    # Initialize filters from the provided options. Ensures that downstream filtering includes
+    # child organizations (Cores).
+    def init_filters(options = {})
+      filters = options
+      filters[:program] ||= []
+      child_orgs = filters[:program].map {|program| Organization.where(parent: program).map(&:id)}
+      filters[:program] = filters[:program] + child_orgs.flatten
+      filters
     end
 
     # @returns Hash of options to use for filtering data.

@@ -1,0 +1,14 @@
+id,key,value,concept_code,parent_id,sort_order,category,default,reserved,is_available
+,bmi_apps,"Bioinformatics Software Choice, Training and Applications",,,1,interaction_subject,,,1
+,bmi__study_design,Bioinformatics Study Design,,,2,interaction_subject,,,1
+,biostatistical_question,Biostatistical Question,,,3,interaction_subject,,,1
+,career_development,Career Development,,,4,interaction_subject,,,1
+,funding_opportunities,Funding Opportunities,,,5,interaction_subject,,,1
+,general_question,General Question,,,6,interaction_subject,,,1
+,grant_writing,Grant Writing,,,7,interaction_subject,,,1
+,institutional_navigation,Institutional Navigation,,,8,interaction_subject,,,1
+,mentor_identification,Mentor Identification,,,9,interaction_subject,,,1
+,multiomics_correlation_analyses,Multi-omics Correlation Analyses,,,10,interaction_subject,,,1
+,bmi_data_mining,Public Domain Bioinformatics Datasets Mining,,,11,interaction_subject,,,1
+,redcap,REDCap,,,12,interaction_subject,,,1
+,regulatory_question,Regulatory Question,,,13,interaction_subject,,,1

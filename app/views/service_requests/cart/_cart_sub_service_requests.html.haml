@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -37,5 +37,10 @@
                 - unless li.service.is_available
                   = inactive_tag
             - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
-              .col-2.pl-0.text-right
-                = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }
+              - unless ssr.in_work_fulfillment && (ssr.line_items.count == 1)
+                .col-2.pl-0.text-right
+                  = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }
+              - else
+                .col-2.pl-0.text-right
+                  = button_tag(icon('fas', 'trash-alt'), type: 'button',
+                  title: t(:activerecord)[:errors][:models][:service_request] [:attributes][:line_items][:pushed_to_fulfillment], class: "btn btn-danger btn-sm btn-sq disabled", data: { toggle: 'tooltip', disable: true })

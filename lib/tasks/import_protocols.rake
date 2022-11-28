@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -92,7 +92,6 @@ namespace :data do
                            :title => row['Protocol Title'],
                            :funding_status => (row['Funded'] == 'Y' ? 'funded' : 'pending_funding'),
                            :funding_source => (row['Funded'] == 'Y' ? FUNDING_SOURCES[row['Funding Source']] : nil),
-                           :potential_funding_source => (row['Funded'] != 'Y' ? POTENTIAL_FUNDING_SOURCES[row['Funding Source']] : nil),
                            :sponsor_name => row['Sponsor'])
 
             research_types_info = study.build_research_types_info(:human_subjects => true)

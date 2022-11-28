@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,8 @@ RSpec.describe FeeAgreement::NonClinicalServiceRow do
   let(:line_item) { create(:line_item_with_service, :one_time_fee, service: service, protocol: protocol) }
 
   context('initialization from a line item') do
+    stub_config("use_fee_agreement", true)
+
     let(:row) { FeeAgreement::NonClinicalServiceRow.new(line_item) }
 
     it('sets the program name') do

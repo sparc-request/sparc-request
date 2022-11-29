@@ -91,23 +91,23 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should add them and refresh page contents to reflect their updated rights' do
-      click_link I18n.t('authorized_users.new')
-      wait_for_javascript_to_finish
+    # it 'should add them and refresh page contents to reflect their updated rights' do
+    #   click_link I18n.t('authorized_users.new')
+    #   wait_for_javascript_to_finish
 
-      bootstrap_typeahead '#user_search', 'Julia'
-      wait_for_javascript_to_finish
+    #   bootstrap_typeahead '#user_search', 'Julia'
+    #   wait_for_javascript_to_finish
 
-      bootstrap_select '#project_role_role', 'Consultant'
-      find('[for="project_role_project_rights_approve"]').click
-      click_button I18n.t('actions.submit')
-      wait_for_javascript_to_finish
+    #   bootstrap_select '#project_role_role', 'Consultant'
+    #   find('[for="project_role_project_rights_approve"]').click
+    #   click_button I18n.t('actions.submit')
+    #   wait_for_javascript_to_finish
 
-      expect(@protocol.reload.project_roles.last.identity).to eq(jug2)
-      expect(page).to have_selector('td', text: jug2.full_name)
-      expect(page).to have_content(I18n.t('dashboard.service_requests.modify_request'))
-      expect(page).to have_selector('a', text: @document.document_file_name)
-    end
+    #   expect(@protocol.reload.project_roles.last.identity).to eq(jug2)
+    #   expect(page).to have_selector('td', text: jug2.full_name)
+    #   expect(page).to have_content(I18n.t('dashboard.service_requests.modify_request'))
+    #   expect(page).to have_selector('a', text: @document.document_file_name)
+    # end
   end
 
   context 'epic user api is down' do
@@ -123,6 +123,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     end
 
     it 'should not add the new user' do
+      puts "this is a test branch"
       click_link I18n.t('authorized_users.new')
       wait_for_javascript_to_finish
 

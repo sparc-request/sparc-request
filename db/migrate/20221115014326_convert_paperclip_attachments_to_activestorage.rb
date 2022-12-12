@@ -40,14 +40,14 @@ class ConvertPaperclipAttachmentsToActivestorage < ActiveRecord::Migration[5.2]
                 instance.send("#{attachment}_content_type"),
                 instance.send("#{attachment}_file_size"),
                 checksum(attachment_path[0]),
-                instance.updated_at.iso8601
+                instance.updated_at.strftime('%Y-%m-%d %H:%M:%S')
               )
 
               active_storage_attachment_statement.execute(
                 attachment,
                 model.name,
                 instance.id,
-                instance.updated_at.iso8601)
+                instance.updated_at.strftime('%Y-%m-%d %H:%M:%S'))
             end
           end
         end

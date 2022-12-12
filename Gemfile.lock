@@ -270,6 +270,7 @@ GEM
     ffi (1.15.5)
     font-awesome-sass (5.15.1)
       sassc (>= 1.11)
+    glob (0.4.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
     grape (1.5.3)
@@ -306,8 +307,9 @@ GEM
       socksify
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    i18n-js (3.9.2)
-      i18n (>= 0.6.6)
+    i18n-js (4.2.0)
+      glob (>= 0.4.0)
+      i18n
     icalendar (2.8.0)
       ice_cube (~> 0.16)
     icalendar-recurrence (1.1.3)

@@ -45,9 +45,8 @@ class DocumentsController < ApplicationController
           n = 1 #to avoid duplicate entry error
           Zip::File.open(temp_file.path, Zip::File::CREATE) do |zip| #add files to zip file
             @documents.each do |doc|
-              doc_path = File.expand_path('../../../public' + doc.document.url, __FILE__)
-              # zip.add("#{doc.document_file_name}", doc_path)
-              zip.add(n.to_s + "_" + "#{doc.document_file_name}", doc_path) #zip file doesn't allow duplicates, so added n before the file name
+              doc_path = File.expand_path(ActiveStorage::Blob.service.path_for(doc.document.key), __FILE__)
+              zip.add(n.to_s + "_" + "#{doc.document.filename}", doc_path) #zip file doesn't allow duplicates, so added n before the file name
               n += 1
             end
           end

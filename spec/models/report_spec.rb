@@ -21,6 +21,5 @@
 require 'rails_helper'
 
 RSpec.describe Report, type: :model do
-  it { should have_attached_file :xlsx }
   it { should belong_to :sub_service_request }
 end

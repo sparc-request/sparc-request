@@ -53,4 +53,7 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
+
+  # ActiveStorage config
+  config.active_storage.service = :local
 end

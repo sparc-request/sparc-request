@@ -38,7 +38,7 @@ module Funding::DocumentsHelper
   end
 
   def display_funding_document_title(document)
-    link_to document.document_file_name.humanize, document.document.url, download: document.document_file_name.humanize, 'data-toggle' => 'tooltip', 'data-placement' => 'right'
+    link_to document.document.filename.humanize, rails_blob_path(document.document, disposition: 'attachment'), download: document.document.filename.humanize, 'data-toggle' => 'tooltip', 'data-placement' => 'right'
   end
 
   private

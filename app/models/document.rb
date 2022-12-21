@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Document < ApplicationRecord
-  include Paperclip::Glue
 
   audited
 
@@ -35,14 +34,16 @@ class Document < ApplicationRecord
   has_and_belongs_to_many :sub_service_requests
   has_many :organizations, through: :sub_service_requests
 
-  has_attached_file :document #, :preserve_files => true
-
   validates_attachment_file_name :document, matches: Document::SUPPORTED_FILE_TYPES
+  
+  has_one_attached :document, dependent: :destroy
 
   validates :doc_type, :document, presence: true
 
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
-
+  
+  validate :supported_file_types
+  
   before_create :remove_parenthesis_from_filename
 
   def remove_parenthesis_from_filename
@@ -58,6 +59,15 @@ class Document < ApplicationRecord
       self.protocol.sub_service_requests.map(&:org_tree).flatten.uniq
     else
       self.sub_service_requests.map(&:org_tree).flatten.uniq
+    end
+  end
+
+  private
+
+  def supported_file_types
+    if document.attached? && !document.content_type.in?(%w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff))
+      document.purge_later
+      errors.add(:document, 'file type is not supported.')
     end
   end
 end

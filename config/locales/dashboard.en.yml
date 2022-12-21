@@ -58,8 +58,11 @@ en:
       short_title: "Fee Agreement"
       settings:
         header: "Settings"
+        hide_clinical_notes: "Hide Clinical Notes"
+        hide_non_clinical_notes: "Hide Non-Clinical Notes"
         report_configuration: "Report Configuration"
         max_columns_per_table: "Max Visit Columns Per Table"
+        notes: "Notes"
         filters: "Filters"
         status: "Status"
         program: "Program"
@@ -85,6 +88,7 @@ en:
         service_name: "Service Name"
         your_cost: "Your Cost"
         quantity: "Quantity"
+        service_notes: "Service Notes"
         total: "Total"
       clinical_services:
         header: "Clinical Services"

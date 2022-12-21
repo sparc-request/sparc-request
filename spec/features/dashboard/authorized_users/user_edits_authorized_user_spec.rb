@@ -53,7 +53,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
       organization    = create(:organization)
       service_request = create(:service_request_without_validations, protocol: @protocol)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: @protocol)
-      @document       = create(:document, protocol: @protocol)
+      @document       = create(:document, :with_document, protocol: @protocol)
                         create(:super_user, organization: organization, identity: jug2)
 
       visit dashboard_protocol_path(@protocol)
@@ -70,7 +70,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       expect(@protocol.reload.project_roles.last.project_rights).to eq('none')
       expect(page).to have_no_content(I18n.t('dashboard.service_requests.modify_request'))
-      expect(page).to have_no_selector('a', text: @document.document_file_name)
+      expect(page).to have_no_selector('a', text: @document.document.filename)
     end
   end
 

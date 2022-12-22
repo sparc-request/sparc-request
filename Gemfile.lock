@@ -206,6 +206,7 @@ GEM
       addressable
     curb (0.9.11)
     daemons (1.3.1)
+    date (3.3.3)
     deep_cloneable (3.2.0)
       activerecord (>= 3.1.0, < 8)
     delayed_job (4.1.11)
@@ -298,9 +299,8 @@ GEM
     httparty (0.20.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    httpi (2.5.0)
+    httpi (3.0.1)
       rack
-      socksify
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     i18n-js (3.9.2)
@@ -328,8 +328,11 @@ GEM
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mail (2.7.1)
+    mail (2.8.0)
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     marcel (1.0.2)
     method_source (1.0.0)
     mime-types (3.3.1)
@@ -357,7 +360,12 @@ GEM
       coffee-rails (>= 3.2.1)
       jquery-rails
       rails (>= 3.2.0)
+    net-imap (0.3.3)
+      date
+      net-protocol
     net-ldap (0.17.1)
+    net-pop (0.1.2)
+      net-protocol
     net-protocol (0.1.3)
       timeout
     net-scp (1.2.1)
@@ -425,7 +433,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (5.0.0)
+    public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
     racc (1.6.1)
@@ -529,7 +537,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    savon (2.13.1)
+    savon (2.14.0)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
@@ -560,7 +568,6 @@ GEM
     site_prism-all_there (0.3.2)
     sixarm_ruby_unaccent (1.2.0)
     slack-notifier (2.4.0)
-    socksify (1.7.1)
     spring (4.1.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -601,9 +608,9 @@ GEM
     uniform_notifier (1.16.0)
     warden (1.2.9)
       rack (>= 2.0.9)
-    wasabi (3.7.0)
+    wasabi (3.8.0)
       addressable
-      httpi (~> 2.0)
+      httpi (~> 3.0)
       nokogiri (>= 1.4.2)
     wash_out (0.12.0)
       nori (>= 2.0.0)
@@ -739,7 +746,7 @@ DEPENDENCIES
   rubyzip (>= 1.2.1)
   sanitized_data!
   sassc-rails
-  savon (~> 2.13.0)
+  savon (~> 2.14.0)
   shoulda-callback-matchers
   shoulda-matchers
   simplecov

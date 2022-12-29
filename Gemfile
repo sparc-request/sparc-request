@@ -23,7 +23,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 0.9.11'
+gem 'curb', '~> 1.0.3'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'

@@ -37,7 +37,8 @@ en:
     catalog:
       accordion:
         header: "Browse Service Catalog"
-        search_placeholder: "Search by Name, CPT Code, or EAP ID"
+        search_placeholder: "Search for service"
+        search_tooltip: "You can search for services by service name, abbreviation, description, or CPT/EAP Codes"
       center:
         header: "Welcome to SPARCRequest"
         subheader: "Storefront of Research Services"
@@ -47,10 +48,10 @@ en:
         notice: "* You may only select services applicable to ONE Study or Project at a time"
         dashboard_link: "Visit Your Dashboard"
       new_request:
-        header: "Is this a new request?"
+        header: "Is this a request for a new SPARC Study or Project?"
         warning: "Would you like to start a new Study or Project in SPARCRequest?"
         yes_button: "<b>Yes</b> <br>Continue Shopping"
-        no_button: "<b>No</b> <br>Visit my Dashboard"
+        no_button: "<b>No or Unsure</b> <br>Search SPARCDashboard"
       locked_organization:
         header: "%{ssr_id} - %{organization} is Locked"
         text: "Please contact %{contact_name} at %{contact_info} to make changes to the existing request."

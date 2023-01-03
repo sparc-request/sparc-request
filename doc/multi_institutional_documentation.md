@@ -305,7 +305,6 @@ rake:import_permissible_values
 These Permissible Values are used when creating or updating a Study or Project
 
 - **funding_source**: These are the sources of funding for research that is already funded.
-- **potential_funding_source**: These are the sources of funding for research that is still unfunded.
 - **federal_grant_code**: These are the grant codes for Federally-funded research.
 - **federal_grant_phs_sponsor**: These are a list of Policy for Public Health Service (PHS) sponsors for Federally-funded Protocols.
 - **federal_grant_non_phs_sponsor**: These are a list of sponsors outside of the PHS for Federally-funded research.

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+$('[name=change_billing_visit]').remove()
+
 <% if @errors %>
 $("[name^='visit']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
@@ -33,7 +35,8 @@ $("[name='visit[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-val
 $("#toggleColumn<%= @visit_group.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_column', service_request: @service_request, sub_service_request: @sub_service_request, visit_group: @visit_group, page: @page, index: @index, editable: true %>")
 $("#toggleRow<%= @line_items_visit.id %>").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/template/select_row', service_request: @service_request, sub_service_request: @sub_service_request, liv: @line_items_visit, page: @page, editable: true %>")
 <% elsif @tab == 'billing_strategy' %>
-$('#modalContainer').modal('hide')
+# $('#modalContainer').modal('hide')
+$(".visit-<%= @visit.id %>").popover('dispose')
 <% end %>
 
 <% if @in_admin %>
@@ -55,4 +58,19 @@ $(".arm-<%= @arm.id %>-container:visible .max-total-per-patient").replaceWith("<
 $(".arm-<%= @arm.id %>-container:visible .max-total-per-study").replaceWith("<%= j render 'service_calendars/master_calendar/pppv/totals/total_cost_per_study', arm: @arm, line_items_visits: @line_items_visits, tab: @tab %>")
 
 adjustCalendarHeaders()
+
+# If changing the visit using the chevrons, open the new visit
+# else re-focus the visit for tabbing
+<% if params[:change_billing_visit].present? %>
+$.ajax
+  method:   'GET'
+  dataType: 'script'
+  url:      "<%= edit_visit_path(params[:change_billing_visit] == 'next' ? @visit.lower_item_visit(@visit.service).first : @visit.higher_item_visit(@visit.service).first, srid: @service_request.try(:id), ssrid: @sub_service_request.try(:id), tab: @tab, page: @page, pages: @pages) %>"
+<% else %>
+$(".visit-<%= @visit.id %>").trigger('focus')
+<% end %>
+
+$("#flashContainer").replaceWith("<%= j render 'layouts/flash' %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
 <% end %>

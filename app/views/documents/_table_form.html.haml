@@ -1,0 +1,56 @@
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#documentsModal.modal-dialog.modal-lg{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h3.modal-title
+        = t('documents.form.header', protocol: protocol.short_title)
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      .form-row
+        .form-group.col-4 
+          = label_tag :org_ids, t('documents.form.org_ids'), title: t('documents.tooltips.access', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip' }
+          %div.mt-2.mb-1 
+            = check_box_tag :share_all_access, t('documents.form.share_all'), true
+            = label_tag :share_all_access,  t('documents.form.share_all'), title: t('documents.tooltips.share_all', protocol_type: protocol.model_name.human), data: { toggle: 'tooltip' }
+        .form-group.col-8.align-items-end{ class: 'd-none'}
+          = select_tag :org_ids, options_from_collection_for_select(protocol.organizations.distinct.order(:name), :id, :name), class: 'selectpicker', multiple: true, data: { actions_box: 'true', none_selected_text: t('documents.form.select_providers') }       
+      %br    
+      .form-row
+        %b.mb-3
+          = t('documents.table.applies_text')
+
+      .form-row
+        %ul.ml-1
+          - @documents.each do |doc|
+            %li
+              = link_to doc.document_file_name, doc.document.url, target: :_blank
+
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')
+      %button.btn.btn-primary{ type: 'submit', data: {protocol_id: protocol.id, document_ids: @documents.pluck(:id), disable: true } }<
+        = t('actions.submit')
+
+
+
+

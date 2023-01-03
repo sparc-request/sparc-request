@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,6 +20,7 @@
 
 - line_items_visits = []
 - line_items = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, consolidated: consolidated, show_draft: @show_draft, show_unchecked: @show_unchecked)
+- arm_id        = arm.id
 
 - if line_items.empty?
   %tr
@@ -33,15 +34,17 @@
   - editable      = !(complete || locked)
   - text_context  = complete ? 'success' : locked ? 'danger' : ''
   - bg_context    = complete ? 'success' : locked ? 'danger' : 'primary'
+  - ssr_id        = ssr.ssr_id
 
   -# SSR Header Row
-  %tr.organization-header{ class: "alert-#{bg_context}" }
+  %tr.organization-header{ class: "alert-#{bg_context}", data: {toggle: 'collapse', target: ".arm-#{arm_id}-ssr-#{ssr_id}"} }
     %th{ colspan: 51 }
+      = icon('fas', 'caret-down pr-1 mr-2')
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
 
   -# Line Items Visits
   - livs.each do |liv|
-    %tr{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", "text-#{text_context}"] }
+    %tr.collapse.show{ class: ["line-item-#{liv.line_item.id}", "line-items-visit-#{liv.id}", "text-#{text_context}", "arm-#{arm_id}-ssr-#{ssr_id}"] }
       %td.service-name{ colspan: 9 , title: calendar_service(liv), data: { toggle: 'tooltip', html: 'true' } }
         = calendar_service(liv)
       %td.notes.editable.text-center{ colspan: 2, title: "#{Service.model_name.human} #{Note.model_name.plural.capitalize}", data: { toggle: 'tooltip' } }

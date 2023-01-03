@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -32,6 +32,7 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
     puts "\nService requests and sub service requests affected:"
 
     service.service_requests.each do |sr|
+      puts "Working on SRID: #{sr.id}"
       # SSR's that contain LineItems that need to be moved
       ssrs = sr.sub_service_requests.
         where.not(organization: dest_org_process_ssrs).
@@ -39,6 +40,7 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
         where(line_items: { service_id: service.id })
 
       ssrs.each do |ssr|
+        puts "Working on SSRID: #{ssr.id}"
         if ssr_contains_just_this_service?(ssr, service)
           # Don't really need to move anything. Just move the SSR
           # to another Organization.
@@ -60,9 +62,19 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
             # ! needed, since only it will return the _other_ attributes.
             copy_over_attributes = old_attributes.
               slice!(*%w(id ssr_id organization_id org_tree_display status))
+            
+            # fix 2 dates so that they are in the correct format for custom setters in the SSR model
+            copy_over_attributes['requester_contacted_date'] = copy_over_attributes['requester_contacted_date'].blank? ? nil : copy_over_attributes['requester_contacted_date'].strftime('%m/%d/%Y')
+            copy_over_attributes['consult_arranged_date'] = copy_over_attributes['consult_arranged_date'].blank? ? nil : copy_over_attributes['consult_arranged_date'].strftime('%m/%d/%Y')
+
             dest_ssr.assign_attributes(copy_over_attributes)
             dest_ssr.save(validate: false)
             dest_ssr.update_org_tree
+
+            # Copy over past_statuses
+            ssr.past_statuses.each do |ps|
+              dest_ssr.past_statuses.create status: ps.status, date: ps.date, deleted_at: ps.deleted_at, changed_by_id: ps.changed_by_id, new_status: ps.new_status
+            end
           end
           # Move LineItems.
           line_items_moved = []

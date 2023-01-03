@@ -1,0 +1,51 @@
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.modal-dialog{ role: 'document' }
+  .modal-content
+    = form_for external_organization, url: external_organizations_path, method: action_name == 'new' ? :post : :put, remote: true do |f|
+      = hidden_field_tag :protocol_id, params[:protocol_id]
+      = hidden_field_tag :index, params[:index]
+      .modal-header
+        %h3.modal-title
+          = t("external_organizations.form.#{action_name}")
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body
+        .form-row
+          .form-group.col-6
+            = f.label :collaborating_org_name, title: t('external_organization.collaborating_org_name'), class: 'required'
+            = f.select :collaborating_org_name, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_name'), f.object.collaborating_org_name), { include_blank: true }, class: 'selectpicker'
+          .form-group.col-6#collaboratingOrgNameOtherContainer{ class: f.object.collaborating_org_name == 'other' ? '' : 'd-none' }
+            = f.label :collaborating_org_name_other, t('constants.prompts.please_specify')
+            = f.text_field :collaborating_org_name_other, class: 'form-control'
+          .form-group.col-6
+            = f.label :collaborating_org_type, title: t('external_organization.collaborating_org_type'), class: 'required'
+            = f.select :collaborating_org_type, options_for_select(PermissibleValue.get_inverted_hash('collaborating_org_type'), f.object.collaborating_org_type), { include_blank: true }, class: 'selectpicker'
+          .form-group.col-6#collaboratingOrgTypeOtherContainer{ class: f.object.collaborating_org_type == 'other' ? '' : 'd-none' }
+            = f.label :collaborating_org_type_other, t('constants.prompts.please_specify')
+            = f.text_field :collaborating_org_type_other, class: 'form-control'
+        .form-row
+          .form-group.col-6
+            = f.label :comments
+            = f.text_area :comments, class: 'form-control'
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t('actions.submit'), class: 'btn btn-primary'

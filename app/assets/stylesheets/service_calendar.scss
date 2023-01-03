@@ -1,4 +1,4 @@
-// Copyright © 2011-2020 MUSC Foundation for Research Development
+// Copyright © 2011-2022 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -126,7 +126,7 @@
       input {
         cursor: not-allowed;
       }
-    } 
+    }
 
     .visit-quantity {
       transform: scale(1.5);
@@ -150,6 +150,20 @@
       margin-left: 0.75rem;
       margin-right: -0.75rem;
     }
+  }
+}
+
+.visit-popover {
+  max-width: unset;
+
+  .modal-dialog{
+    margin: 0;
+  }
+  .popover-body{
+    padding: 0;
+  }
+  .change-billing-visit-btn {
+    margin-top: -0.5rem;
   }
 }
 

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,11 +30,13 @@ RSpec.describe FeeAgreement::Report do
     @program_outpatient_clinic = create(:program, parent: @provider_ctrc, process_ssrs: true)
     @program_nursing = create(:program, parent: @provider_ctrc, process_ssrs: true)
     @program_admin = create(:program, parent: @provider_ctrc, process_ssrs: true)
+    @core_outpatient_clinic = create(:core, parent: @program_outpatient_clinic, process_ssrs: true)
 
     # SubServiceRequests
     @ssr_outpatient = create(:sub_service_request, service_request: @sr, organization: @program_outpatient_clinic, status: 'awaiting_pi_approval')
     @ssr_admin = create(:sub_service_request, service_request: @sr, organization: @program_admin, status: 'awaiting_pi_approval')
     @ssr_nursing = create(:sub_service_request, service_request: @sr, organization: @program_nursing, status: 'awaiting_pi_approval')
+    @ssr_core_outpatient = create(:sub_service_request, service_request: @sr, organization: @core_outpatient_clinic, status: 'awaiting_pi_approval')
 
     # Services
     @service_outpatient_room = create(:service, :with_pricing_map, name: "Outpatient room", organization: @program_outpatient_clinic, one_time_fee: false)
@@ -44,6 +46,7 @@ RSpec.describe FeeAgreement::Report do
     @service_nursing_admin_fee = create(:service, :with_pricing_map, name: "Nursing admin fee", organization: @program_admin, one_time_fee: true)
     @service_rn = create(:service, :with_pricing_map, name: "RN", organization: @program_nursing, one_time_fee: false)
     @service_iv = create(:service, :with_pricing_map, name: "IV", organization: @program_nursing, one_time_fee: false)
+    @service_core = create(:service, :with_pricing_map, name: "Core service", organization: @core_outpatient_clinic, one_time_fee: true)
 
     # LineItems
     @li_outpatient_rm =  create(:line_item, :without_validations, service: @service_outpatient_room, service_request: @sr, sub_service_request: @ssr_outpatient)
@@ -53,6 +56,7 @@ RSpec.describe FeeAgreement::Report do
     @li_nursing_admin = create(:line_item, :without_validations, service: @service_nursing_admin_fee, service_request: @sr, sub_service_request: @ssr_admin)
     @li_rn =  create(:line_item, :without_validations, service: @service_rn, service_request: @sr, sub_service_request: @ssr_nursing)
     @li_iv =  create(:line_item, :without_validations, service: @service_iv, service_request: @sr, sub_service_request: @ssr_nursing)
+    @li_core = create(:line_item, :without_validations, service: @service_core, service_request: @sr, sub_service_request: @ssr_core_outpatient)
 
     # Arms
     # NOTE: The after_create callback ensures the creation of the following records:
@@ -117,9 +121,12 @@ RSpec.describe FeeAgreement::Report do
     @inst.destroy
     @provider_ctrc.destroy
     @program_outpatient_clinic.destroy
+    @core_outpatient_clinic.destroy
     @program_nursing.destroy
     @program_admin.destroy
   end
+
+  stub_config("use_fee_agreement", true)
 
   context 'report creation' do
     let(:report) { FeeAgreement::Report.new(@sr) }
@@ -129,7 +136,7 @@ RSpec.describe FeeAgreement::Report do
       expect(report.non_clinical_services_displayed?).to be(true)
     end
     it 'should create a row in the non-clinical service table for every active otf line item' do
-      expect(report.non_clinical_service_table.rows.count).to eq(2)
+      expect(report.non_clinical_service_table.rows.count).to eq(3)
     end
     it 'should create a clinical service table for each arm' do
       expect(report.clinical_service_tables.size).to eq(2)
@@ -198,11 +205,11 @@ RSpec.describe FeeAgreement::Report do
     context 'with program filter' do
       let (:report) { FeeAgreement::Report.new(@sr, filters = { :program => [@program_outpatient_clinic.id] }) }
 
-      it 'should only display line items provided by the given program' do
-        expect(report.non_clinical_service_table.rows.count).to eq(0)
+      it 'should only display line items provided by the given program and its cores' do
+        expect(report.non_clinical_service_table.rows.count).to eq(1)
         expect(report.clinical_service_tables[0].rows.count).to eq(0)
         expect(report.clinical_service_tables[1].rows.count).to eq(1)
-        expect(report.non_clinical_services_displayed?).to be(false)
+        expect(report.non_clinical_services_displayed?).to be(true)
         expect(report.clinical_services_displayed?).to be(true)
       end
 
@@ -211,8 +218,9 @@ RSpec.describe FeeAgreement::Report do
         per_person = @visit_quantities.select { |row| row[li] == @li_outpatient_rm }
                                       .map { |row| row[li].applicable_rate * row[qty] }
                                       .sum
+        expected_non_clinical_total = Service.cents_to_dollars(@li_core.applicable_rate * @li_core.quantity)
         expected = Service.cents_to_dollars(@arm2.subject_count * per_person)
-        expect(report.non_clinical_service_table.total).to eq(0)
+        expect(report.non_clinical_service_table.total).to eq(expected_non_clinical_total)
         expect(report.clinical_service_tables[0].total).to eq(0)
         expect(report.clinical_service_tables[1].total).to eq(expected)
       end

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development~
+# Copyright © 2011-2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -37,15 +37,23 @@ class EpicUser < ActiveResource::Base
     begin
       get(:viewuser, userid: identity.ldap_uid.split('@').first)
     rescue => e
-      epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+      slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+      teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
 
-      if epic_error_webhook.present?
-        notifier = Slack::Notifier.new(epic_error_webhook)
-        message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
-        message += "\n```#{e.class}\n"
-        message += "#{e.message}\n"
-        message += "#{e.backtrace[0..5]}```"
+      message = I18n.t('notifier.epic_user_api_slack_error', env: Rails.env)
+      message += "\n#{@result}\n"
+      message += "\n```#{e.class}\n"
+      message += "#{e.message}\n"
+      message += "#{e.backtrace[0..5]}```"
+
+      if slack_epic_error_webhook.present?
+        notifier = Slack::Notifier.new(slack_epic_error_webhook)
         notifier.ping(message)
+      end
+
+      if teams_epic_error_webhook.present?
+        notifier = Teams.new(teams_epic_error_webhook)
+        notifier.post(message)
       end
 
       return nil

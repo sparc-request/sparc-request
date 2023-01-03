@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,8 @@
                 %th= visit_name
               - if table.last_table_for_arm
                 %th=t('dashboard.fee_agreement.clinical_services.per_service_total')
-                %th=t('dashboard.fee_agreement.clinical_services.service_notes')
+                - unless params[:hide_clinical_notes]
+                  %th=t('dashboard.fee_agreement.clinical_services.service_notes')
 
             %tbody
               - table.rows_by_program.each do |program, rows|
@@ -55,16 +56,17 @@
                       %td=visit_qty
                     - if table.last_table_for_arm
                       %td= number_to_currency(row.per_service_total)
-                      %td=row.service_notes
+                      - unless params[:hide_clinical_notes]
+                        %td=row.service_notes
                 %tr.table-secondary
                   %td{colspan: 5}=t('dashboard.fee_agreement.clinical_services.program_per_patient', name: program)
                   -table.visit_range.each do |visit_position|
                     %td=number_to_currency(table.visit_subtotal(program, visit_position))
                   - if table.last_table_for_arm
-                    %td{colspan: 2}
+                    %td{colspan: params[:hide_clinical_notes] ? 1 : 2}
               %tr.table-primary
                 %td{colspan: 5}=t('dashboard.fee_agreement.clinical_services.total_visit_cost_per_patient')
                 -table.visit_range.each do |visit_position|
                   %td=number_to_currency(table.visit_total(visit_position))
                 - if table.last_table_for_arm
-                  %td.bg-info{colspan: 2}=t('dashboard.fee_agreement.clinical_services.arm_total', total: number_to_currency(table.total()))
+                  %td.bg-info{colspan: params[:hide_clinical_notes] ? 1 : 2}=t('dashboard.fee_agreement.clinical_services.arm_total', total: number_to_currency(table.total()))

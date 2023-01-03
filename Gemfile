@@ -15,7 +15,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
 gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
-gem 'capistrano', '~> 3.16'
+gem 'capistrano', '~> 3.17'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
@@ -24,7 +24,7 @@ gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
-gem 'deep_cloneable', '~> 3.1.0'
+gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise', '~> 4.8'
@@ -36,7 +36,7 @@ gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
 gem 'grape', '1.5.3'
-gem 'grape-entity', '~> 0.10.1'
+gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
 gem 'haml'
@@ -51,14 +51,14 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.2'
+gem 'mysql2', '0.5.4'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
 gem 'nokogiri'
 gem 'nori' # Check usage
 gem 'nprogress-rails' # Bootstrap 4 purge
-gem 'net-ldap', '~> 0.17.0'
+gem 'net-ldap', '~> 0.17.1'
 gem 'omniauth'
 gem 'omniauth-cas'
 gem 'omniauth-shibboleth'
@@ -68,9 +68,9 @@ gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.5'
+gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.4.6'
+gem 'rails', '5.2.8.1'
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
@@ -79,9 +79,9 @@ gem 'request_store'
 gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.12.1'
+gem 'savon', '~> 2.13.0'
 gem 'slack-notifier'
-gem 'sprockets', '~> 4.0'
+gem 'sprockets', '~> 4.1'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
@@ -89,12 +89,13 @@ gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails'
+gem 'msteams-ruby-client'
 
 group :production do
 end
 
 group :development, :test, :profile do
-  gem 'addressable', '~> 2.8.0' # Check usage
+  gem 'addressable', '~> 2.8.1' # Check usage
   gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage
@@ -102,6 +103,8 @@ group :development, :test, :profile do
   gem 'launchy' # Check usage
   gem 'timecop'
   gem 'progress_bar'
+  gem 'bcrypt_pbkdf'
+  gem 'ed25519'
 end
 
 group :development, :test do
@@ -116,13 +119,14 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '~> 5.1'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.6'
+  gem 'webdrivers', '~> 5.2'
   gem 'webmock'
+  gem 'rspec-retry'
 end
 
 group :development do

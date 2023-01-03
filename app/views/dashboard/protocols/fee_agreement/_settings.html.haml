@@ -1,4 +1,4 @@
--# Copyright © 2011-2020 MUSC Foundation for Research Development
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,18 @@
           .form-group
             %input#column_count{:name => 'column_count', :value => params[:column_count]}
 
+        .form-group
+          = label_tag nil, t('dashboard.fee_agreement.settings.notes'), class: ['mr-2']
+          .note-options
+            .note-option
+              = label_tag "hide_non_clinical_notes", '', class: ['mr-3 mb-1'] do
+                = check_box_tag 'hide_non_clinical_notes', '1' , params[:hide_non_clinical_notes], type: "checkbox", id: 'hide_non_clinical_notes'
+                = t('dashboard.fee_agreement.settings.hide_non_clinical_notes')
+            .note-option
+              = label_tag "hide_clinical_notes", '', class: ['mr-3 mb-1'] do
+                = check_box_tag 'hide_clinical_notes', '1' , params[:hide_clinical_notes], type: "checkbox", id: 'hide_clinical_notes'
+                = t('dashboard.fee_agreement.settings.hide_clinical_notes')
+
         %h4= t('dashboard.fee_agreement.settings.filters')
         .form-group
           = label_tag nil, t('dashboard.fee_agreement.settings.status'), class: ['mr-2']
@@ -53,7 +65,6 @@
               = label_tag "program-#{value}", '', class: ['mr-3'] do
                 = check_box_tag 'filters[program][]', value, selected_programs.include?(value.to_s), type: "checkbox", id: "program-#{value}"
                 = program_label
-
 
         = submit_tag t(:actions)[:submit], class: "btn btn-success"
         %a.btn.btn-link{href: fee_agreement_dashboard_protocol_path(params[:id])}= t(:actions)[:reset]

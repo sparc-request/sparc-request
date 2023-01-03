@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,4 +31,13 @@ $("[name='message[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-v
 $("#modalContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
 $('.notifications-table').bootstrapTable 'refresh'
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
+# If the url is from the notification email 
+$("#contentContainer").html("<%= j render 'index', messages: @messages, message: @message, notification: @notification %>")
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
+url = new URL(window.location.href)
+if url.searchParams.get('notification_id')
+	$('.btn-secondary').hide()
+
 <% end %>

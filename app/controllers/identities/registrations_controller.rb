@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -47,10 +47,12 @@ class Identities::RegistrationsController < Devise::RegistrationsController
 
   def edit
     store_location_for(resource, request.referrer)
+    @identity.populate_for_edit
   end
 
   def update
     @identity = current_user
+    @identity.updater_id = current_user.id
     if @identity.update_attributes(identity_params)
       flash[:success] = t(:devise)[:profile][:updated]
       @path = stored_location_for(resource) || root_path
@@ -81,7 +83,12 @@ class Identities::RegistrationsController < Devise::RegistrationsController
       :era_commons_name,
       :professional_organization_id,
       :phone,
-      :subspecialty
+      :subspecialty,
+      :gender,
+      :gender_other,
+      :age_group,
+      :ethnicity,
+      races_attributes: [:id, :name, :other_text, :new, :position, :_destroy]
     )
   end
 end

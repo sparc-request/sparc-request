@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -49,9 +49,22 @@ RSpec.describe DocumentsHelper, type: :helper do
     end
   end
 
+  describe 'set select-all attributes on checkbox column' do
+    let(:document) { create(:document) }
 
+    context 'in dashboard' do
+      before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
 
-  describe '#display_document_title' do
+      context 'with permission' do
+        it 'should render checkbox with name^="select-document" id' do
+          expect(helper).to receive(:check_box_tag).with("select-document-#{document.id}", "#{document.id}")
+          helper.display_check_box(document)
+        end
+      end
+    end
+  end
+
+ describe '#display_document_title' do
     let(:document) { create(:document) }
 
     context 'in dashboard' do

@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@ class Identity < ApplicationRecord
 
   audited
 
+  before_save :update_institution
   after_create :send_admin_mail
 
   #Version.primary_key = 'id'
@@ -72,17 +73,26 @@ class Identity < ApplicationRecord
   has_many :protocol_service_requests, through: :protocols, source: :service_requests
   has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
 
+  has_many :races
+  accepts_nested_attributes_for :races, :allow_destroy => true
+
   cattr_accessor :current_user
+  attr_accessor :updater_id
 
   validates_presence_of :first_name, :last_name, :email
+
+  validates_presence_of :credentials_other, if: Proc.new{ |i| i.credentials == 'other' }
 
   validates_format_of :email, with: DataTypeValidator::EMAIL_REGEXP, allow_blank: true, if: :email_changed?
   validates_format_of :phone, with: DataTypeValidator::PHONE_REGEXP, allow_blank: true, if: :phone_changed?
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
-
+  
   # validates_presence_of :reason, if: :new_record?
+  
+  # personal demographics are only required on Edit Profile page
+  validate :validate_demographics, if: Proc.new { |i| i.id == i.updater_id && i.sign_in_count > 0 }
 
   scope :overlords, -> { where(catalog_overlord: true) }
 
@@ -101,6 +111,12 @@ class Identity < ApplicationRecord
       order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
     when 'created_at'
       order(Arel.sql("identities.created_at #{order}"))
+    when 'last_sign_in_at'
+      order(Arel.sql("identities.current_sign_in_at #{order}"))
+    when 'sign_in_count'
+      order(Arel.sql("identities.sign_in_count #{order}"))
+    when 'institution'
+      order(Arel.sql("identities.institution #{order}"))
     end
   }
 
@@ -108,11 +124,12 @@ class Identity < ApplicationRecord
     return if term.blank?
 
     identity_arel = Identity.arel_table
-    attrs = [:last_name, :first_name, :email]
+    attrs = [:last_name, :first_name, :email, :institution]
 
-    where attrs
+    where (attrs
       .map { |attr| identity_arel[attr].matches("%#{term}%")}
       .inject(:or)
+     )
   }
 
   ###############################################################################
@@ -121,6 +138,13 @@ class Identity < ApplicationRecord
 
   def suggestion_value
     Setting.get_value("use_ldap") && Setting.get_value("lazy_load_ldap") ? ldap_uid : id
+  end
+
+  def validate_demographics
+    errors.add(:age_group, "must select one") if Setting.get_value("displayed_demographics_fields").include?("age_group") && !self.age_group.present?
+    errors.add(:gender, "must select one") if Setting.get_value("displayed_demographics_fields").include?("gender") && !self.gender.present?
+    errors.add(:ethnicity, "must select one") if Setting.get_value("displayed_demographics_fields").include?("ethnicity") && !self.ethnicity.present?
+    errors.add(:races, "Must select one or more") if Setting.get_value("displayed_demographics_fields").include?("race") && self.races.reject(&:marked_for_destruction?).empty?
   end
 
   ###############################################################################
@@ -163,6 +187,30 @@ class Identity < ApplicationRecord
     professional_organization ? professional_organization.parents_and_self.select{|org| org.org_type == org_type}.first.try(:name) : ""
   end
 
+  def display_races
+    races = ""
+    self.races.each do |race|
+      races += races.blank? ? race.display_name : "; #{race.display_name}"
+    end
+    return races
+  end
+
+  def display_gender
+    gender_display = gender.present? ?  PermissibleValue.get_value('gender', gender) : ""
+    if gender == "other" && self.gender_other.present?
+      gender_display  += " (#{self.gender_other})"
+    end
+
+    return gender_display
+  end
+
+  def display_age_group
+    age_group.present? ?  PermissibleValue.get_value('age_group', age_group) : ""
+  end
+
+  def display_ethnicity
+    ethnicity.present? ?  PermissibleValue.get_value('ethnicity', ethnicity) : ""
+  end
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
@@ -411,6 +459,22 @@ class Identity < ApplicationRecord
     name
   end
 
+  def populate_for_edit
+    self.setup_races
+  end
+
+  def setup_races
+    position = 1
+    obj_names = PermissibleValue.get_key_list('race')
+    obj_names.each do |obj_name|
+      race = races.detect{|obj| obj.name == obj_name}
+      race = races.build(:name => obj_name, :new => true) unless race
+      race.position = position
+      position += 1
+    end
+    races.sort_by(&:position)
+  end
+
   ###############################################################################
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################
@@ -422,5 +486,11 @@ class Identity < ApplicationRecord
 
   def unread_notification_count(sub_service_request_id=nil)
     Notification.of_ssr(sub_service_request_id).unread_by(self).count
+  end
+
+  private
+
+  def update_institution
+    self.institution = self.professional_org_lookup('institution') if professional_organization_id_changed?
   end
 end

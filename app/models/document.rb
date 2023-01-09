@@ -36,10 +36,18 @@ class Document < ApplicationRecord
   
   has_one_attached :document, dependent: :destroy
 
+
   validates :doc_type, :document, presence: true
+
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   validate :supported_file_types
+
+  before_create :remove_parenthesis_from_filename
+
+  def remove_parenthesis_from_filename
+    self.document_file_name = self.document_file_name.gsub(/[()]/,"")
+  end
 
   def display_document_type
     self.doc_type == "other" ? self.doc_type_other : PermissibleValue.get_value('document_type', self.doc_type)

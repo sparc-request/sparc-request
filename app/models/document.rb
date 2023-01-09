@@ -33,29 +33,13 @@ class Document < ApplicationRecord
 
   has_and_belongs_to_many :sub_service_requests
   has_many :organizations, through: :sub_service_requests
-<<<<<<< HEAD
   
   has_one_attached :document, dependent: :destroy
-=======
-
-  has_attached_file :document #, :preserve_files => true
-
-  validates_attachment_file_name :document, matches: Document::SUPPORTED_FILE_TYPES
->>>>>>> 4b2101b5b (Validate document file name)
 
   validates :doc_type, :document, presence: true
-
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
-<<<<<<< HEAD
   validate :supported_file_types
-=======
-  before_create :remove_parenthesis_from_filename
-
-  def remove_parenthesis_from_filename
-    self.document_file_name=self.document_file_name.gsub(/[()]/,"")
-  end
->>>>>>> 4b2101b5b (Validate document file name)
 
   def display_document_type
     self.doc_type == "other" ? self.doc_type_other : PermissibleValue.get_value('document_type', self.doc_type)

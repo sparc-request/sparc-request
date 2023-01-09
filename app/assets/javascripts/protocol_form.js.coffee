@@ -119,9 +119,6 @@ $(document).ready ->
     else
       $(target).addClass('d-none')
 
-  $(document).on 'change', '[name="protocol[research_types_info_attributes][human_subjects]"]', ->
-    if $(this).prop('checked')
-      $(target).removeClass('d-none')
 
   ############################
   ### Primary PI Typeahead ###
@@ -262,7 +259,7 @@ toggleFundingSource = (val) ->
     if val == 'pending_funding'
       fundingSource     = $('#protocol_funding_source').val()
       fundingStartDate  = $('#protocol_funding_start_date').val()
-
+      $('#fundingSourceContainer').removeClass('d-none')
       $('#fundingRfaContainer').removeClass('d-none')
       $('#protocol_funding_source').selectpicker('val', fundingSource)
       $('#protocol_funding_start_date').val(fundingStartDate)
@@ -270,6 +267,7 @@ toggleFundingSource = (val) ->
       toggleFederalFields(fundingSource)
       toggleFundingSourceOther(fundingSource)
     else if val == 'funded'
+      $('#fundingSourceContainer').removeClass('d-none')
       $('#protocol_funding_source').selectpicker('val', fundingSource)
       $('#protocol_funding_start_date').val(fundingStartDate)
       $('#fundingRfaContainer').addClass('d-none')

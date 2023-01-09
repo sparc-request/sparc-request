@@ -33,7 +33,7 @@ class Document < ApplicationRecord
 
   has_and_belongs_to_many :sub_service_requests
   has_many :organizations, through: :sub_service_requests
-  
+
   has_one_attached :document, dependent: :destroy
 
 
@@ -46,7 +46,7 @@ class Document < ApplicationRecord
   before_create :remove_parenthesis_from_filename
 
   def remove_parenthesis_from_filename
-    self.document_file_name = self.document_file_name.gsub(/[()]/,"")
+    self.document.document.filename = self.document.document.filename.gsub(/[()]/,"")
   end
 
   def display_document_type

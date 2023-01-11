@@ -46,7 +46,7 @@ class Document < ApplicationRecord
   before_create :remove_parenthesis_from_filename
 
   def remove_parenthesis_from_filename
-    self.document.blob = self.document.blob.gsub(/[()]/,"")
+    document.filename.to_s =  document.filename.to_s.gsub(/[()]/,"")
   end
 
   def display_document_type

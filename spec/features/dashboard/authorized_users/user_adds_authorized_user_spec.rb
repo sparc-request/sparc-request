@@ -27,6 +27,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
   context 'user adds a different user' do
+    stub_config("epic_endpoint", true)
+
     before :each do
       @protocol = create(:study_federally_funded, primary_pi: jug2)
 
@@ -113,6 +115,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   context 'epic user api is down' do
     stub_config("use_epic", true)
     stub_config("validate_epic_users", true)
+    stub_config("epic_endpoint", "a_bad_url_that_will_not_lead_to_the_epic_api")
     stub_config("epic_user_endpoint", "a_bad_url_that_will_not_lead_to_the_epic_user_api")
 
     before :each do
@@ -130,7 +133,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       wait_for_javascript_to_finish
 
       expect(@protocol.reload.project_roles.last.identity).to_not eq(other_user)
-      expect(page).to have_selector('small', text: I18n.t("activerecord.errors.models.project_role.attributes.base.epic_api_down").capitalize.html_safe)
+      expect(page).to have_selector('small', text: I18n.t("activerecord.errors.models.project_role.attributes.base.epic_api_down").html_safe)
     end
   end
 end

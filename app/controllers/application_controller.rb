@@ -33,23 +33,6 @@ class ApplicationController < ActionController::Base
   before_action :get_calendar_events,         if: Proc.new{ request.format.html? }
   before_action :configure_permitted_params,  if: :devise_controller?
 
-  def confirm_epic_connection
-    epic_url = Setting.find_by_key('epic_endpoint').value
-    uri = URI.parse(epic_url)
-    @epic_connection = nil
-    
-    status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5) do |http|
-      request = Net::HTTP::Get.new uri
-      response = http.request request
-    end
-
-    if status == "200"
-      @epic_connection = true
-    else
-      @epic_connection = false
-    end
-  end
-
   protected
 
   ##############################
@@ -285,20 +268,4 @@ class ApplicationController < ActionController::Base
   def find_locked_org_ids
     @locked_org_ids = @service_request.sub_service_requests.eager_load(organization: { org_children: :org_children }).select(&:is_locked?).reject(&:is_complete?).map{ |ssr| [ssr.organization_id, ssr.organization.all_child_organizations_with_self.map(&:id)] }.flatten.uniq
   end
-
-  # def confirm_epic_connection
-  #   epic_url = Setting.find_by_key('epic_endpoint').value
-  #   uri = URI.parse(epic_url)
-    
-  #   status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5) do |http|
-  #     request = Net::HTTP::Get.new uri
-  #     response = http.request request
-  #   end
-
-  #   if status == "200"
-  #     @epic_connection = true
-  #   else
-  #     @epic_connection = false
-  #   end
-  # end
 end

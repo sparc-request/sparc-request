@@ -24,7 +24,7 @@
       %h3.modal-title
         = notification_subject_line(notification)
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
-        %span{ aria: { hidden: 'true' } } &times;
+        = link_to 'x', dashboard_notifications_path
     .modal-body
       - messages.each do |msg|
         .card-callout.callout-condensed.w-75{ class: msg.from == current_user.id ? 'callout-success float-right' : 'callout-info' }
@@ -52,7 +52,7 @@
               = f.text_area :body, class: 'form-control', rows: 3, placeholder: t('messages.placeholder')
           .text-right
             %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-              = t('actions.close')
+              = link_to t('actions.close'), dashboard_notifications_path
             = f.submit t('actions.reply'), class: 'btn btn-primary'
       - else
         .text-right

@@ -43,7 +43,7 @@
         %ul.ml-1
           - @documents.each do |doc|
             %li
-              = link_to doc.document_file_name, doc.document.url, target: :_blank
+              = link_to doc.document.filename, rails_blob_path(doc.document, disposition: 'attachment'), target: :_blank
 
     .modal-footer
       %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }

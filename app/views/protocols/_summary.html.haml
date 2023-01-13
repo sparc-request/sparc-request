@@ -77,6 +77,12 @@
               = Protocol.human_attribute_name(:sponsor_name)
           %td.d-inline-block.col-10
             = protocol.sponsor_name
+      %tr.d-flex
+        %td.d-inline-block.col-2
+          %label.mb-0
+            = Protocol.human_attribute_name(:funding_status)
+        %td.d-inline-block.col-10
+          = PermissibleValue.get_value('funding_status', protocol.funding_status)
       - if protocol.funded? || protocol.pending_funding?
         %tr.d-flex
           %td.d-inline-block.col-2
@@ -84,10 +90,3 @@
               = Protocol.human_attribute_name(:funding_source)
           %td.d-inline-block.col-10
             = protocol.display_funding_source_value
-      - else
-        %tr.d-flex
-          %td.d-inline-block.col-2
-            %label.mb-0
-              = Protocol.human_attribute_name(:funding_status)
-          %td.d-inline-block.col-10
-            = PermissibleValue.get_value('funding_status', protocol.funding_status)

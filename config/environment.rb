@@ -26,3 +26,5 @@ Rails.application.initialize!
 
 ActiveResource::Base.logger = ActiveRecord::Base.logger
 
+Mime::Type.register "application/pdf", :pdf
+

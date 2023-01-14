@@ -22,13 +22,6 @@ class Document < ApplicationRecord
 
   audited
 
-  SUPPORTED_FILE_TYPES = [
-    /\.pdf$/i,  /\.docx?$/i, /\.xlsx?$/i, /\.txt$/i,
-    /\.csv$/i,  /\.ppt?$/i,  /\.msg$/i,   /\.eml$/i,
-    /\.jpg$/i,  /\.gif$/i,   /\.png$/i,   /\.tiff$/i,
-    /\.jpeg$/i
-  ]
-
   belongs_to :protocol
 
   has_and_belongs_to_many :sub_service_requests
@@ -36,18 +29,11 @@ class Document < ApplicationRecord
 
   has_one_attached :document, dependent: :destroy
 
-
   validates :doc_type, :document, presence: true
 
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   validate :supported_file_types
-
-  before_create :remove_parenthesis_from_filename
-
-  def remove_parenthesis_from_filename
-    document.filename.to_s =  document.filename.to_s.gsub(/[()]/,"")
-  end
 
   def display_document_type
     self.doc_type == "other" ? self.doc_type_other : PermissibleValue.get_value('document_type', self.doc_type)

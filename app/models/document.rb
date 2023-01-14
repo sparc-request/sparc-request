@@ -22,6 +22,13 @@ class Document < ApplicationRecord
 
   audited
 
+  SUPPORTED_FILE_TYPES = [
+    #/\.pdf$/i,  /\.docx?$/i, /\.xlsx?$/i, /\.txt$/i,
+    #/\.csv$/i,  /\.ppt?$/i,  /\.msg$/i,   /\.eml$/i,
+    #/\.jpg$/i,  /\.gif$/i,   /\.png$/i,   /\.tiff$/i,
+    #/\.jpeg$/i
+  ]
+
   belongs_to :protocol
 
   has_and_belongs_to_many :sub_service_requests

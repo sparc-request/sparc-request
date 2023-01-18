@@ -92,7 +92,7 @@ en:
       document:
         doc_type: "Document Type"
         document: "Document"
-        document_updated_at: "Uploaded"
+        updated_at: "Uploaded"
         org_ids: "Service Providers With Access"
         share_all: "Share with all providers"
         version_date: "Version Date"

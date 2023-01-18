@@ -21,6 +21,7 @@
 class DocumentRemover
   def initialize(document)
     document.sub_service_requests = []
+    document.document.purge
     document.destroy
   end
 end

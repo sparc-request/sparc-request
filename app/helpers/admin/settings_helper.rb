@@ -34,7 +34,7 @@ module Admin::SettingsHelper
   end
 
   def display_setting_value(setting)
-    if setting[:value].length > 40
+    if setting[:value] && setting[:value].length > 40
       truncate(setting[:value], length: 40)
     else
       setting[:value]

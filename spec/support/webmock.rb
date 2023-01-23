@@ -20,11 +20,12 @@
 
 WebMock.disable_net_connect!({
   allow_localhost: true,
-  allow: ['chromedriver.storage.googleapis.com', %r{github}]
+  allow: ['chromedriver.storage.googleapis.com', %r{github}, '127.0.0.1']
   })
 
 RSpec.configure do |config|
   config.before(:each) do
+
     stub_request(:get, "https://sparcrequest.atlassian.net/wiki").
       to_return(status: 200, body: "")
 

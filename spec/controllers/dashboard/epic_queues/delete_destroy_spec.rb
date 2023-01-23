@@ -24,6 +24,7 @@ RSpec.describe Dashboard::EpicQueuesController do
   describe "DELETE #destroy" do
     stub_config("use_epic", true)
     stub_config("epic_queue_access", ['jug2'])
+    stub_config("epic_endpoint", true)
     
     before(:each) do
       @epic_queue = build_stubbed(:epic_queue)
@@ -36,6 +37,7 @@ RSpec.describe Dashboard::EpicQueuesController do
     describe "for users with epic queue access" do
       before(:each) do
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
+        allow(EpicUser).to receive(:confirm_connection).and_return(true)
         delete :destroy, params: { id: @epic_queue.id }, xhr: true
       end
 

@@ -60,10 +60,9 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   end
 
   def ensure_epic_connection
-    @epic_user = EpicUser.for_identity(current_user)
     @epic_connection = nil
 
-    if @epic_user.present?
+    if EpicUser.confirm_connection
       @epic_connection = true 
     else
       @epic_connection = false 

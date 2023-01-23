@@ -28,14 +28,21 @@ class EpicUser < ActiveResource::Base
   #{"UserID"=>"anc63", "IsExist"=>false}
   #{"UserID"=>"wed3", "UserName"=>"Wei Ding", "IsExist"=>true, "IsActive"=>true, "IsBlocked"=>false, "IsPasswordChangeRequired"=>false}
 
-  # force route to use custom collection_name
-  def self.collection_name
-    @collection_name ||= Setting.get_value('epic_user_collection_name')
-  end
-
-  def self.for_identity(identity)
+  def self.confirm_connection
     begin
-      get(:viewuser, userid: identity.ldap_uid.split('@').first)
+      epic_url = Setting.find_by_key('epic_endpoint').value
+      uri = URI.parse(epic_url)
+    
+      status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5) do |http|
+        request = Net::HTTP::Get.new uri
+        response = http.request request
+      end
+
+      if status.code == "200"
+        true
+      else
+        false
+      end
     rescue => e
       slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
@@ -56,7 +63,20 @@ class EpicUser < ActiveResource::Base
         notifier.post(message)
       end
 
-      return nil
+      return false
+    end
+  end
+
+  # force route to use custom collection_name
+  def self.collection_name
+    @collection_name ||= Setting.get_value('epic_user_collection_name')
+  end
+
+  def self.for_identity(identity)
+    if confirm_connection
+      get(:viewuser, userid: identity.ldap_uid.split('@').first)
+    else
+      nil
     end
   end
 

@@ -131,7 +131,7 @@
   },
   {
     "key":            "epic_endpoint",
-    "value":          "http://TODO/",
+    "value":          "http://localhost:#{FAKE_EPIC_SERVER.port}/epic_endpoint",
     "friendly_name":  "Epic Endpoint",
     "description":    "This is the endpoint address for your institution's Epic SOAP message receiver.",
     "group":          "epic_settings",

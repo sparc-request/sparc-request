@@ -59,6 +59,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
   describe 'epic radios' do
     context 'epic turned on' do
       stub_config('use_epic', true)
+      stub_config("epic_endpoint", true)
 
       it 'should display the radios' do
         render_user_form
@@ -73,6 +74,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
         context 'epic user is active' do
           before :each do
+            allow(EpicUser).to receive(:confirm_connection).and_return(true)
             allow(EpicUser).to receive(:is_active?).with('').and_return(true)
           end
 
@@ -87,6 +89,7 @@ RSpec.describe '/associated_users/_user_form', type: :view do
 
         context 'epic user is not active' do
           before :each do
+            allow(EpicUser).to receive(:confirm_connection).and_return(true)
             allow(EpicUser).to receive(:is_active?).with('').and_return(false)
           end
 

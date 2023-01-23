@@ -24,6 +24,7 @@ RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do
     stub_config("use_epic", true)
     stub_config("epic_queue_access", ['jug2'])
+    stub_config("epic_endpoint", true)
 
     describe "for overlord users" do
       before(:each) do
@@ -33,6 +34,7 @@ RSpec.describe Dashboard::EpicQueuesController do
                          )
         @eq = create(:epic_queue, protocol: protocol)
         log_in_dashboard_identity(obj: build(:identity, ldap_uid: 'jug2'))
+        allow(EpicUser).to receive(:confirm_connection).and_return(true)
         get :index, params: { format: :json }
       end
 
@@ -52,6 +54,7 @@ RSpec.describe Dashboard::EpicQueuesController do
                          )
         @eq = create(:epic_queue, protocol: protocol)
         log_in_dashboard_identity(obj: build_stubbed(:identity))
+        allow(EpicUser).to receive(:confirm_connection).and_return(true)
         get :index, params: { format: :json }
       end
 

@@ -624,6 +624,7 @@ GEM
     will_paginate (3.3.1)
     will_paginate-bootstrap4 (0.2.2)
       will_paginate (~> 3.0, >= 3.0.0)
+    wkhtmltopdf-binary (0.12.6.6)
     x-editable-rails (1.5.5.1)
       railties
     xpath (3.2.0)
@@ -759,6 +760,7 @@ DEPENDENCIES
   whenever
   will_paginate
   will_paginate-bootstrap4
+  wkhtmltopdf-binary
   x-editable-rails
 
 BUNDLED WITH

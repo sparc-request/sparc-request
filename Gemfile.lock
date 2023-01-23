@@ -290,7 +290,7 @@ GEM
     hashie (5.0.0)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
-    highline (2.0.3)
+    highline (2.1.0)
     htmlentities (4.3.4)
     http-accept (1.7.0)
     http-cookie (1.0.3)

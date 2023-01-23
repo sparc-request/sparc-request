@@ -46,7 +46,7 @@ GIT
 
 GIT
   remote: https://github.com/swanandp/acts_as_list.git
-  revision: ddbba24b9bff6993602859dcb8ec9f382bdbb8e9
+  revision: c56edafbbe26c036189db0312de0d09e4a547adc
   specs:
     acts_as_list (1.0.4)
       activerecord (>= 4.2)
@@ -146,7 +146,7 @@ GEM
     bootstrap3-datetimepicker-rails (4.17.47)
       momentjs-rails (>= 2.8.1)
     builder (3.2.4)
-    bullet (7.0.3)
+    bullet (7.0.7)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
@@ -204,7 +204,7 @@ GEM
     crass (1.0.6)
     css_parser (1.12.0)
       addressable
-    curb (0.9.11)
+    curb (1.0.5)
     daemons (1.3.1)
     deep_cloneable (3.2.0)
       activerecord (>= 3.1.0, < 8)
@@ -223,7 +223,7 @@ GEM
     docile (1.3.4)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.6.0)
+    doorkeeper (5.6.2)
       railties (>= 5)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
@@ -251,7 +251,7 @@ GEM
       mail (~> 2.7)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    erubi (1.11.0)
+    erubi (1.12.0)
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
       activesupport (>= 5.2, < 8)
@@ -266,7 +266,7 @@ GEM
     ffi (1.15.5)
     font-awesome-sass (5.15.1)
       sassc (>= 1.11)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     grape (1.7.0)
       activesupport
@@ -295,8 +295,8 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    httparty (0.20.0)
-      mime-types (~> 3.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     httpi (2.5.0)
       rack
@@ -332,15 +332,15 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
     method_source (1.0.0)
-    mime-types (3.3.1)
+    mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.0901)
+    mime-types-data (3.2022.0105)
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    mini_portile2 (2.8.1)
+    minitest (5.17.0)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
     msgpack (1.6.0)
@@ -366,7 +366,7 @@ GEM
       net-protocol
     net-ssh (7.0.1)
     netrc (0.11.0)
-    newrelic_rpm (8.12.0)
+    newrelic_rpm (8.15.0)
     nio4r (2.5.8)
     nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
@@ -394,7 +394,7 @@ GEM
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
     parallel (1.22.1)
-    parallel_tests (4.0.0)
+    parallel_tests (4.1.0)
       parallel
     pdf-core (0.9.0)
     pdf-inspector (1.3.0)
@@ -428,7 +428,7 @@ GEM
     public_suffix (5.0.0)
     puma (5.6.5)
       nio4r (~> 2.0)
-    racc (1.6.1)
+    racc (1.6.2)
     rack (2.2.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -517,7 +517,7 @@ GEM
     rspec-support (3.11.0)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-prof (1.4.3)
+    ruby-prof (1.4.5)
     ruby-rc4 (0.1.5)
     ruby2_keywords (0.0.5)
     rubyzip (1.3.0)
@@ -571,7 +571,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sqlite3 (1.5.4)
+    sqlite3 (1.6.0)
       mini_portile2 (~> 2.8.0)
     sshkit (1.21.2)
       net-scp (>= 1.1.2)
@@ -624,6 +624,7 @@ GEM
     will_paginate (3.3.1)
     will_paginate-bootstrap4 (0.2.2)
       will_paginate (~> 3.0, >= 3.0.0)
+    wkhtmltopdf-binary (0.12.6.6)
     x-editable-rails (1.5.5.1)
       railties
     xpath (3.2.0)
@@ -663,7 +664,7 @@ DEPENDENCIES
   coffee-rails
   connection_pool
   country_select
-  curb (~> 0.9.11)
+  curb (~> 1.0.5)
   deep_cloneable (~> 3.2.0)
   delayed_job
   delayed_job_active_record
@@ -687,7 +688,7 @@ DEPENDENCIES
   haml
   hashie-forbidden_attributes
   highline
-  httparty (~> 0.20.0)
+  httparty (~> 0.21.0)
   i18n-js
   icalendar
   icalendar-recurrence
@@ -735,7 +736,7 @@ DEPENDENCIES
   rspec-html-matchers
   rspec-rails (~> 5.1)
   rspec-retry
-  ruby-prof (~> 1.4.3)
+  ruby-prof (~> 1.4.5)
   rubyzip (>= 1.2.1)
   sanitized_data!
   sassc-rails
@@ -759,6 +760,7 @@ DEPENDENCIES
   whenever
   will_paginate
   will_paginate-bootstrap4
+  wkhtmltopdf-binary
   x-editable-rails
 
 BUNDLED WITH

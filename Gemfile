@@ -23,7 +23,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 0.9.11'
+gem 'curb', '~> 1.0.5'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
@@ -41,7 +41,7 @@ gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_valida
 gem 'gyoku' # Check usage
 gem 'haml'
 gem 'hashie-forbidden_attributes' # Check usage
-gem 'httparty', '~> 0.20.0'
+gem 'httparty', '~> 0.21.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
@@ -90,6 +90,7 @@ gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails'
 gem 'msteams-ruby-client'
+gem 'wkhtmltopdf-binary'
 
 group :production do
 end
@@ -150,5 +151,5 @@ group :assets do
 end
 
 group :profile do
-  gem 'ruby-prof', '~> 1.4.3' # Check usage
+  gem 'ruby-prof', '~> 1.4.5' # Check usage
 end

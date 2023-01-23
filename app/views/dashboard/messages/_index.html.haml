@@ -57,4 +57,4 @@
       - else
         .text-right
           %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
-            = t('actions.close')
+            = link_to t('actions.close'), dashboard_notifications_path

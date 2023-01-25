@@ -34,7 +34,7 @@ RSpec.configure do |config|
 
     #### EpicUser Stubs ####
 
-    stub_request(:get, /#{Setting.get_value("epic_user_endpoint")}/).
+    stub_request(:get, "#{Setting.get_value("epic_user_endpoint")}").
       to_return(status: 200, body: "")
 
     stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=jug2").

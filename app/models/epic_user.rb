@@ -33,7 +33,7 @@ class EpicUser < ActiveResource::Base
       epic_url = Setting.find_by_key('epic_user_endpoint').value
       uri = URI.parse(epic_url)
     
-      status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5) do |http|
+      status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5, use_ssl: (uri.scheme == 'https')) do |http|
         request = Net::HTTP::Get.new uri
         response = http.request request
       end

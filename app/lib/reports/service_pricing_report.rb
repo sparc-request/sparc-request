@@ -48,6 +48,8 @@ class ServicePricingReport < ReportingModule
                               "member_rate" => "Member Rate" },
                             :selected => ['Service Rate', 'Federal Rate', 'Corporate Rate', 'Other Rate', 'Member Rate']
                           },
+      "Pricing Map Display Date" => { :field_type => :check_box_tag, :for => "map_display_date"},
+      "Pricing Map Effective Date" => { :field_type => :check_box_tag, :for => "map_effective_date"},
       "Additional Codes" => { :field_type => :check_box_tag, :for => "additional_codes",
                               :multiple => {
                                 "cpt_code" => "CPT Code",
@@ -113,9 +115,9 @@ class ServicePricingReport < ReportingModule
       end
     end
 
-    if params[:rate_types]
-      service_pricing_date = params[:services_pricing_date] ? Date.strptime(params[:services_pricing_date], "%m/%d/%Y") : Date.today
+    service_pricing_date = params[:services_pricing_date] ? Date.strptime(params[:services_pricing_date], "%m/%d/%Y") : Date.today
 
+    if params[:rate_types]
       if params[:rate_types].include?("full_rate")
         attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").full_rate.to_f) rescue 'N/A'"
       end
@@ -135,7 +137,14 @@ class ServicePricingReport < ReportingModule
       if params[:rate_types].include?("member_rate")
         attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{service_pricing_date}\").true_rate_hash(\"#{service_pricing_date}\", Organization.find(organization_id))[:member]) rescue 'N/A'"
       end
+    end
 
+    if params[:map_display_date]
+      attrs["Pricing Map Display Date"] = "pricing_map_for_date(\"#{service_pricing_date}\").display_date"
+    end
+
+    if params[:map_effective_date]
+      attrs["Pricing Map Effective Date"] = "pricing_map_for_date(\"#{service_pricing_date}\").effective_date"
     end
 
     attrs

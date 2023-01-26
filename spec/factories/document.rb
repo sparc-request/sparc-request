@@ -22,12 +22,12 @@ FactoryBot.define do
   factory :document do
     doc_type              { 'other' }
     doc_type_other        { Faker::Lorem.word }
-    document_file_name    { Faker::Lorem.word + '.docx' }
-    document_content_type { 'application/msword' }
-    document_file_size    { Random.rand(100000) }
-    document_updated_at   { Time.now }
     created_at            { Time.now }
     updated_at            { Time.now }
     share_all             { false }
+
+    trait :with_document do
+      document { Rack::Test::UploadedFile.new('spec/fixtures/files/text_document.txt', 'text/plain') }
+    end
   end
 end

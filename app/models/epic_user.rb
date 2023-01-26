@@ -28,14 +28,10 @@ class EpicUser < ActiveResource::Base
   #{"UserID"=>"anc63", "IsExist"=>false}
   #{"UserID"=>"wed3", "UserName"=>"Wei Ding", "IsExist"=>true, "IsActive"=>true, "IsBlocked"=>false, "IsPasswordChangeRequired"=>false}
 
-  # force route to use custom collection_name
-  def self.collection_name
-    @collection_name ||= Setting.get_value('epic_user_collection_name')
-  end
-
-  def self.for_identity(identity)
+  def self.confirm_connection
     begin
-      get(:viewuser, userid: identity.ldap_uid.split('@').first)
+      # test if we can query the ActiveResource, unless successful we should get a message the the interface is down
+      get(:viewuser, userid: 'dummy_account')
     rescue => e
       slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
@@ -56,7 +52,20 @@ class EpicUser < ActiveResource::Base
         notifier.post(message)
       end
 
-      return nil
+      return false
+    end
+  end
+
+  # force route to use custom collection_name
+  def self.collection_name
+    @collection_name ||= Setting.get_value('epic_user_collection_name')
+  end
+
+  def self.for_identity(identity)
+    if confirm_connection
+      get(:viewuser, userid: identity.ldap_uid.split('@').first)
+    else
+      nil
     end
   end
 

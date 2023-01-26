@@ -56,6 +56,7 @@ SparcRails::Application.configure do
 
   config.action_mailer.default_url_options = { host: 'localhost', port: '3000' }
 
-  # Paperclip
-  Paperclip::Attachment.default_options[:path] = "#{Rails.root}/spec/test_files/:class/:id_partition/:style.:extension"
+  # ActiveStorage config
+  config.active_storage.service = :test
+  config.active_job.queue_adapter = :inline
 end

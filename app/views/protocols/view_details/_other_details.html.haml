@@ -58,32 +58,33 @@
                 .col-3<
                   = protocol.affiliations.detect{ |st| st.name == k } ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
                   = v
-        %tr.bg-light
-          %td
-            %h6.mb-0
-              = t('protocols.form.external_organizations.header')
-        - if protocol.external_organizations.any?
-          - protocol.external_organizations.each do |external_organization|
-            %tr.d-flex.alert-success
-              %td.d-inline-block.col-3
-                %label.mb-0
-                  = ExternalOrganization.human_attribute_name :collaborating_org_name
-              %td.d-inline-block.col-9
-                = PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name) == 'Other' ? external_organization.collaborating_org_name_other : PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name)
+        - if Setting.get_value("use_external_organizations")
+          %tr.bg-light
+            %td
+              %h6.mb-0
+                = t('protocols.form.external_organizations.header')
+          - if protocol.external_organizations.any?
+            - protocol.external_organizations.each do |external_organization|
+              %tr.d-flex.alert-success
+                %td.d-inline-block.col-3
+                  %label.mb-0
+                    = ExternalOrganization.human_attribute_name :collaborating_org_name
+                %td.d-inline-block.col-9
+                  = PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name) == 'Other' ? external_organization.collaborating_org_name_other : PermissibleValue.get_value('collaborating_org_name', external_organization.collaborating_org_name)
+              %tr.d-flex
+                %td.d-inline-block.col-3
+                  %label.mb-0
+                    = ExternalOrganization.human_attribute_name :collaborating_org_type
+                %td.d-inline-block.col-9
+                  = PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type) == 'Other' ? external_organization.collaborating_org_type_other : PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type)
+              %tr.d-flex
+                %td.d-inline-block.col-3
+                  %label.mb-0
+                    = ExternalOrganization.human_attribute_name :comments
+                %td.d-inline-block.col-9
+                  = external_organization.comments.present? ? external_organization.comments : t('constants.na')
+          - else
             %tr.d-flex
               %td.d-inline-block.col-3
                 %label.mb-0
-                  = ExternalOrganization.human_attribute_name :collaborating_org_type
-              %td.d-inline-block.col-9
-                = PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type) == 'Other' ? external_organization.collaborating_org_type_other : PermissibleValue.get_value('collaborating_org_type', external_organization.collaborating_org_type)
-            %tr.d-flex
-              %td.d-inline-block.col-3
-                %label.mb-0
-                  = ExternalOrganization.human_attribute_name :comments
-              %td.d-inline-block.col-9
-                = external_organization.comments.present? ? external_organization.comments : t('constants.na')
-        - else
-          %tr.d-flex
-            %td.d-inline-block.col-3
-              %label.mb-0
-                = t('constants.na')
+                  = t('constants.na')

@@ -58,7 +58,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
                         create(:project_role, :approve, protocol: @protocol, identity: jug2, role: 'consultant')
                         create(:super_user, organization: org, identity: jug2)
 
-      @document = create(:document, protocol: @protocol)
+      @document = create(:document, :with_document, protocol: @protocol)
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
@@ -75,7 +75,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
       expect(@protocol.project_roles.count).to eq(1)
       expect(page).to have_no_content(jug2.full_name)
       expect(page).to have_no_content(I18n.t('dashboard.service_requests.modify_request'))
-      expect(page).to have_no_selector('a', text: @document.document_file_name)
+      expect(page).to have_no_selector('a', text: @document.document.filename)
     end
   end
 

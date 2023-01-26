@@ -105,4 +105,7 @@ SparcRails::Application.configure do
 
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
+  
+  # ActiveStorage config
+  config.active_storage.service = :local
 end

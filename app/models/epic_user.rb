@@ -30,19 +30,8 @@ class EpicUser < ActiveResource::Base
 
   def self.confirm_connection
     begin
-      epic_url = Setting.find_by_key('epic_user_endpoint').value
-      uri = URI.parse(epic_url)
-    
-      status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5, use_ssl: (uri.scheme == 'https')) do |http|
-        request = Net::HTTP::Get.new uri
-        response = http.request request
-      end
-
-      if status.code == "200"
-        true
-      else
-        false
-      end
+      # test if we can query the ActiveResource, unless successful we should get a message the the interface is down
+      get(:viewuser, userid: 'dummy_account')
     rescue => e
       slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")

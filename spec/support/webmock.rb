@@ -33,12 +33,16 @@ RSpec.configure do |config|
       to_return(status: 201)
 
     #### EpicUser Stubs ####
+
+    stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/").
+      to_return(status: 200, body: "")
+    
+    stub_request(:get, "http://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/").
+      to_return(status: 200, body: "")
+
     stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=jug2").
       with(headers: {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
       to_return(status: 200, body: {"UserID" => "jug2", "IsExist" => true, "IsActive" => true, "IsSER" => "false"}.to_json, headers: { 'Content-Type' => 'application/json' })
-
-    stub_request(:get, /#{Setting.get_value("epic_endpoint")}/).
-      to_return(status: 200, body: "")
 
     ##### OnCore Stubs #####
     stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/protocols\?protocolNo=STUDY([0-9])+/).

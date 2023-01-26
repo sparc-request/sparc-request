@@ -27,7 +27,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
   context 'user adds a different user' do
-    stub_config("epic_endpoint", true)
+    stub_config("epic_user_endpoint", true)
 
     before :each do
       @protocol = create(:study_federally_funded, primary_pi: jug2)

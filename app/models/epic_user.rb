@@ -30,7 +30,7 @@ class EpicUser < ActiveResource::Base
 
   def self.confirm_connection
     begin
-      epic_url = Setting.find_by_key('epic_endpoint').value
+      epic_url = Setting.find_by_key('epic_user_endpoint').value
       uri = URI.parse(epic_url)
     
       status = Net::HTTP.start(uri.host, uri.port, read_timeout: 5) do |http|

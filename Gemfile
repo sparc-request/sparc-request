@@ -23,7 +23,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'coffee-rails'
 gem 'country_select'
-gem 'curb', '~> 1.0.5'
+gem 'curb', '~> 0.9.11'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
@@ -90,6 +90,7 @@ gem 'will_paginate'
 gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails'
 gem 'msteams-ruby-client'
+gem 'wkhtmltopdf-binary'
 
 group :production do
 end

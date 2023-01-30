@@ -25,6 +25,7 @@ WebMock.disable_net_connect!({
 
 RSpec.configure do |config|
   config.before(:each) do
+
     stub_request(:get, "https://sparcrequest.atlassian.net/wiki").
       to_return(status: 200, body: "")
 
@@ -32,6 +33,13 @@ RSpec.configure do |config|
       to_return(status: 201)
 
     #### EpicUser Stubs ####
+
+    stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/").
+      to_return(status: 200, body: "")
+    
+    stub_request(:get, "http://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/").
+      to_return(status: 200, body: "")
+
     stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=jug2").
       with(headers: {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
       to_return(status: 200, body: {"UserID" => "jug2", "IsExist" => true, "IsActive" => true, "IsSER" => "false"}.to_json, headers: { 'Content-Type' => 'application/json' })

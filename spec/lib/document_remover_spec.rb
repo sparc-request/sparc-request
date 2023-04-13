@@ -23,7 +23,7 @@ require "rails_helper"
 RSpec.describe DocumentRemover do
   before(:each) do
     @protocol             = create(:unarchived_study_without_validations)
-    @document             = create(:document, protocol: @protocol)
+    @document             = create(:document, :with_document, protocol: @protocol)
     @sub_service_request1 = create(:sub_service_request_with_organization)
     @sub_service_request2 = create(:sub_service_request_with_organization)
 

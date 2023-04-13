@@ -27,7 +27,7 @@ RSpec.describe Document, type: :model do
   # it { should have_and_belong_to_many(:sub_service_requests) }
 
   it 'should create a document' do
-    doc = Document.create(:with_document)
+    doc = Document.create()
     expect(doc).to be_an_instance_of Document
   end
 

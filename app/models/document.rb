@@ -36,7 +36,7 @@ class Document < ApplicationRecord
   
   has_one_attached :document, dependent: :destroy
 
-  validates :doc_type, presence: true
+  validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   validate :document_attached

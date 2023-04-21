@@ -63,7 +63,7 @@ RSpec.describe DocumentsHelper, type: :helper do
       end
 
       context 'without permissions' do
-        it 'should not render checkbox with name^="select-document" id' do
+        it 'should not render the checkbox' do
           expect(helper.display_check_box(document, permission: false)).to be_nil
         end
       end

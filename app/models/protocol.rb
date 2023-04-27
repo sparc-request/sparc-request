@@ -135,7 +135,7 @@ class Protocol < ApplicationRecord
   def self.rmid_status
     @@rmid_server_down = false
     begin
-      HTTParty.get(Setting.get_value("research_master_api") + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      HTTParty.get(Setting.get_value("research_master_api") + '1.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
     rescue
       @@rmid_server_down = true

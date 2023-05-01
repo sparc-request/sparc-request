@@ -123,8 +123,9 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     arel (9.0.0)
-    audited (5.0.2)
+    audited (5.3.3)
       activerecord (>= 5.0, < 7.1)
+      request_store (~> 1.2)
     autoprefixer-rails (9.5.0)
       execjs
     axlsx_rails (0.6.1)
@@ -193,7 +194,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.10)
+    concurrent-ruby (1.2.2)
     connection_pool (2.3.0)
     countries (5.1.0)
       sixarm_ruby_unaccent (~> 1.1)
@@ -301,7 +302,7 @@ GEM
     httpi (2.5.0)
       rack
       socksify
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     i18n-js (3.9.2)
       i18n (>= 0.6.6)
@@ -340,7 +341,7 @@ GEM
       rake
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
-    minitest (5.17.0)
+    minitest (5.18.0)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
     msgpack (1.6.0)
@@ -591,7 +592,7 @@ GEM
       actionpack (>= 3.1)
       jquery-rails
       railties (>= 3.1)
-    tzinfo (1.2.10)
+    tzinfo (1.2.11)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -643,7 +644,7 @@ DEPENDENCIES
   acts-as-taggable-on!
   acts_as_list!
   addressable (~> 2.8.1)
-  audited (~> 5.0)
+  audited (~> 5.3)
   axlsx!
   axlsx_rails
   babel-transpiler

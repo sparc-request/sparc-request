@@ -33,8 +33,8 @@ RSpec.describe Document, type: :model do
 
   describe 'display_document_type' do
     before :each do
-      @document1 = create(:document, doc_type: 'other', doc_type_other: 'support')
-      @document2 = create(:document, doc_type: 'hipaa')
+      @document1 = create(:document, :with_document, doc_type: 'other', doc_type_other: 'support')
+      @document2 = create(:document, :with_document, doc_type: 'hipaa')
     end
 
     it 'should display correctly for doc type other' do
@@ -53,7 +53,7 @@ RSpec.describe Document, type: :model do
         org2      = create(:organization)
         org3      = create(:organization, parent: org1)
         protocol  = create(:study_federally_funded)
-        document  = create(:document, share_all: true, protocol: protocol)
+        document  = create(:document, :with_document, share_all: true, protocol: protocol)
         ssr1      = create(:sub_service_request_without_validations, organization: org3, protocol: protocol)
         ssr2      = create(:sub_service_request_without_validations, organization: org2, protocol: protocol)
         
@@ -67,7 +67,7 @@ RSpec.describe Document, type: :model do
         org2      = create(:organization)
         org3      = create(:organization, parent: org1)
         protocol  = create(:study_federally_funded)
-        document  = create(:document, share_all: false, protocol: protocol)
+        document  = create(:document, :with_document, share_all: false, protocol: protocol)
         ssr1      = create(:sub_service_request_without_validations, organization: org3, protocol: protocol)
         ssr2      = create(:sub_service_request_without_validations, organization: org2, protocol: protocol)
 

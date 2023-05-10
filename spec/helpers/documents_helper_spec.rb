@@ -50,7 +50,7 @@ RSpec.describe DocumentsHelper, type: :helper do
   end
 
   describe 'display_check_box' do
-    let(:document) { create(:document) }
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
@@ -112,7 +112,7 @@ RSpec.describe DocumentsHelper, type: :helper do
 
 
   describe '#edit_document_button' do
-    let(:document) { create(:document) }
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
@@ -144,7 +144,7 @@ RSpec.describe DocumentsHelper, type: :helper do
 
 
   describe '#delete_document_button' do
-    let(:document) { create(:document) }
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }

@@ -21,8 +21,8 @@
 require('zip')
 
 class DocumentsController < ApplicationController
-  before_action :initialize_service_request
-  before_action :authorize_identity
+  before_action :initialize_service_request,     only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :authorize_identity,             only: [:index, :new, :create, :edit, :update, :destroy]
   skip_before_action :verify_authenticity_token
 
   include DocumentsControllerShared

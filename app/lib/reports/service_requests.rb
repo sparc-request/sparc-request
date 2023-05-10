@@ -38,6 +38,7 @@ class ServiceRequestsReport < ReportingModule
       "Tags" => {:field_type => :text_field_tag},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => PermissibleValue.get_hash('status')},
       "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}},
+      "Show Service List" => {:field_type => :check_box_tag, :for => 'service_list', :field_label => 'Show Service List' },
       "Show SPARCFulfillment Information" => {:field_type => :check_box_tag, :for => 'fulfillment_info', :field_label => 'Show SPARCFulfillment Information' }
     }
   end
@@ -77,6 +78,10 @@ class ServiceRequestsReport < ReportingModule
       attrs[Core] = [params[:core_id], :abbreviation]
     else
       attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
+    end
+
+    if params[:service_list]
+      attrs["Service"] =  "self.display_services"
     end
 
     attrs["Primary PI Last Name"]         = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"

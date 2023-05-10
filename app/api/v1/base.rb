@@ -125,3 +125,50 @@ module SPARCCWF
     end
   end
 end
+
+module ResearchBilling
+  module V1
+    class APIv1 < Grape::API
+      include Grape::Extensions::Hashie::Mash::ParamBuilder
+      use ActionDispatch::RemoteIp
+      helpers Doorkeeper::Grape::Helpers
+      
+      before do
+        #doorkeeper_authorize!
+      end
+
+      get :procedure_check do
+        protocol_id = params['protocolNo'].sub('STUDY', '')
+        procedure_cpt = params['procedureid']
+        date_of_service = Date.strptime(params['dateofservice']).to_time
+
+        protocols = Protocol.where(id: protocol_id)
+        # should only have 1 match
+        protocol = protocols.first
+        services = protocol.services.where(cpt_code: procedure_cpt)
+
+        if protocol.present? && services.present?
+          service_ids = services.map(&:id)
+
+          # check if any visit group has the date_of_service within the start/end date range and procedure_cpt within one of it's services
+          # matches = [[date_matching_tolerence, chargeable_procedure]]
+          matches = []
+         
+          protocol.visit_groups.each_with_index do |visit_group,index|
+            if visit_group.could_occur.include?(date_of_service) && (visit_group.line_items_visits.map{|liv| liv.line_item.service_id } & service_ids).present?
+              matches[index] = [true] # date_matching_tolerence
+
+              line_items_visits = visit_group.line_items_visits.select{|liv| service_ids.include?(liv.line_item.service_id)}
+              visits = visit_group.visits.where(line_items_visit_id: line_items_visits)
+              matches[index] << visits.any?{|v| v.research_billing_qty > 0}
+            end
+          end
+          
+          { matches: matches } 
+        else 
+          { datematchingtolerence: false, chargeableprocedure: false }
+        end
+      end
+    end
+  end
+end

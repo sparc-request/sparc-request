@@ -124,6 +124,13 @@ class VisitGroup < ApplicationRecord
   def per_patient_subtotals
     self.visits.sum{ |v| v.cost || 0.00 }
   end
+
+  # method to determine when visit could occur (window could be before or after start date of protocol, this is just an estimate) 
+  def could_occur
+    before_date = arm.protocol.start_date + window_before
+    after_date = arm.protocol.start_date + window_after
+    before_date..after_date
+  end
     
   private
 

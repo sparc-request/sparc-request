@@ -26,7 +26,7 @@ RSpec.feature 'User wants to delete a document', js: true do
 
   before :each do
     @protocol = create(:study_federally_funded, primary_pi: jug2)
-    @document = create(:document, protocol: @protocol, doc_type: 'budget')
+    @document = create(:document, :with_document, protocol: @protocol, doc_type: 'budget')
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish

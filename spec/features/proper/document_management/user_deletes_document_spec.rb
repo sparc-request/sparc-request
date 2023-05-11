@@ -31,7 +31,7 @@ RSpec.describe 'User deletes an existing document', js: true do
     @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
     @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
                 create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-    @document = create(:document, doc_type: 'Protocol', protocol: @protocol)
+    @document = create(:document, :with_document, doc_type: 'Protocol', protocol: @protocol)
 
     visit document_management_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish

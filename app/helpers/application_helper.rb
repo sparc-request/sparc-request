@@ -214,7 +214,7 @@ module ApplicationHelper
 
     if accessible
       content_tag :li, class: 'nav-item' do
-        link_to name, path, target: identifier == 'sparc_catalog' ?  '_blank' : '', class: ['nav-link', active ? 'active' : '']
+        link_to name, path, target: ['sparc_catalog', 'sparc_fulfillment', 'sparc_info'].include?(identifier) ?  '_blank' : '', class: ['nav-link', active ? 'active' : '']
       end
     end
   end

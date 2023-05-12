@@ -20,7 +20,7 @@
 
 class ProfessionalOrganization < ApplicationRecord
   # In order from most general to least.
-  ORG_TYPES = ['institution', 'college', 'department', 'division'].freeze
+  ORG_TYPES = ['institution', 'college', 'department', 'division', 'location'].freeze
   audited
 
   belongs_to :parent, class_name: "ProfessionalOrganization"
@@ -39,6 +39,10 @@ class ProfessionalOrganization < ApplicationRecord
 
   scope :divisions, -> {
     where(org_type: 'division')
+  }
+
+  scope :locations, -> {
+    where(org_type: 'location')
   }
 
   # Returns collection like [greatgrandparent, grandparent, parent].
@@ -66,4 +70,11 @@ class ProfessionalOrganization < ApplicationRecord
     return self.name if self.org_type == 'department'
     return nil
   end
+
+  def division_name
+    return self.parentl.name if self.org_type == "location"
+    return self.name if self.org_type == "division"
+    return nil
+  end
+
 end

@@ -50,6 +50,7 @@ class ServiceRequestsReport < ReportingModule
     attrs["SRID"] = :display_id
     attrs["RMID"] = "service_request.try(:protocol).try(:research_master_id)" if Setting.get_value("research_master_enabled")
     attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
+    attrs["Requester"] = '"#{service_requester.try(:first_name)} #{service_requester.try(:last_name)}"'
     attrs["Status"] = :formatted_status
 
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
@@ -137,7 +138,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Other tables to include
   def includes
-    [:organization, :owner, service_request: { protocol: [:coordinators, :irb_records, primary_pi: { professional_organization: { parent: { parent: :parent } } } ], line_items: :service }]
+    [:organization, :owner, :service_requester, service_request: { protocol: [:coordinators, :irb_records, primary_pi: { professional_organization: { parent: { parent: :parent } } } ], line_items: :service }]
   end
 
   # Conditions

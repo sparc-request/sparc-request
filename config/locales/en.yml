@@ -920,7 +920,7 @@ en:
         header: "Involved External Organizations"
       financial_information:
         header: "Financial Information"
-        guarantor_header: "Guarantor Information"
+        guarantor_header: "Send Bills To..."
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"

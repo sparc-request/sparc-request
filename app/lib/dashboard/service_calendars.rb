@@ -80,22 +80,19 @@ module Dashboard
       if opts[:merged] && opts[:consolidated]
         if opts[:show_unchecked]
           arm.line_items_visits.
-            eager_load(:visits, :notes).
-            includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false })
         else
           arm.line_items_visits.
-            eager_load(:visits, :notes).
-            includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+            includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
             where.not("research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
         end
       else
         (sub_service_request || service_request).line_items_visits.
-          eager_load(:visits, :notes).
-          includes(sub_service_request: :organization, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
+          includes(sub_service_request: :services).
           where.not(sub_service_requests: { status: statuses_hidden }).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|

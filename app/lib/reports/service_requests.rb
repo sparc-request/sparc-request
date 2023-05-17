@@ -81,7 +81,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     if params[:service_list]
-      attrs["Service"] =  "self.display_services"
+      attrs["Service(s)"] =  "self.display_services"
     end
 
     attrs["Primary PI Last Name"]         = "service_request.try(:protocol).try(:primary_pi).try(:last_name)"

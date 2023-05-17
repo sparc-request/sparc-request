@@ -35,5 +35,4 @@
     %table.table.table-bordered.service-calendar-table
       %thead
         = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups
-      %tbody
-        = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+      %tbody{ class: "arm-#{arm.id}-service-calendar-tbody" }

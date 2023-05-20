@@ -162,6 +162,8 @@ class EpicInterface
         emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
+        emit_guarantor_contact(xml, study)
+        emit_guarantor_phone(xml, study)
       }
     }
 
@@ -189,10 +191,35 @@ class EpicInterface
         emit_ide_number(xml, study)
         emit_cofc(xml, study)
         emit_rmid(xml, study)
-
+        emit_guarantor_contact(xml, study)
+        emit_guarantor_phone(xml, study)
       }
     }
     return xml.target!
+  end
+
+  def emit_guarantor_contact(xml, study) # 'Send bills to...' contact field
+    guarantor_contact = study.try(:guarantor_contact)
+    if !guarantor_contact.blank?
+      xml.subject_of(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'GUARANTOR_CONTACT')
+          xml.value(value: guarantor_contact)
+        }
+      }
+    end
+  end
+
+  def emit_guarantor_phone(xml, study) # 'Send bills to...' phone field
+    guarantor_phone = study.try(:guarantor_phone)
+    if !guarantor_phone.blank?
+      xml.subject_of(typeCode: 'SUBJ') {
+        xml.studyCharactersitic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'GUARANTOR_PHONE')
+          xml.value(value: guarantor_phone)
+        }
+      }
+    end
   end
 
   def emit_project_roles(xml, study)

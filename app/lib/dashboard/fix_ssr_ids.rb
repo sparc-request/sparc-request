@@ -24,7 +24,7 @@ module Dashboard
 
     def initialize(protocol, merged_ssr_ids)
       @protocol = protocol
-      @next_ssr_id = protocol.next_ssr_id
+      @next_ssr_id = protocol.try(:next_ssr_id) || 1
       @merged_ssr_ids = merged_ssr_ids
     end
 

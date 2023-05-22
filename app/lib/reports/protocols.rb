@@ -51,6 +51,7 @@ class ProtocolsReport < ReportingModule
     attrs["Protocol Short Title"]         = "short_title"
     attrs["Protocol Title"]               = "title"
     attrs["Number of Requests"]           = "sub_service_requests.length"
+    attrs["Funding Status"]               = "funding_status.humanize"
     attrs["Funding Source"]               = "funding_source.present? ? PermissibleValue.get_value('funding_source', funding_source) : ''"
     attrs["Sponsor Name"]                 = "sponsor_name"
     attrs["Financial Account"]            = "udak_project_number.try{prepend(' ')}"

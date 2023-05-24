@@ -29,6 +29,9 @@ $("[name='arm[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid
 <% end %>
 <% else %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+<% page = @pages[@arm.id.to_s] %>
+<% visit_groups = @arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= @arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: page, merged: false, consolidated: false, visit_groups: visit_groups %>")
 
 adjustCalendarHeaders()
 

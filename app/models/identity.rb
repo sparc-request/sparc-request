@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'directory'
+require 'csv'
 
 class Identity < ApplicationRecord
 
@@ -211,6 +212,16 @@ class Identity < ApplicationRecord
   def display_ethnicity
     ethnicity.present? ?  PermissibleValue.get_value('ethnicity', ethnicity) : ""
   end
+
+  def self.to_csv(identities)
+    CSV.generate do |csv|
+      csv << column_names
+      identities.each do |i|
+        csv << i.attributes.values_at(*column_names)
+      end
+    end
+  end
+  
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################

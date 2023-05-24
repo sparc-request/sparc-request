@@ -23,7 +23,7 @@
     %h3.mb-0
       = t('admin.identities.table.header')
   #identitiesTableToolbar
-  %table.table#identitiesTable{ data: { toggle: 'table', url: admin_identities_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true',  pagination: 'true', page_size: '25', side_pagination: 'server', sort_name: 'name', sort_order: 'asc', toolbar: '#identitiesTableToolbar' } }
+  %table.table#identitiesTable{ data: { toggle: 'table', url: admin_identities_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', show_export: 'true', pagination: 'true', page_size: '25', side_pagination: 'server', sort_name: 'name', sort_order: 'asc', toolbar: '#identitiesTableToolbar' } }
     %thead.bg-light
       %tr
         %th{ data: { field: 'name', sortable: 'true' } }

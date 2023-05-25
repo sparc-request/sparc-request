@@ -236,7 +236,7 @@ class SubServiceRequest < ApplicationRecord
   def display_services
     self.services.map(&:name).join("; ")
   end
-  
+
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
@@ -263,7 +263,9 @@ class SubServiceRequest < ApplicationRecord
         old_status      = self.status
         submitted_prior = self.previously_submitted?
         past_status     = self.past_statuses.last.try(:status)
-        self.update_attributes(status: new_status, submitted_at: Time.now)
+        # Also need to update the servicer_requester_id
+        # Replace update_attributes method by update, update_attribures and update_attributes! is deprecated in Rails 6.0 and removed in 6.1
+        self.update(status: new_status, submitted_at: Time.now, service_requester_id: current_user_id)
         return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)

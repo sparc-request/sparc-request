@@ -38,6 +38,8 @@ FactoryBot.define do
     start_date                   { '2015-10-15' }
     end_date                     { '2015-10-15' }
     selected_for_epic            { false }
+    guarantor_contact            { "Benjamin Dover" }
+    guarantor_phone              { "8430000000" }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

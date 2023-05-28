@@ -201,7 +201,7 @@ class EpicInterface
   def emit_guarantor_contact(xml, study) # 'Send bills to...' contact field
     guarantor_contact = study.try(:guarantor_contact)
     if !guarantor_contact.blank?
-      xml.subject_of(typeCode: 'SUBJ') {
+      xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'GUARANTOR_CONTACT')
           xml.value(value: guarantor_contact)
@@ -213,8 +213,8 @@ class EpicInterface
   def emit_guarantor_phone(xml, study) # 'Send bills to...' phone field
     guarantor_phone = study.try(:guarantor_phone)
     if !guarantor_phone.blank?
-      xml.subject_of(typeCode: 'SUBJ') {
-        xml.studyCharactersitic(classCode: 'OBS', moodCode: 'EVN') {
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'GUARANTOR_PHONE')
           xml.value(value: guarantor_phone)
         }

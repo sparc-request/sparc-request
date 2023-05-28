@@ -88,7 +88,6 @@ RSpec.describe EpicInterface do
   build_study_type_answers
   build_study_type_questions
 
-
   let!(:provider) {
     create(
       :provider,
@@ -387,6 +386,58 @@ RSpec.describe EpicInterface do
           'hl7' => 'urn:hl7-org:v3')
 
       expect(node[0]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for guarantor contact' do
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="GUARANTOR_CONTACT" />
+            <value value="#{study.guarantor_contact}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
+        hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[5]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for guarantor phone' do
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="GUARANTOR_PHONE" />
+            <value value="#{study.guarantor_phone}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
+        hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[6]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for an ide number' do

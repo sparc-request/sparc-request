@@ -440,6 +440,56 @@ RSpec.describe EpicInterface do
       expect(node[6]).to be_equivalent_to(expected.root)
     end
 
+    it 'should emit a subjectOf for an irb approval date' do
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB_APPROVAL_DATE" />
+            <value value="#{study.irb_records.first.irb_approval_date}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[7]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for an irb expiration date' do
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB_EXPIRATION_DATE" />
+            <value value="#{study.irb_records.first.irb_expiration_date}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[8]).to be_equivalent_to(expected.root)
+    end
+
     it 'should emit a subjectOf for an ide number' do
       epic_interface.send_study_creation(study)
 

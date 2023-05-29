@@ -164,6 +164,8 @@ class EpicInterface
         emit_procedures_and_encounters(xml, study)
         emit_guarantor_contact(xml, study)
         emit_guarantor_phone(xml, study)
+        emit_irb_approval_date(xml, study)
+        emit_irb_expiration_date(xml, study)
       }
     }
 
@@ -193,6 +195,8 @@ class EpicInterface
         emit_rmid(xml, study)
         emit_guarantor_contact(xml, study)
         emit_guarantor_phone(xml, study)
+        emit_irb_approval_date(xml, study)
+        emit_irb_expiration_date(xml, study)
       }
     }
     return xml.target!
@@ -250,7 +254,7 @@ class EpicInterface
     end
   end
 
-  def emit_irb_number(xml, study)
+   def emit_irb_number(xml, study)
     irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
     if !irb_number.blank?
@@ -258,6 +262,32 @@ class EpicInterface
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
           xml.value(value: irb_number)
+        }
+      }
+    end
+  end
+
+ def emit_irb_approval_date(xml, study)
+    irb_approval_date = study.human_subjects_info.irb_records.first.try(:irb_approval_date)
+
+    if !irb_approval_date.blank?
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'IRB_APPROVAL_DATE')
+          xml.value(value: irb_approval_date)
+        }
+      }
+    end
+  end
+
+  def emit_irb_expiration_date(xml, study)
+    irb_expiration_date = study.human_subjects_info.irb_records.first.try(:irb_expiration_date)
+
+    if !irb_expiration_date.blank?
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'IRB_EXPIRATION_DATE')
+          xml.value(value: irb_expiration_date)
         }
       }
     end

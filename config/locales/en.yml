@@ -50,6 +50,7 @@ en:
     export: "Export"
     filter: "Filter"
     max: "Max"
+    notify: "Notify"
     preview: "Preview"
     print: "Print"
     regenerate: "Regenerate"

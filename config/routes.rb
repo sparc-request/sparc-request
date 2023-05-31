@@ -370,6 +370,8 @@ SparcRails::Application.routes.draw do
       get :preview
       get :update_dependents_list
       post :copy
+      get :edit_notifications
+      post :update_notifications
     end
     resource :survey, only: [] do
       get :search_surveyables

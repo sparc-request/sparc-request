@@ -21,16 +21,17 @@
 class Admin::IdentitiesController < Admin::ApplicationController
 
   def index
+    @@search_results
     respond_to do |format|
       format.html
       format.json {
         @identities =      Identity.sparc_users.search_query(params[:search])
         @total = @identities.count
         @identities = @identities.sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
+        @@search_results = @identities.except(:limit)
       }
       format.csv {
-        @identities = Identity.sparc_users.search_query(params[:search])
-        send_data Identity.to_csv(@identities), filename: "sparcrequest_admin_users_list.csv"
+        send_data Identity.to_csv(@@search_results), filename: "sparcrequest_admin_users_list.csv"
       }
     end
   end

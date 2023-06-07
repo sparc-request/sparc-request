@@ -25,6 +25,8 @@ FactoryBot.define do
     sequence(:version)        { |n| n }
     active                    { false }
     type                      { 'SystemSurvey' }
+    notify_requester          { true }
+    notify_roles              { [1] }
 
     trait :active do
       active {true}

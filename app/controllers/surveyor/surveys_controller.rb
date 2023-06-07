@@ -36,6 +36,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
           else
             Survey.none
           end
+        @roles = PermissibleValue.where(category: 'user_role')
       }
     end
   end
@@ -129,6 +130,30 @@ class Surveyor::SurveysController < Surveyor::BaseController
     render json: results.to_json
   end
 
+  def edit_notifications
+    @survey = Survey.find(params[:survey_id])
+    @user_roles = PermissibleValue.where(category: 'user_role')
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def update_notifications
+    @survey = Survey.find(params[:survey_id])
+
+    @survey.update(
+      notify_requester: survey_params[:notify_requester], 
+      notify_roles: survey_params[:notify_roles].reject(&:blank?).map(&:to_i)
+    )
+
+    @type = @survey.class.name.snakecase.dasherize.downcase
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
 
   def build_survey
@@ -142,14 +167,18 @@ class Surveyor::SurveysController < Surveyor::BaseController
         access_code: survey_params[:access_code],
         version: 1,
         active: false,
-        surveyable: klass == Form ? current_user : nil
+        surveyable: klass == Form ? current_user : nil,
+        notify_requester: true,
+        notify_roles: [PermissibleValue.where(category: 'user_role', key: 'primary-pi').first.id]
       )
     end
   end
 
   def survey_params
     params.require(params[:type].underscore).permit(
-      :access_code
+      :access_code,
+      :notify_requester,
+      notify_roles: []
     )
   end
 end

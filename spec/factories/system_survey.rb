@@ -26,7 +26,7 @@ FactoryBot.define do
     active                    { false }
     type                      { 'SystemSurvey' }
     notify_requester          { true }
-    notify_roles              { [1] }
+    notify_roles              { [PermissibleValue.get_key_list('funding_source').sample.id] }
 
     trait :active do
       active {true}

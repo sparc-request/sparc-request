@@ -151,8 +151,7 @@ class LineItem < ApplicationRecord
 
   def has_fulfillments?
     line_item_in_cwf = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
-    line_item_in_cwf.try(:fulfilled?) #|| line_item_in_cwf.try(:procedures).try(:where, status: %w(complete incomplete follow_up)).try(:any?)
-    #line_item_in_fulfillment.fulfillments.any? || line_item_in_fulfillment.procedures.where(status: %w(complete incomplete follow_up)).any?
+    line_item_in_cwf.try(:fulfilled?)
   end
 
   def has_admin_rates?

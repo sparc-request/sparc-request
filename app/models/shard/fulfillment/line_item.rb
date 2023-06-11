@@ -44,7 +44,12 @@ module Shard
         if self.one_time_fee?
           self.fulfillments.any?
         else
-          self.procedures.where(status: %w(complete incomplete follow_up)).any?
+          started_procedures = false
+          self.visits.each do |v|
+            procedures = Shard::Fulfillment::Procedure.where visit_id: v.id
+            started_procedures = procedures.where(status: %w(complete incomplete follow_up)).any?
+          end
+          started_procedures
         end
       end
 

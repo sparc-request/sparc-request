@@ -44,6 +44,10 @@ RSpec.configure do |config|
       with(headers: {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
       to_return(status: 200, body: {"UserID" => "jug2", "IsExist" => true, "IsActive" => true, "IsSER" => "false"}.to_json, headers: { 'Content-Type' => 'application/json' })
 
+    stub_request(:get, "https://c3po-hadoop-s2-v.obis.musc.edu:8484/v1/epicintc/viewuser.json?userid=dummy_account").
+      with(headers: {'Accept'=>'application/json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+      to_return(status: 200, body: "", headers: {})
+
     ##### OnCore Stubs #####
     stub_request(:get, /#{Regexp.quote(Setting.get_value("oncore_api"))}\/oncore-api\/rest\/protocols\?protocolNo=STUDY([0-9])+/).
       to_return(status: 200, body: '[{"protocolId" => 1111}]')

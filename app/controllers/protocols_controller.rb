@@ -78,7 +78,7 @@ class ProtocolsController < ApplicationController
     @tab = 'billing_strategy'
     setup_calendar_pages
     @protocol.visits.each do |visit|
-      if visit.indicated?
+      if visit.indicated? && !visit.sub_service_request.is_locked?
         indicated_quantity = determine_visit_billing_quantity(visit, old_billing_type)
         set_billing_quantities(protocol_params[:default_billing_type], indicated_quantity)
 

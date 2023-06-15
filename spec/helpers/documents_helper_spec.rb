@@ -49,17 +49,32 @@ RSpec.describe DocumentsHelper, type: :helper do
     end
   end
 
-  describe 'set select-all attributes on checkbox column' do
-    let(:document) { create(:document) }
+  describe 'display_check_box' do
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
 
-      context 'with permission' do
+      context 'with permissions' do
         it 'should render checkbox with name^="select-document" id' do
           expect(helper).to receive(:check_box_tag).with("select-document-#{document.id}", "#{document.id}")
-          helper.display_check_box(document)
+          helper.display_check_box(document, permission: true)
         end
+      end
+
+      context 'without permissions' do
+        it 'should not render the checkbox' do
+          expect(helper.display_check_box(document, permission: false)).to be_nil
+        end
+      end
+    end
+
+    context 'not in dashboard' do
+      before(:each) { allow(helper).to receive(:in_dashboard?).and_return(false) }
+
+      it 'should render checkbox with name^="select-document" id' do
+        expect(helper).to receive(:check_box_tag).with("select-document-#{document.id}", "#{document.id}")
+        helper.display_check_box(document)
       end
     end
   end
@@ -97,7 +112,7 @@ RSpec.describe DocumentsHelper, type: :helper do
 
 
   describe '#edit_document_button' do
-    let(:document) { create(:document) }
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }
@@ -129,7 +144,7 @@ RSpec.describe DocumentsHelper, type: :helper do
 
 
   describe '#delete_document_button' do
-    let(:document) { create(:document) }
+    let(:document) { create(:document, :with_document) }
 
     context 'in dashboard' do
       before(:each) { allow(helper).to receive(:in_dashboard?).and_return(true) }

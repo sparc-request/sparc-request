@@ -233,6 +233,10 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  def display_services
+    self.services.map(&:name).join("; ")
+  end
+  
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################

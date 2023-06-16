@@ -71,6 +71,6 @@ module Dashboard::ProtocolsHelper
   end
 
   def display_merges(protocol)
-    content_tag(:div, protocol.protocol_merges.pluck(:merged_protocol_id).join(" "))
+    content_tag(:div, protocol.protocol_merges.pluck(:merged_protocol_id).sort.join(" "))
   end
 end

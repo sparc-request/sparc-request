@@ -38,15 +38,24 @@ $(".visit-group-<%= @visit_group.id %>").popover('dispose')
 <% @pages[@arm.id] = @page %>
 <% session[:service_calendar_pages][@arm.id.to_s] = @page %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+<% page = @pages[@arm.id.to_s] %>
+<% visit_groups = @arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= @arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: page, merged: false, consolidated: false, visit_groups: visit_groups %>")
 # Change the page down if moving to previous page of visits
 <% elsif @visit_group.position % VisitGroup.per_page == 1 && params[:change_visit] == 'previous' %>
 <% @page -= 1 %>
 <% @pages[@arm.id] = @page %>
 <% session[:service_calendar_pages][@arm.id.to_s] = @page %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+<% page = @pages[@arm.id.to_s] %>
+<% visit_groups = @arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= @arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: page, merged: false, consolidated: false, visit_groups: visit_groups %>")
 # Update the whole calendar if the position changed
 <% else %>
 $(".arm-<%= @arm.id %>-container").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: false, consolidated: false %>")
+<% page = @pages[@arm.id.to_s] %>
+<% visit_groups = @arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= @arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: page, merged: false, consolidated: false, visit_groups: visit_groups %>")
 <% end %>
 adjustCalendarHeaders()
 

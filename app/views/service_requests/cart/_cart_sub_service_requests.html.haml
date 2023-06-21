@@ -37,7 +37,7 @@
                 - unless li.service.is_available
                   = inactive_tag
             - if li.optional? && ssr.can_be_edited? && ['document_management'].exclude?(action_name)
-              - unless ssr.in_work_fulfillment && (ssr.line_items.count == 1)
+              - unless (ssr.in_work_fulfillment && (ssr.line_items.count == 1)) || li.has_fulfillments?
                 .col-2.pl-0.text-right
                   = link_to icon('fas', 'trash-alt'), remove_service_service_request_path(srid: service_request.id, line_item_id: li.id), remote: true, method: :delete, class: 'btn btn-sm btn-sq btn-danger remove-service', title: t('proper.cart.remove_service'), data: { toggle: 'tooltip', disable: true }
               - else

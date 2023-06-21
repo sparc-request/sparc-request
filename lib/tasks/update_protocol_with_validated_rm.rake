@@ -123,17 +123,16 @@ namespace :data do
     puts("Research Master ID removed from: #{former_rmid_protocols.size} Protocols")
     puts("IDs: #{former_rmid_protocols}")
 
-    slack_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
-    if slack_webhook.present?
-      notifier = Slack::Notifier.new(slack_webhook)
+    teams_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
+    if teams_webhook.present?
       message =  "RMID update has been performed for SPARC in: #{Rails.env}"
       message += "\nrmid_validated flags removed: #{former_validated_protocols.size}\n"
       message += "\nProtocol IDs: #{former_validated_protocols}\n"
       message += "\nresearch_master_ids removed: #{former_rmid_protocols.size}\n"
       message += "\nProtocol IDs: #{former_rmid_protocols}\n"
-      notifier.ping(message)
+      notifier = Teams.new(teams_webhook)
+      notifier.post(message)
     end
-
   end
 end
 

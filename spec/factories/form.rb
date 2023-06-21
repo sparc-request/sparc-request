@@ -26,6 +26,8 @@ FactoryBot.define do
     active                    { false }
     type                      { 'Form' }
     surveyable                { nil }
+    notify_requester          { true }
+    notify_roles              { [PermissibleValue.where(category: 'user_role').second.id] }
 
     trait :active do
       active {true}

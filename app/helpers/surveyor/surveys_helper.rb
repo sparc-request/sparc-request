@@ -29,6 +29,33 @@ module Surveyor::SurveysHelper
 
   end
 
+  def survey_notify_requester_display(survey)
+    if survey.notify_requester?
+      content_tag(:h4, icon('fas', 'check'), class: 'text-success')
+    else
+      content_tag(:h4, icon('fas', 'times'), class: 'text-danger')
+    end
+  end
+
+  def survey_notify_roles_display(survey, roles)
+
+    notify_roles = JSON.parse(survey.notify_roles)
+
+    if notify_roles == roles.ids
+      t(:surveyor)[:surveys][:all_roles]
+    else
+      notify_roles.map do |role|
+        user_role = roles.find{|x| x.id == role}
+        
+        unless role == notify_roles.first
+          role = " #{user_role.value}"
+        else
+          role = "#{user_role.value}"
+        end
+      end
+    end
+  end
+
   def survey_options(survey)
     render 'surveyor/surveys/actions_dropdown.html', survey: survey
   end

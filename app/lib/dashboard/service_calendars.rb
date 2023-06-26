@@ -67,7 +67,7 @@ module Dashboard
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
-      statuses_hidden = 
+      statuses_hidden =
         if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
@@ -80,19 +80,19 @@ module Dashboard
       if opts[:merged] && opts[:consolidated]
         if opts[:show_unchecked]
           arm.line_items_visits.
-            includes(sub_service_request: :services).
+            eager_load(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false })
         else
           arm.line_items_visits.
-            includes(sub_service_request: :services).
+            eager_load(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
             where.not("research_billing_qty = 0 and insurance_billing_qty = 0 and effort_billing_qty = 0" )
         end
       else
         (sub_service_request || service_request).line_items_visits.
-          includes(sub_service_request: :services).
+          eager_load(sub_service_request: :services).
           where.not(sub_service_requests: { status: statuses_hidden }).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
@@ -101,7 +101,7 @@ module Dashboard
     end
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
-      statuses_hidden = 
+      statuses_hidden =
         if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
@@ -112,7 +112,7 @@ module Dashboard
 
       (opts[:merged] && opts[:consolidated] ? service_request : (sub_service_request || service_request)).line_items.
         eager_load(:admin_rates, :notes, :protocol).
-        includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
+        eager_load(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
         where.not(sub_service_requests: { status: statuses_hidden }).
         where(services: { one_time_fee: true }).
         group_by do |li|

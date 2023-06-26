@@ -23,11 +23,19 @@ hideVisitGroupPopover()
 
 <% if @arm %>
 $(".arm-<%= @arm.id %>-container:visible").replaceWith("<%= j render '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated %>")
+<% page = @pages[@arm.id.to_s] %>
+<% visit_groups = @arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= @arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, pages: @pages, page: page, merged: @merged, consolidated: @consolidated, visit_groups: visit_groups %>")
 <% else %>
 $('#serviceCalendar .nav-tabs .nav-link.active, #serviceCalendar .tab-content .tab-pane.active.show').removeClass('active show')
 $('#serviceCalendarHeader').replaceWith("<%= j render 'service_calendars/header', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, page: @page, pages: @pages %>")
 $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
+<% @service_request.arms.joins(:visit_groups).distinct.eager_load(:visit_groups, :protocol).select{ |arm| arm.visit_groups.any? }.each do |arm| %>
+<% page = @pages[arm.id.to_s] %>
+<% visit_groups = arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: arm, tab: @tab, pages: @pages, page: page, merged: @merged, consolidated: @consolidated, visit_groups: visit_groups %>")
+<% end %>
 <% end %>
 
 toggleServicesToggle(false)

@@ -18,19 +18,27 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if Setting.get_value("system_satisfaction_survey") && SystemSurvey.where(access_code: 'system-satisfaction-survey', active: true).any?
-  = hidden_field_tag :use_system_satisfaction, 'true'
-
-= render '/service_requests/navigation/steps'
-= render '/service_requests/navigation/header'
-.w-100#review
-  = render 'protocols/summary', protocol: @service_request.protocol, protocol_type: @service_request.protocol.type, service_request: @service_request
-  = render 'associated_users/table', service_request: @service_request, protocol: @service_request.protocol
-
-  .mb-3#serviceCalendar
-    = render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page, in_review: true
-
-  = render 'documents/table', service_request: @service_request, protocol: @service_request.protocol
-  - if @service_request.has_associated_forms?
-    = render "forms/table", service_request: @service_request, review: @review
-= render 'service_requests/navigation/footer'
+.modal-dialog{ id: "#{survey.model_name.human.downcase}-notifications-modal" }
+  .modal-content
+    = form_for survey, url: surveyor_survey_update_notifications_path(survey, type: survey.type), method: :post, remote: true do |f|
+      .modal-header
+        %h3.modal-title.text-center
+          = t(:surveyor)[:notifications_form][:title]
+        %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+          %span{ aria: { hidden: 'true' } } &times;
+      .modal-body.mx-2
+        .row
+          .col-6
+            = t(:surveyor)[:notifications_form][:user_roles]
+        .row
+          .col-10
+            = f.select(:notify_roles, options_from_collection_for_select(user_roles, "id", "value", JSON.parse(survey.notify_roles)), {}, class: "selectpicker", multiple: true, 'data-actions-box' => true)
+        .row.mt-4
+          .col-6.mx-0
+            = t(:surveyor)[:notifications_form][:notify_requester]
+          .col-1.mx-0
+            = f.check_box :notify_requester
+      .modal-footer
+        %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+          = t('actions.close')
+        = f.submit t(:actions)[:update_notifications], class: 'btn btn-primary'

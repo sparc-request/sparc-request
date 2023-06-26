@@ -19,6 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $('#modalContainer').html("<%= j render 'dashboard/sub_service_requests/view_modal', sub_service_request: @sub_service_request, service_request: @service_request, tab: @tab, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol %>")
+<% @service_request.arms.joins(:visit_groups).distinct.eager_load(:visit_groups, :protocol).select{ |arm| arm.visit_groups.any? }.each do |arm| %>
+<% page = @pages[arm.id.to_s] %>
+<% visit_groups = arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] }) %>
+$(".arm-<%= arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: arm, tab: @tab, pages: @pages, page: page, merged: @merged, consolidated: @consolidated, visit_groups: visit_groups %>")
+<% end %>
 $('#modalContainer').one 'shown.bs.modal', ->
   adjustCalendarHeaders()
 $('#modalContainer').modal('show')

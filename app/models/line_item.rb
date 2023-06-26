@@ -145,6 +145,15 @@ class LineItem < ApplicationRecord
     rate
   end
 
+  def one_time_fee?
+    self.service.one_time_fee?
+  end
+
+  def has_fulfillments?
+    line_item_in_cwf = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
+    line_item_in_cwf.try(:fulfilled?)
+  end
+
   def has_admin_rates?
     self.admin_rates.present? && self.admin_rates.last.admin_cost.present?
   end

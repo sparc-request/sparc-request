@@ -274,7 +274,7 @@ class EpicInterface
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'INIT_IRB_APPVL_DATE')
-          xml.value(value: irb_approval_date)
+          xml.value(value: initial_irb_approval_date)
         }
       }
     end

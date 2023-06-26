@@ -164,7 +164,7 @@ class EpicInterface
         emit_procedures_and_encounters(xml, study)
         emit_guarantor_contact(xml, study)
         emit_guarantor_phone(xml, study)
-        emit_irb_approval_date(xml, study)
+        emit_initial_irb_approval_date(xml, study)
         emit_irb_expiration_date(xml, study)
       }
     }
@@ -195,7 +195,7 @@ class EpicInterface
         emit_rmid(xml, study)
         emit_guarantor_contact(xml, study)
         emit_guarantor_phone(xml, study)
-        emit_irb_approval_date(xml, study)
+        emit_initial_irb_approval_date(xml, study)
         emit_irb_expiration_date(xml, study)
       }
     }
@@ -207,7 +207,7 @@ class EpicInterface
     if !guarantor_contact.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-          xml.code(code: 'GUARANTOR_CONTACT')
+          xml.code(code: 'GUAR_CONTACT')
           xml.value(value: guarantor_contact)
         }
       }
@@ -219,7 +219,7 @@ class EpicInterface
     if !guarantor_phone.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-          xml.code(code: 'GUARANTOR_PHONE')
+          xml.code(code: 'GUAR_PHONE')
           xml.value(value: guarantor_phone)
         }
       }
@@ -254,7 +254,7 @@ class EpicInterface
     end
   end
 
-   def emit_irb_number(xml, study)
+  def emit_irb_number(xml, study)
     irb_number = study.human_subjects_info.irb_records.first.try(:pro_number)
 
     if !irb_number.blank?
@@ -267,13 +267,13 @@ class EpicInterface
     end
   end
 
- def emit_irb_approval_date(xml, study)
-    irb_approval_date = study.human_subjects_info.irb_records.first.try(:irb_approval_date)
+ def emit_initial_irb_approval_date(xml, study)
+    initial_irb_approval_date = study.human_subjects_info.irb_records.first.try(:initial_irb_approval_date)
 
-    if !irb_approval_date.blank?
+    if !initial_irb_approval_date.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-          xml.code(code: 'IRB_APPROVAL_DATE')
+          xml.code(code: 'INIT_IRB_APPVL_DATE')
           xml.value(value: irb_approval_date)
         }
       }

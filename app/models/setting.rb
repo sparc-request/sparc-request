@@ -31,6 +31,18 @@ class Setting < ApplicationRecord
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
+  scope :search_query, -> (term) {
+    return if term.blank?
+
+    setting_arel = Setting.arel_table
+    attrs = [:group, :key, :value, :friendly_name, :description, :parent_key, :parent_value]
+
+    where (attrs
+      .map { |attr| setting_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+     )
+  }
+
   def self.preload_values
     # Cache settings for the current request thread for the current request
     RequestStore.store[:settings_map] ||= Setting.all.map{ |s| [s.key, { value: s.read_attribute(:value), data_type: s.data_type }] }.to_h
@@ -68,6 +80,15 @@ class Setting < ApplicationRecord
 
   def children
     Setting.where(parent_key: key)
+  end
+
+  def self.to_csv(settings)
+    CSV.generate do |csv|
+      csv << column_names
+      settings.each do |i|
+        csv << i.attributes.values_at(*column_names)
+      end
+    end
   end
 
   private

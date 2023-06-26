@@ -93,6 +93,7 @@
 
 //= require admin/applications
 //= require admin/identities
+//= require admin/settings
 
 //= require dashboard/protocols
 //= require dashboard/notifications

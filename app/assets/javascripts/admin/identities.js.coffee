@@ -19,13 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  ###################
-  # Identities Table #
-  ###################
-
+  
+  # The export button is rendered in the table data settings (show-export: 'true'), and this hides the option to select a format type (as we will export to csv only).
   $('#identitiesCard .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-  $(document).on 'click', '#identitiesCard .export button', ->
+  # For exporting table data, this redirects to the 'index' method 'csv' format response in the admin/identities controller.
+  $('#identitiesCard .export button').on 'click', ->
     url = new URL($('#identitiesTable').data('url'), window.location.origin)
     url.pathname = url.pathname.replace('json', 'csv')
     window.location = url

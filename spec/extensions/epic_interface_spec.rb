@@ -396,7 +396,7 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="GUARANTOR_CONTACT" />
+            <code code="GUAR_CONTACT" />
             <value value="#{study.guarantor_contact}" />
           </studyCharacteristic>
         </subjectOf>
@@ -422,7 +422,7 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="GUARANTOR_PHONE" />
+            <code code="GUAR_PHONE" />
             <value value="#{study.guarantor_phone}" />
           </studyCharacteristic>
         </subjectOf>
@@ -440,7 +440,7 @@ RSpec.describe EpicInterface do
       expect(node[6]).to be_equivalent_to(expected.root)
     end
 
-    it 'should emit a subjectOf for an irb approval date' do
+    it 'should emit a subjectOf for an initial irb approval date' do
       epic_interface.send_study_creation(study)
 
       xml = <<-END
@@ -448,8 +448,8 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="IRB_APPROVAL_DATE" />
-            <value value="#{study.irb_records.first.irb_approval_date}" />
+            <code code="INIT_IRB_APPVL_DATE" />
+            <value value="#{study.irb_records.first.initial_irb_approval_date}" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -473,7 +473,7 @@ RSpec.describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="IRB_EXPIRATION_DATE" />
+            <code code="IRB_EXP_DATE" />
             <value value="#{study.irb_records.first.irb_expiration_date}" />
           </studyCharacteristic>
         </subjectOf>

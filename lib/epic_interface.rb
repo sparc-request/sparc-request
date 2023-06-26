@@ -286,7 +286,7 @@ class EpicInterface
     if !irb_expiration_date.blank?
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-          xml.code(code: 'IRB_EXPIRATION_DATE')
+          xml.code(code: 'IRB_EXP_DATE')
           xml.value(value: irb_expiration_date)
         }
       }

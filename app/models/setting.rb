@@ -35,7 +35,7 @@ class Setting < ApplicationRecord
     return if term.blank?
 
     setting_arel = Setting.arel_table
-    attrs = [:group, :key, :value, :friendly_name, :description, :parent_key, :parent_value]
+    attrs = [:id, :key, :value, :data_type, :friendly_name, :description, :group, :version, :parent_key, :parent_value]
 
     where (attrs
       .map { |attr| setting_arel[attr].matches("%#{term}%")}

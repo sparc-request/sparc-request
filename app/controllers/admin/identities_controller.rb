@@ -21,7 +21,6 @@
 class Admin::IdentitiesController < Admin::ApplicationController
 
   def index
-    @@search_results
     respond_to do |format|
       format.html
       format.json {

@@ -23,23 +23,22 @@ class Admin::SettingsController < Admin::ApplicationController
 
     def index
       @settings = Setting.order(:group, :key)
-      #@settings_from_search = params[:settings_from_search]
       @search_input = params[:search_input]
-      @@search_results
-      #if @settings_from_search
-        #@parsed_settings = JSON.parse(@settings_from_search)
-        #@settings_ids = @parsed_settings.map(&:to_i)
-        #@@search_results = Setting.where(id: @settings_ids)
-      #end
       if @search_input
-        @@search_results = Setting.search_query(@search_input)
+        if @search_input.length < 2
+          # To match what renders in table, as typing only one character in the search box still renders all Settings in the database (aka, does not filter results based on that one character).
+          @@search_results = @settings
+        else
+          @@search_results = Setting.search_query(@search_input)
+        end
       end
 
       respond_to do |format|
         format.html
         format.json
         format.csv {
-          send_data Setting.to_csv(@@search_results), filename: "sparcrequest_admin_settings_list.csv"
+          @export_data = select_export_data
+          send_data Setting.to_csv(@export_data), filename: "sparcrequest_admin_settings_list.csv"
         }
       end
     end
@@ -64,6 +63,14 @@ class Admin::SettingsController < Admin::ApplicationController
       end
 
       respond_to :js
+    end
+
+    def select_export_data
+      if defined?(@@search_results) && @@search_results.present?
+        @@search_results
+      else
+        Setting.all
+      end
     end
 
     protected

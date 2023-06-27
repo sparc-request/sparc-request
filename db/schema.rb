@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_06_151619) do
+ActiveRecord::Schema.define(version: 2023_06_27_001331) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
@@ -248,7 +248,7 @@ ActiveRecord::Schema.define(version: 2023_06_06_151619) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "collaborating_org_name"
     t.string "collaborating_org_type"
     t.text "comments"
@@ -291,6 +291,17 @@ ActiveRecord::Schema.define(version: 2023_06_06_151619) do
     t.index ["line_item_id"], name: "index_fulfillments_on_line_item_id"
   end
 
+  create_table "historic_admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.bigint "line_item_id"
+    t.bigint "identity_id"
+    t.integer "admin_cost"
+    t.datetime "original_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_historic_admin_rates_on_identity_id"
+    t.index ["line_item_id"], name: "index_historic_admin_rates_on_line_item_id"
+  end
+
   create_table "human_subjects_info", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.datetime "created_at", null: false
@@ -330,9 +341,9 @@ ActiveRecord::Schema.define(version: 2023_06_06_151619) do
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
     t.boolean "imported_from_lbb", default: false
+    t.text "institution"
     t.string "age_group"
     t.string "gender"
-    t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
@@ -792,7 +803,7 @@ ActiveRecord::Schema.define(version: 2023_06_06_151619) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "races", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.bigint "identity_id"
     t.string "name", null: false
     t.string "other_text"

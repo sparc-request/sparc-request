@@ -18,30 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AdminRate < ApplicationRecord
+class HistoricAdminRate < ApplicationRecord
   audited
 
   belongs_to :line_item
   belongs_to :identity
 
-  after_create :archive_old_rate
+  default_scope { order(original_date: :asc) }
 
   def effective_date
-    created_at
-  end
-
-  private
-
-  def archive_old_rate
-    line_item.admin_rates.without(self).each do |old_rate|
-      if HistoricAdminRate.create(
-        line_item_id: line_item_id,
-        admin_cost: old_rate.admin_cost,
-        identity_id: old_rate.identity_id,
-        original_date: old_rate.created_at)
-
-        old_rate.destroy
-      end
-    end
+    original_date
   end
 end

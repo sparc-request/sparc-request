@@ -32,6 +32,7 @@ class LineItem < ApplicationRecord
   has_many :line_items_visits, dependent: :destroy
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
+  has_many :historic_admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   has_many :arms, through: :line_items_visits

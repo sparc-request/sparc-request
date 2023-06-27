@@ -171,7 +171,7 @@ module FeeAgreement
 
       query = service_request.line_items
                              .eager_load(:admin_rates, :notes, :service_request)
-                             .eager_load(sub_service_request: :organization,
+                             .includes(sub_service_request: :organization,
                                        service: [:pricing_maps,
                                                  organization: [:pricing_setups,
                                                                 parent: [:pricing_setups,
@@ -308,7 +308,7 @@ module FeeAgreement
 
     query = arm.line_items_visits
                .eager_load(:visits, :notes)
-               .eager_load(sub_service_request: :organization,
+               .includes(sub_service_request: :organization,
                          line_item: [:admin_rates, :service_request,
                                      service: [:pricing_maps,
                                                organization: [:pricing_setups,

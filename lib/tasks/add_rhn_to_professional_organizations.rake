@@ -7,7 +7,7 @@ task :add_rhn_to_professional_organizations => :environment do
 
     # Add Divisions as children of Institution
     divisions_count = 0
-    divisions = ["RHN-MUSC Health Florence", "RHN-MUSC Health Midlands/Columbia", "RHN-MUSC Health Lancaster"]
+    divisions = ["RHN-MUSC Health Florence", "RHN-MUSC Health Midlands/Columbia", "RHN-MUSC Health Lancaster", "RHN-MUSC Health Orangeburg"]
     parent_id = rhn.id
     divisions.each do |name|
       division = ProfessionalOrganization.find_or_create_by name: name
@@ -24,7 +24,7 @@ task :add_rhn_to_professional_organizations => :environment do
 
     florence_id = ProfessionalOrganization.find_by(name: divisions[0]).id
     columbia_id = ProfessionalOrganization.find_by(name: divisions[1]).id
-    lancaster_id = ProfessionalOrganization.find_by(name: divisions[-1]).id
+    lancaster_id = ProfessionalOrganization.find_by(name: divisions[2]).id
     parents = [florence_id, columbia_id, lancaster_id]
 
     locations_count = 0

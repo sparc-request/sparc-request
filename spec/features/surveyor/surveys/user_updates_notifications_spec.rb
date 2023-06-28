@@ -18,23 +18,56 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryBot.define do
-  factory :survey do
-    title                     { Faker::Lorem.word }
-    sequence(:access_code)    { |n| "survey-#{n}" }
-    sequence(:version)        { |n| n }
-    active                    { false }
-    notify_requester          { true }
-    notify_roles              { [PermissibleValue.where(category: 'user_role').first.id] }
+require 'rails_helper'
 
-    trait :active do
-      active {true}
+RSpec.describe 'User updates notifications', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  stub_config("site_admins", ["jug2"])
+
+  context 'surveys' do
+    before :each do
+      
+      @survey = create(:system_survey, notify_roles: [PermissibleValue.where(category: 'user_role', key: 'primary-pi').first.id], active: true)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
     end
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
+    scenario 'and sees the updated roles for notification' do
+      bootstrap_dropdown("#surveyActions#{@survey.id}", /Notify/)
+      wait_for_javascript_to_finish
+
+      bootstrap_select("#system_survey_notify_roles", /Co-Investigator/)
+
+      click_button "Update Notifications"
+      wait_for_javascript_to_finish
+
+      expect(page).to have_text("Primary PI, Co-Investigator")
+    end
+  end
+
+  context 'forms' do
+    before :each do
+      org = create(:institution)
+      create(:super_user, organization: org, identity: jug2)
+      @form = create(:form, notify_roles: [PermissibleValue.where(category: 'user_role', key: 'primary-pi').first.id], active: true, surveyable: org)
+
+      visit surveyor_surveys_path
+      wait_for_javascript_to_finish
     end
 
-    factory :survey_without_validations, traits: [:without_validations]
+    scenario 'and sees the updated roles for notification' do
+      bootstrap_dropdown("#surveyActions#{@form.id}", /Notify/)
+      wait_for_javascript_to_finish
+
+      bootstrap_select("#form_notify_roles", /Co-Investigator/)
+
+      click_button "Update Notifications"
+      wait_for_javascript_to_finish
+
+      expect(page).to have_text("Primary PI, Co-Investigator")
+    end
   end
 end

@@ -35,6 +35,10 @@
             = t(:surveyor)[:systemsurveys][:table][:headers][:version]
           %th{ data: { field: "active", align: "center" } }
             = t(:surveyor)[:systemsurveys][:table][:headers][:active]
+          %th.col-4{ data: { field: "notify_roles", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:notify_roles]
+          %th{ data: { field: "notify_requester?", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:notify_requester]
           %th{ data: { field: "actions", align: "center" } }
             = t(:surveyor)[:systemsurveys][:table][:headers][:actions]
 
@@ -58,5 +62,9 @@
             = t(:surveyor)[:forms][:table][:headers][:version]
           %th{ data: { field: "active", align: "center" } }
             = t(:surveyor)[:forms][:table][:headers][:active]
+          %th.col-4{ data: { field: "notify_roles", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:notify_roles]
+          %th{ data: { field: "notify_requester?", align: "center" } }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:notify_requester]
           %th{ data: { field: "actions", align: "center" } }
             = t(:surveyor)[:forms][:table][:headers][:actions]

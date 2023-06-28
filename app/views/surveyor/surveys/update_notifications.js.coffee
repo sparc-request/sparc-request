@@ -1,5 +1,5 @@
-# Copyright © 2011-2022 MUSC Foundation for Research Development~
-# All rights reserved.~
+# Copyright © 2011-2022 MUSC Foundation for Research Development
+# All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -17,32 +17,5 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-FactoryBot.define do
-  factory :system_survey do
-    title                     { Faker::Lorem.word }
-    sequence(:access_code)    { |n| "survey-#{n}" }
-    sequence(:version)        { |n| n }
-    active                    { false }
-    type                      { 'SystemSurvey' }
-    notify_requester          { true }
-    notify_roles              { [PermissibleValue.where(category: 'user_role').first.id] }
-
-    trait :active do
-      active {true}
-    end
-
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-
-    trait :with_question do
-      after(:create) do |form, evaluator|
-        section = create(:section, survey: form)
-                  create(:question, section: section)
-      end
-    end
-
-    factory :system_survey_without_validations, traits: [:without_validations]
-  end
-end
+$('#modalContainer').modal('hide')
+$('.<%= @type %>-table').bootstrapTable('refresh')

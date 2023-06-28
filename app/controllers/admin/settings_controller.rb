@@ -27,7 +27,7 @@ class Admin::SettingsController < Admin::ApplicationController
       if @search_input
         if @search_input.length < 2
           # To match what renders in table, as typing only one character in the search box still renders all Settings in the database (aka, does not filter results based on that one character).
-          @@search_results = @settings
+          @@search_results = Setting.all.order(group: :desc, key: :asc)
         else
           @@search_results = Setting.search_query(@search_input)
         end
@@ -67,9 +67,9 @@ class Admin::SettingsController < Admin::ApplicationController
 
     def select_export_data
       if defined?(@@search_results) && @@search_results.present?
-        @@search_results
+        @@search_results.order(group: :desc, key: :asc)
       else
-        Setting.all
+        Setting.all.order(group: :desc, key: :asc)
       end
     end
 

@@ -27,7 +27,7 @@
             %p.mb-1
               = Setting.get_value("copyright_language")
             %p.mb-0
-              = t('layout.footer.version', version: ENV['sparc_version'])
+              = t('layout.footer.version', version: ENV['SPARC_VERSION'])
           %p.mb-0
             = link_to 'https://github.com/sparc-request/sparc-request', target: :_blank, class: 'text-white' do
               = icon('fab', 'github fa-lg')

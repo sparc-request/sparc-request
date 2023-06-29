@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- in_review = defined?(in_review) ? in_review : false
+- render_line_items_partial = defined?(render_line_items_partial) ? render_line_items_partial : false
 
 - visit_groups = arm.visit_groups.page(page).includes(visits: { line_items_visit: [:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] ] })
 
@@ -38,5 +38,5 @@
       %thead
         = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups
       %tbody{ class: "arm-#{arm.id}-service-calendar-tbody" }
-        - if in_review
+        - if render_line_items_partial
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups

@@ -145,6 +145,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
           #log change to DB
           ProtocolMerge.create(master_protocol_id: @master_protocol.id, merged_protocol_id: @merged_protocol.id, identity_id: current_identity.id)
+          ProtocolMerge.where(master_protocol_id: @merged_protocol).update_all(master_protocol_id: @master_protocol.id)
 
           #delete merged protocol
           @merged_protocol.delete

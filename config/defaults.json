@@ -1140,6 +1140,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "epic_user_api_error_teams_webhook",
+    "value":          "",
+    "friendly_name":  "Epic User API Error Teams Webhook.",
+    "description":    "If this is set to a Teams webhook url, then a teams notification will be posted when a user encountered an error connecting to the Epic user interface.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "copyright_language",
     "value":          "© 2011-2022 MUSC Foundation for Research Development",
     "friendly_name":  "Copyright Language.",

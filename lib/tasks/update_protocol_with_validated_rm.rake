@@ -24,7 +24,45 @@ desc 'Updating Protocol with validated Research Master information'
 namespace :data do
   task update_protocol_with_validated_rm: :environment do
 
-    print('Fetching from Research Master API...')
+    previously_validated_protocols = Protocol.where(rmid_validated: true)
+    previously_validated_count = previously_validated_protocols.count
+    previously_validated_ids = previously_validated_protocols.map(&:id)
+
+    validated_rmid_count = 0
+
+    newly_validated_count = 0
+    newly_validated_ids = []
+
+    removed_validation_count = 0
+    removed_validation_ids = []
+
+    puts("Initial data cleanup...")
+    puts('  Fetching from Research Master API...')
+
+    research_masters = HTTParty.get(
+      "#{Setting.get_value('research_master_api')}research_masters.json",
+      headers:{
+        'Content-Type' => 'application/json',
+        'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
+      }
+    )
+
+    all_rm_ids = research_masters.map{|rmid| rmid['id']}
+
+    protocols_to_cleanup = Protocol.where.not(research_master_id: nil).where.not(research_master_id: all_rm_ids) # we have an research_master_id but it doesn't exist in the RMID system
+    
+    cleanup_count = protocols_to_cleanup.count
+    cleanup_ids = protocols_to_cleanup.map(&:id)
+   
+    protocols_to_cleanup.update_all(research_master_id: nil)
+  
+    puts("  Research Master ID removed from: #{cleanup_count} Protocols")
+    puts("  IDs: #{cleanup_ids}\n")
+
+    # beginning validation of protocols with a valid research_master_id
+    puts("Research Master validation...")
+
+    puts('  Fetching from Research Master API...')
     validated_research_masters = HTTParty.get(
       "#{Setting.get_value('research_master_api')}validated_records.json",
       headers:{
@@ -32,28 +70,28 @@ namespace :data do
         'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
       }
     )
-    puts 'Done'
 
-    puts("\n\nBeginning data refresh...")
-    puts(
-      "Total number of validated Research Masters from RM API:
-      #{validated_research_masters.count}"
-    )
+    validated_rmid_count = validated_research_masters.count
+    validated_rmid_ids = validated_research_masters.map{|rm| rm['id']}
 
-    progress_bar = ProgressBar.new(validated_research_masters.count)
+    puts("  Beginning data refresh...")
+    puts("  Total number of validated Research Masters from Research Master API: #{validated_rmid_count}")
+
+    progress_bar = ProgressBar.new(validated_rmid_count)
+
+    Protocol.update_all(rmid_validated: false) # clear all validation and redo, we saved previous count so we can determine how many have been removed
 
     validated_research_masters.each do |vrm|
-      if Protocol.exists?(research_master_id: vrm['id'])
-        protocol_to_update = Protocol.find_by(research_master_id: vrm['id'])
+      if protocol = Protocol.find_by_research_master_id(vrm['id'])
 
         # update attributes but don't perform validation
-        protocol_to_update.short_title = vrm['short_title']
-        protocol_to_update.title = vrm['long_title']
-        protocol_to_update.rmid_validated = true
-        protocol_to_update.save(validate: false)
+        protocol.short_title = vrm['short_title']
+        protocol.title = vrm['long_title']
+        protocol.rmid_validated = true
+        protocol.save(validate: false)
 
-        if protocol_to_update.has_human_subject_info? && protocol_to_update.human_subjects_info.irb_records.any?
-          protocol_to_update
+        if protocol.has_human_subject_info? && protocol.human_subjects_info.irb_records.any?
+          protocol
             .human_subjects_info
             .irb_records
             .first
@@ -64,72 +102,40 @@ namespace :data do
               irb_expiration_date:        vrm['date_expiration']
             )
         end
+
+        newly_validated_count += 1
+        newly_validated_ids << protocol.id
       end
       progress_bar.increment!
     end
 
-    validated_ids = validated_research_masters.map{|rmid| rmid['id']}
+    removed_validation_count = [previously_validated_count - newly_validated_count, 0].max # return 0 for negative number
+    removed_validation_ids = previously_validated_ids - newly_validated_ids
 
-    protocol_count = Protocol.where(rmid_validated: true).count
-    puts("\n\nChecking Existing validated protocols against current list:")
-    puts("Currently flagged protocols: #{protocol_count}")
-    puts("Number from RMID: #{validated_ids.size}")
+    puts("\n\nChecking existing validated protocols against current list...")
+    puts("  Previously flagged protocols: #{previously_validated_count}")
+    puts("  Number validated via Research Master APIi: #{newly_validated_count}")
+    puts("  Validated flag removed from: #{removed_validation_count} Protocols")
+    puts("  IDs: #{removed_validation_ids}")
 
-    bar2 = ProgressBar.new(protocol_count)
-
-    former_validated_protocols = []
-
-    Protocol.where(rmid_validated: true).find_each do |protocol|
-      unless validated_ids.include?(protocol.research_master_id)
-        protocol.update_attribute(:rmid_validated, false)
-        former_validated_protocols << protocol.id
-      end
-
-      bar2.increment!
+    slack_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
+    if slack_webhook.present?
+      notifier = Slack::Notifier.new(slack_webhook)
+      message =  "RMID update has been performed for SPARC in: #{Rails.env}"
+      message += "\nrmid_validated flags removed: #{removed_validation_count}\n"
+      message += "\nProtocol IDs: #{removed_validation_ids}\n"
+      message += "\nresearch_master_ids removed: #{cleanup_count}\n"
+      message += "\nProtocol IDs: #{cleanup_ids}\n"
+      notifier.ping(message)
     end
-
-    puts("Validated flag removed from: #{former_validated_protocols.size} Protocols")
-    puts("IDs: #{former_validated_protocols}")
-
-    puts ("\n\nChecking non-validated RMID protocols and updated info:")
-    print('Fetching from Research Master API...')
-
-    research_masters = HTTParty.get(
-      "#{Setting.get_value('research_master_api')}research_masters.json",
-      headers:{
-        'Content-Type' => 'application/json',
-        'Authorization' => "Token token=\"#{Setting.get_value('rmid_api_token')}\""
-      }
-    )
-
-    rm_ids = research_masters.map{|rmid| rmid['id']}
-    non_validated_protocol_count = Protocol.where.not(research_master_id: nil).where(rmid_validated: false).count
-
-    puts("Protocols with rmid info: #{non_validated_protocol_count}")
-    puts("Number from RMID: #{research_masters.size}")
-
-    bar3 = ProgressBar.new(non_validated_protocol_count)
-
-    former_rmid_protocols = []
-
-    Protocol.where.not(research_master_id: nil).where(rmid_validated: false).find_each do |non_validated_protocol|
-      unless rm_ids.include?(non_validated_protocol.research_master_id)
-        non_validated_protocol.update_attribute(:research_master_id, nil)
-        former_rmid_protocols << non_validated_protocol.id
-      end
-      bar3.increment!
-    end
-
-    puts("Research Master ID removed from: #{former_rmid_protocols.size} Protocols")
-    puts("IDs: #{former_rmid_protocols}")
 
     teams_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
     if teams_webhook.present?
-      message =  "RMID update has been performed for SPARC in: #{Rails.env}"
-      message += "\nrmid_validated flags removed: #{former_validated_protocols.size}\n"
-      message += "\nProtocol IDs: #{former_validated_protocols}\n"
-      message += "\nresearch_master_ids removed: #{former_rmid_protocols.size}\n"
-      message += "\nProtocol IDs: #{former_rmid_protocols}\n"
+      message =  "RMID update has been performed for SPARC in: #{Rails.env}\n"
+      message += "\nrmid_validated flags removed: #{removed_validation_count}\n"
+      message += "\nProtocol IDs: #{removed_validation_ids}\n"
+      message += "\nresearch_master_ids removed: #{cleanup_count}\n"
+      message += "\nProtocol IDs: #{cleanup_ids}\n"
       notifier = Teams.new(teams_webhook)
       notifier.post(message)
     end

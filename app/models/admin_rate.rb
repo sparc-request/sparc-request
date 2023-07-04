@@ -24,24 +24,22 @@ class AdminRate < ApplicationRecord
   belongs_to :line_item
   belongs_to :identity
 
-  after_create :archive_old_rate
-
-  def effective_date
-    created_at
-  end
+  after_create :log_rate_change
 
   private
 
-  def archive_old_rate
+  def log_rate_change
+    ##There Should only ever be one other admin rate, the old one.
     line_item.admin_rates.without(self).each do |old_rate|
-      if HistoricAdminRate.create(
-        line_item_id: line_item_id,
-        admin_cost: old_rate.admin_cost,
-        identity_id: old_rate.identity_id,
-        original_date: old_rate.created_at)
-
-        old_rate.destroy
-      end
+      old_rate.destroy
     end
+
+    ##Log new rate in rate change table.
+    AdminRateChange.create(
+      line_item_id: line_item_id,
+      admin_cost: admin_cost,
+      identity_id: identity_id,
+      date_of_change: created_at
+    )
   end
 end

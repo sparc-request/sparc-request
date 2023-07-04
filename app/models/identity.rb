@@ -51,7 +51,7 @@ class Identity < ApplicationRecord
 
   has_many :approvals, dependent: :destroy
   has_many :admin_rates
-  has_many :historic_admin_rates
+  has_many :admin_rate_changes
   has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
   has_many :catalog_manager_rights, class_name: 'CatalogManager'
   has_many :catalog_managers, dependent: :destroy

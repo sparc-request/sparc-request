@@ -1,4 +1,4 @@
-$(document).ready ->
+$ ->
 
   # The export button is rendered in the table data settings (show-export: 'true'), and this hides the option to select a format type (as we will export to csv only).
   $('#settingsCard .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
@@ -24,7 +24,7 @@ $(document).ready ->
 
   # STEP 2: This function grabs the string input from the table search bar and sends it to the 'index' method of the admin/settings controller via ajax request where it is used to filter and return relevant database objects on the back end.
   simulateServerCall = ->
-    searchInput = $('.search-input').val()
+    searchInput = $('#settingsCard .search-input').val()
     $.ajax {
       type: 'get'
       url: '' # Left as a blank string, this defaults to the index method in the controller.
@@ -35,8 +35,9 @@ $(document).ready ->
         console.log 'Error sending search param data to controller'
     }
 
-  # STEP 3: Executing STEP 1 and STEP 2.
-  addSearchInputCallback $('.search-input')[0], simulateServerCall, 1000
+  # STEP 3: Executing STEP 1 and STEP 2 conditionally, only if you are in the admin/settings table view.
+  if $('#settingsCard').length
+    addSearchInputCallback $('#settingsCard .search-input')[0], simulateServerCall, 1000
   
   # For exporting table data, this redirects to the 'index' method 'csv' format response in the admin/settings controller.
   $('#settingsCard .export button').on 'click', ->

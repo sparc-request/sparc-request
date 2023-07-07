@@ -215,9 +215,9 @@ class Identity < ApplicationRecord
 
   def self.to_csv(identities)
     CSV.generate do |csv|
-      csv << column_names
+      csv << ["Name", "Institution", "Email", "Created", "Last Sign-In", "Sign-In Count"]
       identities.each do |i|
-        csv << i.attributes.values_at(*column_names)
+        csv << ["#{i.last_name}, #{i.first_name}", i.institution, i.email, i.created_at, i.current_sign_in_at, i.sign_in_count]
       end
     end
   end

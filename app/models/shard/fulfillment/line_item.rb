@@ -40,16 +40,16 @@ module Shard
         self.sparc_line_item.service.one_time_fee?
       end
 
+      # Disable deletion of line items in cart if they have been fulfilled
       def fulfilled?
         if self.one_time_fee?
           self.fulfillments.any?
         else
-          started_procedures = false
+
           self.visits.each do |v|
             procedures = Shard::Fulfillment::Procedure.where visit_id: v.id
-            started_procedures = procedures.where(status: %w(complete incomplete follow_up)).any?
+            return true if procedures.where(status: %w(complete incomplete follow_up)).any?
           end
-          started_procedures
         end
       end
 

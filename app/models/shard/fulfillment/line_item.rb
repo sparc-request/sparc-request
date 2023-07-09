@@ -45,10 +45,14 @@ module Shard
         if self.one_time_fee?
           self.fulfillments.any?
         else
-
+          touched = false
           self.visits.each do |v|
             procedures = Shard::Fulfillment::Procedure.where visit_id: v.id
-            return true if procedures.where(status: %w(complete incomplete follow_up)).any?
+            procedures.each do |p|
+              if p.status != 'unstarted'
+                touched = true
+              end
+            end
           end
         end
       end

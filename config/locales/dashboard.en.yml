@@ -398,6 +398,7 @@ en:
           modified_by: "Modified By"
           cpt_code: "CPT Code"
           modified_rate: "Modified Rate"
+          reset_rate: "Reset rate"
         tooltips:
           status_history: "Status log of request"
           approval_history: "Time stamp log of approvals"

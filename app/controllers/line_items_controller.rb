@@ -47,6 +47,15 @@ class LineItemsController < ApplicationController
     end
   end
 
+  def reset_admin_rate
+    @line_item = LineItem.find(params[:line_item_id])
+    @field = 'displayed_cost'
+
+    @line_item.reset_admin_rate(current_user.id)
+
+    render :update
+  end
+
   private
 
   def line_item_params

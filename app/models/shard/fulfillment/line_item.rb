@@ -46,14 +46,15 @@ module Shard
           self.fulfillments.any?
         else
           touched = false
-          self.visits.each do |v|
-            procedures = Shard::Fulfillment::Procedure.where visit_id: v.id
+          self.visits.each do |visit|
+            procedures = Shard::Fulfillment::Procedure.where(visit_id: visit.id)
             procedures.each do |p|
               if p.status != 'unstarted'
                 touched = true
               end
             end
           end
+          touched
         end
       end
 

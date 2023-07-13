@@ -36,13 +36,13 @@ module Shard
       belongs_to :sparc_line_item, class_name: '::LineItem', foreign_key: :sparc_id
       belongs_to :sparc_service, class_name: '::Service', foreign_key: :service_id
 
-      def one_time_fee?
+      def non_clinical?
         self.sparc_line_item.service.one_time_fee?
       end
 
       # Disable deletion of line items in cart if they have been fulfilled
       def fulfilled?
-        if self.one_time_fee?
+        if self.non_clinical?
           self.fulfillments.any?
         else
           touched = false

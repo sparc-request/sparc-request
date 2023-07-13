@@ -150,8 +150,8 @@ class LineItem < ApplicationRecord
   end
 
   def has_fulfillments?
-    line_item_in_cwf = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
-    line_item_in_cwf.try(:fulfilled?)
+    fulfillment_line_item = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
+    fulfillment_line_item.try(:fulfilled?)
   end
 
   def has_admin_rates?

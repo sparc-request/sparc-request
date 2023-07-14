@@ -23,7 +23,24 @@ class Admin::SettingsController < Admin::ApplicationController
 
     def index
       @settings = Setting.order(:group, :key)
-      respond_to :json, :html
+      @search_input = params[:search_input]
+      if @search_input
+        if @search_input.length < 2
+          # To match what renders in table, as typing only one character in the search box still renders all Settings in the database (aka, does not filter results based on that one character).
+          @@search_results = Setting.all.order(group: :desc, key: :asc)
+        else
+          @@search_results = Setting.search_query(@search_input)
+        end
+      end
+
+      respond_to do |format|
+        format.html
+        format.json
+        format.csv {
+          @export_data = select_export_data
+          send_data Setting.to_csv(@export_data), filename: "sparcrequest_admin_settings_list.csv"
+        }
+      end
     end
 
     def show
@@ -46,6 +63,14 @@ class Admin::SettingsController < Admin::ApplicationController
       end
 
       respond_to :js
+    end
+
+    def select_export_data
+      if defined?(@@search_results) && @@search_results.present?
+        @@search_results.order(group: :desc, key: :asc)
+      else
+        Setting.all.order(group: :desc, key: :asc)
+      end
     end
 
     protected

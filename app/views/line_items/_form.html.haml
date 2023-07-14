@@ -53,6 +53,9 @@
             %small.form-text.text-muted
               = t('constants.min', min: min)
               = t('constants.max', max: max)
+        - if params[:field] == 'displayed_cost'
+          %button#admin_rate_reset_button.btn.btn-danger.mt-2{ type: 'button'}
+            = t('dashboard.sub_service_requests.history.rate_history.reset_rate')
       .modal-footer
         %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
           = t('actions.close')

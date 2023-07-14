@@ -175,7 +175,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def rate_history
     #For admin_rate history
-    @rates = @sub_service_request.admin_rates
+    @rate_changes = @sub_service_request.admin_rate_changes
   end
   #History Table Methods End
 

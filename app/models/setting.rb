@@ -35,7 +35,7 @@ class Setting < ApplicationRecord
     return if term.blank?
 
     setting_arel = Setting.arel_table
-    attrs = [:id, :key, :value, :data_type, :friendly_name, :description, :group, :version, :parent_key, :parent_value]
+    attrs = [:group, :key, :value, :data_type, :parent_key, :parent_value]
 
     where (attrs
       .map { |attr| setting_arel[attr].matches("%#{term}%")}
@@ -84,9 +84,9 @@ class Setting < ApplicationRecord
 
   def self.to_csv(settings)
     CSV.generate do |csv|
-      csv << column_names
-      settings.each do |i|
-        csv << i.attributes.values_at(*column_names)
+      csv << ["Group", "Key", "Value", "Data Type", "Parent Key", "Parent Value"]
+      settings.each do |s|
+        csv << [s.group, s.key, s.value, s.data_type, s.parent_key, s.parent_value]
       end
     end
   end

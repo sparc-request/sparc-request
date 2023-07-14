@@ -27,8 +27,10 @@ $ ->
     searchInput = $('#settingsCard .search-input').val()
     $.ajax {
       type: 'get'
-      url: '' # Left as a blank string, this defaults to the index method in the controller.
-      data: { search_input: searchInput }
+      url: '' + 'settings.json'
+      contentType: 'application/json'
+      dataType: 'json'
+      data: { search: searchInput, sort: 'group', order: 'desc' }
       success: (data) ->
         console.log 'Search param data sent to controller.'
       error: (data) ->
@@ -38,7 +40,9 @@ $ ->
   # STEP 3: Executing STEP 1 and STEP 2 conditionally, only if you are in the admin/settings table view.
   if $('#settingsCard').length
     addSearchInputCallback $('#settingsCard .search-input')[0], simulateServerCall, 1000
+
   
+
   # For exporting table data, this redirects to the 'index' method 'csv' format response in the admin/settings controller.
   $('#settingsCard .export button').on 'click', ->
     url = new URL($('#settingsTable').data('url'), window.location.origin)

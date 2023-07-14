@@ -34,15 +34,15 @@
           = Setting.human_attribute_name(:value)
         %th.w-5{ data: { field: 'data_type', sortable: 'true' } }
           = Setting.human_attribute_name(:data_type)
-        %th{ data: { field: 'friendly_name', sortable: 'true' } }
+        %th{ data: { field: 'friendly_name',sortable: 'false', visible: 'false' } }
           = Setting.human_attribute_name(:friendly_name)
-        %th{ data: { field: 'description', sortable: 'false', visible: 'false' } }
+        %th{ data: { field: 'description',sortable: 'false', visible: 'false' } }
           = Setting.human_attribute_name(:description)
         %th.w-10{ data: { field: 'parent_key', sortable: 'true' } }
           = Setting.human_attribute_name(:parent_key)
         %th.w-10{ data: { field: 'parent_value', sortable: 'false' } }
           = Setting.human_attribute_name(:parent_value)
-        %th{ data: { field: 'version', sortable: 'false', visible: 'false' } }
+        %th{ data: { field: 'version', sortable: 'true', visible: 'false' } }
           = Setting.human_attribute_name(:version)
         %th.w-8{ data: { class: 'actions', align: 'center', field: 'actions' } }
           = t('actions.actions')

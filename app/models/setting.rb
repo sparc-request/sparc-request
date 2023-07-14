@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'csv'
+
 class Setting < ApplicationRecord
   include DataTypeValidator
 
@@ -30,6 +32,23 @@ class Setting < ApplicationRecord
 
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
+
+  scope :sorted, -> (sort, order) {
+    case sort
+    when 'group'
+      order(Arel.sql("settings.group #{order}"))
+    when 'key'
+      order(Arel.sql("settings.key #{order}"))
+    when 'value'
+      order(Arel.sql("settings.value #{order}"))
+    when 'data_type'
+      order(Arel.sql("settings.data_type #{order}"))
+    when 'parent_key'
+      order(Arel.sql("settings.parent_key #{order}"))
+    when 'parent_value'
+      order(Arel.sql("settings.parent_value #{order}"))
+    end
+  }
 
   scope :search_query, -> (term) {
     return if term.blank?

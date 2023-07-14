@@ -142,12 +142,14 @@ class Surveyor::SurveysController < Surveyor::BaseController
   def update_notifications
     @survey = Survey.find(params[:survey_id])
 
-    @survey.update(
+    if @survey.update(
       notify_requester: survey_params[:notify_requester], 
       notify_roles: survey_params[:notify_roles].reject(&:blank?).map(&:to_i)
     )
-
-    @type = @survey.class.name.snakecase.dasherize.downcase
+      @type = @survey.class.name.snakecase.dasherize.downcase
+    else
+      @errors = @survey.errors 
+    end
 
     respond_to do |format|
       format.js

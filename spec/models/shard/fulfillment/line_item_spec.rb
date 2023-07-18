@@ -12,10 +12,12 @@ RSpec.describe Shard::Fulfillment::LineItem, type: :model do
 
   describe 'instance methods' do
     describe '#fulfilled?' do
-      context 'when the line item is a one time fee' do
+      let(:service_id) { 1 }
+      let(:procedure ) {{ status: 'incomplete' }}
+       context 'if service is non-clinical' do
         it 'returns true' do
           allow(subject).to receive(:non_clinical?).and_return(true)
-          allow(subject).to receive_message_chain(:fulfillments, :any?).and_return(true)
+          allow(subject).to receive_message_chain(:fulfillments, :exists?).and_return(true)
           expect(subject.fulfilled?).to eq(true)
         end
       end

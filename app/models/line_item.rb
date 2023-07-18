@@ -149,9 +149,9 @@ class LineItem < ApplicationRecord
     self.service.one_time_fee?
   end
 
+  # If a service in cart is in fulfillment, disable its delete button
   def has_fulfillments?
-    fulfillment_line_item = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
-    fulfillment_line_item.try(:fulfilled?)
+    fulfillment_line_items.any?(&:fulfilled?)
   end
 
   def has_admin_rates?

@@ -40,21 +40,12 @@ module Shard
         self.sparc_line_item.service.one_time_fee?
       end
 
-      # Disable deletion of line items in cart if they have been fulfilled
+      # Disable deletion of service in cart if in fulfillment
       def fulfilled?
-        if self.non_clinical?
-          self.fulfillments.any?
+        if non_clinical?
+          fulfillments.exists?
         else
-          touched = false
-          self.visits.each do |visit|
-            procedures = Shard::Fulfillment::Procedure.where(visit_id: visit.id)
-            procedures.each do |p|
-              if p.status != 'unstarted'
-                touched = true
-              end
-            end
-          end
-          touched
+          arm.appointments.joins(:procedures).where(procedures: { service_id: service_id, status: %w[incomplete complete follow_up] }).exists?
         end
       end
 

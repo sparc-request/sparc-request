@@ -24,15 +24,15 @@ module Shard
       self.table_name = 'arms'
 
       belongs_to :protocol
-
+      has_many :appointments
       has_many :line_items
-      has_many :visit_groups
 
       ##########################
       ### SPARC Associations ###
       ##########################
 
       belongs_to :sparc_arm, class_name: '::Arm', foreign_key: :sparc_id
+
     end
   end
 end

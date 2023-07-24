@@ -40,7 +40,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       if search_term > 0
         merge = search_protocol_merges(search_term)
         if merge
-          params[:filterrific][:search_query][:search_text] = merge.master_protocol_id.to_s
+          params[:filterrific][:search_query][:merged_id] = merge.master_protocol_id.to_s
         end
       end
     end
@@ -265,7 +265,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :admin_filter,
       :search_query,
       :reset_filterrific,
-      search_query: [:search_drop, :search_text],
+      search_query: [:search_drop, :search_text, :merged_id],
       with_organization: [],
       with_status: [],
       with_owner: [])

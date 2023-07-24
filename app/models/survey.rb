@@ -36,6 +36,8 @@ class Survey < ApplicationRecord
 
   validates :version, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
+  validate :notified_people
+
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   default_scope -> {
@@ -85,6 +87,12 @@ class Survey < ApplicationRecord
 
   def report_title
     "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
+  end
+
+  def notified_people
+    if notify_roles == '[]'
+      errors.add(:base, "Must select one.")
+    end
   end
 
   def has_responses?

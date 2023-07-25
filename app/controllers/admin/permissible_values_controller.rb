@@ -21,62 +21,72 @@
 
 class Admin::PermissibleValuesController < Admin::ApplicationController
 
-    def index
-      @permissible_values = PermissibleValue.reorder('category , is_available DESC, sort_order')
-      respond_to :json, :html
+  def index
+    respond_to do |format|
+      format.html
+      format.json {
+        @permissible_values = PermissibleValue.search_query(params[:search])
+        @total = @permissible_values.count
+        @permissible_values = @permissible_values.sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
+        @@permissible_values_search_results = @permissible_values.except(:limit)
+      }
+      format.csv {
+        send_data PermissibleValue.to_csv(@@permissible_values_search_results), filename: "sparcrequest_admin_permissible_values_list.csv"
+      }
     end
-
-    def show
-      @permissible_value = PermissibleValue.find(params[:id])
-      respond_to :js
-    end
-
-    def new
-      @permissible_value = PermissibleValue.new(is_available: false)
-      respond_to :js
-    end
-
-    def create
-      @permissible_value = PermissibleValue.new(permissible_value_params)
-      
-      if @permissible_value.save
-        flash.now[:success] = t('admin.permissible_values.created')
-      else
-        @errors = @permissible_value.errors
-      end
-
-      respond_to :js
-    end
-
-    def edit
-      respond_to :js      
-      @permissible_value = PermissibleValue.find(params[:id])
-    end
-
-    def update
-      @permissible_value = PermissibleValue.find(params[:id])
-
-      if @permissible_value.update_attributes(permissible_value_params)
-        flash.now[:success] = t('admin.permissible_values.updated')
-      else
-        @errors = @permissible_value.errors
-      end
-
-      respond_to :js
-    end
-
-
-    protected
-
-    def permissible_value_params
-      params.require(:permissible_value).permit(
-        :key,
-        :value,
-        :sort_order,
-        :category,
-        :is_available,
-        :default
-      )
-    end
-  
   end
+
+  def show
+    @permissible_value = PermissibleValue.find(params[:id])
+    respond_to :js
+  end
+
+  def new
+    @permissible_value = PermissibleValue.new(is_available: false)
+    respond_to :js
+  end
+
+  def create
+    @permissible_value = PermissibleValue.new(permissible_value_params)
+    
+    if @permissible_value.save
+      flash.now[:success] = t('admin.permissible_values.created')
+    else
+      @errors = @permissible_value.errors
+    end
+
+    respond_to :js
+  end
+
+  def edit
+    respond_to :js      
+    @permissible_value = PermissibleValue.find(params[:id])
+  end
+
+  def update
+    @permissible_value = PermissibleValue.find(params[:id])
+
+    if @permissible_value.update_attributes(permissible_value_params)
+      flash.now[:success] = t('admin.permissible_values.updated')
+    else
+      @errors = @permissible_value.errors
+    end
+
+    respond_to :js
+  end
+
+
+  protected
+
+  def permissible_value_params
+    params.require(:permissible_value).permit(
+      :key,
+      :value,
+      :sort_order,
+      :category,
+      :is_available,
+      :default
+    )
+  end
+
+end

@@ -21,9 +21,18 @@
 class Admin::OverlordsController < Admin::ApplicationController
 
   def index
-    @overlords = Identity.overlords
-
-    respond_to :json, :html
+    respond_to do |format|
+      format.html
+      format.json {
+        @overlords = Identity.overlords.overlords_search_query(params[:search])
+        @total = @overlords.count
+        @overlords = @overlords.overlords_sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
+        @@overlords_search_results = @overlords.except(:limit)
+      }
+      format.csv {
+        send_data Identity.overlords.overlords_to_csv(@@overlords_search_results), filename: "sparcrequest_admin_catalog_managers_list.csv"
+      }
+    end
   end
 
   def new

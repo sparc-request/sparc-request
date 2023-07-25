@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+require 'csv'
+
 class PermissibleValue < ApplicationRecord
   audited
 
@@ -39,6 +41,49 @@ class PermissibleValue < ApplicationRecord
   scope :unavailable, -> {
     where(is_available: false)
   }
+
+  scope :sorted, -> (sort, order) {
+    case sort
+    when 'category'
+      order(Arel.sql("permissible_values.category #{order}"))
+    when 'key'
+      order(Arel.sql("permissible_values.key #{order}"))
+    when 'value'
+      order(Arel.sql("permissible_values.value #{order}"))
+    when 'sort_order'
+      order(Arel.sql("permissible_values.sort_order #{order}"))
+    when 'default'
+      order(Arel.sql("permissible_values.default #{order}"))
+    when 'is_available'
+      order(Arel.sql("permissible_values.is_available #{order}"))
+    when 'updated_at'
+      order(Arel.sql("permissible_values.updated_at #{order}"))
+    end
+  }
+
+  scope :search_query, -> (term) {
+    return if term.blank?
+
+    pv_arel = PermissibleValue.arel_table
+    #attrs = [:category, :key, :value, :sort_order, :default, :is_available, :updated_at]
+    attrs = [:category, :key, :value]
+
+    where (attrs
+      .map { |attr| pv_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+    )
+    #where(default: boolean_to_s([0, 1]).match?(/#{term}/i))
+  }
+
+  def self.boolean_to_s(value)
+    if value.nil?
+      ""
+    elsif value
+      "Yes"
+    else
+      "No"
+    end
+  end
 
   def self.preload_values
     RequestStore.store[:permissible_values] ||= PermissibleValue.available.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h
@@ -113,6 +158,15 @@ class PermissibleValue < ApplicationRecord
   ### important pieces of the application logic.  
   def self.uneditable_categories
     ['funding_status', 'funding_source', 'proxy_right', 'user_role']
+  end
+
+  def self.to_csv(permissible_values)
+    CSV.generate do |csv|
+      csv << ["Category", "Key", "Value", "Sort Order", "Default", "Active", "Reserved", "Created", "Updated"]
+      permissible_values.each do |p|
+        csv << [p.category, p.key, p.value, p.sort_order, p.default, p.is_available, p.reserved, p.created_at, p.updated_at]
+      end
+    end
   end
 
 end

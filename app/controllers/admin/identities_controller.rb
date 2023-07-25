@@ -27,10 +27,10 @@ class Admin::IdentitiesController < Admin::ApplicationController
         @identities =      Identity.sparc_users.search_query(params[:search])
         @total = @identities.count
         @identities = @identities.sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
-        @@search_results = @identities.except(:limit)
+        @@identities_search_results = @identities.except(:limit)
       }
       format.csv {
-        send_data Identity.to_csv(@@search_results), filename: "sparcrequest_admin_users_list.csv"
+        send_data Identity.to_csv(@@identities_search_results), filename: "sparcrequest_admin_users_list.csv"
       }
     end
   end

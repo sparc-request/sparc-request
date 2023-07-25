@@ -45,8 +45,6 @@ class Setting < ApplicationRecord
       order(Arel.sql("settings.data_type #{order}"))
     when 'parent_key'
       order(Arel.sql("settings.parent_key #{order}"))
-    when 'parent_value'
-      order(Arel.sql("settings.parent_value #{order}"))
     end
   }
 
@@ -54,7 +52,7 @@ class Setting < ApplicationRecord
     return if term.blank?
 
     setting_arel = Setting.arel_table
-    attrs = [:group, :key, :value, :data_type, :parent_key, :parent_value]
+    attrs = [:group, :key, :value, :data_type, :friendly_name, :description, :parent_key, :parent_value, :version]
 
     where (attrs
       .map { |attr| setting_arel[attr].matches("%#{term}%")}
@@ -103,9 +101,9 @@ class Setting < ApplicationRecord
 
   def self.to_csv(settings)
     CSV.generate do |csv|
-      csv << ["Group", "Key", "Value", "Data Type", "Parent Key", "Parent Value"]
+      csv << ["Group", "Key", "Value", "Data Type", "Friendly Name", "Description", "Parent Key", "Parent Value", "Version"]
       settings.each do |s|
-        csv << [s.group, s.key, s.value, s.data_type, s.parent_key, s.parent_value]
+        csv << [s.group, s.key, s.value, s.data_type, s.friendly_name, s.description, s.parent_key, s.parent_value, s.version]
       end
     end
   end

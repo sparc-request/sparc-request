@@ -152,7 +152,7 @@ class LineItem < ApplicationRecord
 
   # If a service in cart is in fulfillment, disable its delete button
   def has_fulfillments?
-    fulfillment_line_items.any?(&:fulfilled?)
+    Setting.get_value("fulfillment_contingent_on_catalog_manager") && fulfillment_line_items.any?(&:fulfilled?)
   end
 
   def has_admin_rates?

@@ -65,25 +65,13 @@ class PermissibleValue < ApplicationRecord
     return if term.blank?
 
     pv_arel = PermissibleValue.arel_table
-    #attrs = [:category, :key, :value, :sort_order, :default, :is_available, :updated_at]
     attrs = [:category, :key, :value]
 
     where (attrs
       .map { |attr| pv_arel[attr].matches("%#{term}%")}
       .inject(:or)
     )
-    #where(default: boolean_to_s([0, 1]).match?(/#{term}/i))
   }
-
-  def self.boolean_to_s(value)
-    if value.nil?
-      ""
-    elsif value
-      "Yes"
-    else
-      "No"
-    end
-  end
 
   def self.preload_values
     RequestStore.store[:permissible_values] ||= PermissibleValue.available.group_by(&:category).map{ |category, values| [category, values.map{ |p| [p.key, { value: p.value, default: p.default }] }.to_h] }.to_h

@@ -21,46 +21,56 @@
 
 class Admin::SettingsController < Admin::ApplicationController
 
-    def index
-      @settings = Setting.order(:group, :key)
-      respond_to :json, :html
+  def index
+    respond_to do |format|
+      format.html
+      format.json {
+        @settings = Setting.search_query(params[:search])
+        @total = @settings.count
+        @settings = @settings.sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
+        @@settings_search_results = @settings.except(:limit)
+      }
+      format.csv {
+        send_data Setting.to_csv(@@settings_search_results), filename: "sparcrequest_admin_settings_list.csv"
+      }
     end
-
-    def show
-      @setting = Setting.find(params[:id])
-      respond_to :js
-    end
-
-    def edit
-      respond_to :js      
-      @setting = Setting.find(params[:id])
-    end
-
-    def update
-      @setting = Setting.find(params[:id])
-
-      if @setting.update_attributes(setting_params)
-        flash.now[:success] = t('admin.settings.updated')
-      else
-        @errors = @setting.errors
-      end
-
-      respond_to :js
-    end
-
-    protected
-
-    def setting_params
-      params.require(:setting).permit(
-        :value,
-        :data_type,
-        :friendly_name,
-        :description,
-        :group,
-        :version,
-        :parent_key,
-        :parent_value
-      )
-    end
-  
   end
+
+  def show
+    @setting = Setting.find(params[:id])
+    respond_to :js
+  end
+
+  def edit
+    respond_to :js      
+    @setting = Setting.find(params[:id])
+  end
+
+  def update
+    @setting = Setting.find(params[:id])
+
+    if @setting.update_attributes(setting_params)
+      flash.now[:success] = t('admin.settings.updated')
+    else
+      @errors = @setting.errors
+    end
+
+    respond_to :js
+  end
+
+  protected
+
+  def setting_params
+    params.require(:setting).permit(
+      :value,
+      :data_type,
+      :friendly_name,
+      :description,
+      :group,
+      :version,
+      :parent_key,
+      :parent_value
+    )
+  end
+
+end

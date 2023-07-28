@@ -92,6 +92,10 @@
 //= require service_calendar
 
 //= require admin/applications
+//= require admin/identities
+//= require admin/settings
+//= require admin/permissible_values
+//= require admin/catalog_managers
 
 //= require dashboard/protocols
 //= require dashboard/notifications

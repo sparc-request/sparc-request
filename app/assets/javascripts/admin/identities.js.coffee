@@ -18,52 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Admin::OverlordsController < Admin::ApplicationController
-
-  def index
-    respond_to do |format|
-      format.html
-      format.json {
-        @overlords = Identity.overlords.overlords_search_query(params[:search])
-        @total = @overlords.count
-        @overlords = @overlords.overlords_sorted(params[:sort], params[:order]).limit(params[:limit]).offset(params[:offset] || 0)
-        @@overlords_search_results = @overlords.except(:limit)
-      }
-      format.csv {
-        send_data Identity.overlords.overlords_to_csv(@@overlords_search_results), filename: "sparcrequest_admin_catalog_managers_list.csv"
-      }
-    end
-  end
-
-  def new
-    respond_to :js
-  end
-
-  def update
-    if params[:identity_id] # if user selected
-      @overlord = Identity.find(params[:identity_id])
-      @overlord.toggle!(:catalog_overlord)
-      flash.now[:success] = t('admin.overlords.updated', action: 'added')
-    end
-
-    respond_to :js
-  end
+$(document).ready ->
   
-  def remove_overlord
-    @overlord = Identity.find(params[:id])
-    if @overlord.toggle!(:catalog_overlord)
-      flash.now[:success] = t('admin.overlords.updated', action: 'removed')
-    end
+  # The export button is rendered in the table data settings (show-export: 'true'), and this hides the option to select a format type (as we will export to csv only).
+  $('#identitiesCard .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-    respond_to :js
-  end
-
-  protected
-  
-  def identity_params
-    params.require(:identity).permit(
-      :catalog_overlord
-    )
-  end
-
-end
+  # For exporting table data, this redirects to the 'index' method 'csv' format response in the admin/identities controller.
+  $('#identitiesCard .export button').on 'click', ->
+    url = new URL($('#identitiesTable').data('url'), window.location.origin)
+    url.pathname = url.pathname.replace('json', 'csv')
+    window.location = url

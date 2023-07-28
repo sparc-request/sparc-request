@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_06_151619) do
+ActiveRecord::Schema.define(version: 2023_06_27_001331) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
@@ -33,7 +33,23 @@ ActiveRecord::Schema.define(version: 2023_06_06_151619) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+<<<<<<< HEAD
   create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+=======
+  create_table "admin_rate_changes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.bigint "line_item_id"
+    t.bigint "identity_id"
+    t.integer "admin_cost"
+    t.boolean "cost_reset", default: false
+    t.datetime "date_of_change"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_admin_rate_changes_on_identity_id"
+    t.index ["line_item_id"], name: "index_admin_rate_changes_on_line_item_id"
+  end
+
+  create_table "admin_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+>>>>>>> v3.11.0
     t.bigint "line_item_id"
     t.integer "admin_cost"
     t.datetime "created_at", null: false

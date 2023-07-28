@@ -182,6 +182,6 @@ en:
           version: "Version"
           display_order: "Display Order"
           active: "Active"
-          notify_roles: "Nofify Roles"
-          notify_requester: "Nofify Requester?"
+          notify_roles: "Notify Roles"
+          notify_requester: "Notify Requester?"
           actions: "Actions"

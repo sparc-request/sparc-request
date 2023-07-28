@@ -18,28 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AdminRate < ApplicationRecord
+class AdminRateChange < ApplicationRecord
   audited
 
   belongs_to :line_item
   belongs_to :identity
 
-  after_create :log_rate_change
-
-  private
-
-  def log_rate_change
-    ##There Should only ever be one other admin rate, the old one.
-    line_item.admin_rates.without(self).each do |old_rate|
-      old_rate.destroy
-    end
-
-    ##Log new rate in rate change table.
-    AdminRateChange.create(
-      line_item_id: line_item_id,
-      admin_cost: admin_cost,
-      identity_id: identity_id,
-      date_of_change: created_at
-    )
-  end
+  default_scope { order(date_of_change: :asc) }
 end

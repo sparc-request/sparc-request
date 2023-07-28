@@ -30,7 +30,7 @@ class ModifiedRateReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range"  => { field_type: :date_range, for: "admin_rates_created_at", from: '2000-01-01'.to_date, to: Date.today },
+      "Date Range"  => { field_type: :date_range, for: "admin_rate_changes_date_of_change", from: '2000-01-01'.to_date, to: Date.today },
       Institution   => { field_type: :select_tag, has_dependencies: "true" },
       Provider      => { field_type: :select_tag, dependency: '#institution_id', dependency_id: 'parent_id', from: '2000-01-01'.to_date, to: Date.today },
       Program       => { field_type: :select_tag, dependency: '#provider_id', dependency_id: 'parent_id' },
@@ -49,10 +49,10 @@ class ModifiedRateReport < ReportingModule
 
     attrs["Service Rate"]         = "Service.cents_to_dollars(line_item.service.displayed_pricing_map.full_rate)"
 
-    attrs["Modified Rate"]        = "Service.cents_to_dollars(admin_cost)"
-    attrs["Modified Rate Date"]   = "created_at"
+    attrs["Modified Rate"]        = "cost_reset ? 'COST RESET' : Service.cents_to_dollars(admin_cost)"
+    attrs["Modified Rate Date"]   = "date_of_change"
 
-    attrs["By"]                   = "AuditRecovery.where('auditable_id = ? AND auditable_type =?', id, 'AdminRate').first.try(:user_id).nil? ? '' : Identity.find(AuditRecovery.where('auditable_id = ? AND auditable_type =?', id, 'AdminRate').first.try(:user_id)).full_name";
+    attrs["By"]                   = "identity.try(:full_name)"
 
     attrs
   end
@@ -70,7 +70,7 @@ class ModifiedRateReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    AdminRate
+    AdminRateChange
   end
 
   # Other tables to include
@@ -92,14 +92,14 @@ class ModifiedRateReport < ReportingModule
     # default values if none are provided
     ssr_organization_ids = Organization.all.ids if ssr_organization_ids.compact.empty? # use all if none are selected
 
-    created_at =
-      if args[:admin_rates_created_at_from] && args[:admin_rates_created_at_to]
-        DateTime.strptime(args[:admin_rates_created_at_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:admin_rates_created_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+    date_of_change =
+      if args[:admin_rate_changes_date_of_change_from] && args[:admin_rate_changes_date_of_change_to]
+        DateTime.strptime(args[:admin_rate_changes_date_of_change_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:admin_rate_changes_date_of_change_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
       else
         self.default_options["Date Range"][:from].to_s(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
       end
 
-    return { organizations: { id: ssr_organization_ids }, admin_rates: { created_at: created_at } }
+    return { organizations: { id: ssr_organization_ids }, admin_rate_changes: { date_of_change: date_of_change } }
   end
 
   # Return only uniq records for
@@ -110,7 +110,7 @@ class ModifiedRateReport < ReportingModule
   end
 
   def order
-    "admin_rates.id DESC"
+    "admin_rate_changes.date_of_change ASC"
   end
 
 ##################  END QUERY SETUP   #####################

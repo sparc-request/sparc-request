@@ -160,4 +160,13 @@ $ ->
         url: $('#studyLevelActivitiesForm').prop('action') + "/edit"
         data: $('#studyLevelActivitiesForm').serialize()
 
+  $(document).on 'click', '#admin_rate_reset_button', ->
+    $.ajax
+      method: 'post'
+      dataType: 'script'
+      url: $('form.edit_line_item').prop('action') + "/reset_admin_rate"
+      data:
+        srid: getSRId()
+        ssrid: getSSRId()
+
   # SERVICE REQUEST INFO LISTENERS END

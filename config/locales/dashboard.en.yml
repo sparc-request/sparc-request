@@ -398,6 +398,9 @@ en:
           modified_by: "Modified By"
           cpt_code: "CPT Code"
           modified_rate: "Modified Rate"
+          reset_rate: "Reset rate"
+          tooltip: "Reset cost to current service rate"
+          tooltip_disabled: "No modified rate in use"
         tooltips:
           status_history: "Status log of request"
           approval_history: "Time stamp log of approvals"

@@ -40,6 +40,7 @@ RSpec.describe 'User updates notifications', js: true do
       wait_for_javascript_to_finish
 
       bootstrap_select("#system_survey_notify_roles", /Co-Investigator/)
+      page.first('.bootstrap-select').click
 
       click_button "Update Notifications"
       wait_for_javascript_to_finish
@@ -63,6 +64,7 @@ RSpec.describe 'User updates notifications', js: true do
       wait_for_javascript_to_finish
 
       bootstrap_select("#form_notify_roles", /Co-Investigator/)
+      page.first('.bootstrap-select').click
 
       click_button "Update Notifications"
       wait_for_javascript_to_finish

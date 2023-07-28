@@ -32,6 +32,7 @@ class LineItem < ApplicationRecord
   has_many :line_items_visits, dependent: :destroy
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
+  has_many :admin_rate_changes, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
   has_many :arms, through: :line_items_visits
@@ -149,9 +150,9 @@ class LineItem < ApplicationRecord
     self.service.one_time_fee?
   end
 
+  # If a service in cart is in fulfillment, disable its delete button
   def has_fulfillments?
-    line_item_in_cwf = Shard::Fulfillment::LineItem.find_by sparc_id: self.id
-    line_item_in_cwf.try(:fulfilled?)
+    fulfillment_line_items.any?(&:fulfilled?)
   end
 
   def has_admin_rates?
@@ -309,6 +310,19 @@ class LineItem < ApplicationRecord
     end
 
     service_abbreviation
+  end
+
+  def reset_admin_rate(resetter_id)
+    ##Log reset in rate change table.
+    AdminRateChange.create(
+      line_item_id: id,
+      identity_id: resetter_id,
+      cost_reset: true,
+      date_of_change: DateTime.now
+    )
+
+    ##There Should only ever be one admin rate, but just in case
+    admin_rates.destroy_all
   end
 
   private

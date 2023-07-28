@@ -18,23 +18,47 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-# https://github.com/javan/whenever
-every 1.week, at: '12:00am' do
-  rake 'remove_historical_first_draft'
-end
+require 'rails_helper'
 
-every 1.day, :at => '4:45 am' do
-  rake "data:update_protocol_with_validated_rm"
-end
+RSpec.describe Shard::Fulfillment::LineItem, type: :model do
+  describe 'associations' do
+    it 'belongs to :sparc_line_item' do
+      should belong_to(:sparc_line_item)
+    end
+    it 'belongs to :sparc_service' do
+      should belong_to(:sparc_service)
+    end
+  end
 
-every 1.day, :at => '5:00 pm' do
-  rake 'send_to_epic'
-end
+  describe 'instance methods' do
+    describe '#fulfilled?' do
+      let(:service_id) { 1 }
+      let(:procedure ) {{ status: 'incomplete' }}
+       context 'if service is non-clinical' do
+        it 'returns true' do
+          allow(subject).to receive(:non_clinical?).and_return(true)
+          allow(subject).to receive_message_chain(:fulfillments, :exists?).and_return(true)
+          expect(subject.fulfilled?).to eq(true)
+        end
+      end
+    end
 
-every 1.day at: '12:00am' do
-  rake "fetch_google_calendar"
-end
+    describe '#non_clinical?' do
+      context 'when the line item is a one time fee' do
+        it 'returns true' do
+          allow(subject).to receive_message_chain(:sparc_line_item, :service, :one_time_fee?).and_return(true)
+          expect(subject.non_clinical?).to eq(true)
+        end
+      end
+    end
 
-every 1.hour do
-  rake 'delayed_job_monitor'
+    describe '#deleted?' do
+      context 'when the line item has been deleted' do
+        it 'returns true' do
+          allow(subject).to receive(:deleted_at).and_return(true)
+          expect(subject.deleted?).to eq(true)
+        end
+      end
+    end
+  end
 end

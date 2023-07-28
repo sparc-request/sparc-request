@@ -36,20 +36,16 @@ module Shard
       belongs_to :sparc_line_item, class_name: '::LineItem', foreign_key: :sparc_id
       belongs_to :sparc_service, class_name: '::Service', foreign_key: :service_id
 
-      def one_time_fee?
+      def non_clinical?
         self.sparc_line_item.service.one_time_fee?
       end
 
+      # Disable deletion of service in cart if in fulfillment
       def fulfilled?
-        if self.one_time_fee?
-          self.fulfillments.any?
+        if non_clinical?
+          fulfillments.exists?
         else
-          started_procedures = false
-          self.visits.each do |v|
-            procedures = Shard::Fulfillment::Procedure.where visit_id: v.id
-            started_procedures = procedures.where(status: %w(complete incomplete follow_up)).any?
-          end
-          started_procedures
+          arm.appointments.joins(:procedures).where(procedures: { service_id: service_id, status: %w[incomplete complete follow_up] }).exists?
         end
       end
 

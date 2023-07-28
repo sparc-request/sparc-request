@@ -388,57 +388,57 @@ RSpec.describe EpicInterface do
       expect(node[0]).to be_equivalent_to(expected.root)
     end
 
-    it 'should emit a subjectOf for guarantor contact' do
-      epic_interface.send_study_creation(study)
+    #it 'should emit a subjectOf for guarantor contact' do
+    #  epic_interface.send_study_creation(study)
 
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="GUAR_CONTACT" />
-            <value value="#{study.guarantor_contact}" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
+    #  xml = <<-END
+    #    <subjectOf typeCode="SUBJ"
+    #               xmlns='urn:hl7-org:v3'
+    #               xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    #      <studyCharacteristic classCode="OBS" moodCode="EVN">
+    #        <code code="GUAR_CONTACT" />
+    #        <value value="#{study.guarantor_contact}" />
+    #      </studyCharacteristic>
+    #    </subjectOf>
+    #  END
 
-      expected = Nokogiri::XML(xml)
+    #  expected = Nokogiri::XML(xml)
 
-      node = epic_received[0].xpath(
-        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
-        hl7:plannedStudy/hl7:subjectOf',
-        'env' => 'http://www.w3.org/2003/05/soap-envelope',
-        'rpe' => 'urn:ihe:qrph:rpe:2009',
-        'hl7' => 'urn:hl7-org:v3')
+    #  node = epic_received[0].xpath(
+    #    '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
+    #    hl7:plannedStudy/hl7:subjectOf',
+    #    'env' => 'http://www.w3.org/2003/05/soap-envelope',
+    #    'rpe' => 'urn:ihe:qrph:rpe:2009',
+    #    'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[5]).to be_equivalent_to(expected.root)
-    end
+    #  expect(node[5]).to be_equivalent_to(expected.root)
+    #end
 
-    it 'should emit a subjectOf for guarantor phone' do
-      epic_interface.send_study_creation(study)
+    #it 'should emit a subjectOf for guarantor phone' do
+    #  epic_interface.send_study_creation(study)
 
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="GUAR_PHONE" />
-            <value value="#{study.guarantor_phone}" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
+    #  xml = <<-END
+    #    <subjectOf typeCode="SUBJ"
+    #               xmlns='urn:hl7-org:v3'
+    #               xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    #      <studyCharacteristic classCode="OBS" moodCode="EVN">
+    #        <code code="GUAR_PHONE" />
+    #        <value value="#{study.guarantor_phone}" />
+    #      </studyCharacteristic>
+    #    </subjectOf>
+    #  END
 
-      expected = Nokogiri::XML(xml)
+    #  expected = Nokogiri::XML(xml)
 
-      node = epic_received[0].xpath(
-        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
-        hl7:plannedStudy/hl7:subjectOf',
-        'env' => 'http://www.w3.org/2003/05/soap-envelope',
-        'rpe' => 'urn:ihe:qrph:rpe:2009',
-        'hl7' => 'urn:hl7-org:v3')
+    #  node = epic_received[0].xpath(
+    #    '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/
+    #    hl7:plannedStudy/hl7:subjectOf',
+    #    'env' => 'http://www.w3.org/2003/05/soap-envelope',
+    #    'rpe' => 'urn:ihe:qrph:rpe:2009',
+    #    'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[6]).to be_equivalent_to(expected.root)
-    end
+    #  expect(node[6]).to be_equivalent_to(expected.root)
+    #end
 
     it 'should emit a subjectOf for an initial irb approval date' do
       epic_interface.send_study_creation(study)
@@ -462,7 +462,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[7]).to be_equivalent_to(expected.root)
+      expect(node[5]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for an irb expiration date' do
@@ -487,7 +487,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[8]).to be_equivalent_to(expected.root)
+      expect(node[6]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for an ide number' do

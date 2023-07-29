@@ -1,4 +1,5 @@
-json.(@settings) do |setting|
+json.total @total
+json.rows(@settings) do |setting|
   json.key            setting_key_link(setting)
   json.data_type      setting.data_type
   json.value          display_setting_value(setting)

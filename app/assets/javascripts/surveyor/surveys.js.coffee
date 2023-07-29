@@ -44,6 +44,10 @@ $(document).ready ->
     else
       $(container).addClass('d-none')
 
+  ### Notification Modal ###
+  $(document).on 'change', '#system_survey_notify_roles', ->
+    $('.error-message').remove()
+
 send_update_request = (obj, val) ->
   field_data  = $(obj).attr('id').split('-')
   klass       = field_data[0]

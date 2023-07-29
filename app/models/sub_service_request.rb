@@ -50,6 +50,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :line_items_visits, through: :line_items
   has_many :services, through: :line_items
   has_many :admin_rates, through: :line_items
+  has_many :admin_rate_changes, through: :line_items
 
   has_many :service_forms, -> { active }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
@@ -233,6 +234,10 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  def display_services
+    self.services.map(&:name).join("; ")
+  end
+  
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################

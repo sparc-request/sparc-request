@@ -50,6 +50,7 @@ en:
     export: "Export"
     filter: "Filter"
     max: "Max"
+    notify: "Notify"
     preview: "Preview"
     print: "Print"
     regenerate: "Regenerate"
@@ -62,6 +63,7 @@ en:
     sync: "Sync"
     submit: "Submit"
     upload: "Upload"
+    update_notifications: "Update Notifications"
     view: "View"
 
   ###############
@@ -383,7 +385,7 @@ en:
               blank: "You must create Arms before proceeding to the Service Calendar"
             line_items:
               blank: "You must add services to your cart before continuing"
-              pushed_to_fulfillment: "Requests that have already been pushed to Fulfillment cannot be deleted"
+              pushed_to_fulfillment: "Services in fulfillment cannot be deleted"
             protocol:
               blank: "You must create a Protocol before continuing"
         system_survey:
@@ -920,7 +922,7 @@ en:
         header: "Involved External Organizations"
       financial_information:
         header: "Financial Information"
-        guarantor_header: "Guarantor Information"
+        guarantor_header: "Send Bills To..."
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"

@@ -57,7 +57,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   visit_count = (has_per_patient_per_visit_services ? @service_request.arms.map(&:visit_count).max : 0)
 
-  proxy_row += [""] * (visit_count*2 - 1)
+  proxy_row += [""] * (visit_count*2 - 1) unless visit_count == 0
 
   sheet.add_row proxy_row, :style => sub_header_style
 
@@ -69,7 +69,8 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["Document Uploads"], :style => header_style
 
-  doc_row = ["Name", "Type", "", "", "Uploaded Date"] + ( [""] * (visit_count*2 - 1) )
+  doc_row = ["Name", "Type", "", "", "Uploaded Date"]
+  doc_row += ( [""] * (visit_count*2 - 1) ) unless visit_count == 0
 
   sheet.add_row doc_row, :style => sub_header_style
 

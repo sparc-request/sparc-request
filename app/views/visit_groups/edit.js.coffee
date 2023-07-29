@@ -24,8 +24,7 @@ $content  = $("<%= j render 'form', visit_group: @visit_group, visit_group_clone
 
 # If a different visit popover is already open, close it first
 if $('.visit-group-popover') && !$("form#edit_visit_group_<%= @visit_group.id %>").length
-  $('.visit-group-popover').popover('hide')
-  $('.visit-group.active').removeClass('active')
+  $('.visit-group-popover').popover('dispose')
 
 # If the visit is already open
 # else open the visit as a popover
@@ -46,7 +45,7 @@ else
     template:   '<div class="popover visit-group-popover visit-group-<%= @visit_group.id %>-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
     html:       true
     trigger:    'manual'
-    placement:  'top'
+    placement:  'left'
   )
 
   # Logic for smoother closing of visit group popovers

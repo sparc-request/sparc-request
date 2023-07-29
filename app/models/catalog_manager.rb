@@ -26,7 +26,6 @@ class CatalogManager < ApplicationRecord
 
   after_create :remove_lower_access
 
-
   private
 
   def remove_lower_access

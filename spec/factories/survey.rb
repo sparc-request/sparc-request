@@ -24,6 +24,8 @@ FactoryBot.define do
     sequence(:access_code)    { |n| "survey-#{n}" }
     sequence(:version)        { |n| n }
     active                    { false }
+    notify_requester          { true }
+    notify_roles              { [PermissibleValue.where(category: 'user_role').first.id] }
 
     trait :active do
       active {true}

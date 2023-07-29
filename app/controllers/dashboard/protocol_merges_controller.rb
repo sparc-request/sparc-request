@@ -114,7 +114,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
             request.save(validate: false)
             request.sub_service_requests.each do |ssr|
               ssr.update_attributes(protocol_id: @master_protocol.id)
-              @master_protocol.next_ssr_id = (@master_protocol.next_ssr_id + 1)
+              @master_protocol.next_ssr_id = (@master_protocol.try(:next_ssr_id) || 1) + 1
               @master_protocol.save(validate: false)
               if ssr.in_work_fulfillment
                 fulfillment_ssrs << ssr
@@ -145,6 +145,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
 
           #log change to DB
           ProtocolMerge.create(master_protocol_id: @master_protocol.id, merged_protocol_id: @merged_protocol.id, identity_id: current_identity.id)
+          ProtocolMerge.where(master_protocol_id: @merged_protocol).update_all(master_protocol_id: @master_protocol.id)
 
           #delete merged protocol
           @merged_protocol.delete

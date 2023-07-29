@@ -164,6 +164,12 @@ en:
           option:
             content: "Option (Required)"
       full_title: "%{title} (Version %{version})"
+      all_roles:  "Send to All Authorized Users Roles"
+
+    notifications_form:
+      title: "Edit Notifications"
+      user_roles: "User Roles Receving Notices"
+      notify_requester: "Send notification to requester?"
 
     systemsurveys:
       header: "System Surveys"
@@ -176,4 +182,6 @@ en:
           version: "Version"
           display_order: "Display Order"
           active: "Active"
+          notify_roles: "Notify Roles"
+          notify_requester: "Notify Requester?"
           actions: "Actions"

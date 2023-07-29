@@ -88,8 +88,11 @@ module ProtocolsHelper
           end
         end
       end
-    else
+    else #On the other hand, if Epic is active...
       !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+      if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf'
+        true
+      end
     end
   end
 end

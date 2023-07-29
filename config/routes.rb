@@ -159,7 +159,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :line_items, only: [:edit, :update]
+  resources :line_items, only: [:edit, :update] do
+    post 'reset_admin_rate'
+  end
   resources :line_items_visits, only: [:edit, :update, :destroy]
   resources :visit_groups, only: [:new, :create, :edit, :update, :destroy]
   resources :visits, only: [:edit, :update, :destroy]
@@ -370,6 +372,8 @@ SparcRails::Application.routes.draw do
       get :preview
       get :update_dependents_list
       post :copy
+      get :edit_notifications
+      post :update_notifications
     end
     resource :survey, only: [] do
       get :search_surveyables

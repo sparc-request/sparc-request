@@ -23,7 +23,7 @@ every 1.week, at: '12:00am' do
   rake 'remove_historical_first_draft'
 end
 
-every 1.day, :at => '4:30 am' do
+every 1.day, :at => '4:45 am' do
   rake "data:update_protocol_with_validated_rm"
 end
 

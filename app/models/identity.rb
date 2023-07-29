@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'directory'
+require 'csv'
 
 class Identity < ApplicationRecord
 
@@ -51,6 +52,7 @@ class Identity < ApplicationRecord
 
   has_many :approvals, dependent: :destroy
   has_many :admin_rates
+  has_many :admin_rate_changes
   has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
   has_many :catalog_manager_rights, class_name: 'CatalogManager'
   has_many :catalog_managers, dependent: :destroy
@@ -132,6 +134,27 @@ class Identity < ApplicationRecord
      )
   }
 
+  scope :overlords_sorted, -> (sort, order) {
+    case sort
+    when 'name'
+      order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
+    when 'email'
+      order(Arel.sql("identities.email #{order}"))
+    end
+  }
+
+  scope :overlords_search_query, -> (term) {
+    return if term.blank?
+
+    pv_arel = Identity.arel_table
+    attrs = [:last_name, :first_name, :email]
+
+    where (attrs
+      .map { |attr| pv_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+    )
+  }
+
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
@@ -211,6 +234,25 @@ class Identity < ApplicationRecord
   def display_ethnicity
     ethnicity.present? ?  PermissibleValue.get_value('ethnicity', ethnicity) : ""
   end
+
+  def self.to_csv(identities)
+    CSV.generate do |csv|
+      csv << ["Name", "Institution", "Email", "Created", "Last Sign-In", "Sign-In Count"]
+      identities.each do |i|
+        csv << ["#{i.last_name}, #{i.first_name}", i.institution, i.email, i.created_at, i.current_sign_in_at, i.sign_in_count]
+      end
+    end
+  end
+
+  def self.overlords_to_csv(identities)
+    CSV.generate do |csv|
+      csv << ["Name", "Email"]
+      identities.each do |i|
+        csv << ["#{i.last_name}, #{i.first_name}", i.email]
+      end
+    end
+  end
+  
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################

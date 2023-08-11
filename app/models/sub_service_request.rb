@@ -53,6 +53,7 @@ class SubServiceRequest < ApplicationRecord
   has_many :admin_rate_changes, through: :line_items
 
   has_many :service_forms, -> { active }, through: :services, source: :forms
+  has_many :previous_version_service_forms, -> { inactive }, through: :services, source: :forms
   has_many :organization_forms, -> { active }, through: :organization, source: :forms
 
   ########################
@@ -237,7 +238,7 @@ class SubServiceRequest < ApplicationRecord
   def display_services
     self.services.map(&:name).join("; ")
   end
-  
+
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
@@ -395,7 +396,7 @@ class SubServiceRequest < ApplicationRecord
   def forms_to_complete
     completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+    (self.service_forms + self.previous_version_service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
   end
 
   def form_completed?(form)

@@ -18,33 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc "correct_pi_department"
-task :correct_pi_department => :environment do
+desc "update_student_college"
+task :update_student_college => :environment do
   def write(s)
-    File.open("tmp/pi_department_output.txt", "a") do |f|
+    File.open("tmp/student_college_output.txt", "a") do |f|
       f.puts s
     end
     puts s
   end
 
-  no_department_listed = []
+  no_college_listed = []
   dup_identities = []
-  dup_departments = []
+  dup_colleges = []
+  existing_college = []
   no_identities = []
-  no_departments = []
+  no_colleges = []
   updated_identities = []
 
-  CSV.foreach("tmp/pi_department.csv", headers: true) do |row|
+  CSV.foreach("tmp/student_college.csv", headers: true) do |row|
  
     identity = row[0].strip
-    department = row[1]
+    college = row[1]
     
-    if department.blank?
-       puts "No department listed for #{identity}"
-       no_department_listed << identity
+    if college.blank?
+       puts "No college listed for #{identity}"
+       no_college_listed << identity
        next
     else
-      department.strip!
+      college.strip!
     end
 
     name = identity.split(' ')
@@ -65,22 +66,25 @@ task :correct_pi_department => :environment do
       real_identity = real_identity.where(professional_organization_id: nil)
       dup_identities << real_identity.map(&:email)
     else
-      real_department = ProfessionalOrganization.where(name: department, org_type: 'department')
+      real_college = ProfessionalOrganization.where(name: college, org_type: 'college')
       
-      if real_department.size == 0
-        puts "No department found for #{department}"
-        no_departments << "#{identity} : #{department}"
-      elsif real_department.size > 1
-        puts "Duplicate departments found for #{department}"
-        dup_departments << "#{identity} : #{department}"
+      if real_college.size == 0
+        puts "No college found for #{college}"
+        no_colleges << "#{identity} : #{college}"
+      elsif real_college.size > 1
+        puts "Duplicate colleges found for #{college}"
+        dup_colleges << "#{identity} : #{college}"
       else
         real_identity = real_identity.first
-        next if real_identity.professional_organization
+        if real_identity.professional_organization
+          existing_college << "#{identity} : #{real_identity.professional_organization.name}"
+          next 
+        end
 
-        real_department = real_department.first 
+        real_college = real_college.first 
 
-        real_identity.update_attribute(:professional_organization, real_department)
-        puts "** Professional organization updated to #{department} for #{identity}"
+        #real_identity.update_attribute(:professional_organization, real_college)
+        puts "** Professional organization updated to #{college} for #{identity}"
         updated_identities << "#{identity}: #{real_identity.id}"
       end 
     end
@@ -88,18 +92,19 @@ task :correct_pi_department => :environment do
 
   write ""
   write "#"*50
-  write "No department in column count: #{no_department_listed.size}"
+  write "No college in column count: #{no_college_listed.size}"
   write "No identity found count: #{no_identities.size}"
   write "Duplicate identities count: #{dup_identities.size}"
-  write "No department found count: #{no_departments.size}"
-  write "Duplicate departments count: #{dup_departments.size}"
+  write "No college found count: #{no_colleges.size}"
+  write "Duplicate colleges count: #{dup_colleges.size}"
   write "Updated identites count: #{updated_identities.size}"
+  write "Existing college count: #{existing_college.size}"
   write "#"*50
 
   write ""
   write "#"*50
-  write "No department list in CSV"
-  write no_department_listed
+  write "No college list in CSV"
+  write no_college_listed
   write "#"*50
   
   write ""
@@ -116,14 +121,20 @@ task :correct_pi_department => :environment do
   
   write ""
   write "#"*50
-  write "No department found in database"
-  write no_departments
+  write "No college found in database"
+  write no_colleges
   write "#"*50
   
   write ""
   write "#"*50
-  write "Duplicate departments found in database"
-  write dup_departments
+  write "Duplicate colleges found in database"
+  write dup_colleges
+  write "#"*50
+  
+  write ""
+  write "#"*50
+  write "Existing college found in database"
+  write existing_college 
   write "#"*50
   
   write ""

@@ -90,7 +90,7 @@ task :update_student_college => :environment do
 
         real_college = real_college.first 
 
-        real_identity.update_attribute(:professional_organization, real_college)
+        #real_identity.update_attribute(:professional_organization, real_college)
         puts "** Professional organization updated to #{college} for #{identity}"
         updated_identities << "#{identity}: #{real_identity.id}"
       end 

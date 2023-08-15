@@ -33,6 +33,7 @@ task :update_student_college => :environment do
   existing_college = []
   no_identities = []
   no_colleges = []
+  no_project_role = []
   updated_identities = []
 
   CSV.foreach("tmp/student_college.csv", headers: true) do |row|
@@ -76,6 +77,12 @@ task :update_student_college => :environment do
         dup_colleges << "#{identity} : #{college}"
       else
         real_identity = real_identity.first
+        
+        if real_identity.project_roles.empty?
+          no_project_role << "#{identity}"
+          next
+        end
+
         if real_identity.professional_organization
           existing_college << "#{identity} : #{real_identity.professional_organization.name}"
           next 
@@ -97,8 +104,9 @@ task :update_student_college => :environment do
   write "Duplicate identities count: #{dup_identities.size}"
   write "No college found count: #{no_colleges.size}"
   write "Duplicate colleges count: #{dup_colleges.size}"
-  write "Updated identites count: #{updated_identities.size}"
   write "Existing college count: #{existing_college.size}"
+  write "No project role count: #{no_project_role.size}"
+  write "Updated identites count: #{updated_identities.size}"
   write "#"*50
 
   write ""
@@ -115,7 +123,7 @@ task :update_student_college => :environment do
   
   write ""
   write "#"*50
-  write "Multiple identities found"
+  write "Duplicate identities found"
   write dup_identities 
   write "#"*50
   
@@ -135,6 +143,12 @@ task :update_student_college => :environment do
   write "#"*50
   write "Existing college found in database"
   write existing_college 
+  write "#"*50
+  
+  write ""
+  write "#"*50
+  write "No project role"
+  write no_project_role 
   write "#"*50
   
   write ""

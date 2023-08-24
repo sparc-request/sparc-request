@@ -20,7 +20,7 @@
 
 class Survey < ApplicationRecord
   audited
-
+  
   belongs_to :surveyable, polymorphic: true
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
@@ -48,10 +48,6 @@ class Survey < ApplicationRecord
     where(active: true)
   }
 
-  scope :inactive, -> {
-    where(active: false)
-  }
-
   QUESTION_TYPES = {
     'Text': 'text',
     'Text Area': 'textarea',
@@ -70,7 +66,7 @@ class Survey < ApplicationRecord
     'Dropdown': 'dropdown',
     'Multiple Dropdown': 'multiple_dropdown'
   }
-
+  
   # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)

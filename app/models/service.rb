@@ -37,7 +37,7 @@ class Service < ApplicationRecord
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :forms, as: :surveyable, dependent: :destroy# Surveys associated with this service
+  has_many :forms, -> { active }, as: :surveyable, dependent: :destroy# Surveys associated with this service
   has_many :service_relations, :dependent => :destroy
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'# Services that depend on this service
   has_many :associated_surveys, as: :associable, dependent: :destroy

@@ -139,8 +139,14 @@ class Protocol < ApplicationRecord
         headers: {'Content-Type' => 'application/json',
                   'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
-    rescue
-      @@rmid_server_down = true
+    rescue Exception => e
+      teams_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
+      if teams_webhook.present?
+        message =  "RMID connection is down for SPARC in: #{Rails.env}\n"
+        message += "\nError message: #{e}\n"
+        notifier = Teams.new(teams_webhook)
+        notifier.post(message)
+      end
       return false
     end
   end

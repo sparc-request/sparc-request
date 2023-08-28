@@ -52,8 +52,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :admin_rates, through: :line_items
   has_many :admin_rate_changes, through: :line_items
 
-  has_many :service_forms, -> { active }, through: :services, source: :forms
-  has_many :organization_forms, -> { active }, through: :organization, source: :forms
+  has_many :service_forms, through: :services, source: :forms
+  has_many :organization_forms, through: :organization, source: :forms
 
   ########################
   ### CWF Associations ###
@@ -392,10 +392,23 @@ class SubServiceRequest < ApplicationRecord
   #############
   ### FORMS ###
   #############
-  def forms_to_complete
-    completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  def forms_to_complete
+   # Check if ssr already completed form, but was a previous version
+    inactive_completed = self.service_forms.inactive.joins(:responses)
+                         .where(responses: { respondable: self }).exists? ||
+                         self.organization_forms.inactive.joins(:responses)
+                         .where(responses: { respondable: self }).exists?
+
+    return false if inactive_completed
+
+    # Now check if current version of form has been completed
+    active_not_completed = self.service_forms.active.left_outer_joins(:responses)
+                       .where(responses: { respondable: nil }).exists? ||
+                       self.organization_forms.active.left_outer_joins(:responses)
+                       .where(responses: { respondable: nil }).exists?
+    active_not_completed
+
   end
 
   def form_completed?(form)

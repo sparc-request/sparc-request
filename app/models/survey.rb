@@ -48,6 +48,10 @@ class Survey < ApplicationRecord
     where(active: true)
   }
 
+  scope :inactive, -> {
+    where(active: false)
+  }
+
   QUESTION_TYPES = {
     'Text': 'text',
     'Text Area': 'textarea',

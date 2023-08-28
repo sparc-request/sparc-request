@@ -655,7 +655,7 @@ class Protocol < ApplicationRecord
   end
 
   def all_forms_completed?
-    self.sub_service_requests.all?(&:all_forms_completed?)
+    !self.sub_service_requests.all?(&:forms_to_complete)
   end
 
   private

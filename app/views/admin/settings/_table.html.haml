@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%main.card#settingCard
+%main.card#settingsCard
   .card-header.bg-primary.text-white
     %h3.mb-0
       = t('admin.settings.table.header')
   #settingsTableToolbar
-  %table.table-interactive#settingsTable{ data: { toggle: 'table', url: admin_settings_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', pagination: 'true', page_size: '25', sort_name: 'group', sort_order: 'desc', toolbar: '#settingsTableToolbar' } }
+  %table.table-interactive#settingsTable{ data: { toggle: 'table', url: admin_settings_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', show_export: 'true', pagination: 'true',  side_pagination: 'server', page_size: '25', sort_name: 'group', sort_order: 'desc', toolbar: '#settingsTableToolbar' } }
     %thead.bg-light
       %tr
         %th.w-10{ data: { field: 'group', sortable: 'true' } }

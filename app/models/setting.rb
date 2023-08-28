@@ -18,6 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'csv'
+
 class Setting < ApplicationRecord
   include DataTypeValidator
 
@@ -30,6 +32,33 @@ class Setting < ApplicationRecord
 
   validate :value_matches_type, if: Proc.new{ !self.read_attribute(:value).nil? }
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
+
+  scope :sorted, -> (sort, order) {
+    case sort
+    when 'group'
+      order(Arel.sql("settings.group #{order}"))
+    when 'key'
+      order(Arel.sql("settings.key #{order}"))
+    when 'value'
+      order(Arel.sql("settings.value #{order}"))
+    when 'data_type'
+      order(Arel.sql("settings.data_type #{order}"))
+    when 'parent_key'
+      order(Arel.sql("settings.parent_key #{order}"))
+    end
+  }
+
+  scope :search_query, -> (term) {
+    return if term.blank?
+
+    setting_arel = Setting.arel_table
+    attrs = [:group, :key, :value, :data_type, :friendly_name, :description, :parent_key, :parent_value, :version]
+
+    where (attrs
+      .map { |attr| setting_arel[attr].matches("%#{term}%")}
+      .inject(:or)
+     )
+  }
 
   def self.preload_values
     # Cache settings for the current request thread for the current request
@@ -68,6 +97,15 @@ class Setting < ApplicationRecord
 
   def children
     Setting.where(parent_key: key)
+  end
+
+  def self.to_csv(settings)
+    CSV.generate do |csv|
+      csv << ["Group", "Key", "Value", "Data Type", "Friendly Name", "Description", "Parent Key", "Parent Value", "Version"]
+      settings.each do |s|
+        csv << [s.group, s.key, s.value, s.data_type, s.friendly_name, s.description, s.parent_key, s.parent_value, s.version]
+      end
+    end
   end
 
   private

@@ -20,7 +20,7 @@
 
 class Survey < ApplicationRecord
   audited
-  
+
   belongs_to :surveyable, polymorphic: true
   has_many :responses, dependent: :destroy
   has_many :sections, dependent: :destroy
@@ -36,6 +36,8 @@ class Survey < ApplicationRecord
 
   validates :version, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
+  validate :notified_people
+
   accepts_nested_attributes_for :sections, allow_destroy: true
 
   default_scope -> {
@@ -44,6 +46,10 @@ class Survey < ApplicationRecord
 
   scope :active, -> {
     where(active: true)
+  }
+
+  scope :inactive, -> {
+    where(active: false)
   }
 
   QUESTION_TYPES = {
@@ -64,7 +70,7 @@ class Survey < ApplicationRecord
     'Dropdown': 'dropdown',
     'Multiple Dropdown': 'multiple_dropdown'
   }
-  
+
   # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)
@@ -85,6 +91,12 @@ class Survey < ApplicationRecord
 
   def report_title
     "#{self.title} - Version #{self.version.to_s} (#{self.active ? I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:active] : I18n.t(:surveyor)[:response_filters][:fields][:state_filters][:inactive]})"
+  end
+
+  def notified_people
+    if notify_roles == '[]'
+      errors.add(:base, "Must select one.")
+    end
   end
 
   def has_responses?

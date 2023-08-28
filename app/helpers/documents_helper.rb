@@ -84,8 +84,10 @@ module DocumentsHelper
     Document::SUPPORTED_FILE_TYPES.map(&:source).map{ |d| d.gsub('\\', '').gsub('$', '').gsub('?', '') }.join(' ')
   end
 
-  def display_check_box(document)
-    check_box_tag "select-document-#{document.id}", "#{document.id}"
+  def display_check_box(document, opts={})
+    unless in_dashboard? && !opts[:permission]
+      check_box_tag "select-document-#{document.id}", "#{document.id}"
+    end
   end
 
 end

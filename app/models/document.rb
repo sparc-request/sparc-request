@@ -36,8 +36,10 @@ class Document < ApplicationRecord
   
   has_one_attached :document, dependent: :destroy
 
-  validates :doc_type, :document, presence: true
+  validates :doc_type, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
+
+  validate :document_attached
 
   validate :supported_file_types
 
@@ -54,6 +56,12 @@ class Document < ApplicationRecord
   end
 
   private
+
+  def document_attached
+    if !document.attached?
+      errors.add :document, 'You must select a file.'
+    end
+  end
 
   def supported_file_types
     if document.attached? && !document.content_type.in?(%w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff))

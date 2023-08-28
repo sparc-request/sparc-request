@@ -1,4 +1,5 @@
-json.(@permissible_values) do |pv|
+json.total @total
+json.rows(@permissible_values) do |pv|
   json.category     pv.category
   json.key          pv.key
   json.value        pv.value

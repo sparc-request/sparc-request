@@ -135,7 +135,9 @@ class Protocol < ApplicationRecord
   def self.rmid_status
     @@rmid_server_down = false
     begin
-      HTTParty.get(Setting.get_value("research_master_api") + '1.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
+      HTTParty.get(Setting.get_value("research_master_api") + 'status',
+        headers: {'Content-Type' => 'application/json',
+                  'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
     rescue
       @@rmid_server_down = true
@@ -203,9 +205,15 @@ class Protocol < ApplicationRecord
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
     like_search_term    = "%#{escaped_search_term}%"
 
-    ### SEARCH QUERIES ###
+     ### SEARCH QUERIES ###
     identity_query    = Arel::Nodes::NamedFunction.new('concat', [Identity.arel_table[:first_name], Arel::Nodes.build_quoted(' '), Identity.arel_table[:last_name]]).matches(like_search_term).or(Identity.arel_table[:email].matches(like_search_term))
-    protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
+
+    if search_attrs[:merged_id].present?
+      protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text]).or(Protocol.arel_table[:id].eq(search_attrs[:merged_id]))
+    else
+      protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
+    end
+
     pro_num_query     = IrbRecord.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
     title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))

@@ -138,6 +138,50 @@ module ResearchBilling
       end
 
       get :procedure_check do
+
+        #### example incoming message
+        #{
+        #  "protocolNo": "STUDY10485",
+        #  "dateofservice": "2018-11-20",
+        #  "ontimeline": 1,
+        #  "department": "Wellin Head and Neck Tumor Center",
+        #  "servicearea": "MUSC",
+        #  "enrollmentstatus": "Completed",
+        #  "ActiveStartedDate": "2018-11-15",
+        #  "ActiveEndDate": "2019-03-20",
+        #  "IRB": "Pro00067774",
+        #  "NCT": "03005782",
+        #  "patid": "xafeawfs",
+        #  "procedures": {
+        #    "procedure": [
+        #      {
+        #        "id": "85320364",
+        #        "name": "85320364-HB HEMOGRAM & AUTODIFF",
+        #        "startdate": "2018-11-23",
+        #        "cpt": "85025"
+        #      },
+        #      {
+        #        "id": "85311629",
+        #        "name": "85311629-HB METABOLIC PANEL",
+        #        "startdate": "2018-11-23",
+        #        "cpt": "80053"
+        #      },
+        #      {
+        #        "id": "85310985",
+        #        "name": "85310985-HB URIC ACID",
+        #        "startdate": "2019-02-12",
+        #        "cpt": "84550"
+        #      },
+        #      {
+        #        "id": "85310746",
+        #        "name": "85310746-HB PHOSPHOROUS",
+        #        "startdate": "2018-11-26",
+        #        "cpt": "84100"
+        #      }
+        #    ]
+        #  }
+        #}
+
         protocol_id = params['protocolNo'].sub('STUDY', '')
         procedure_cpt = params['procedureid']
         date_of_service = Date.strptime(params['dateofservice']).to_time

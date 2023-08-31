@@ -30,13 +30,13 @@ RSpec.describe SubServiceRequest, type: :model do
   let!(:line_item)    { create(:line_item_without_validations, sub_service_request: ssr, service: service) }
 
   describe '#forms_to_complete' do
-    it 'should return both Organization and Service forms that need to be completed' do
-      expect(ssr.forms_to_complete.to_a).to eq([[service.name, [service_form]], [organization.name, [org_form]]])
+    it 'should return true if Organization and/or Service forms need to be completed' do
+      expect(ssr.forms_to_complete).to eq(true)
     end
 
-    it 'should not return forms that have been completed' do
+    it 'should return false if forms have been completed' do
       create(:response, survey: org_form, respondable: ssr)
-      expect(ssr.forms_to_complete.to_a).to eq([[service.name, [service_form]]])
+      expect(ssr.forms_to_complete).to eq(true)
     end
   end
 end

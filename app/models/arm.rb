@@ -104,15 +104,11 @@ class Arm < ApplicationRecord
   end
 
   def direct_costs_for_visit_based_service line_items_visits=self.line_items_visits
-    line_items_visits.
-    includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
-    sum(&:direct_costs_for_visit_based_service)
+    line_items_visits.sum(&:direct_costs_for_visit_based_service)
   end
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
-    Setting.get_value("use_indirect_cost") ? line_items_visits.
-    includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]]).
-    sum(&:indirect_costs_for_visit_based_service) : 0.0
+    Setting.get_value("use_indirect_cost") ? line_items_visits.sum(&:indirect_costs_for_visit_based_service) : 0.0
   end
 
   def total_costs_for_visit_based_service line_items_visits=self.line_items_visits

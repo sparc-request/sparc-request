@@ -137,7 +137,7 @@ module ResearchBilling
         #doorkeeper_authorize!
       end
 
-      get :procedure_check do
+      post :procedure_check do
 
         #### example incoming message
         #{
@@ -181,37 +181,74 @@ module ResearchBilling
         #    ]
         #  }
         #}
+        
+        puts "#"*50
+        puts params.inspect
+        puts "#"*50
 
         protocol_id = params['protocolNo'].sub('STUDY', '')
-        procedure_cpt = params['procedureid']
         date_of_service = Date.strptime(params['dateofservice']).to_time
+        active_start_date = Date.strptime(params['ActiveStartedDate']).to_time
+
+        plus_or_minus = 5
 
         protocols = Protocol.where(id: protocol_id)
         # should only have 1 match
         protocol = protocols.first
-        services = protocol.services.where(cpt_code: procedure_cpt)
 
-        if protocol.present? && services.present?
-          service_ids = services.map(&:id)
+        procedures = params['procedures']['procedure']
+        #  "protocolNo": "STUDY10485",
+        #  "dateofservice": "2018-11-20",
+        #  "ontimeline": 1,
+        #  "department": "Wellin Head and Neck Tumor Center",
+        #  "servicearea": "MUSC",
+        #  "enrollmentstatus": "Completed",
+        #  "ActiveStartedDate": "2018-11-15",
+        #  "ActiveEndDate": "2019-03-20",
+        #  "IRB": "Pro00067774",
+        #  "NCT": "03005782",
+        #  "patid": "xafeawfs",
 
-          # check if any visit group has the date_of_service within the start/end date range and procedure_cpt within one of it's services
-          # matches = [[date_matching_tolerence, chargeable_procedure]]
-          matches = []
-         
-          protocol.visit_groups.each_with_index do |visit_group,index|
-            if visit_group.could_occur.include?(date_of_service) && (visit_group.line_items_visits.map{|liv| liv.line_item.service_id } & service_ids).present?
-              matches[index] = [true] # date_matching_tolerence
+        request = params.dup
+        matches = []
 
-              line_items_visits = visit_group.line_items_visits.select{|liv| service_ids.include?(liv.line_item.service_id)}
-              visits = visit_group.visits.where(line_items_visit_id: line_items_visits)
-              matches[index] << visits.any?{|v| v.research_billing_qty > 0}
+        procedures.each do |procedure|
+          services = protocol.services.where(cpt_code: procedure['cpt'])
+
+          #      {
+          #        "id": "85310746",
+          #        "name": "85310746-HB PHOSPHOROUS",
+          #        "startdate": "2018-11-26",
+          #        "cpt": "84100"
+          #      }
+          match = { "id": procedure['id'], "name": procedure['name'], "startdate": procedure['cpt'], 
+                    "cpt": procedure['cpt'], "date_matching_tolerence": false, "research_matching_tolerence": false }
+
+          if protocol.present? && services.present?
+            service_ids = services.map(&:id)
+
+            # check if any visit group has the date_of_service within the start/end date range and procedure_cpt within one of it's services
+           
+            protocol.visit_groups.each_with_index do |visit_group,index|
+              puts "#"*50
+              puts "Checking for VisitGroup in date range:  #{visit_group.could_occur(active_start_date, plus_or_minus)}"
+              puts "#"*50
+
+              if visit_group.could_occur(active_start_date, plus_or_minus).include?(date_of_service) && (visit_group.line_items_visits.map{|liv| liv.line_item.service_id } & service_ids).present?
+                match['date_matching_tolerence'] = true # date_matching_tolerence
+
+                line_items_visits = visit_group.line_items_visits.select{|liv| service_ids.include?(liv.line_item.service_id)}
+                visits = visit_group.visits.where(line_items_visit_id: line_items_visits)
+                match['research_matching_tolerence'] = visits.any?{|v| v.research_billing_qty > 0}
+              end
             end
+           
+            matches << match 
           end
-          
-          { matches: matches } 
-        else 
-          { datematchingtolerence: false, chargeableprocedure: false }
         end
+       
+        request['procedures']['procedure'] = matches 
+        return request.to_json
       end
     end
   end

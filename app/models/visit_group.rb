@@ -126,9 +126,9 @@ class VisitGroup < ApplicationRecord
   end
 
   # method to determine when visit could occur (window could be before or after start date of protocol, this is just an estimate) 
-  def could_occur
-    before_date = arm.protocol.start_date + window_before
-    after_date = arm.protocol.start_date + window_after
+  def could_occur(start_date, plus_or_minus=0)
+    before_date = start_date - (window_before + plus_or_minus).days
+    after_date = start_date + (window_after + plus_or_minus).days
     before_date..after_date
   end
     

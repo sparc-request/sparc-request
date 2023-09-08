@@ -81,7 +81,8 @@ class LineItemsVisit < ApplicationRecord
   end
 
   def quantity_total
-    sum_visits_research_billing_qty * (self.subject_count || 0)
+    visit_r_quantity * (subject_count || 0)
+    # sum_visits_research_billing_qty * (self.subject_count || 0)
   end
 
   def sum_visits_research_billing_qty
@@ -93,14 +94,14 @@ class LineItemsVisit < ApplicationRecord
       end
   end
 
-  def sum_visits_research_billing_qty_gte_1
-    @research_billing_gte1_total ||=
-      if self.visits.loaded?
-        self.visits.select{ |v| v.research_billing_qty >= 1 }.sum(&:research_billing_qty)
-      else
-        self.visits.where(Visit.arel_table[:research_billing_qty].gteq(1)).sum(:research_billing_qty) || 0
-      end
-  end
+  # def sum_visits_research_billing_qty_gte_1
+  #   @research_billing_gte1_total ||=
+  #     if self.visits.loaded?
+  #       self.visits.select{ |v| v.research_billing_qty >= 1 }.sum(&:research_billing_qty)
+  #     else
+  #       self.visits.where(Visit.arel_table[:research_billing_qty].gteq(1)).sum(:research_billing_qty) || 0
+  #     end
+  # end
 
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
@@ -130,7 +131,8 @@ class LineItemsVisit < ApplicationRecord
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    sum_visits_research_billing_qty_gte_1 * per_unit_cost(quantity_total())
+    # sum_visits_research_billing_qty * per_unit_cost(quantity_total())
+    visit_r_quantity * per_unit_cost(quantity_total())
   end
 
   # Determine the direct costs for a visit-based service

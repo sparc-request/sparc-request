@@ -39,6 +39,10 @@ class Visit < ApplicationRecord
 
   has_many :fulfillment_visits, class_name: 'Shard::Fulfillment::Visit', foreign_key: :sparc_id
 
+  ########################
+
+  # after_save :update_line_items_visit_r_quantity #TODO
+
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

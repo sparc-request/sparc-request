@@ -363,6 +363,8 @@ class ServiceRequest < ApplicationRecord
     self.sub_service_requests.each do |ssr|
       ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
       ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      ssr.previous_version_service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+
     end
     forms
   end

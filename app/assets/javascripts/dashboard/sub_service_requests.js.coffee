@@ -121,7 +121,7 @@ $ ->
   $(document).on 'change.datetimepicker', '#consultArrangedDatePicker', (event) ->
     val = $(this).find('input').val()
 
-    if val != consultArrangedDate
+    if consultArrangedDate && (val != consultArrangedDate)
       data = $(this).find('input').serialize()
 
       $.ajax
@@ -133,7 +133,7 @@ $ ->
   $(document).on 'change.datetimepicker', '#requesterContactedDatePicker', (event) ->
     val = $(this).find('input').val()
 
-    if val != requesterContactedDate
+    if requesterContactedDate && (val != requesterContactedDate)
       data = $(this).find('input').serialize()
 
       $.ajax

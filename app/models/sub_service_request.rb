@@ -52,8 +52,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :admin_rates, through: :line_items
   has_many :admin_rate_changes, through: :line_items
 
-  has_many :service_forms, -> { active }, through: :services, source: :forms
-  has_many :organization_forms, -> { active }, through: :organization, source: :forms
+  has_many :service_forms, through: :services, source: :forms
+  has_many :organization_forms, through: :organization, source: :forms
 
   ########################
   ### CWF Associations ###
@@ -237,7 +237,7 @@ class SubServiceRequest < ApplicationRecord
   def display_services
     self.services.map(&:name).join("; ")
   end
-  
+
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
@@ -392,10 +392,54 @@ class SubServiceRequest < ApplicationRecord
   #############
   ### FORMS ###
   #############
+
+  def previous_version_forms
+    all_forms = self.service_forms + self.organization_forms
+    all_forms.group_by { |f| f.surveyable.name }.transform_values do |forms|
+      forms.map { |f| f.surveyable_id }
+    end
+  end
+
+  def no_version_has_responses
+    completed_ids = self.responses.pluck(:survey_id)
+    previous_versions_ids = previous_version_forms.values.flatten.uniq
+    previous_versions_ids.each do |id|
+      completed_ids << id unless completed_ids.include?(id)
+    end
+    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  end
+
+  def complete_forms
+    Response.where(respondable_id: self.id)
+  end
+
+  def form_required
+    !(self.service_forms + self.organization_forms).empty?
+  end
+
+
   def forms_to_complete
     completed_ids = self.responses.pluck(:survey_id)
 
     (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  end
+
+  def incomplete_forms
+    forms = []
+    active_forms = self.organization_forms.active + self.service_forms.active
+    responded_forms = self.organization_forms.joins(:responses).where(responses: { respondable: self }) + self.service_forms.joins(:responses).where(responses: { respondable: self })
+
+    active_forms.each do |active_form|
+      unless responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version }
+        forms << active_form
+      end
+    end
+    forms.group_by{ |form| form.surveyable.name}
+  end
+
+  def has_forms_with_no_responses
+    completed_ids = self.responses.pluck(:survey_id)
+    active_incompletes = (self.service_forms.active + self.organization_forms.active).select{|f| !completed_ids.include?(f.id)}.group_by{|f| f.surveyable.name}
   end
 
   def form_completed?(form)
@@ -404,10 +448,6 @@ class SubServiceRequest < ApplicationRecord
 
   def has_completed_forms?
     self.responses.where(survey: self.service_forms + self.organization_forms).any?
-  end
-
-  def all_forms_completed?
-    (self.service_forms + self.organization_forms).count == self.responses.joins(:survey).where(surveys: { type: 'Form' }).count
   end
 
   ##########################

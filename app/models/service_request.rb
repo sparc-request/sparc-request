@@ -263,7 +263,10 @@ class ServiceRequest < ApplicationRecord
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     arms.each do |arm|
-      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+      livs = (line_items.nil? ? 
+        arm.line_items_visits :
+        arm.line_items_visits.where(line_item: line_items)).
+        includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
       total += arm.direct_costs_for_visit_based_service(livs)
     end
     total
@@ -273,7 +276,10 @@ class ServiceRequest < ApplicationRecord
     total = 0.0
     if Setting.get_value("use_indirect_cost")
       arms.each do |arm|
-        livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+        livs = (line_items.nil? ?
+          arm.line_items_visits :
+          arm.line_items_visits.where(line_item: line_items)).
+          includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
         total += arm.indirect_costs_for_visit_based_service(livs)
       end
     end
@@ -332,8 +338,21 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      ssr.organization_forms.each{ |f| forms << [f, ssr] }
-      ssr.service_forms.each{ |f| forms << [f, ssr] }
+      active_forms = ssr.organization_forms.active + ssr.service_forms.active
+      responded_forms = ssr.organization_forms
+        .joins(:responses)
+        .where(responses: { respondable: ssr }) + ssr.service_forms
+        .joins(:responses).where(responses: { respondable: ssr })
+
+        # Filter active forms: only include them if there isn't a previous version form that already has responses
+      active_forms.each do |active_form|
+        unless responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version }
+          forms << [active_form, ssr]
+        end
+      end
+
+      # Include all forms that have responses (active or inactive)
+      responded_forms.each { |responded_form| forms << [responded_form, ssr] }
     end
     forms
   end

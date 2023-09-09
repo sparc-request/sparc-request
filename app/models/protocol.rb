@@ -139,8 +139,15 @@ class Protocol < ApplicationRecord
         headers: {'Content-Type' => 'application/json',
                   'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
-    rescue
+    rescue Exception => e
       @@rmid_server_down = true
+      teams_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
+      if teams_webhook.present?
+        message =  "RMID connection is down for SPARC in: #{Rails.env}\n"
+        message += "\nError message: #{e}\n"
+        notifier = Teams.new(teams_webhook)
+        notifier.post(message)
+      end
       return false
     end
   end
@@ -654,8 +661,16 @@ class Protocol < ApplicationRecord
     self.sub_service_requests.any?(&:has_completed_forms?)
   end
 
+  # Hide the forms column on the requests table on the dashboard, unless a form needs to be completed
   def all_forms_completed?
-    self.sub_service_requests.all?(&:all_forms_completed?)
+    self.sub_service_requests.includes(:service_forms, :organization_forms, :responses).all? do |ssr|
+      forms_exist = ssr.service_forms.any? || ssr.organization_forms.any?
+      if forms_exist
+        ssr.responses.any?
+      else
+        true
+      end
+    end
   end
 
   private

@@ -421,7 +421,25 @@ class SubServiceRequest < ApplicationRecord
   def forms_to_complete
     completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+    (self.service_forms + self.previous_version_service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  end
+
+  def incomplete_forms
+    forms = []
+    active_forms = self.organization_forms.active + self.service_forms.active
+    responded_forms = self.organization_forms.joins(:responses).where(responses: { respondable: self }) + self.service_forms.joins(:responses).where(responses: { respondable: self })
+
+    active_forms.each do |active_form|
+      unless responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version }
+        forms << active_form
+      end
+    end
+    forms.group_by{ |form| form.surveyable.name}
+  end
+
+  def has_forms_with_no_responses
+    completed_ids = self.responses.pluck(:survey_id)
+    active_incompletes = (self.service_forms.active + self.organization_forms.active).select{|f| !completed_ids.include?(f.id)}.group_by{|f| f.surveyable.name}
   end
 
   def incomplete_forms

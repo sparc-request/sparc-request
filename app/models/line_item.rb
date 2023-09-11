@@ -195,7 +195,7 @@ class LineItem < ApplicationRecord
   end
 
   def quantity_total(line_items_visit)
-    line_items_visit.sum_visits_research_billing_qty * (line_items_visit.subject_count || 0)
+    line_items_visit.visit_r_quantity * (line_items_visit.subject_count || 0)
   end
 
   # Determine the direct costs for a visit-based service for one subject
@@ -203,7 +203,7 @@ class LineItem < ApplicationRecord
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    line_items_visit.sum_visits_research_billing_qty * per_unit_cost(quantity_total(line_items_visit))
+    line_items_visit.visit_r_quantity * per_unit_cost(quantity_total(line_items_visit))
   end
 
   # Determine the direct costs for a visit-based service

@@ -1,6 +1,6 @@
 class AddVisitResearchQuantityToLineItemsVisits < ActiveRecord::Migration[5.2]
   def up
-    add_column :line_items_visits, :visit_r_quantity, :integer
+    add_column :line_items_visits, :visit_r_quantity, :integer, default: 0
 
     bar = ProgressBar.new(LineItemsVisit.count)
 

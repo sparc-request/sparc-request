@@ -419,16 +419,10 @@ class SubServiceRequest < ApplicationRecord
 
 
   def forms_to_complete
-    forms = []
-    responded_forms = self.organization_forms.joins(:responses).where(responses: { respondable: self }) + self.service_forms.joins(:responses).where(responses: { respondable: self })
-    incomplete_active_forms = self.organization_forms.active + self.service_forms.active - responded_forms
+    active_forms = self.organization_forms.active + self.service_forms.active
+    responded_surveyable_ids = (self.organization_forms.joins(:responses).where(responses: { respondable: self }) + self.service_forms.joins(:responses).where(responses: { respondable: self })).map(&:surveyable_id)
 
-    incomplete_active_forms.each do |active_form|
-      if !(responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version })
-        forms << active_form
-      end
-    end
-    forms.group_by{ |form| form.surveyable.name}
+    active_forms.select{|f| !responded_surveyable_ids.include?(f.surveyable_id)  }.group_by{ |form|  form.surveyable.name}
   end
 
   def form_completed?(form)

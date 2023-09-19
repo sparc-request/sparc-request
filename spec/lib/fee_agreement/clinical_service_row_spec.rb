@@ -78,6 +78,8 @@ RSpec.describe FeeAgreement::ClinicalServiceRow do
     context('with summary information') do
       let(:row) { FeeAgreement::ClinicalServiceRow.build(liv_pppv1, [visit1_pppv1, visit2_pppv1], show_summary = true) }
       it('sets the per_service_total') do
+        visit1_pppv1.reload
+        visit2_pppv1.reload
         expected = Service.cents_to_dollars(liv_pppv1.direct_costs_for_visit_based_service_single_subject * row.enrollment)
         expect(row.per_service_total).to eq(expected)
       end

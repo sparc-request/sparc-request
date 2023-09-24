@@ -661,15 +661,13 @@ class Protocol < ApplicationRecord
     self.sub_service_requests.any?(&:has_completed_forms?)
   end
 
-  # Hide the forms column on the requests table on the dashboard, unless a form needs to be completed
   def all_forms_completed?
-    self.sub_service_requests.includes(:service_forms, :organization_forms, :responses).all? do |ssr|
-      forms_exist = ssr.service_forms.any? || ssr.organization_forms.any?
-      if forms_exist
-        ssr.responses.any?
-      else
-        true
-      end
+    self.sub_service_requests.all? do |ssr|
+      # Check for a form response by access_code group, so that we don't ask for a new response when a new version of a form is added
+      completed_access_codes = ssr.responses.joins(:survey).pluck(:access_code)
+      ssr_forms_access_codes = (ssr.service_forms + ssr.organization_forms).pluck(:access_code)
+
+      (ssr_forms_access_codes - completed_access_codes).empty?
     end
   end
 

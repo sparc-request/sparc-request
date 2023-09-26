@@ -52,9 +52,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :admin_rates, through: :line_items
   has_many :admin_rate_changes, through: :line_items
 
-  has_many :service_forms, -> { active }, through: :services, source: :forms
-  has_many :previous_version_service_forms, -> { inactive }, through: :services, source: :forms
-  has_many :organization_forms, -> { active }, through: :organization, source: :forms
+  has_many :service_forms, through: :services, source: :forms
+  has_many :organization_forms, through: :organization, source: :forms
 
   ########################
   ### CWF Associations ###
@@ -393,10 +392,10 @@ class SubServiceRequest < ApplicationRecord
   #############
   ### FORMS ###
   #############
-  def forms_to_complete
-    completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.previous_version_service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  def forms_to_complete
+    completed_access_codes = self.responses.joins(:survey).pluck(:access_code)
+    (self.service_forms.active + self.organization_forms.active).reject { |f| completed_access_codes.include?(f.access_code) }.group_by { |f| f.surveyable.name }
   end
 
   def form_completed?(form)
@@ -405,10 +404,6 @@ class SubServiceRequest < ApplicationRecord
 
   def has_completed_forms?
     self.responses.where(survey: self.service_forms + self.organization_forms).any?
-  end
-
-  def all_forms_completed?
-    (self.service_forms + self.organization_forms).count == self.responses.joins(:survey).where(surveys: { type: 'Form' }).count
   end
 
   ##########################

@@ -148,7 +148,7 @@ class Response < ApplicationRecord
         Response.create(survey: self.survey, identity: recipient, respondable_id: self.respondable_id, respondable_type: self.respondable_type, skip_additional_surveys: true)
       end
 
-      SurveyNotification.service_survey([self.survey], recipients, @response.try(:respondable)).deliver_now
+      SurveyNotification.service_survey([self.survey], recipients, self.try(:respondable)).deliver_now
     end
   end
 

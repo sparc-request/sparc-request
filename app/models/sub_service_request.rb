@@ -418,10 +418,10 @@ class SubServiceRequest < ApplicationRecord
     primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
-      SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
+      SurveyNotification.service_survey(available_surveys, [primary_pi], self).deliver
     # only send survey email to both users if they are unique
       if primary_pi != service_requester
-        SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
+        SurveyNotification.service_survey(available_surveys, [service_requester], self).deliver
       end
     end
   end

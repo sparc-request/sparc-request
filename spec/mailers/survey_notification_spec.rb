@@ -67,7 +67,7 @@ RSpec.describe SurveyNotification do
 
   describe 'service system satisfaction survey' do
     let(:survey)    { create(:system_survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
-    let(:mail)      { SurveyNotification.service_survey([survey], identity, ssr) }
+    let(:mail)      { SurveyNotification.service_survey([survey], [identity], ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -96,7 +96,7 @@ RSpec.describe SurveyNotification do
 
   describe 'SCTR Customer Satisfaction Survey' do
     let(:survey)    { create(:system_survey, title: "SCTR Customer Satisfaction survey", access_code: "sctr-customer-satisfaction-survey") }
-    let(:mail)      { SurveyNotification.service_survey([survey], identity, ssr) }
+    let(:mail)      { SurveyNotification.service_survey([survey], [identity], ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do

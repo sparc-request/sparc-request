@@ -40,6 +40,7 @@ class SurveyNotification < ActionMailer::Base
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
 
     @identities.each do |identity|
+      @identity = identity
       send_email(identity, from, subject)
     end
   end

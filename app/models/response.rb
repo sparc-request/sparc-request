@@ -96,6 +96,9 @@ class Response < ApplicationRecord
 
   # The following is a method for generating additional recipients for a survey or form based on the intended recipient list created by the survey owner
   def generate_additional_recipients
+    # Create an empty array that will hold the final identities list
+    project_role_identities = []
+
     # First, find out if there *would* be any additional recipients based on whether this response is attatched to a protocol
     if self.respondable_id
       
@@ -105,40 +108,40 @@ class Response < ApplicationRecord
       # Find the protocol associated with this response
       protocol = SubServiceRequest.find(self.respondable_id).service_request.protocol
 
-      # Create an empty array that will hold the final identities list
-      project_role_identities = []
 
-      # For each role...
-      roles.each do |role|
-        # Get the list of project_role holders that match that specific role for the protocol...
-        project_roles = protocol.project_roles.where(role: role)
+      # Only bother with the next steps if the SSR has a protocol associated with it (since, apparently, SSRs can exist without a protocol)
+      if protocol.present?
+        # For each role...
+        roles.each do |role|
+          # Get the list of project_role holders that match that specific role for the protocol...
+          project_roles = protocol.project_roles.where(role: role)
 
-        # If there are any identities associated with that project role, then...
-        if project_roles.present?
-          #...for each project role...
-          project_roles.each do |project_role|
-            # Get the project_role's identity and add to the final identities list array
-            project_role_identities << project_role.identity
+          # If there are any identities associated with that project role, then...
+          if project_roles.present?
+            #...for each project role...
+            project_roles.each do |project_role|
+              # Get the project_role's identity and add to the final identities list array
+              project_role_identities << project_role.identity
+            end
+          else
+            # If there are no identities associated with this project role for this protocol, then move on to the next role
+            next
           end
-        else
-          # If there are no identities associated with this project role for this protocol, then move on to the next role
-          next
+        end
+
+        # If the survey settings require that we notify the requester then get the service requester
+        if self.survey.notify_requester
+          requester = SubServiceRequest.find(self.respondable_id).service_requester
+          if requester.present?
+            project_role_identities << requester
+          end
+        end
+
+        # Finally, exclude the identity associated with the generating response so they don't get emailed regarding the very thing they just got done doing (assuming there are any identities in the project role identities list).
+        if project_role_identities.present?
+          project_role_identities.reject!{|pri| pri.id == self.identity_id}
         end
       end
-
-      # If the survey settings require that we notify the requester then get the service requester
-      if self.survey.notify_requester
-        requester = SubServiceRequest.find(self.respondable_id).service_requester
-        if requester.present?
-          project_role_identities << requester
-        end
-      end
-
-      # Finally, exclude the identity associated with the generating response so they don't get emailed regarding the very thing they just got done doing (assuming there are any identities in the project role identities list).
-      if project_role_identities.present?
-        project_role_identities.reject!{|pri| pri.id == self.identity_id}
-      end
-
     end
 
     # Return the final identities list as the conclusion for this method

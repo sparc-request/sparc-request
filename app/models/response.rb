@@ -128,11 +128,16 @@ class Response < ApplicationRecord
 
       # If the survey settings require that we notify the requester then get the service requester
       if self.survey.notify_requester
-        project_role_identities << SubServiceRequest.find(self.respondable_id).service_requester
+        requester = SubServiceRequest.find(self.respondable_id).service_requester
+        if requester.present?
+          project_role_identities << requester
+        end
       end
 
-      # Finally, exclude the identity associated with the generating response so they don't get emailed regarding the very thing they just got done doing.
-      project_role_identities.reject!{|pri| pri.id == self.identity_id}
+      # Finally, exclude the identity associated with the generating response so they don't get emailed regarding the very thing they just got done doing (assuming there are any identities in the project role identities list).
+      if project_role_identities.present?
+        project_role_identities.reject!{|pri| pri.id == self.identity_id}
+      end
 
     end
 

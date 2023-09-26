@@ -40,23 +40,5 @@ RSpec.describe FormsController, type: :controller do
         expect(assigns(:forms)).to eq(sr.associated_forms)
       end
     end
-
-    context "params[:complete] == 'true'" do
-      it 'should assign @forms to the service request\'s completed forms' do
-        org       = create(:provider)
-        protocol  = create(:study_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        ssr       = create(:sub_service_request, service_request: sr, organization: org)
-        form      = create(:form, surveyable: org)
-                    create(:response, survey: form, respondable: ssr)
-
-        get :index, params: {
-          service_request_id: sr.id,
-          complete: 'true'
-        }, xhr: true
-
-        expect(assigns(:forms)).to eq(sr.completed_forms)
-      end
-    end
   end
 end

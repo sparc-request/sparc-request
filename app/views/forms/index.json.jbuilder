@@ -1,4 +1,4 @@
-json.(@forms) do |form, respondable|
+json.(@forms.uniq) do |form, respondable|
   if respondable
     completed = respondable.form_completed?(form)
 

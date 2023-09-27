@@ -148,7 +148,8 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   def resend_survey
     @response = Response.find(params[:response_id])
     ## resend button is disabled for surveys that are not tied to any organization
-    SurveyNotification.service_survey([@response.survey], @response.identity, @response.try(:respondable)).deliver
+
+    SurveyNotification.service_survey([@response.survey], [@response.identity], @response.try(:respondable)).deliver
     flash[:success] = t(:surveyor)[:responses][:resent]
   end
 

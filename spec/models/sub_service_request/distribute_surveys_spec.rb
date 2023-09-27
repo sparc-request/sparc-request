@@ -52,7 +52,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context 'should distribute surveys' do
         context 'when primary pi and ssr requester are uniq' do
           it 'to both primary pi and ssr requester' do
-            expect { @sub_service_request.distribute_surveys }.to change { ActionMailer::Base.deliveries.count }.by(2)
+            expect { @sub_service_request.distribute_surveys }.to change { ActionMailer::Base.deliveries.count }.by(3)
           end
         end
         context 'when primary pi and ssr requester are the same' do

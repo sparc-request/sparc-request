@@ -354,7 +354,8 @@ class ServiceRequest < ApplicationRecord
       # Include all forms that have responses (active or inactive)
       responded_forms.each { |responded_form| forms << [responded_form, ssr] }
     end
-    forms
+    forms = forms.group_by { |form, _| form.access_code }.map { |_, form_group| form_group.max_by { |form, _| form.version } }
+
   end
 
   def completed_forms
@@ -364,7 +365,7 @@ class ServiceRequest < ApplicationRecord
       ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
       ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
     end
-    forms
+    forms = forms.group_by { |form, _| form.access_code }.map { |_, form_group| form_group.max_by { |form, _| form.version } } 
   end
 
   def relevant_service_providers_and_super_users

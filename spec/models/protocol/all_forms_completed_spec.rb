@@ -23,10 +23,10 @@ RSpec.describe Protocol, type: :model do
 
   let!(:organization)   { create(:organization) }
   let!(:service)        { create(:service, organization: organization) }
-  let!(:org_form1)      { create(:form, surveyable: organization, access_code: 'org-form-1') }
-  let!(:org_form2)      { create(:form, surveyable: organization, access_code: 'org-form-2') }
-  let!(:service_form1)  { create(:form, surveyable: service, access_code: 'serv-form-1') }
-  let!(:service_form2)  { create(:form, surveyable: service, access_code: 'serv-form-2') }
+  let!(:org_form1)      { create(:form, surveyable: organization, access_code: 'org-form-1', active: true) }
+  let!(:org_form2)      { create(:form, surveyable: organization, access_code: 'org-form-2', active: true) }
+  let!(:service_form1)  { create(:form, surveyable: service, access_code: 'serv-form-1', active: true) }
+  let!(:service_form2)  { create(:form, surveyable: service, access_code: 'serv-form-2', active: true) }
   let!(:protocol)       { create(:study_without_validations) }
   let!(:request)        { create(:service_request_without_validations, protocol: protocol) }
   let!(:ssr)            { create(:sub_service_request, protocol: protocol, service_request: request, organization: organization) }
@@ -42,10 +42,16 @@ RSpec.describe Protocol, type: :model do
     end
 
     it 'should return false if any Service forms are not complete' do
+      create(:response, survey: org_form1, respondable: ssr)
+      create(:response, survey: org_form2, respondable: ssr)
+      create(:response, survey: service_form1, respondable: ssr)
       expect(protocol.all_forms_completed?).to eq(false)
     end
 
     it 'should return false if any Organization forms are not complete' do
+      create(:response, survey: org_form1, respondable: ssr)
+      create(:response, survey: service_form1, respondable: ssr)
+      create(:response, survey: service_form2, respondable: ssr)
       expect(protocol.all_forms_completed?).to eq(false)
     end
   end

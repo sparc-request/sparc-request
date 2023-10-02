@@ -344,15 +344,27 @@ class ServiceRequest < ApplicationRecord
         .where(responses: { respondable: ssr }) + ssr.service_forms
         .joins(:responses).where(responses: { respondable: ssr })
 
-        # Filter active forms: only include them if there isn't a previous version form that already has responses
+      # Only show active form if no other version of the form has a response
       active_forms.each do |active_form|
         unless responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version }
           forms << [active_form, ssr]
-        end
+          end
       end
 
-      # Include all forms that have responses (active or inactive)
-      responded_forms.each { |responded_form| forms << [responded_form, ssr] }
+      # If there are multiple versions of a form that have been responded to, only show the latest version
+      active_forms_grouped = active_forms.group_by(&:access_code)
+      responded_forms_grouped = responded_forms.group_by(&:access_code)
+
+      active_forms_grouped.each do |access_code, active_forms|
+        responded_forms_by_access_code = responded_forms_grouped[access_code]
+
+        if responded_forms_by_access_code && responded_forms_by_access_code.size > 1
+          max_version_form = responded_forms_by_access_code.max_by(&:version)
+          forms << [max_version_form, ssr] if max_version_form
+        else
+          forms << [responded_forms_by_access_code.first, ssr] if responded_forms_by_access_code&.any?
+        end
+      end
     end
     forms
   end
@@ -361,8 +373,19 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
-      ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      forms_with_responses = ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }) + ssr.service_forms.joins(:responses).where(responses: { respondable: ssr })
+
+      # If multiple versions of a form have a response, only show the latest version
+      grouped_by_access_code = forms_with_responses.group_by(&:access_code)
+      grouped_by_access_code.each do |access_code, responded_forms|
+        ssr_forms = grouped_by_access_code[access_code]
+        if ssr_forms&.size > 1
+          max_version_form = ssr_forms.max_by(&:version)
+          forms << [max_version_form, ssr] if max_version_form
+        else
+          forms << [ssr_forms.first, ssr] if ssr_forms&.any?
+        end
+      end
     end
     forms
   end

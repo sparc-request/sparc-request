@@ -38,7 +38,8 @@ RSpec.describe LineItemsVisit, type: :model do
       service_request.protocol.update_attributes(indirect_cost_rate: 200)
       @line_items_visit = arm1.line_items_visits.first
 
-      service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
+      service_request.arms.map(&:visits).flatten.each{|visit| visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)}
+      @line_items_visit.reload
     end
 
     context "business methods" do

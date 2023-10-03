@@ -44,8 +44,8 @@ RSpec.describe FeeAgreement::NonClinicalServiceTable do
     li_pppv = create(:line_item, :without_validations, service: service_pppv, sub_service_request: @ssr1, service_request: @service_request)
     liv_pppv1 = create(:line_items_visit, arm: arm, line_item: li_pppv)
     liv_pppv2 = create(:line_items_visit, arm: arm, line_item: li_pppv)
-    create(:visit, line_items_visit: @liv_pppv1, research_billing_qty: 1)
-    create(:visit, line_items_visit: @liv_pppv2, research_billing_qty: 1)
+    create(:visit, line_items_visit: liv_pppv1, research_billing_qty: 1)
+    create(:visit, line_items_visit: liv_pppv2, research_billing_qty: 1)
 
     # Draft should be excluded
     draft_ssr = create(:sub_service_request, service_request: @service_request, organization: @org_A, status: "draft")

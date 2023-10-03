@@ -39,6 +39,12 @@ class Visit < ApplicationRecord
 
   has_many :fulfillment_visits, class_name: 'Shard::Fulfillment::Visit', foreign_key: :sparc_id
 
+  ########################
+
+  after_create :add_r_quantity_to_liv_r_quantity_sum, if: Proc.new { |visit| visit.research_billing_qty >= 1 }
+  after_destroy :remove_r_quantity_to_liv_r_quantity_sum, if: Proc.new { |visit| visit.research_billing_qty >= 1 }
+  after_update :adjust_liv_r_quantity, if: :saved_change_to_research_billing_qty?
+
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :effort_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -98,4 +104,22 @@ class Visit < ApplicationRecord
     ['create']
   end
   ### end audit reporting methods ###
+
+  private
+
+  def add_r_quantity_to_liv_r_quantity_sum
+    new_sum = line_items_visit.visit_r_quantity += research_billing_qty
+    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  end
+
+  def remove_r_quantity_to_liv_r_quantity_sum
+    new_sum = line_items_visit.visit_r_quantity -= research_billing_qty
+    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  end
+
+  def adjust_liv_r_quantity
+    old_quantity, new_quantity = saved_change_to_research_billing_qty
+    new_sum = line_items_visit.visit_r_quantity += (new_quantity - old_quantity)
+    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  end
 end

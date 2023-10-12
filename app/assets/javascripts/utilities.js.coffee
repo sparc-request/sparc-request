@@ -76,6 +76,6 @@ VALID_MONETARY_KEYS = [
     return text
 
 (exports ? this).numericSort = (a, b) ->
-  aa = a.replace(/[^\d]/g, '')
-  bb = b.replace(/[^\d]/g, '')
+  aa = a.replace(/[^\d-]/g, '').replace(/-/g, ".")
+  bb = b.replace(/[^\d-]/g, '').replace(/-/g, ".")
   aa - bb

@@ -79,6 +79,7 @@ SparcRails::Application.routes.draw do
   resource :pages, only: [] do
     get :event_details
     get :faqs
+    get :draft_requests
   end
 
   resources :forms, only: [:index]

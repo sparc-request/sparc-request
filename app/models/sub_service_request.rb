@@ -437,13 +437,6 @@ class SubServiceRequest < ApplicationRecord
       surveys_for_recipients.map{|recipient, surveys| 
         SurveyNotification.service_survey(surveys, [recipient], self).deliver
       }
-      
-
-    #   SurveyNotification.service_survey(available_surveys, [primary_pi], self).deliver
-    # # only send survey email to both users if they are unique
-    #   if primary_pi != service_requester
-    #     SurveyNotification.service_survey(available_surveys, [service_requester], self).deliver
-    #   end
     end
   end
 
@@ -504,7 +497,6 @@ class SubServiceRequest < ApplicationRecord
       end
     end
     
-
     # Return the final identities list as the conclusion for this method after filtering out any duplicates
     return project_role_identities.uniq
   end

@@ -1,0 +1,16 @@
+- if current_user.draft_protocols.count > 0
+  .card.draft_requests-card.alert-warning.w-100.mb-3
+    .card-header.justify-content-between.bg-primary.text-white{ class: 'active', data: { toggle: 'collapse', target: '#toDo' } }
+      %h4.mb-0<
+        = icon('fas', 'caret-down pr-1 mr-2')
+        = I18n.t('layout.navigation.draft_requests.title', have: "You Have")
+      .draft_requests-icon.justify-right
+        = icon('fas', 'check-circle fa-2x')
+    .collapse#toDo{ class: 'show' }
+      .alert.mb-0
+        %h5.mb-2      
+          = t('layout.navigation.draft_requests.sub_header.have_draft_requests')
+        %div
+          - current_user.draft_protocols.each do |protocol|
+            %p.mb-1
+              = link_to t('layout.navigation.draft_requests.protocol_link', protocol_id: protocol.id, protocol_title: protocol.short_title).truncate(200), dashboard_protocol_path(protocol)

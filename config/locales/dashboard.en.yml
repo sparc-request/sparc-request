@@ -408,6 +408,7 @@ en:
       notifications:
         header: "Messages"
       tooltips:
+        draft: "Click the Add / Modify Requests button to submit your request"
         finished_status: "This status will complete the request"
         locked_status: "This status will lock the request"
         export: "Generates spreadsheet with request information"

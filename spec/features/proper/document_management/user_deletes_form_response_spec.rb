@@ -33,7 +33,7 @@ RSpec.describe 'User deletes a form response', js: true do
     @ssr      = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: org, status: 'draft', service_requester: jug2)
                 create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
     @form     = create(:form, :with_question, surveyable: service, active: true)
-    @response = create(:response, survey: @form, respondable: @ssr, skip_additional_surveys: true)
+    @response = create(:response, survey: @form, respondable: @ssr)
                 create(:question_response, response: @response, question: @form.questions.first, content: 'Respondability')
 
     visit document_management_service_request_path(srid: @sr.id)

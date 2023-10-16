@@ -31,7 +31,7 @@ RSpec.describe 'User takes a survey', js: true do
     @section  = create(:section, survey: @survey)
     org       = create(:organization)
     @ssr      = create(:sub_service_request_without_validations, organization: org)
-    @response = create(:response, survey: @survey, identity: jug2, respondable_type: 'SubServiceRequest', respondable_id: @ssr.id, skip_additional_surveys: true)
+    @response = create(:response, survey: @survey, identity: jug2, respondable_type: 'SubServiceRequest', respondable_id: @ssr.id)
   end
 
   context 'and selects an option with a dependent question' do

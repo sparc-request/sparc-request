@@ -474,6 +474,14 @@ class Identity < ApplicationRecord
     arr
   end
 
+  def draft_protocols
+    if Setting.get_value("exclude_archived_protocols")
+      self.protocols.joins(:sub_service_requests).where(sub_service_requests: { status: 'draft'}, archived: false).uniq.sort_by(&:id)
+    else
+      self.protocols.joins(:sub_service_requests).where(sub_service_requests: { status: 'draft'}).uniq.sort_by(&:id)
+    end
+  end
+
   # short_interactions report
   # Display first available Provider/Program to which the SP user rights is assigned
   def display_available_provider_program_name

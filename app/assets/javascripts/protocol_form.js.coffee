@@ -156,6 +156,12 @@ $(document).ready ->
   ### Study Type Questions Logic ###
   ##################################
 
+  if $("#protocol_selected_for_epic_false").is(":checked")
+    $('#studyTypeNote').hide()
+
+  $("#protocol_selected_for_epic_false").on "click", ->
+    $('#studyTypeNote').hide()
+
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
 

@@ -409,16 +409,30 @@ class SubServiceRequest < ApplicationRecord
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
-  # Distributes all available surveys to primary pi and ssr requester
+  # Distributes all available surveys to those on the recipient list
   def distribute_surveys
-    primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
-      SurveyNotification.service_survey(available_surveys, [primary_pi], self).deliver
-    # only send survey email to both users if they are unique
-      if primary_pi != service_requester
-        SurveyNotification.service_survey(available_surveys, [service_requester], self).deliver
+      
+      #Initializes a new hash with the expectation that each value element will be an array
+      surveys_for_recipients = Hash.new{|k,v| k[v] = []}
+
+      #For each survey...
+      available_surveys.each do |available_survey|
+        #Generate list of recipients
+        recipients = survey_recipient_list(available_survey)
+
+        #For each recipient..
+        recipients.each do |recipient|
+          #Add recipient to hash and join recipient with survey
+          surveys_for_recipients[recipient] << available_survey
+        end
       end
+
+      #Now, send out surveys for each recipient
+      surveys_for_recipients.map{|recipient, surveys| 
+        SurveyNotification.service_survey(surveys, [recipient], self).deliver
+      }
     end
   end
 
@@ -436,6 +450,51 @@ class SubServiceRequest < ApplicationRecord
 
   def survey_latest_sent_date
     self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.try(:updated_at)
+  end
+
+  # The following is a method for generating additional recipients for a survey or form based on the intended recipient list created by the survey owner
+  def survey_recipient_list (survey)
+    # Create an empty array that will hold the final identities list
+    project_role_identities = []
+  
+    # Get the list of roles to be notified, transformed into their proper text forms
+    roles = JSON.parse(survey.notify_roles).map{|role| PermissibleValue.find(role).key}
+
+    # Find the protocol associated with this response
+    protocol = self.service_request.protocol
+
+
+    # Only bother with the next steps if the SSR has a protocol associated with it (since, apparently, SSRs can exist without a protocol)
+    if protocol.present?
+      # For each role...
+      roles.each do |role|
+        # Get the list of project_role holders that match that specific role for the protocol...
+        project_roles = protocol.project_roles.where(role: role)
+
+        # If there are any identities associated with that project role, then...
+        if project_roles.present?
+          #...for each project role...
+          project_roles.each do |project_role|
+            # Get the project_role's identity and add to the final identities list array
+            project_role_identities << project_role.identity
+          end
+        else
+          # If there are no identities associated with this project role for this protocol, then move on to the next role
+          next
+        end
+      end
+
+      # If the survey settings require that we notify the requester then get the service requester
+      if survey.notify_requester
+        requester = self.service_requester
+        if requester.present?
+          project_role_identities << requester
+        end
+      end
+    end
+    
+    # Return the final identities list as the conclusion for this method after filtering out any duplicates
+    return project_role_identities.uniq
   end
 
   ###############################

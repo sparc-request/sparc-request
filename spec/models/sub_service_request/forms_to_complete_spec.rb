@@ -35,7 +35,7 @@ RSpec.describe SubServiceRequest, type: :model do
     end
 
     it 'should not return forms that have been completed' do
-      create(:response, survey: org_form, respondable: ssr, skip_additional_surveys: true)
+      create(:response, survey: org_form, respondable: ssr)
       expect(ssr.forms_to_complete.to_a).to eq([[service.name, [service_form]]])
     end
   end

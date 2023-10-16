@@ -159,7 +159,7 @@ class Service < ApplicationRecord
   # equivalent amount in dollars.
   def self.cents_to_dollars cents
     return nil unless cents
-    cents.to_i / 100.0
+    cents.round / 100.0
   end
 
   # Display pricing formatting for reporting

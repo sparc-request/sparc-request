@@ -18,37 +18,26 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= t('surveyor.responses.emails.service_survey.greeting', name: @identity.full_name)
-%br
-%br
+- count = current_user.draft_protocols.count
 
-= t(:surveyor)[:responses][:emails][:service_survey][:text1]
-= "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
-= t(:surveyor)[:responses][:emails][:service_survey][:text2]
-%br
-%br
-= t(:surveyor)[:responses][:emails][:service_survey][:text3]
-
-%br
-
-%ul
-- @surveys.each do |survey|
-  - if response = survey.responses.where(identity: @identity, respondable: @ssr).first
-    - response.update_attribute(:updated_at, Time.now)
-  - else
-    - response = survey.responses.create(identity: @identity, respondable: @ssr)
-  %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
-
-- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
-  #sctr-grant-citation
-    %br
-    = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]
-    %br
-    %em.gray-text
-      = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])
-
-%br
-%br
-
-= render "info_table"
+.modal-dialog{ role: 'document' }
+  .modal-content
+    .modal-header
+      %h4.modal-title<
+        = t('layout.navigation.draft_requests.title', have: count > 0 ? "Your Have" : '')
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      %h5.model-header.mb-3<
+        - if count > 0
+          = t('layout.navigation.draft_requests.sub_header.have_draft_requests')
+        - else
+          = t('layout.navigation.draft_requests.sub_header.no_draft_requests')
+      - unless count == 0
+        %div
+          - current_user.draft_protocols.each do |protocol|
+            %p.mb-1
+              = link_to t('layout.navigation.draft_requests.protocol_link', protocol_id: protocol.id, protocol_title: protocol.short_title).truncate(100), dashboard_protocol_path(protocol)
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t('actions.close')

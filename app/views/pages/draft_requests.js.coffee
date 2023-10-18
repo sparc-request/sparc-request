@@ -18,34 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
-
-RSpec.describe 'User deletes a form response', js: true do
-  let_there_be_lane
-
-  fake_login_for_each_test
-
-  before :each do
-    org       = create(:organization, :with_subsidy_map, name: "Program", process_ssrs: true, pricing_setup_count: 1)
-    service   = create(:service, name: "Service", abbreviation: "Service", organization: org, pricing_map_count: 1, one_time_fee: true)
-    @protocol = create(:study_federally_funded, primary_pi: jug2)
-    @sr       = create(:service_request_without_validations, status: 'draft', protocol: @protocol)
-    @ssr      = create(:sub_service_request_without_validations, protocol: @protocol, service_request: @sr, organization: org, status: 'draft', service_requester: jug2)
-                create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-    @form     = create(:form, :with_question, surveyable: service, active: true)
-    @response = create(:response, survey: @form, respondable: @ssr)
-                create(:question_response, response: @response, question: @form.questions.first, content: 'Respondability')
-
-    visit document_management_service_request_path(srid: @sr.id)
-    wait_for_javascript_to_finish
-  end
-
-  it 'should delete the response' do
-    find('.delete-response').click
-    confirm_swal
-    wait_for_javascript_to_finish
-
-    expect(@form.reload.responses.count).to eq(0)
-    expect(page).to have_selector('span.incomplete')
-  end
-end
+$('#modalContainer').html("<%= j render 'pages/draft_requests_modal' %>")
+$("#modalContainer").modal('show')

@@ -31,5 +31,7 @@
         = render 'layouts/news'
       - if Setting.get_value('use_google_calendar')
         = render 'layouts/events'
+      - if Setting.get_value('use_task_list') && current_user
+        = render 'layouts/draft_requests'
       = render 'layouts/profile'
       = render 'layouts/help'

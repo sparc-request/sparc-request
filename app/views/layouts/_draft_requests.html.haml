@@ -18,37 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= t('surveyor.responses.emails.service_survey.greeting', name: @identity.full_name)
-%br
-%br
-
-= t(:surveyor)[:responses][:emails][:service_survey][:text1]
-= "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
-= t(:surveyor)[:responses][:emails][:service_survey][:text2]
-%br
-%br
-= t(:surveyor)[:responses][:emails][:service_survey][:text3]
-
-%br
-
-%ul
-- @surveys.each do |survey|
-  - if response = survey.responses.where(identity: @identity, respondable: @ssr).first
-    - response.update_attribute(:updated_at, Time.now)
-  - else
-    - response = survey.responses.create(identity: @identity, respondable: @ssr)
-  %li
-    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
-
-- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
-  #sctr-grant-citation
-    %br
-    = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]
-    %br
-    %em.gray-text
-      = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])
-
-%br
-%br
-
-= render "info_table"
+- count = current_user.draft_protocols.count
+.nav-item.draft_requests
+  = link_to draft_requests_pages_path, remote: true, class: 'nav-link', id: 'taskLink' do
+    .d-flex.justify-content-center{ title: count == 0 ? t('layout.navigation.draft_requests.tooltip.no_draft_requests') : '', data: { toggle: 'tooltip'}}
+      = icon('fas', 'check-circle fa-2x')
+      - if count > 0
+        %span.badge.badge-pill.badge-c.badge-danger.draft_requests-badge &nbsp;
+          

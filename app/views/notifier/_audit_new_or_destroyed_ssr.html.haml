@@ -20,15 +20,17 @@
 
 - if last_change.action == 'destroy'
   %tr.skinny-black-border
-    %td.left
+    %td.skinny-black-border.left
       %strike="#{@service_request.try(:protocol).try(:id)}-#{ssr.audited_changes['ssr_id'] || 'DRAFT'}"
     %td.skinny-black-border
       %strike= service_info.name
     %td.skinny-black-border.center
       %strike= AUDIT_ACTIONS[last_change.action]
+    %td.skinny-black-border.center= "#{Identity.find(ssr.audited_changes['current_user_id']).full_name}"
 - else
   %tr.skinny-black-border
-    %td.left
+    %td.skinny-black-border.left
       =ssr.display_id
     %td.skinny-black-border= service_info.name
     %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+    %td.skinny-black-border.center= ssr.recent_submitted_by_name

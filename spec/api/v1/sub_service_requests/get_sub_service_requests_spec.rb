@@ -46,7 +46,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(JSON.parse(response.body)['sub_service_requests']).to eq(
           sub_service_requests.map{ |ssr| 
             ssr.attributes.
-            except('id', 'created_at', 'updated_at', 'deleted_at', 'submitted_at', 'protocol_id', 'current_user_id', 'synch_to_fulfillment').
+            except('id', 'created_at', 'updated_at', 'deleted_at', 'submitted_at', 'recent_submitted_by', 'protocol_id', 'current_user_id', 'synch_to_fulfillment').
             merge({ 
               'sparc_id'      => ssr.id,
               'callback_url'  => ssr.remote_service_callback_url,
@@ -66,7 +66,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(JSON.parse(response.body)['sub_service_requests']).to eq(
           sub_service_requests.map{ |ssr| 
             ssr.attributes.
-            except('id', 'created_at', 'updated_at', 'deleted_at', 'submitted_at', 'protocol_id', 'current_user_id', 'synch_to_fulfillment').
+            except('id', 'created_at', 'updated_at', 'deleted_at', 'submitted_at', 'recent_submitted_by', 'protocol_id', 'current_user_id', 'synch_to_fulfillment').
             merge({ 
               'sparc_id'          => ssr.id,
               'callback_url'      => ssr.remote_service_callback_url,

@@ -230,6 +230,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "exclude_archived_protocols",
+    "value":          "true",
+    "friendly_name":  "Exclude Archived Protocols from Unsubmitted Requests List",
+    "description":    "This determines whether or not the application will exclude archived protocols from unsubmitted requests task list.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_task_list",
+    "parent_value":   "true"
+  },
+  {
     "key":            "faq_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
     "friendly_name":  "FAQs URL",
@@ -1094,6 +1104,16 @@
     "value":          "false",
     "friendly_name":  "Use Tableau",
     "description":    "This determines whether the application will display a Tableau dashboard on the homepage.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
+    "key":            "use_task_list",
+    "value":          "true",
+    "friendly_name":  "Use Task List",
+    "description":    "This determines whether the application will use the task feature to manage unsubmitted requests.",
     "group":          "",
     "version":        "",
     "parent_key":     "",

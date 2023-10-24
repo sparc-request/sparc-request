@@ -745,6 +745,14 @@ en:
       profile:
         messages: "Messages"
         edit: "Edit Profile"
+      draft_requests:
+        title: "%{have} Unsubmitted Requests"
+        tooltip:
+          no_draft_requests: "You do not have any unsubmitted requests."
+        sub_header:
+          have_draft_requests: "Click on the protocol link below to review and complete these submissions."
+          no_draft_requests: "You do not have any unsubmitted requests."
+        protocol_link: "Protocol %{protocol_id}: %{protocol_title}"
     dashboard:
       navigation:
         short_interaction: "Short Interaction"

@@ -19,49 +19,22 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'rails_helper'
-require 'timecop'
 
-RSpec.describe 'User takes a survey', js: true do
+RSpec.describe 'User views task list', js: true do
   let_there_be_lane
-
   fake_login_for_each_test
+  stub_config("use_task_list", true)
 
-  before :each do
-    @survey   = create(:system_survey, :with_question, title: "My Survey", active: true)
-    @section  = create(:section, survey: @survey)
-    org       = create(:organization)
-    @ssr      = create(:sub_service_request_without_validations, organization: org)
-    @response = create(:response, survey: @survey, identity: jug2, respondable_type: 'SubServiceRequest', respondable_id: @ssr.id)
+  it 'should show draft requests popup' do
+    visit root_path
+    wait_for_javascript_to_finish
+
+    find('#taskLink').click
+    wait_for_javascript_to_finish
+    
+    expect(page).to have_content('Unsubmitted Requests')
+
+    
   end
 
-  context 'and selects an option with a dependent question' do
-    scenario 'and sees the dependent question' do
-      @q_radio_button = create(:question, section: @section, question_type: 'radio_button', content: 'Radio Button Question')
-      @opt1           = create(:option, question: @q_radio_button, content: "Option 1")
-      @opt2           = create(:option, question: @q_radio_button, content: "Option 2")
-      @q_dependent    = create(:question, section: @section, content: 'Dependent Question', depender: @opt1)
-
-      visit edit_surveyor_response_path(@response)
-      wait_for_javascript_to_finish
-
-      first('input').click
-      wait_for_javascript_to_finish
-
-      expect(page).to have_content('Dependent Question')
-    end
-  end
-
-  context 'and fills out the survey and submits' do
-    scenario 'and is redirected to the completed screen' do
-      visit edit_surveyor_response_path(@response)
-      wait_for_javascript_to_finish
-
-      click_button 'Submit'
-
-      complete_page = surveyor_response_complete_path(Response.last)
-      wait_for_page(complete_page)
-
-      expect(current_path).to eq(complete_page)
-    end
-  end
 end

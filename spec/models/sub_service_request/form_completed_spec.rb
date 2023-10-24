@@ -28,7 +28,7 @@ RSpec.describe SubServiceRequest, type: :model do
 
   describe '#form_completed?' do
     it 'should return true if the Form has been completed by the SSR' do
-      create(:response, survey: form, respondable: ssr, skip_additional_surveys: true)
+      create(:response, survey: form, respondable: ssr)
       expect(ssr.form_completed?(form)).to eq(true)
     end
 

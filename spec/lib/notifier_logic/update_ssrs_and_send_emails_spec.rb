@@ -140,7 +140,7 @@ RSpec.describe NotifierLogic do
         # mimics the service_requests_controller remove_service method
         @destroyed_li_id = li.id
         li.destroy
-        ssr.update_attribute(:status, 'draft')
+        ssr.update(status: 'draft', current_user_id: logged_in_user.id)
         ssr.destroy
         @sr.reload
         ### DELETES AN ENTIRE SSR AND SETS UP ASSOCIATED AUDIT ###

@@ -50,7 +50,8 @@ class ServiceRequestsReport < ReportingModule
     attrs["SRID"] = :display_id
     attrs["RMID"] = "service_request.try(:protocol).try(:research_master_id)" if Setting.get_value("research_master_enabled")
     attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
-    attrs["Requester"] = '"#{service_requester.try(:first_name)} #{service_requester.try(:last_name)}"'
+    attrs["Submitted By"] = :recent_submitted_by_name
+    attrs["Original Requester"] = '"#{service_requester.try(:first_name)} #{service_requester.try(:last_name)}"'
     attrs["Status"] = :formatted_status
 
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"

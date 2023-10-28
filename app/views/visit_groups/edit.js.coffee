@@ -46,7 +46,16 @@ else
     html:       true
     trigger:    'manual'
     placement:  'left'
+    container:  'body'
   )
+
+  # This is a hack to fix https://www.pivotaltracker.com/story/show/185417863
+  $vg.on 'shown.bs.popover', ->
+    if $('.popover').length > 1
+      $('.popover').first().attr('title', title).find('.popover-body').html($content)
+      $('.popover').last().remove()
+      y = $(window).scrollTop()
+      $(window).scrollTop(y+1).scrollTop(y-1)
 
   # Logic for smoother closing of visit group popovers
   $vg.on 'shown.bs.popover', ->

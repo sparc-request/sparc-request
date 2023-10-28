@@ -72,10 +72,13 @@ module ProtocolsHelper
     (Setting.get_value("use_epic") && protocol.display_answers.where.not(answer: nil).any?) || (Setting.get_value("use_confidentiality_questions") && protocol.active? && protocol.display_answers.joins(:study_type_question).where(study_type_questions: { friendly_id: ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'] }).where.not(answer: nil).any?)
   end
 
-  def display_study_type_question?(protocol, study_type_answer, view_protocol=false)
+  def display_study_type_question?(protocol, study_type_answer, view_protocol=false, action_name)
+    # If use_epic turned off at app level, or "Do you want study published in epic?" is no.
     if !Setting.get_value("use_epic") || protocol.selected_for_epic == false
       # If read-only (Dashboard--> 'Edit Study Information' or 'View Study Details') do not show the first CofC question if unanswered
-      if view_protocol
+      if action_name == 'edit'
+        ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id)
+      elsif view_protocol
         ['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
       else # Else we want to always display the first CofC question regardless of whether it's been answered or needs to be answered
         if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf_no_epic'
@@ -89,9 +92,15 @@ module ProtocolsHelper
         end
       end
     else #On the other hand, if Epic is active...
-      !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
-      if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf'
-        true
+      if (action_name == 'edit' || view_protocol) && !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id)
+        if study_type_answer.answer != nil
+          true
+        end
+      else
+        !['certificate_of_conf_no_epic', 'higher_level_of_privacy_no_epic'].include?(study_type_answer.study_type_question.friendly_id) && study_type_answer.answer != nil
+        if study_type_answer.study_type_question.friendly_id == 'certificate_of_conf'
+          true
+        end
       end
     end
   end

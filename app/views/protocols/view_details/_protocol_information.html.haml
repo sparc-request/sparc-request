@@ -60,14 +60,14 @@
                 = label :protocol, :selected_for_epic, class: 'mb-0'
               %td.d-inline-block.col-9
                 = protocol.selected_for_epic ? t('constants.yes_select') : t('constants.no_select')
-          - if protocol.selected_for_epic
-            - if display_readonly_study_type_questions?(protocol) && protocol.display_answers.any?{ |as| display_study_type_question?(protocol, as) }
+            - if display_readonly_study_type_questions?(protocol) && protocol.display_answers.any?{ |sta| display_study_type_question?(protocol, sta, true, action_name) }
+
               %tr.bg-light
                 %td{ colspan: 2 }
                   %h6.mb-0{ title: t(:protocols)[:tooltips][:study_type_questions], data: { toggle: 'tooltip', placement: 'right' } }
                     = Protocol.human_attribute_name(:study_type_questions)
               - protocol.display_answers.each do |answer|
-                - if ((answer.study_type_question.study_type_question_group.active && protocol.active?) || (!answer.study_type_question.study_type_question_group.active && !protocol.active?)) && display_study_type_question?(protocol, answer, true)
+                - if ((answer.study_type_question.study_type_question_group.active && protocol.active?) || (!answer.study_type_question.study_type_question_group.active && !protocol.active?)) && display_study_type_question?(protocol, answer, true, action_name)
                   %tr
                     %td{ colspan: 2 }
                       .row

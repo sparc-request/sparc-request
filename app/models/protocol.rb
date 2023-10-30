@@ -338,7 +338,7 @@ class Protocol < ApplicationRecord
   scope :protocol_merge_search_query, -> (term) {
     return if term.blank?
 
-    where (Protocol.arel_table[:short_title].matches("%#{term}%"))
+    where (Protocol.arel_table[:id].eq(term))
   }
 
   def research_master_id=(rmid)

@@ -21,27 +21,9 @@
 $('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', protocol_merge: @protocol_merge, current_user: @current_user %>")
 $('#modalContainer').modal('show')
 
-#$('#master_protocol_id').on 'keyup', ->
-  #alert 'Handler for keyup called.'
-  #return
-
-#keyupTimer = undefined
-#$('#master_protocol_id').keyup ->
-  #clearTimeout keyupTimer
-  #keyupTimer = setTimeout((->
-    #alert 'Handler for keyup called.'
-    #return
-  #), 800)
-  #return
-
 mergesBloodhound = new Bloodhound(
   datumTokenizer: Bloodhound.tokenizers.whitespace
   queryTokenizer: Bloodhound.tokenizers.whitespace
-  #local: [
-    #'222'
-    #'221'
-    #'220'
-  #]
   remote:
     url: "/search/protocol_merge_search?term=%TERM",
     wildcard: '%TERM'

@@ -160,6 +160,9 @@ $(document).ready ->
 
   $("#protocol_selected_for_epic_false").on "click", ->
     $('#studyTypeNote').hide()
+    # Hide study_type_questions container unless human_subjects is checked
+    if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+      $('#studyTypeQuestionsContainer').addClass('d-none')
 
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')

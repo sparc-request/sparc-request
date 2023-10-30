@@ -191,6 +191,7 @@ SparcRails::Application.routes.draw do
       get :services
       get :organizations
       get :identities
+      get :protocol_merge_search
     end
   end
 

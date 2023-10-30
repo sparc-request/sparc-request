@@ -335,6 +335,12 @@ class Protocol < ApplicationRecord
       where.not(sub_service_requests: {status: 'first_draft'})
   }
 
+  scope :protocol_merge_search_query, -> (term) {
+    return if term.blank?
+
+    where (Protocol.arel_table[:short_title].matches("%#{term}%"))
+  }
+
   def research_master_id=(rmid)
     self.rmid_validated = false if rmid.blank?
 

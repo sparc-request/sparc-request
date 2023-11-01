@@ -131,6 +131,7 @@ class SearchController < ApplicationController
         protocol_title: p.title,
         protocol_short_title: p.short_title,
         protocol_rmid: p.research_master_id,
+        protocol_pi: p.primary_pi.full_name
       }
     }
     render json: results.to_json

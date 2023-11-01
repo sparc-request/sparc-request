@@ -55,6 +55,9 @@ $('#master_protocol_id').typeahead(
           "<div class='w-100'>"
             "<strong>RMID: </strong>#{s.protocol_rmid}"
           "<div>",
+          "<div class='w-100'>"
+            "<strong>Primary PI: </strong>#{s.protocol_pi}"
+          "<div>",
         "</div>"
       ].join('')
     }
@@ -84,6 +87,9 @@ $('#merged_protocol_id').typeahead(
           "<div>",
           "<div class='w-100'>"
             "<strong>RMID: </strong>#{s.protocol_rmid}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Primary PI: </strong>#{s.protocol_pi}"
           "<div>",
         "</div>"
       ].join('')

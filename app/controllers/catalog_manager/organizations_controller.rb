@@ -68,6 +68,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def update
+    if params[:organization][:process_ssrs] == "0"
+      SubmissionEmail.where(organization_id: params[:id]).delete_all
+    end
+
     @organization = Organization.find(params[:id])
     set_registrar_enabled(@organization)
     @user_rights  = user_rights(@organization.id)
@@ -248,6 +252,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
 
     if @organization.update_attributes(@attributes)
+      # If self.process_ssrs_changed? && self.process_ssrs == 0, self.submission_emails.destroy_all
+      @organization.submission_emails.destroy_all if (@organization.type != "Institution" && @organization.process_ssrs == 0)
       @organization.update_ssr_org_name if (@organization.type != "Institution" && name_change)
       update_services
       true

@@ -60,3 +60,33 @@ $('#master_protocol_id').typeahead(
     }
   }
 )
+
+$('#merged_protocol_id').typeahead(
+  {
+    minLength: 1,
+    highlight: true
+  }, {
+    source: mergesBloodhound.ttAdapter(),
+    displayKey: 'protocol_id',
+    templates: {
+      notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
+      pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>",
+      suggestion: (s) -> [
+        "<div class='tt-suggestion'>"
+          "<div class='w-100'>"
+            "<h5>#{s.protocol_id}</h5>"
+          "</div>",
+          "<div class='w-100'>"
+            "<strong>Title: </strong>#{s.protocol_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Short Title: </strong>#{s.protocol_short_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>RMID: </strong>#{s.protocol_rmid}"
+          "<div>",
+        "</div>"
+      ].join('')
+    }
+  }
+)

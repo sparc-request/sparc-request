@@ -74,6 +74,7 @@ $(document).ready ->
       $('#protocol_research_master_id').siblings('label').addClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
+      $('#studyTypeQuestionsContainer').removeClass('d-none')
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
@@ -106,9 +107,7 @@ $(document).ready ->
       else
         $specifyField.parents('.form-group').addClass('d-none')
 
-  # 'Involved External Organizations' subsection
   $(document).on 'change', 'input[id$="external_organizations"]', ->
-    # set var 'target'
     target = $(this).data('target')
 
     $(target).find('.is-valid, .is-invalid').removeClass('is-valid is-invalid')
@@ -161,6 +160,9 @@ $(document).ready ->
 
   $("#protocol_selected_for_epic_false").on "click", ->
     $('#studyTypeNote').hide()
+    # Hide study_type_questions container unless human_subjects is checked
+    if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+      $('#studyTypeQuestionsContainer').addClass('d-none')
 
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
@@ -173,7 +175,8 @@ $(document).ready ->
       hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
       showStudyTypeQuestion($(certificateOfConfidence))
     else
-      $('#studyTypeQuestionsContainer').addClass('d-none')
+      hideStudyTypeQuestion($(certificateOfConfidence))
+      showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'

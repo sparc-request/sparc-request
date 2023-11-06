@@ -20,3 +20,79 @@
 
 $('#modalContainer').html("<%= j render 'dashboard/protocol_merges/merge_tool_modal.html.haml', protocol_merge: @protocol_merge, current_user: @current_user %>")
 $('#modalContainer').modal('show')
+
+mergesBloodhound = new Bloodhound(
+  datumTokenizer: Bloodhound.tokenizers.whitespace
+  queryTokenizer: Bloodhound.tokenizers.whitespace
+  remote:
+    url: "/search/protocol_merge_search?term=%TERM",
+    wildcard: '%TERM'
+)
+
+mergesBloodhound.initialize()
+
+$('#master_protocol_id').typeahead(
+  {
+    minLength: 1,
+    highlight: true
+  }, {
+    source: mergesBloodhound.ttAdapter(),
+    displayKey: 'protocol_id',
+    templates: {
+      notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
+      pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>",
+      suggestion: (s) -> [
+        "<div class='tt-suggestion'>"
+          "<div class='w-100'>"
+            "<h5>#{s.protocol_id}</h5>"
+          "</div>",
+          "<div class='w-100'>"
+            "<strong>Title: </strong>#{s.protocol_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Short Title: </strong>#{s.protocol_short_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>RMID: </strong>#{s.protocol_rmid}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Primary PI: </strong>#{s.protocol_pi}"
+          "<div>",
+        "</div>"
+      ].join('')
+    }
+  }
+)
+
+$('#merged_protocol_id').typeahead(
+  {
+    minLength: 1,
+    highlight: true
+  }, {
+    source: mergesBloodhound.ttAdapter(),
+    displayKey: 'protocol_id',
+    templates: {
+      notFound: "<div class='tt-suggestion'>#{I18n.t('constants.search.no_results')}</div>",
+      pending: "<div class='tt-suggestion'>#{I18n.t('constants.search.loading')}</div>",
+      suggestion: (s) -> [
+        "<div class='tt-suggestion'>"
+          "<div class='w-100'>"
+            "<h5>#{s.protocol_id}</h5>"
+          "</div>",
+          "<div class='w-100'>"
+            "<strong>Title: </strong>#{s.protocol_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Short Title: </strong>#{s.protocol_short_title}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>RMID: </strong>#{s.protocol_rmid}"
+          "<div>",
+          "<div class='w-100'>"
+            "<strong>Primary PI: </strong>#{s.protocol_pi}"
+          "<div>",
+        "</div>"
+      ].join('')
+    }
+  }
+)

@@ -53,9 +53,10 @@ class VisitGroup < ApplicationRecord
 
   validates :day, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
 
-  validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? }
+  validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? && !vg.skip_order_validation }
 
   attr_accessor :neighbor_moved
+  attr_accessor :skip_order_validation
 
   default_scope { order(:position) }
 

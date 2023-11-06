@@ -123,6 +123,20 @@ class SearchController < ApplicationController
     render json: results.to_json
   end
 
+  def protocol_merge_search
+    term = params[:term].strip
+    results = Protocol.protocol_merge_search_query(term).map{ |p|
+      {
+        protocol_id: p.id,
+        protocol_title: p.title,
+        protocol_short_title: p.short_title,
+        protocol_rmid: p.research_master_id,
+        protocol_pi: p.primary_pi.full_name
+      }
+    }
+    render json: results.to_json
+  end
+
   private
 
   def inactive_text(item)

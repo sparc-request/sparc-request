@@ -41,7 +41,7 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
         wait_for_javascript_to_finish
 
         expect(@project.reload.archived).to eq(true)
-        expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+        expect(page.document).to have_content(I18n.t('protocols.summary.unarchive'))
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
         wait_for_javascript_to_finish
 
         expect(@project.reload.archived).to eq(false)
-        expect(page).to have_content(I18n.t('protocols.summary.archive'))
+        expect(page.document).to have_content(I18n.t('protocols.summary.archive'))
       end
     end
 

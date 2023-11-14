@@ -32,13 +32,26 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should archive the protocol' do
+    it 'should render archive confirm prompt' do
       click_link I18n.t('protocols.summary.archive')
       wait_for_javascript_to_finish
 
-      expect(@project.reload.archived).to eq(true)
-      expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+      within(page.document.find(:css, '.swal2-actions')) do
+        find(:css, '.swal2-confirm').click
+        wait_for_javascript_to_finish
+
+        expect(@project.reload.archived).to eq(true)
+        expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+      end
     end
+
+    #it 'should archive the protocol' do
+      #click_link I18n.t('protocols.summary.archive')
+      #wait_for_javascript_to_finish
+
+      #expect(@project.reload.archived).to eq(true)
+      #expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+    #end
   end
 
   context 'unarchive protocol' do
@@ -50,12 +63,25 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should unarchive the protocol' do
+    it 'should render unarchive confirm prompt' do
       click_link I18n.t('protocols.summary.unarchive')
       wait_for_javascript_to_finish
 
-      expect(@project.reload.archived).to eq(false)
-      expect(page).to have_content(I18n.t('protocols.summary.archive'))
+      within(page.document.find(:css, '.swal2-actions')) do
+        find(:css, '.swal2-confirm').click
+        wait_for_javascript_to_finish
+
+        expect(@project.reload.archived).to eq(false)
+        expect(page).to have_content(I18n.t('protocols.summary.archive'))
+      end
     end
+
+    #it 'should unarchive the protocol' do
+      #click_link I18n.t('protocols.summary.unarchive')
+      #wait_for_javascript_to_finish
+
+      #expect(@project.reload.archived).to eq(false)
+      #expect(page).to have_content(I18n.t('protocols.summary.archive'))
+    #end
   end
 end

@@ -36,12 +36,12 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
       click_link I18n.t('protocols.summary.archive')
       wait_for_javascript_to_finish
 
-      within(page.find(:css, '.swal2-actions')) do
+      within(page.document.find(:css, '.swal2-actions')) do
         find(:css, '.swal2-confirm').click
         wait_for_javascript_to_finish
 
         expect(@project.reload.archived).to eq(true)
-        expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
+        expect(page.document).to have_content(I18n.t('protocols.summary.unarchive'))
       end
     end
 
@@ -67,12 +67,12 @@ RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
       click_link I18n.t('protocols.summary.unarchive')
       wait_for_javascript_to_finish
 
-      within(page.find(:css, '.swal2-actions')) do
+      within(page.document.find(:css, '.swal2-actions')) do
         find(:css, '.swal2-confirm').click
         wait_for_javascript_to_finish
 
         expect(@project.reload.archived).to eq(false)
-        expect(page).to have_content(I18n.t('protocols.summary.archive'))
+        expect(page.document).to have_content(I18n.t('protocols.summary.archive'))
       end
     end
 

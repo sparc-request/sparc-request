@@ -75,6 +75,7 @@ SparcRails::Application.routes.draw do
   ####################
   ### Other Routes ###
   ####################
+  resource :additional_funding_sources
 
   resource :pages, only: [] do
     get :event_details

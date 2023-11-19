@@ -18,6 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- use_additional_funding_sources = Setting.get_value("use_additional_funding_sources")
+
 %section.pt-3#financialInformation
   .card
     .card-body.p-5
@@ -100,3 +102,15 @@
 
       - if protocol.is_a?(Study)
         = render 'protocols/form/federal_grant_information', f: f, protocol: protocol
+
+      - if use_additional_funding_sources
+        %section.mt-3#additionalFundingsourcesContainer
+        .form-group
+          %h4.pb-2.border-bottom
+            = t('protocols.form.financial_information.additional_funding_sources')
+        .w-100#additionalFundingSources
+          - @afs_count = f.object.additional_funding_sources.length
+          = f.fields_for :additional_funding_sources do |ff_afs|
+            = render 'additional_funding_sources/additional_funding_source', protocol: protocol, f: f, additional_funding_source: ff_afs.object, index: ff_afs.index
+        = render 'additional_funding_sources/new_additional_funding_source', protocol: protocol, index: @afs_count
+

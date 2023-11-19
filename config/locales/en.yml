@@ -700,6 +700,15 @@ en:
     none: "You don't have any forms to complete"
     srid: "SRID"
 
+  ##############################
+  # ADDITIONAL FUNDING SOURCES #
+  ##############################
+  additional_funding_sources:
+    add: "Add New"
+    tooltips:
+      edit: "Edit the Additional Funding Source"
+      delete: "Delete the Additional Funding Source"
+
   ###############
   # IRB RECORDS #
   ###############
@@ -931,6 +940,7 @@ en:
       financial_information:
         header: "Financial Information"
         guarantor_header: "Send Bills To..."
+        additional_funding_sources: "Additional Funding Sources"
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"

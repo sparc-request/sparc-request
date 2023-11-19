@@ -80,13 +80,11 @@ module Dashboard
       if opts[:merged] && opts[:consolidated]
         if opts[:show_unchecked]
           arm.line_items_visits.
-            eager_load(:visits).
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false })
         else
           arm.line_items_visits.
-            eager_load(:visits).
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
@@ -94,7 +92,6 @@ module Dashboard
         end
       else
         (sub_service_request || service_request).line_items_visits.
-          eager_load(:visits).
           includes(sub_service_request: :services).
           where.not(sub_service_requests: { status: statuses_hidden }).
           where(services: { one_time_fee: false }, arm_id: arm.id)

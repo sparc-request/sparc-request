@@ -54,7 +54,7 @@ module ProtocolsHelper
 
   def archive_protocol_button(protocol, opts={})
     unless in_dashboard? && !opts[:permission]
-      link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn archive-protocol', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { confirm_swal: 'true', html: protocol.archived? ? t("protocols.summary.unarchive_confirmation") : t("protocols.summary.archive_confirmation"), toggle: 'tooltip' } do
+      link_to archive_dashboard_protocol_path(protocol), remote: true, method: :patch, class: ['btn archive-protocol', protocol.archived? ? 'btn-success' : 'btn-danger'], title: t("protocols.summary.tooltips.#{protocol.archived ? "unarchive" : "archive"}"), data: { confirm_swal: 'true', html: t("protocols.summary.#{protocol.archived ? "unarchive_confirmation" : "archive_confirmation"}") } do
         icon('fas', 'archive mr-2') + t(:protocols)[:summary][protocol.archived? ? :unarchive : :archive]
       end
     end

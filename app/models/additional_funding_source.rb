@@ -3,7 +3,7 @@ class AdditionalFundingSource < ApplicationRecord
 
   validates :fundig_source_other, presence: true, if: Proc.new { |a| a.funding_source == 'Internal Funded Pilot Project' }
 
-  # Validate federal grant details    
+  ## In case we decide to validate federal grant details ##
   # validates :federal_grant_code, :federal_grant_serial_number, :federal_grant_title, presence: true, if: Proc.new { |a| a.funding_source == 'Federal' }
 
   # validate :phs_or_non_phs_sponsor_present, if: Proc.new { |a| a.funding_source == 'Federal' }

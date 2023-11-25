@@ -104,13 +104,23 @@
         = render 'protocols/form/federal_grant_information', f: f, protocol: protocol
 
       - if use_additional_funding_sources
-        %section.mt-3#additionalFundingsourcesContainer
-        .form-group
-          %h4.pb-2.border-bottom
-            = t('protocols.form.financial_information.additional_funding_sources')
-        .w-100#additionalFundingSources
-          - @afs_count = f.object.additional_funding_sources.length
-          = f.fields_for :additional_funding_sources do |ff_afs|
-            = render 'additional_funding_sources/additional_funding_source', protocol: protocol, f: f, additional_funding_source: ff_afs.object, index: ff_afs.index
-        = render 'additional_funding_sources/new_additional_funding_source', protocol: protocol, index: @afs_count
+        %section
+          .form-row
+            .form-group.col-12
+              .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
+                - if f.object.additional_funding_sources.present?
+                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer' }, checked: true
+                - else
+                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer' }
+                = f.label :additional_funding_sources, t('protocols.form.financial_information.additional_funding_sources'), class: 'custom-control-label', data: { toggle: 'tooltip', placement: 'right' }, title: t('protocols.tooltips.additional_funding_sources')
+
+        %section.mt-3#additionalFundingSourcesContainer{ class: f.object.additional_funding_sources.present? ? '' : 'd-none'}
+          .form-group
+            %h5.pb-2.border-bottom
+              = t('protocols.form.financial_information.additional_funding')
+          .w-100#additionalFundingSources
+            - @afs_count = f.object.additional_funding_sources.length
+            = f.fields_for :additional_funding_sources do |ff_afs|
+              = render 'additional_funding_sources/additional_funding_source', protocol: protocol, f: f, additional_funding_source: ff_afs.object, index: ff_afs.index
+          = render 'additional_funding_sources/new_additional_funding_source', protocol: protocol, index: @afs_count
 

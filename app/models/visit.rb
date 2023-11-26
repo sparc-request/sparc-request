@@ -41,9 +41,9 @@ class Visit < ApplicationRecord
 
   ########################
 
-  after_create :add_r_quantity_to_liv_r_quantity_sum, if: Proc.new { |visit| visit.research_billing_qty >= 1 }
-  after_destroy :remove_r_quantity_to_liv_r_quantity_sum, if: Proc.new { |visit| visit.research_billing_qty >= 1 }
-  after_update :adjust_liv_r_quantity, if: :saved_change_to_research_billing_qty?
+  after_create :add_billing_quantity_to_liv_quantity_sum, if: Proc.new { |visit| visit.indicated?}
+  after_destroy :remove_billing_quantity_from_liv_quantity_sum, if: Proc.new { |visit| visit.indicated? }
+  after_update :adjust_liv_quantity, if: :quantity_changed?
 
   validates :research_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :insurance_billing_qty, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -107,19 +107,57 @@ class Visit < ApplicationRecord
 
   private
 
-  def add_r_quantity_to_liv_r_quantity_sum
-    new_sum = line_items_visit.visit_r_quantity += research_billing_qty
-    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  def quantity_changed?
+    saved_change_to_research_billing_qty? ||
+    saved_change_to_insurance_billing_qty? ||
+    saved_change_to_effort_billing_qty?
   end
 
-  def remove_r_quantity_to_liv_r_quantity_sum
-    new_sum = line_items_visit.visit_r_quantity -= research_billing_qty
-    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  def add_billing_quantity_to_liv_quantity_sum
+    if research_billing_qty > 0 
+      new_sum = line_items_visit.visit_r_quantity += research_billing_qty
+      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+    end
+    if insurance_billing_qty > 0
+      new_sum = line_items_visit.visit_i_quantity += insurance_billing_qty
+      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+    end
+    if effort_billing_qty > 0
+      new_sum = line_items_visit.visit_e_quantity += effort_billing_qty
+      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+    end
   end
 
-  def adjust_liv_r_quantity
-    old_quantity, new_quantity = saved_change_to_research_billing_qty
-    new_sum = line_items_visit.visit_r_quantity += (new_quantity - old_quantity)
-    line_items_visit.update_attributes(visit_r_quantity: new_sum)
+  def remove_billing_quantity_from_liv_quantity_sum
+    if research_billing_qty > 0
+      new_sum = line_items_visit.visit_r_quantity -= research_billing_qty
+      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+    end
+    if insurance_billing_qty > 0
+      new_sum = line_items_visit.visit_i_quantity -= insurance_billing_qty
+      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+    end
+    if effort_billing_qty > 0
+      new_sum = line_items_visit.visit_e_quantity -= effort_billing_qty
+      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+    end
+  end
+
+  def adjust_liv_quantity
+    if saved_change_to_research_billing_qty?
+      old_quantity, new_quantity = saved_change_to_research_billing_qty
+      new_sum = line_items_visit.visit_r_quantity += (new_quantity - old_quantity)
+      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+    end
+    if saved_change_to_insurance_billing_qty?
+      old_quantity, new_quantity = saved_change_to_insurance_billing_qty
+      new_sum = line_items_visit.visit_i_quantity += (new_quantity - old_quantity)
+      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+    end
+    if saved_change_to_effort_billing_qty?
+      old_quantity, new_quantity = saved_change_to_effort_billing_qty
+      new_sum = line_items_visit.visit_e_quantity += (new_quantity - old_quantity)
+      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+    end
   end
 end

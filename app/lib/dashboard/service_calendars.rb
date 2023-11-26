@@ -88,7 +88,7 @@ module Dashboard
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
-            where.not("visits.research_billing_qty = 0 and visits.insurance_billing_qty = 0 and visits.effort_billing_qty = 0" )
+            where.not("visit_r_quantity = 0 and visit_i_quantity = 0 and visit_e_quantity = 0" )
         end
       else
         (sub_service_request || service_request).line_items_visits.

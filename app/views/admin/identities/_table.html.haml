@@ -30,6 +30,8 @@
           = Identity.human_attribute_name(:name)
         %th{ data: { field: 'institution', sortable: 'true' } }
           = Identity.human_attribute_name(:institution)
+        %th{ data: { field: 'ldap_uid' } }
+          = Identity.human_attribute_name(:ldap_uid)
         %th{ data: { field: 'email' } }
           = Identity.human_attribute_name(:email)
         %th.w-10{ data: { field: 'created_at', align: 'center', sortable: 'true', sorter: 'dateSorter' } }

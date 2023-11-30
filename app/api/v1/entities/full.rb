@@ -96,7 +96,9 @@ module V1
     expose  :arm_id,
             :line_item_id,
             :subject_count,
-            :visit_r_quantity
+            :visit_r_quantity,
+            :visit_i_quantity,
+            :visit_e_quantity
   end
 
   class OrganizationFull < OrganizationShallow

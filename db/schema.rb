@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_15_180501) do
-
+ActiveRecord::Schema.define(version: 2023_11_26_005229) do
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -449,6 +448,8 @@ ActiveRecord::Schema.define(version: 2023_11_15_180501) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "visit_r_quantity", default: 0
+    t.integer "visit_i_quantity", default: 0
+    t.integer "visit_e_quantity", default: 0
     t.index ["arm_id"], name: "index_line_items_visits_on_arm_id"
     t.index ["line_item_id"], name: "index_line_items_visits_on_line_item_id"
   end

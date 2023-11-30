@@ -163,26 +163,61 @@ $(document).ready ->
 
   if $("#protocol_selected_for_epic_false").is(":checked")
     $('#studyTypeNote').hide()
-
-  $("#protocol_selected_for_epic_false").on "click", ->
-    $('#studyTypeNote').hide()
-    # Hide study_type_questions container unless human_subjects is checked
-    if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
-      $('#studyTypeQuestionsContainer').addClass('d-none')
+    if $(humanSubjects).prop('checked')
+      $('#studyTypeQuestionsContainer').removeClass('d-none')
+      justShowSTQ($(certificateOfConfidenceNoEpic))
+      if $(certificateOfConfidenceNoEpic).val() == 'true'
+        justHideSTQ($(higherLevelOfPrivacyNoEpic))
+      else
+        justShowSTQ($(higherLevelOfPrivacyNoEpic))
+        justShowSTQ($(higherLevelOfPrivacyNoEpic))
 
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
-
     if $(this).val() == 'true'
       $('label[for=protocol_study_type_questions]').addClass('required')
       if $('#studyTypeQuestionsContainer').hasClass('d-none')
         $('#studyTypeQuestionsContainer').removeClass('d-none')
       setRequiredFields()
-      hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
-      showStudyTypeQuestion($(certificateOfConfidence))
+      for el in noEpic
+        justHideSTQ($(el))
+      justShowSTQ($(certificateOfConfidence))
+      if $(certificateOfConfidence).val() == 'true'
+        for el in epicQuestions2through5
+          justHideSTQ($(el))
+      else
+        for el in epicQuestions2through5
+          justShowSTQ($(el))
     else
-      hideStudyTypeQuestion($(certificateOfConfidence))
-      showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+      for el in epic
+        justHideSTQ($(el))
+      if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+        if $('#studyTypeQuestionsContainer').hasClass('d-none')
+          $('#studyTypeQuestionsContainer').removeClass('d-none')
+        justShowSTQ($(certificateOfConfidenceNoEpic))
+        if $(certificateOfConfidenceNoEpic).val() == 'true'
+          justHideSTQ($(higherLevelOfPrivacyNoEpic))
+        else
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
+      else
+        $('#studyTypeQuestionsContainer').addClass('d-none')
+        $('#studyTypeNote').hide()
+
+  $(humanSubjects).on "click", ->
+    if $(this).prop('checked')
+      if $('#protocol_selected_for_epic_false').prop('checked')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
+        $('#studyTypeNote').hide()
+        justShowSTQ($(certificateOfConfidenceNoEpic))
+        justHideSTQs($(epic))
+        if $(certificateOfConfidenceNoEpic).val() == 'true'
+          justHideSTQ($(higherLevelOfPrivacyNoEpic))
+        else
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
+    else
+      if $('#protocol_selected_for_epic_false').prop('checked')
+        $('#studyTypeQuestionsContainer').addClass('d-none')
+        $('#studyTypeNote').hide()
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'
@@ -346,15 +381,40 @@ researchActive                = '#study_type_answer_research_active_answer'
 restrictSending               = '#study_type_answer_restrict_sending_answer'
 
 certificateOfConfidenceNoEpic = '#study_type_answer_certificate_of_conf_no_epic_answer'
+
 higherLevelOfPrivacyNoEpic    = '#study_type_answer_higher_level_of_privacy_no_epic_answer'
 
+humanSubjects                 = "#protocol_research_types_info_attributes_human_subjects"
+
+epicQuestions2through5 = [
+  higherLevelOfPrivacy, epicInBasket, researchActive, restrictSending
+  ]
+
+noEpic = [
+  certificateOfConfidenceNoEpic,
+  higherLevelOfPrivacyNoEpic
+]
+
+epic = [
+  certificateOfConfidence,
+  higherLevelOfPrivacy,
+  epicInBasket,
+  researchActive,
+  restrictSending
+]
 hideStudyTypeQuestion = ($select) ->
   $select.selectpicker('val', '')
   $select.trigger('change')
   $select.closest('.form-row').addClass('d-none')
 
+justHideSTQ = ($select) ->
+  $select.closest('.form-row').addClass('d-none')
+
 showStudyTypeQuestion = ($select) ->
   $select.trigger('change')
+  $select.closest('.form-row').removeClass('d-none')
+
+justShowSTQ = ($select) ->
   $select.closest('.form-row').removeClass('d-none')
 
 determineStudyType = () ->

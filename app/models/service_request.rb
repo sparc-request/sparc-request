@@ -108,7 +108,7 @@ class ServiceRequest < ApplicationRecord
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
-      rs_line_items = create_line_items_for_service(service: rs, optional: false, recursive_call: true)
+      rs_line_items = create_line_items_for_service(service: rs, requester: requester, optional: false, recursive_call: true)
       line_items   += rs_line_items if rs_line_items
     end
 
@@ -117,7 +117,7 @@ class ServiceRequest < ApplicationRecord
     unless recursive_call
       service.optional_services.each do |os|
         next unless os.parents_available?
-        os_line_items = create_line_items_for_service(service: os, optional: true, recursive_call: true)
+        os_line_items = create_line_items_for_service(service: os, requester: requester, optional: true, recursive_call: true)
         line_items   += os_line_items if os_line_items
       end
     end

@@ -69,6 +69,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
       :orcid,
       :credentials,
       :credentials_other,
+      :ldap_uid,
       :email,
       :era_commons_name,
       :professional_organization_id,

@@ -21,6 +21,7 @@
 
 - first_name_disabled = Setting.get_value("noneditable_identity_fields").include?("first_name")
 - last_name_disabled = Setting.get_value("noneditable_identity_fields").include?("last_name")
+- ldap_uid_disabled = Setting.get_value("noneditable_identity_fields").include?("ldap_uid")
 - email_disabled = Setting.get_value("noneditable_identity_fields").include?("email")
 - display_age = Setting.get_value("displayed_demographics_fields").include?("age_group")
 - display_gender = Setting.get_value("displayed_demographics_fields").include?("gender")
@@ -49,11 +50,18 @@
             = f.text_field :last_name, class: 'form-control', disabled: last_name_disabled
         .form-row
           .form-group.col-12.col-xl-6
+            = f.label :ldap_uid, class: 'required'
+            .input-group
+              .input-group-prepend
+                = f.label :ldap_uid, icon('fas', 'user'), class: 'input-group-text'
+              = f.email_field :ldap_uid, class: 'form-control', disabled: ldap_uid_disabled
+          .form-group.col-12.col-xl-6
             = f.label :email, class: 'required'
             .input-group
               .input-group-prepend
                 = f.label :email, icon('far', 'envelope'), class: 'input-group-text'
               = f.email_field :email, class: 'form-control', disabled: email_disabled
+        .form-row
           .form-group.col-12.col-xl-6
             = f.label :phone
             .input-group

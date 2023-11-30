@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2023_11_26_005229) do
-
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -33,7 +32,23 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "admin_rate_changes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "additional_funding_sources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "funding_source"
+    t.string "funding_source_other"
+    t.string "sponsor_name"
+    t.text "comments"
+    t.string "federal_grant_code"
+    t.string "federal_grant_serial_number"
+    t.string "federal_grant_title"
+    t.string "phs_sponsor"
+    t.string "non_phs_sponsor"
+    t.bigint "protocol_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_additional_funding_sources_on_protocol_id"
+  end
+
+  create_table "admin_rate_changes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.bigint "line_item_id"
     t.bigint "identity_id"
     t.integer "admin_cost"
@@ -1110,8 +1125,8 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
-    t.bigint "surveyable_id"
     t.string "surveyable_type"
+    t.bigint "surveyable_id"
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
@@ -1186,6 +1201,7 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "additional_funding_sources", "protocols"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"

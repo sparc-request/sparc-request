@@ -102,6 +102,7 @@ module ProtocolsControllerShared
       :title,
       :type,
       :udak_project_number,
+      additional_funding_sources_attributes: [:id, :funding_source, :funding_source_other, :sponsor_name, :comments, :federal_grant_code, :federal_grant_serial_number, :federal_grant_title, :phs_sponsor, :non_phs_sponsor, :protocol_id, :_destroy],
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
       external_organizations_attributes: [:id, :collaborating_org_name, :collaborating_org_type, :comments, :collaborating_org_name_other, :collaborating_org_type_other, :_destroy],
       human_subjects_info_attributes: [

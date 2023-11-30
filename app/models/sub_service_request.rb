@@ -142,6 +142,22 @@ class SubServiceRequest < ApplicationRecord
     return "#{protocol_id}-#{ssr_id || 'DRAFT'}"
   end
 
+  def recent_submitted_by_name
+    if recent_submitted_by.present?
+      Identity.where(id: recent_submitted_by).first.full_name
+    else
+      ''
+    end
+  end
+
+  def current_user_name
+    if current_user_id
+      Identity.where(id: current_user_id).first.full_name
+    else
+      ''
+    end
+  end
+
   def has_subsidy?
     pending_subsidy.present? or approved_subsidy.present?
   end
@@ -264,7 +280,7 @@ class SubServiceRequest < ApplicationRecord
         old_status      = self.status
         submitted_prior = self.previously_submitted?
         past_status     = self.past_statuses.last.try(:status)
-        self.update_attributes(status: new_status, submitted_at: Time.now)
+        self.update_attributes(status: new_status, submitted_at: Time.now, recent_submitted_by: current_user_id)
         return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)
@@ -468,8 +484,8 @@ class SubServiceRequest < ApplicationRecord
     if protocol.present?
       # For each role...
       roles.each do |role|
-        # Get the list of project_role holders that match that specific role for the protocol...
-        project_roles = protocol.project_roles.where(role: role)
+        # Get the list of project_role holders that match that specific role for the protocol (but do not have project rights of "view" or "none")...
+        project_roles = protocol.project_roles.where(role: role).where.not(project_rights: ['none', 'view'])
 
         # If there are any identities associated with that project role, then...
         if project_roles.present?

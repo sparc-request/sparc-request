@@ -75,6 +75,7 @@ SparcRails::Application.routes.draw do
   ####################
   ### Other Routes ###
   ####################
+  resource :additional_funding_sources
 
   resource :pages, only: [] do
     get :event_details
@@ -191,6 +192,7 @@ SparcRails::Application.routes.draw do
       get :services
       get :organizations
       get :identities
+      get :protocol_merge_search
     end
   end
 

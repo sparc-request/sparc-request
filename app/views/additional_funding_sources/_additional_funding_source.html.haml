@@ -1,0 +1,65 @@
+.list-group-item.d-flex.border.flex-column.collapsed.mb-3.additional-funding-source{ class: 'list-group-item-success additional-funding-source', id: "additionalFundingSource#{index}", data: { toggle: 'collapse', target: "#additionalFundingSource#{index}Collapse" }}
+  - AdditionalFundingSource.attribute_names.each do |attr|
+    = hidden_field_tag "protocol[additional_funding_sources_attributes][#{index}][#{attr}]", additional_funding_source.send(attr)
+
+  .d-flex.justify-content-between
+    %h4.mb-0.collapsed
+      = icon('fas', 'caret-down mr-2')
+      = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source) == 'Internal Funded Pilot Project' ? additional_funding_source.funding_source_other : PermissibleValue.get_value('funding_source', additional_funding_source.funding_source)
+    .d-flex.align-items-center
+      = link_to edit_additional_funding_sources_path(id: additional_funding_source.id, index: index,  additional_funding_source: params[:additional_funding_source].present? ? params[:additional_funding_source].permit! : {}), remote: true, class: 'text-warning mr-2 edit-additional-funding-source', title: t('additional_funding_sources.tooltips.edit'), data: { toggle: 'tooltip' } do
+        = icon('fas', 'edit fa-lg')
+      = link_to additional_funding_sources_path(id: additional_funding_source.id, index: index), remote: true, method: :delete, class: ['delete-additional-funding-source',  'text-danger'], title: t('additional_funding_sources.tooltips.delete'), data: { toggle: 'tooltip' } do
+        = icon('fas', 'trash-alt fa-lg')
+  .collapse{ id: "additionalFundingSource#{index}Collapse" }
+    .w-100.pt-3
+      .form-row
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = AdditionalFundingSource.human_attribute_name(:funding_source)
+        .form-group.col-2
+          = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source) == 'Internal Funded Pilot Project' ? additional_funding_source.funding_source_other : PermissibleValue.get_value('funding_source', additional_funding_source.funding_source)
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = AdditionalFundingSource.human_attribute_name(:sponsor_name)
+        .form-group.col-2
+          = additional_funding_source.sponsor_name.present? ? additional_funding_source.sponsor_name : t('constants.na')
+      .form-row
+        .form-group.col-4
+          %label.mb-0.font-weight-bold
+            = AdditionalFundingSource.human_attribute_name(:comments)
+        .form-group.col-8
+          = additional_funding_source.comments.present? ? additional_funding_source.comments : t('constants.na')
+
+      - if additional_funding_source.funding_source == 'federal'
+        .form-row
+          .form-group.col-4
+            %label.mb-0.font-weight-bold
+              = AdditionalFundingSource.human_attribute_name(:federal_grant_serial_number)
+          .form-group.col-2
+            = additional_funding_source.federal_grant_serial_number.present? ? additional_funding_source.federal_grant_serial_number : t('constants.na')
+          .form-group.col-4
+            %label.mb-0.font-weight-bold
+              = AdditionalFundingSource.human_attribute_name(:federal_grant_title)
+          .form-group.col-2
+            = additional_funding_source.federal_grant_title.present? ? additional_funding_source.federal_grant_title : t('constants.na')
+        .form-row
+          .form-group.col-4
+            %label.mb-0.font-weight-bold
+              = AdditionalFundingSource.human_attribute_name(:federal_grant_code)
+          .form-group.col-2
+            = additional_funding_source.federal_grant_code.present? ? additional_funding_source.federal_grant_code : t('constants.na')
+          .form-group.col-4
+            %label.mb-0.font-weight-bold
+              = AdditionalFundingSource.human_attribute_name(:phs_sponsor)
+          .form-group.col-2
+            = additional_funding_source.phs_sponsor.present? ? additional_funding_source.phs_sponsor : t('constants.na')
+        .form-row
+          .form-group.col-4
+            %label.mb-0.font-weight-bold
+              = AdditionalFundingSource.human_attribute_name(:non_phs_sponsor)
+          .form-group.col-8
+            = additional_funding_source.non_phs_sponsor.present? ? additional_funding_source.non_phs_sponsor : t('constants.na')
+
+
+

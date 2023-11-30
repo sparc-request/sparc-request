@@ -84,6 +84,10 @@ class LineItemsVisit < ApplicationRecord
     visit_r_quantity * (subject_count || 0)
   end
 
+  def indicated?
+    (visit_r_quantity > 0 || visit_i_quantity > 0 || visit_e_quantity > 0)
+  end
+
   # Returns a hash of subtotals for the visits in the line item.
   # Visit totals depend on the quantities in the other visits, so it would be clunky
   # to compute one visit at a time

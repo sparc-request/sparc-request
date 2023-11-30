@@ -1,4 +1,4 @@
--# Copyright © 2011-2022 MUSC Foundation for Research Development
+-# Copyright © 2011-2023 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -88,3 +88,5 @@
 
         - if protocol.federally_funded?
           = render 'protocols/view_details/federal_grant_information', protocol: protocol
+        - if protocol.additional_funding_sources.present?
+          = render 'protocols/view_details/additional_funding_sources', protocol: protocol

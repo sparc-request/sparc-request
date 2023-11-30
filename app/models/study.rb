@@ -70,6 +70,7 @@ class Study < Protocol
     self.build_vertebrate_animals_info          unless self.vertebrate_animals_info
     self.build_investigational_products_info    unless self.investigational_products_info
     self.build_ip_patents_info                  unless self.ip_patents_info
+    self.build_additional_funding_sources       unless self.additional_funding_sources
     self.setup_study_types
     self.setup_impact_areas
     self.setup_affiliations

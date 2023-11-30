@@ -88,6 +88,7 @@
 //= require documents
 //= require review
 //= require confirmation
+//= require additional_funding_sources
 
 //= require service_calendar
 

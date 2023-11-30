@@ -38,6 +38,12 @@ $(document).ready ->
     clearTimeout(rmidTimer)
   )
 
+  $(document).on 'change', '#protocol_additional_funding_sources', ->
+    if $(this).prop('checked')
+      $('#additionalFundingSourcesContainer').removeClass('d-none')
+    else
+      $('#additionalFundingSourcesContainer').addClass('d-none')
+
   $(document).on 'change', '#protocol_funding_status', ->
     toggleFundingSource($(this).val())
 

@@ -700,6 +700,15 @@ en:
     none: "You don't have any forms to complete"
     srid: "SRID"
 
+  ##############################
+  # ADDITIONAL FUNDING SOURCES #
+  ##############################
+  additional_funding_sources:
+    add: "Add New"
+    tooltips:
+      edit: "Edit the Additional Funding Source"
+      delete: "Delete the Additional Funding Source"
+
   ###############
   # IRB RECORDS #
   ###############
@@ -933,6 +942,8 @@ en:
       financial_information:
         header: "Financial Information"
         guarantor_header: "Send Bills To..."
+        additional_funding_sources: "Additional Funding Sources"
+        additional_funding: "Additional Funding"
       grant_information:
         header: "Federal Grant Information"
         sponsor_separator: "- OR -"
@@ -947,10 +958,11 @@ en:
         affiliations: "Affiliations, Collaborations, & Memberships"
         subheader: "Involved External Organizations"
     tooltips:
+      additional_funding_sources: "Sources that are not the most current or largest funders"
       external_organization_name: "Collaborating Org Name"
       end_date: "Estimated end date for your %{protocol_type} (used by service providers to prioritize)"
       epic: "Defines whether record will interface to Epic EMR."
-      funding_source: "Funding source which drives research pricing for your Study/Project"
+      funding_source: "Current or largest sponsoring funding source which drives research pricing for your Study/Project"
       funding_status: "Indicates whether or not funding has been applied for or obtained. Choose 'Pending Funding' if you are applying for grant service."
       ind_number: "Investigational New Drug Number"
       nct_number: "Clinicaltrials.gov Registry Number."

@@ -877,8 +877,10 @@ en:
       header: "%{protocol_type} Summary"
       archive: "Archive"
       archive_note: "%{protocol_type} was archived."
+      archive_confirmation: "This action will hide the study from all authorized users' dashboards.<br><br>Are you sure you want to proceed?"
       unarchive: "Unarchive"
       unarchive_note: "%{protocol_type} was unarchived."
+      unarchive_confirmation: "This action will reveal the study on all authorized users' dashboards.<br><br>Are you sure you want to proceed?"
       id: "%{protocol_type} ID:"
       oncore:
         push_to_oncore: "Push to OnCore"

@@ -621,7 +621,7 @@
   },
   {
     "key":            "noneditable_identity_fields",
-    "value":          "[\"last_name\", \"first_name\", \"email\"]",
+    "value":          "[\"last_name\", \"first_name\", \"ldap_uid\", \"email\"]",
     "friendly_name":  "noneditable user profile fields",
     "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, and last_name are configurable.",
     "group":          "",

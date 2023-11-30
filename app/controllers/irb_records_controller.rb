@@ -34,7 +34,7 @@ class IrbRecordsController < ApplicationController
     respond_to :js
 
     @irb_record = @human_subjects_info.irb_records.new(irb_record_params)
-
+    
     unless @irb_record.valid?
       @errors = @irb_record.errors
     end
@@ -82,6 +82,8 @@ class IrbRecordsController < ApplicationController
     params[:irb_record][:irb_expiration_date]       = sanitize_date params[:irb_record][:irb_expiration_date]
 
     params.require(:irb_record).permit(
+      :id,
+      :rmid_id,
       :pro_number,
       :irb_of_record,
       :submission_type,

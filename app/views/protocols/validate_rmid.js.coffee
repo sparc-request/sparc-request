@@ -42,14 +42,15 @@ if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
   $('#protocol_research_master_id').click()
 
 if $('.primary-irb').length
+  # $('#protocol_human_subjects_info_attributes_irb_records_attributes_0_id').remove()
   $.ajax
     method: 'PUT'
     dataType: 'script'
-    url: "<%= irb_records_path(irb_record: { id: @protocol.irb_records.first, pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
+    url: "<%= irb_records_path(protocol_id: @protocol.id, irb_record: { id: @protocol.irb_records.first, rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
 else
   $.ajax
     method: 'POST'
     dataType: 'script'
-    url: "<%= irb_records_path(irb_record: { pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
+    url: "<%= irb_records_path(protocol_id: @protocol.id, irb_record: { rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
 <% end %>
 <% end %>

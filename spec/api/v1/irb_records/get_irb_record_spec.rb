@@ -43,7 +43,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)['irb_record']).to eq(
           irb_record.attributes.
-          except('id', 'created_at', 'updated_at', 'deleted_at').
+          except('id', 'rmid_id', 'created_at', 'updated_at', 'deleted_at').
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,
@@ -63,7 +63,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)['irb_record']).to eq(
           irb_record.attributes.
-          except('id', 'created_at', 'updated_at', 'deleted_at').
+          except('id', 'rmid_id', 'created_at', 'updated_at', 'deleted_at').
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,

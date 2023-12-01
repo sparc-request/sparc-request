@@ -120,6 +120,8 @@ task :protocol_merge => :environment do
     end
 
     first_protocol.save(validate: false)
+    ProtocolMerge.create(master_protocol_id: first_protocol.id, merged_protocol_id: second_protocol.id)
+    ProtocolMerge.where(master_protocol_id: second_protocol).update_all(master_protocol_id: first_protocol.id)
 
     puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
 
@@ -203,7 +205,7 @@ task :protocol_merge => :environment do
       puts 'and need to be corrected: '
       fulfillment_ssrs.each do |ssr|
         puts "ID: #{ssr.id}"
-      end 
+      end
     end
   else
     puts 'Exiting the task...'

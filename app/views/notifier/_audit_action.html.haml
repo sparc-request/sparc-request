@@ -21,12 +21,13 @@
 %table.table{cellpadding: 3}
   %thead
     %tr.skinny-black-border
-      %td{:colspan => 3}
+      %td{:colspan => 4}
         %strong= t(:notifier)[:request_amendment]
     %tr.skinny-black-border.left
       %th.skinny-black-border= t(:notifier)[:sr_id_acronym]
       %th.skinny-black-border= t(:notifier)[:service]
       %th.skinny-black-border= t(:notifier)[:action]
+      %th.skinny-black-border= t(:notifier)[:submitted_by]
 
   %tbody
     - @audit_report[:line_items].each do |last_change|

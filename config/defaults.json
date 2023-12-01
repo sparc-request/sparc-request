@@ -1178,6 +1178,15 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "use_additional_funding_sources",
+    "value":          "true",
+    "friendly_name":  "Use Additional Funding Sources",
+    "description":    "This determines whether the application will display the Additional Funding Sources section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
-
 ]

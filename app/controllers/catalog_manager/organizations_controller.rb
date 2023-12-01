@@ -68,6 +68,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def update
+    if params[:organization][:process_ssrs] == "0"
+      SubmissionEmail.where(organization_id: params[:id]).delete_all
+    end
+
     @organization = Organization.find(params[:id])
     set_registrar_enabled(@organization)
     @user_rights  = user_rights(@organization.id)

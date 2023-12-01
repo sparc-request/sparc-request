@@ -23,23 +23,24 @@
 - if last_change.action == 'destroy'
   %tr.skinny-black-border
     - if @role == 'none'
-      %td.left
+      %td.skinny-black-border.left
         %a.link{href: link}
-          %strike=ssr.display_id
+          %strike= ssr.display_id
     - else
-      %td.left
-        %strike=ssr.display_id
+      %td.skinny-black-border.left
+        %strike= ssr.display_id
     %td.skinny-black-border
       %strike= service_info.name
     %td.skinny-black-border.center
       %strike= AUDIT_ACTIONS[last_change.action]
+    %td.skinny-black-border.center= ssr.recent_submitted_by_name
 - else
   %tr.skinny-black-border
     - if @role == 'none'
-      %td.left
-        %a.link{href: link}=ssr.display_id
+      %td.skinny-black-border.left
+        %a.link{href: link}= ssr.display_id
     - else
-      %td.left
-        =ssr.display_id
+      %td.skinny-black-border.left= ssr.display_id
     %td.skinny-black-border= service_info.name
     %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+    %td.skinny-black-border.center= ssr.recent_submitted_by_name

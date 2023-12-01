@@ -63,6 +63,7 @@ class Protocol < ApplicationRecord
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
   has_many :external_organizations,       dependent: :destroy
+  has_many :additional_funding_sources,   dependent: :destroy
 
   has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
@@ -101,6 +102,7 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :primary_pi_role,               allow_destroy: true
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
+  accepts_nested_attributes_for :additional_funding_sources,   allow_destroy: true
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -333,6 +335,12 @@ class Protocol < ApplicationRecord
     joins(:sub_service_requests).
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
+  }
+
+  scope :protocol_merge_search_query, -> (term) {
+    return if term.blank?
+
+    where (Protocol.arel_table[:id].eq(term))
   }
 
   def research_master_id=(rmid)

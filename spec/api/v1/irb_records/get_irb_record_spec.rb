@@ -22,7 +22,7 @@ require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /api/v1/irb_record/:id.json' do
-    let!(:irb_record) { irb = create(:irb_record_without_validations)}
+    let!(:irb_record) { irb = create(:irb_record_without_validations_or_callbacks)}
 
     context 'request for :shallow record' do
       before { send_api_get_request(resource: 'irb_records', id: irb_record.id, depth: 'shallow') }

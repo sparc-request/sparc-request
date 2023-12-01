@@ -48,7 +48,7 @@
         .delete-irb.text-muted{title: t('irb_records.tooltips.cant_delete_primary')}
           = icon('fas', 'trash-alt fa-lg')
       -else
-        = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: ['text-danger'], title: t('irb_records.tooltips.delete'), data: { toggle: 'tooltip' } do
+        = link_to irb_records_path(id: irb_record.id, index: index), remote: true, method: :delete, class: 'text-danger delete-irb', title: t('irb_records.tooltips.delete'), data: { toggle: 'tooltip' } do
           = icon('fas', 'trash-alt fa-lg')
   .collapse{ id: "irb#{index}Collapse" }
     .w-100.pt-3

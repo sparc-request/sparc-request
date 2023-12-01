@@ -42,7 +42,6 @@ if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
   $('#protocol_research_master_id').click()
 
 if $('.primary-irb').length
-  # $('#protocol_human_subjects_info_attributes_irb_records_attributes_0_id').remove()
   $.ajax
     method: 'PUT'
     dataType: 'script'

@@ -177,6 +177,7 @@ $(document).ready ->
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
     if $(this).val() == 'true'
+      $('#studyTypeNote').show()
       $('label[for=protocol_study_type_questions]').addClass('required')
       if $('#studyTypeQuestionsContainer').hasClass('d-none')
         $('#studyTypeQuestionsContainer').removeClass('d-none')

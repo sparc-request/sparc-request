@@ -81,6 +81,8 @@ $(document).ready ->
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
       $('#studyTypeQuestionsContainer').removeClass('d-none')
+      if $(certificateOfConfidenceNoEpic).val() == 'false'
+        justShowSTQ($(higherLevelOfPrivacyNoEpic))
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
@@ -218,6 +220,12 @@ $(document).ready ->
       if $('#protocol_selected_for_epic_false').prop('checked')
         $('#studyTypeQuestionsContainer').addClass('d-none')
         $('#studyTypeNote').hide()
+
+  $(humanSubjects).on "click", ->
+    if $(this).prop('checked')
+      if $('#protocol_selected_for_epic_false').prop('checked')
+        if $(certificateOfConfidenceNoEpic).val() == 'false'
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'

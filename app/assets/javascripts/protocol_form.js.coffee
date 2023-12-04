@@ -296,6 +296,7 @@ resetRmidFields = () ->
     $('#protocol_research_types_info_attributes_human_subjects').click()
     $('#protocol_research_master_id').click()
   $('#irbRecords .irb-record').remove()
+  
 
 fundingSource             = ""
 fundingStartDate          = ""

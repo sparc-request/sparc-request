@@ -108,7 +108,7 @@ module ProtocolsControllerShared
       human_subjects_info_attributes: [
         :id,
         :nct_number,
-        irb_records_attributes: [:id, :pro_number, :irb_of_record, :submission_type, :approval_pending, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :_destroy, study_phase_ids: []]
+        irb_records_attributes: [:id, :rmid_id, :pro_number, :irb_of_record, :submission_type, :approval_pending, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :_destroy, study_phase_ids: []]
       ],
       impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],

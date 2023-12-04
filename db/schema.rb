@@ -405,6 +405,7 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
 
   create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
+    t.integer "rmid_id"
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"

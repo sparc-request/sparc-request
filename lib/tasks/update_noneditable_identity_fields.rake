@@ -20,7 +20,7 @@
 
 desc "Updates the 'noneditable_identity_fields' database setting to include 'ldap_uid' in the value array and 'ldap_uid' as configurable in the description"
 task update_noneditable_identity_fields: :environment do
-  setting = Setting.find(63)
+  setting = Setting.find_by(key: "noneditable_identity_fields")
   setting.update(value: ["last_name", "first_name", "email", "ldap_uid"])
   setting.update(description: "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, last_name, and ldap_uid are configurable.")
 end

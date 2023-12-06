@@ -8,19 +8,14 @@
       %label.mb-0
         = "Additional Funding Source #{index + 1}"
     %td.w-75.alert-success
-      = additional_funding_source.funding_source == 'internal' ? additional_funding_source.funding_source_other : additional_funding_source.funding_source
+      = additional_funding_source.funding_source == 'internal' ? additional_funding_source.funding_source_other.humanize : additional_funding_source.funding_source.humanize
   %tr
     %td.w-25
       %label.mb-0
         = AdditionalFundingSource.human_attribute_name(:sponsor_name)
     %td.w-75
       = additional_funding_source.sponsor_name.present? ? additional_funding_source.sponsor_name : t('constants.na')
-  %tr
-    %td.w-25
-      %label.mb-0
-        = AdditionalFundingSource.human_attribute_name(:comments)
-    %td.w-75
-      = additional_funding_source.comments.present? ? additional_funding_source.comments : t('constants.na')
+
 
   - if additional_funding_source.funding_source == 'federal'
     %tr
@@ -53,6 +48,13 @@
           = AdditionalFundingSource.human_attribute_name(:non_phs_sponsor)
       %td.w-75
         = additional_funding_source.non_phs_sponsor.present? ? additional_funding_source.non_phs_sponsor : t('constants.na')
+
+  %tr
+  %td.w-25
+    %label.mb-0
+      = AdditionalFundingSource.human_attribute_name(:comments)
+  %td.w-75
+    = additional_funding_source.comments.present? ? additional_funding_source.comments : t('constants.na')
 
 
 

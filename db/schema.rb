@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_26_005229) do
+ActiveRecord::Schema.define(version: 2023_12_06_122238) do
+
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -190,6 +191,13 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_clinical_providers_on_identity_id"
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id"
+  end
+
+  create_table "configurable_fields", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "question"
+    t.string "answer"
+    t.bigint "additional_funding_source_id"
+    t.index ["additional_funding_source_id"], name: "index_configurable_fields_on_additional_funding_source_id"
   end
 
   create_table "cover_letters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
@@ -405,7 +413,6 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
 
   create_table "irb_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
-    t.integer "rmid_id"
     t.string "pro_number"
     t.string "irb_of_record"
     t.string "submission_type"
@@ -449,8 +456,6 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "visit_r_quantity", default: 0
-    t.integer "visit_i_quantity", default: 0
-    t.integer "visit_e_quantity", default: 0
     t.index ["arm_id"], name: "index_line_items_visits_on_arm_id"
     t.index ["line_item_id"], name: "index_line_items_visits_on_line_item_id"
   end
@@ -787,6 +792,7 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
     t.string "guarantor_phone"
     t.string "guarantor_email"
     t.string "default_billing_type", default: "r"
+    t.boolean "show_additional_funding_sources"
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id"
   end
 
@@ -1203,6 +1209,7 @@ ActiveRecord::Schema.define(version: 2023_11_26_005229) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "additional_funding_sources", "protocols"
+  add_foreign_key "configurable_fields", "additional_funding_sources"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"

@@ -705,6 +705,7 @@ en:
   ##############################
   additional_funding_sources:
     add: "Add New"
+    header: " (%{sponsor_name})"
     tooltips:
       edit: "Edit the Additional Funding Source"
       delete: "Delete the Additional Funding Source"

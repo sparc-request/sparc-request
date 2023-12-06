@@ -108,13 +108,13 @@
           .form-row
             .form-group.col-12
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
-                - if f.object.additional_funding_sources.present?
-                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer' }, checked: true
+                - if @protocol.show_additional_funding_sources?
+                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }, checked: @protocol.show_additional_funding_sources?
                 - else
-                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer' }
+                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }
                 = f.label :additional_funding_sources, t('protocols.form.financial_information.additional_funding_sources'), class: 'custom-control-label', data: { toggle: 'tooltip', placement: 'right' }, title: t('protocols.tooltips.additional_funding_sources')
 
-        %section.mt-3#additionalFundingSourcesContainer{ class: f.object.additional_funding_sources.present? ? '' : 'd-none'}
+        %section.mt-3#additionalFundingSourcesContainer{ class: @protocol.show_additional_funding_sources? ? '' : 'd-none' }
           .form-group
             %h5.pb-2.border-bottom
               = t('protocols.form.financial_information.additional_funding')

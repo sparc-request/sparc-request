@@ -8,22 +8,24 @@ class AdditionalFundingSourcesController < ApplicationController
     respond_to :js, :html
   end
 
-  def edit
-    respond_to :js
-    @additional_funding_source.assign_attributes(additional_funding_source_params) if params[:additional_funding_source]
-  end
-
   def create
     respond_to :js
+
     @additional_funding_source = @protocol.additional_funding_sources.new(additional_funding_source_params)
     unless @additional_funding_source.valid?
       @errors = @additional_funding_source.errors
     end
   end
 
+  def edit
+    respond_to :js
+
+    @additional_funding_source.assign_attributes(additional_funding_source_params) if params[:additional_funding_source]
+  end
+
   def update
     respond_to :js
-    @additional_funding_source.assign_attributes(additional_funding_source_params) if params[:additional_funding_source]
+    @additional_funding_source.assign_attributes(additional_funding_source_params)
 
     unless @additional_funding_source.valid?
       @errors = @additional_funding_source.errors.full_messages
@@ -31,13 +33,7 @@ class AdditionalFundingSourcesController < ApplicationController
   end
 
   def destroy
-    @additional_funding_source.destroy
-
-    respond_to do |format|
-      format.js
-      format.html { redirect_to additional_funding_sources_url, notice: "Additional funding source was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    respond_to :js
   end
 
   private

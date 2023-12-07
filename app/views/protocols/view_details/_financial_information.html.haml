@@ -88,5 +88,5 @@
 
         - if protocol.federally_funded?
           = render 'protocols/view_details/federal_grant_information', protocol: protocol
-        - if protocol.additional_funding_sources.present?
+        - if protocol.additional_funding_sources.present? && protocol.show_additional_funding_sources
           = render 'protocols/view_details/additional_funding_sources', protocol: protocol

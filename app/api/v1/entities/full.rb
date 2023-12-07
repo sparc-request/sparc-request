@@ -159,7 +159,8 @@ module V1
             :billing_business_manager_static_email,
             :selected_for_epic,
             :study_type_question_group_id,
-            :archived
+            :archived,
+            :show_additional_funding_sources
 
     with_options(format_with: :iso_timestamp) do
       expose :start_date

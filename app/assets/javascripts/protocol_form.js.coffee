@@ -38,11 +38,6 @@ $(document).ready ->
     clearTimeout(rmidTimer)
   )
 
-  $(document).on 'change', '#protocol_additional_funding_sources', ->
-    if $(this).prop('checked')
-      $('#additionalFundingSourcesContainer').removeClass('d-none')
-    else
-      $('#additionalFundingSourcesContainer').addClass('d-none')
 
   $(document).on 'change', '#protocol_funding_status', ->
     toggleFundingSource($(this).val())
@@ -276,6 +271,26 @@ $(document).ready ->
     else
       hideStudyTypeQuestion($(higherLevelOfPrivacyNoEpic))
 
+###########################################
+### Additional Funding Sources Checkbox ###
+###########################################
+
+$(document).on 'change', '#protocol_additional_funding_sources', ->
+  protocol_id = $('#protocol_id').val()
+  isChecked = $(this).prop('checked')
+  container = $('#additionalFundingSourcesContainer')
+
+  if isChecked
+    container.removeClass('d-none')
+  else
+    container.addClass('d-none')
+
+  $.ajax
+    url: '/protocols/' + protocol_id + '/update_additional_funding_sources'
+    method: 'PATCH'
+    data:
+      show_additional_funding_sources: if isChecked then 1 else 0
+
 ############################
 ### Function Definitions ###
 ############################
@@ -305,7 +320,7 @@ resetRmidFields = () ->
     $('#protocol_research_types_info_attributes_human_subjects').click()
     $('#protocol_research_master_id').click()
   $('#irbRecords .irb-record').remove()
-  
+
 
 fundingSource             = ""
 fundingStartDate          = ""

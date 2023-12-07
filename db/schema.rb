@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2023_12_06_122238) do
 
-  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2023_12_06_122238) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 2023_12_06_122238) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
+  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "collaborating_org_name"
     t.string "collaborating_org_type"
     t.text "comments"
@@ -1212,7 +1212,6 @@ ActiveRecord::Schema.define(version: 2023_12_06_122238) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "additional_funding_sources", "protocols"
-  add_foreign_key "configurable_fields", "additional_funding_sources"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"

@@ -45,7 +45,7 @@ if $('.primary-irb').length
   $.ajax
     method: 'PUT'
     dataType: 'script'
-    url: "<%= irb_records_path(protocol_id: @protocol.id, irb_record: { id: @protocol.irb_records.first, rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
+    url: "<%= irb_records_path(id: @protocol.irb_records.first, protocol_id: @protocol.id, irb_record: { rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: @rmid_record['date_initially_approved'], irb_approval_date: @rmid_record['date_approved'], irb_expiration_date: @rmid_record['date_expiration'] }, primary: 'true', index: 0) %>"
 else
   $.ajax
     method: 'POST'

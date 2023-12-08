@@ -38,7 +38,7 @@ class IrbRecord < ApplicationRecord
   def check_for_rmid_irb
     existing_rmid_irb = self.protocol.irb_records.where.not(rmid_id: nil).first
 
-    if self.rmid_id.present? && existing_rmid_irb.present?
+    if self.rmid_id.present? && existing_rmid_irb.present? && self.rmid_id != existing_rmid_irb.rmid_id
       existing_rmid_irb.destroy
     end
   end

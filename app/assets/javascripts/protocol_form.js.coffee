@@ -187,13 +187,14 @@ $(document).ready ->
         for el in epicQuestions2through5
           justShowSTQ($(el))
     else
+      $('#studyTypeNote').hide()
       for el in epic
         justHideSTQ($(el))
       if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
         if $('#studyTypeQuestionsContainer').hasClass('d-none')
           $('#studyTypeQuestionsContainer').removeClass('d-none')
         justShowSTQ($(certificateOfConfidenceNoEpic))
-        if $(certificateOfConfidenceNoEpic).val() == 'true'
+        if $(certificateOfConfidenceNoEpic).val() == 'true' || $(certificateOfConfidenceNoEpic).val() == ''
           justHideSTQ($(higherLevelOfPrivacyNoEpic))
         else
           justShowSTQ($(higherLevelOfPrivacyNoEpic))
@@ -275,7 +276,7 @@ $(document).ready ->
 ### Additional Funding Sources Checkbox ###
 ###########################################
 
-$(document).on 'change', '#protocol_additional_funding_sources', ->
+$(document).on 'change', '#protocol_show_additional_funding_sources', ->
   protocol_id = $('#protocol_id').val()
   isChecked = $(this).prop('checked')
   container = $('#additionalFundingSourcesContainer')

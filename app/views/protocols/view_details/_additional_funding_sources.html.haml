@@ -8,7 +8,7 @@
       %label.mb-0
         = "Additional Funding Source #{index + 1}"
     %td.w-75.alert-success
-      = additional_funding_source.funding_source == 'internal' ? additional_funding_source.funding_source_other.humanize : additional_funding_source.funding_source.humanize
+      = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source)
   %tr
     %td.w-25
       %label.mb-0

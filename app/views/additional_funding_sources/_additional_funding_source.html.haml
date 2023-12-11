@@ -5,7 +5,11 @@
   .d-flex.justify-content-between
     %h4.mb-0.collapsed
       = icon('fas', 'caret-down mr-2')
-      = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source)
+      - if additional_funding_source.funding_source == 'internal'
+        = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source) + ': ' + additional_funding_source.funding_source_other.humanize
+      - else
+        = PermissibleValue.get_value('funding_source', additional_funding_source.funding_source)
+
       - if additional_funding_source.sponsor_name.present?
         = t('additional_funding_sources.header', sponsor_name: additional_funding_source.sponsor_name)
     .d-flex.align-items-center

@@ -275,7 +275,7 @@ $(document).ready ->
 ### Additional Funding Sources Checkbox ###
 ###########################################
 
-$(document).on 'change', '#protocol_additional_funding_sources', ->
+$(document).on 'change', '#protocol_show_additional_funding_sources', ->
   protocol_id = $('#protocol_id').val()
   isChecked = $(this).prop('checked')
   container = $('#additionalFundingSourcesContainer')

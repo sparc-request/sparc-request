@@ -36,13 +36,8 @@
       - if irb_record.irb_of_record.present?
         = t('irb_records.irb_header', irb: irb_record.irb_of_record)
     .d-flex.align-items-center
-      - disable_edit = irb_record.rmid_id.present?
-      - if disable_edit
-        .edit-irb.text-muted.mr-2{title: 'Cannot edit IRB record imported from RMID'}
-          = icon('fas', 'edit fa-lg')
-      -else
-        = link_to edit_irb_records_path(id: irb_record.id, index: index, primary: primary.to_s, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
-          = icon('fas', 'edit fa-lg')
+      = link_to edit_irb_records_path(id: irb_record.id, index: index, primary: primary.to_s, irb_record: params[:irb_record].present? ? params[:irb_record].permit! : {}), remote: true, class: 'text-warning mr-2 edit-irb', title: t('irb_records.tooltips.edit'), data: { toggle: 'tooltip' } do
+        = icon('fas', 'edit fa-lg')
       - disable_delete = irb_record.rmid_id.present? || @irb_count && @irb_count > 1 && primary
       - if disable_delete
         .delete-irb.text-muted{title: t('irb_records.tooltips.cant_delete_primary')}

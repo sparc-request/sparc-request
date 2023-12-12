@@ -104,15 +104,15 @@
         = render 'protocols/form/federal_grant_information', f: f, protocol: protocol
 
       - if use_additional_funding_sources
-        %section
+        %section#additionalFundingSourcesToggle
           .form-row
             .form-group.col-12
               .custom-control.custom-checkbox.custom-control-lg.custom-control-inline
                 - if @protocol.show_additional_funding_sources?
-                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }, checked: @protocol.show_additional_funding_sources?
+                  = f.check_box :show_additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }, checked: @protocol.show_additional_funding_sources?
                 - else
-                  = f.check_box :additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }
-                = f.label :additional_funding_sources, t('protocols.form.financial_information.additional_funding_sources'), class: 'custom-control-label', data: { toggle: 'tooltip', placement: 'right' }, title: t('protocols.tooltips.additional_funding_sources')
+                  = f.check_box :show_additional_funding_sources, class: 'custom-control-input', data: { target: '#additionalFundingSourcesContainer', protocol_id: @protocol.id }
+                = f.label :show_additional_funding_sources, t('protocols.form.financial_information.additional_funding_sources'), class: 'custom-control-label', data: { toggle: 'tooltip', placement: 'right' }, title: t('protocols.tooltips.additional_funding_sources')
 
         %section.mt-3#additionalFundingSourcesContainer{ class: @protocol.show_additional_funding_sources? ? '' : 'd-none' }
           .form-group

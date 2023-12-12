@@ -24,6 +24,7 @@
       = hidden_field_tag :protocol_id, params[:protocol_id]
       = hidden_field_tag :index, params[:index]
       = hidden_field_tag :primary, params[:primary]
+      = f.hidden_field :rmid_id
       .modal-header
         %h3.modal-title
           = t("irb_records.form.#{action_name}")
@@ -33,7 +34,7 @@
         .form-row
           .form-group.col-6
             = f.label :pro_number, title: t('protocols.tooltips.pro_number'), class: 'required', data: { toggle: 'tooltip', placement: 'right' }
-            = f.text_field :pro_number, class: 'form-control'
+            = f.text_field :pro_number, class: 'form-control', readonly: irb_record.rmid_id.present? ? true : false
           .form-group.col-6
             = f.label :irb_of_record
             = f.text_field :irb_of_record, class: 'form-control'
@@ -51,21 +52,21 @@
           .form-group.col-4
             = f.label :initial_irb_approval_date
             .input-group.datetimepicker.date#initialIrbApprovalDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :initial_irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(f.object.initial_irb_approval_date), data: { target: '#initialIrbApprovalDatePicker' }
+              = f.text_field :initial_irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(f.object.initial_irb_approval_date), data: { target: '#initialIrbApprovalDatePicker' }, readonly: irb_record.rmid_id.present? ? true : false
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#initialIrbApprovalDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           .form-group.col-4
             = f.label :irb_approval_date
             .input-group.datetimepicker.date#currentIrbApprovalDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(f.object.irb_approval_date), data: { target: '#currentIrbApprovalDatePicker' }
+              = f.text_field :irb_approval_date, class: 'datetimepicker-input form-control', value: format_date(f.object.irb_approval_date), data: { target: '#currentIrbApprovalDatePicker' }, readonly: irb_record.rmid_id.present? ? true : false
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#currentIrbApprovalDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')
           .form-group.col-4
             = f.label :irb_expiration_date
             .input-group.datetimepicker.date#irbExpirationDatePicker{ data: { target_input: 'nearest' } }
-              = f.text_field :irb_expiration_date, class: 'datetimepicker-input form-control', value: format_date(f.object.irb_expiration_date), data: { target: '#irbExpirationDatePicker' }
+              = f.text_field :irb_expiration_date, class: 'datetimepicker-input form-control', value: format_date(f.object.irb_expiration_date), data: { target: '#irbExpirationDatePicker' }, readonly: irb_record.rmid_id.present? ? true : false
               .input-group-append{ data: { toggle: 'datetimepicker', target: '#irbExpirationDatePicker' } }
                 %span.input-group-text
                   = icon('fas', 'calendar-alt')

@@ -2,7 +2,7 @@ class AdditionalFundingSource < ApplicationRecord
   belongs_to :protocol
 
   validates :funding_source, presence: true
-  validates :fundig_source_other, presence: true, if: Proc.new { |a| a.funding_source == 'Internal Funded Pilot Project' }
+  validates :funding_source_other, presence: true, if: Proc.new { |a| a.funding_source == 'Internal Funded Pilot Project' }
 
   def display_additional_funding_source_value
     source = "#{PermissibleValue.get_value('funding_source', funding_source)}"

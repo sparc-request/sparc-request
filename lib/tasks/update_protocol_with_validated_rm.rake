@@ -91,6 +91,13 @@ namespace :data do
         protocol.save(validate: false)
 
         
+        # Having an eirb number implies that the protocol should have human subjects checked in research types info.  Therefore, if it does not, either go ahead and create a research types info record or update the existing one.
+        if protocol.research_types_info.blank?
+          protocol.create_research_types_info(human_subjects: true)
+        elsif protocol.research_types_info.human_subjects == false
+          protocol.research_types_info.update(human_subjects: true)
+        end
+
         # Having an eirb number implies that the protocol should have human subjects info.  Therefore, if it does not, go ahead and create a human subjects record
         unless protocol.has_human_subject_info?
           protocol.create_human_subjects_info

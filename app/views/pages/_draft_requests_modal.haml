@@ -24,7 +24,7 @@
   .modal-content
     .modal-header
       %h4.modal-title<
-        = t('layout.navigation.draft_requests.title', have: count > 0 ? "Your Have" : '')
+        = t('layout.navigation.draft_requests.title', have: count > 0 ? "You Have" : '')
       %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
         %span{ aria: { hidden: 'true' } } &times;
     .modal-body

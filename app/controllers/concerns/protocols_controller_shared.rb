@@ -22,6 +22,7 @@ module ProtocolsControllerShared
   extend ActiveSupport::Concern
 
   included do
+   before_action -> { @action_name = action_name }, only: [:new, :edit]
   end
 
   def new

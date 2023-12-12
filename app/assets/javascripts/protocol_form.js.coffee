@@ -75,9 +75,10 @@ $(document).ready ->
       $('#protocol_research_master_id').siblings('label').addClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('enable')
       $('[name="protocol[human_subjects_info_attributes][approval_pending]"').attr('disabled', false)
-      $('#studyTypeQuestionsContainer').removeClass('d-none')
-      if $(certificateOfConfidenceNoEpic).val() == 'false'
-        justShowSTQ($(higherLevelOfPrivacyNoEpic))
+      if !$('[name="protocol[selected_for_epic]"]').val()
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
+        if $(certificateOfConfidenceNoEpic).val() == 'false'
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
     else
       $('#protocol_research_master_id').siblings('label').removeClass('required')
       $('#protocol_human_subjects_info_attributes_approval_pending').bootstrapToggle('disable')
@@ -158,71 +159,104 @@ $(document).ready ->
   ### Study Type Questions Logic ###
   ##################################
 
-  if $("#protocol_selected_for_epic_false").is(":checked")
-    $('#studyTypeNote').hide()
-    if $(humanSubjects).prop('checked')
-      $('#studyTypeQuestionsContainer').removeClass('d-none')
-      justShowSTQ($(certificateOfConfidenceNoEpic))
-      if $(certificateOfConfidenceNoEpic).val() == 'true'
-        justHideSTQ($(higherLevelOfPrivacyNoEpic))
+  action_name = $('#protocolForm').data('action-name')
+
+  if action_name == 'edit'
+    if $("#protocol_selected_for_epic_false").is(":checked")
+      $('#studyTypeNote').hide()
+      if $(humanSubjects).prop('checked')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
+        justShowSTQ($(certificateOfConfidenceNoEpic))
+        if $(certificateOfConfidenceNoEpic).val() == 'true'
+          justHideSTQ($(higherLevelOfPrivacyNoEpic))
+        else
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
+          justShowSTQ($(higherLevelOfPrivacyNoEpic))
       else
-        justShowSTQ($(higherLevelOfPrivacyNoEpic))
-        justShowSTQ($(higherLevelOfPrivacyNoEpic))
+        $('#studyTypeQuestionsContainer').addClass('d-none')
 
   $(document).on 'change', '[name="protocol[selected_for_epic]"]', ->
     $('[for=protocol_selected_for_epic]').addClass('required')
+
     if $(this).val() == 'true'
       $('#studyTypeNote').show()
       $('label[for=protocol_study_type_questions]').addClass('required')
       if $('#studyTypeQuestionsContainer').hasClass('d-none')
         $('#studyTypeQuestionsContainer').removeClass('d-none')
       setRequiredFields()
-      for el in noEpic
-        justHideSTQ($(el))
-      justShowSTQ($(certificateOfConfidence))
-      if $(certificateOfConfidence).val() == 'true'
-        for el in epicQuestions2through5
+
+      if action_name == 'new'
+        hideStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+        showStudyTypeQuestion($(certificateOfConfidence))
+      else # action_name == 'edit'
+        for el in noEpic
           justHideSTQ($(el))
-      else
-        for el in epicQuestions2through5
-          justShowSTQ($(el))
+        justShowSTQ($(certificateOfConfidence))
+        if $(certificateOfConfidence).val() == 'true'
+          for el in epicQuestions2through5
+            justHideSTQ($(el))
+        else
+          for el in epicQuestions2through5
+            justShowSTQ($(el))
+
+    # If '..Published in Epic?' is 'No'
     else
       $('#studyTypeNote').hide()
-      for el in epic
-        justHideSTQ($(el))
-      if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
-        if $('#studyTypeQuestionsContainer').hasClass('d-none')
-          $('#studyTypeQuestionsContainer').removeClass('d-none')
-        justShowSTQ($(certificateOfConfidenceNoEpic))
-        if $(certificateOfConfidenceNoEpic).val() == 'true' || $(certificateOfConfidenceNoEpic).val() == ''
-          justHideSTQ($(higherLevelOfPrivacyNoEpic))
-        else
-          justShowSTQ($(higherLevelOfPrivacyNoEpic))
-      else
+      if action_name == 'edit'
         $('#studyTypeQuestionsContainer').addClass('d-none')
-        $('#studyTypeNote').hide()
+        for el in epic
+          justHideSTQ($(el))
+        if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+          $('#studyTypeQuestionsContainer').removeClass('d-none')
+          justShowSTQ($(certificateOfConfidenceNoEpic))
+          if $(certificateOfConfidenceNoEpic).val() == 'true' || $(certificateOfConfidenceNoEpic).val() == ''
+            justHideSTQ($(higherLevelOfPrivacyNoEpic))
+          else
+            justShowSTQ($(higherLevelOfPrivacyNoEpic))
+      else # action_name == 'new'
+        if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
+          if $('#studyTypeQuestionsContainer').hasClass('d-none')
+            $('#studyTypeQuestionsContainer').removeClass('d-none')
+          hideStudyTypeQuestion($(certificateOfConfidence))
+          showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+          $('#studyTypeNote').hide()
+        else
+          $('#studyTypeQuestionsContainer').addClass('d-none')
+          $('#studyTypeNote').hide()
 
   $(humanSubjects).on "click", ->
     if $(this).prop('checked')
       if $('#protocol_selected_for_epic_false').prop('checked')
         $('#studyTypeQuestionsContainer').removeClass('d-none')
         $('#studyTypeNote').hide()
-        justShowSTQ($(certificateOfConfidenceNoEpic))
-        justHideSTQs($(epic))
-        if $(certificateOfConfidenceNoEpic).val() == 'true'
-          justHideSTQ($(higherLevelOfPrivacyNoEpic))
-        else
-          justShowSTQ($(higherLevelOfPrivacyNoEpic))
+
+        if action_name == 'new'
+          hideStudyTypeQuestion($(certificateOfConfidence))
+          showStudyTypeQuestion($(certificateOfConfidenceNoEpic))
+        else # action_name == 'edit'
+          justShowSTQ($(certificateOfConfidenceNoEpic))
+          justHideSTQ($(epic))
+          if $(certificateOfConfidenceNoEpic).val() == 'true'
+            justHideSTQ($(higherLevelOfPrivacyNoEpic))
+          else
+            justShowSTQ($(higherLevelOfPrivacyNoEpic))
+      else if $('#protocol_selected_for_epic_true').prop('checked')
+        $('#studyTypeQuestionsContainer').removeClass('d-none')
+        $('#studyTypeNote').show()
+      else # epic is nil
+          $('#studyTypeQuestionsContainer').addClass('d-none')
+          $('#studyTypeNote').hide()
     else
       if $('#protocol_selected_for_epic_false').prop('checked')
         $('#studyTypeQuestionsContainer').addClass('d-none')
         $('#studyTypeNote').hide()
 
-  $(humanSubjects).on "click", ->
-    if $(this).prop('checked')
-      if $('#protocol_selected_for_epic_false').prop('checked')
-        if $(certificateOfConfidenceNoEpic).val() == 'false'
-          justShowSTQ($(higherLevelOfPrivacyNoEpic))
+  if action_name == 'edit'
+    $(humanSubjects).on "click", ->
+      if $(this).prop('checked')
+        if $('#protocol_selected_for_epic_false').prop('checked')
+          if $(certificateOfConfidenceNoEpic).val() == 'false'
+            justShowSTQ($(higherLevelOfPrivacyNoEpic))
 
   $(document).on 'change', certificateOfConfidence, (e) ->
     if $(this).val() == 'true'

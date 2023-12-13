@@ -31,7 +31,7 @@
       .modal-body
         .form-row
           .form-group.col-6
-            = f.label :funding_source, title: t('additional_funding_source.funding_source')
+            = f.label :funding_source, title: t('additional_funding_source.funding_source'), class: 'required'
             = f.select :funding_source, options_for_select(PermissibleValue.get_inverted_hash('funding_source'), f.object.funding_source), { include_blank: true }, class: 'selectpicker'
           .form-group.col-6#additionalFundingSourceOtherContainer{ class: f.object.funding_source == 'internal' ? '' : 'd-none' }
             = f.label :funding_source_other, t('constants.prompts.please_specify')

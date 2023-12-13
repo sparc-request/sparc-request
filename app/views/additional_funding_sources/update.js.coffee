@@ -22,10 +22,9 @@
 $("[name^='additional_funding_source']:not([type='hidden'])").parents('.form-group').removeClass('is-invalid').addClass('is-valid')
 $('.form-error').remove()
 
-<% @errors.messages.each do |attr, messages| %>
-<% messages.each do |message| %>
-$("[name='additional_funding_source[<%= attr.to_s %>]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
-<% end %>
+<% @errors.each do |message| %>
+$("[name='additional_funding_source[funding_source]']").parents('.form-group').removeClass('is-valid').addClass('is-invalid').append("<small class='form-text form-error'><%= message.capitalize.html_safe %></small>")
+
 <% end %>
 <% else %>
 $("#additionalFundingSource<%= params[:index] %>").replaceWith("<%= j render 'additional_funding_sources/additional_funding_source', protocol: @protocol, additional_funding_source: @additional_funding_source, index: params[:index] %>")

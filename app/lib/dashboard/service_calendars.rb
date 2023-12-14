@@ -80,21 +80,18 @@ module Dashboard
       if opts[:merged] && opts[:consolidated]
         if opts[:show_unchecked]
           arm.line_items_visits.
-            eager_load(:visits).
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false })
         else
           arm.line_items_visits.
-            eager_load(:visits).
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
             where(services: { one_time_fee: false }).
-            where.not("visits.research_billing_qty = 0 and visits.insurance_billing_qty = 0 and visits.effort_billing_qty = 0" )
+            where.not("visit_r_quantity = 0 and visit_i_quantity = 0 and visit_e_quantity = 0" )
         end
       else
         (sub_service_request || service_request).line_items_visits.
-          eager_load(:visits).
           includes(sub_service_request: :services).
           where.not(sub_service_requests: { status: statuses_hidden }).
           where(services: { one_time_fee: false }, arm_id: arm.id)
@@ -152,8 +149,8 @@ module Dashboard
 
         # (beginning_visit..ending_visit).each do |y|
         if arm.visit_groups.present?
-          arm.visit_groups.order(:position)[(beginning_visit-1)...ending_visit].each do |vg|
-            arr << ["- #{vg.identifier}", "#{vg.id}", data: { page: page + 1 }] if arm.visit_groups.present?
+          arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
+            arr << ["- #{vg.identifier}", "#{vg.id}", data: { page: page + 1 }]
           end
         end
       end

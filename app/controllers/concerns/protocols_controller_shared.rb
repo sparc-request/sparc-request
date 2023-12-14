@@ -22,6 +22,7 @@ module ProtocolsControllerShared
   extend ActiveSupport::Concern
 
   included do
+   before_action -> { @action_name = action_name }, only: [:new, :edit]
   end
 
   def new
@@ -29,6 +30,16 @@ module ProtocolsControllerShared
 
     @protocol = params[:type].capitalize.constantize.new
     @protocol.populate_for_edit
+  end
+
+  def update_additional_funding_sources
+    respond_to :js
+    @protocol = Protocol.find(params[:id])
+    if @protocol.update(show_additional_funding_sources: params[:show_additional_funding_sources])
+      head :ok
+    else
+      head :bad_request
+    end
   end
 
   protected
@@ -62,6 +73,7 @@ module ProtocolsControllerShared
     end
 
     params.require(:protocol).permit(
+      :show_additional_funding_sources,
       :default_billing_type,
       :archived,
       :arms_attributes,
@@ -102,12 +114,13 @@ module ProtocolsControllerShared
       :title,
       :type,
       :udak_project_number,
+      additional_funding_sources_attributes: [:id, :funding_source, :funding_source_other, :sponsor_name, :comments, :federal_grant_code, :federal_grant_serial_number, :federal_grant_title, :phs_sponsor, :non_phs_sponsor, :_destroy],
       affiliations_attributes: [:id, :name, :new, :position, :_destroy],
       external_organizations_attributes: [:id, :collaborating_org_name, :collaborating_org_type, :comments, :collaborating_org_name_other, :collaborating_org_type_other, :_destroy],
       human_subjects_info_attributes: [
         :id,
         :nct_number,
-        irb_records_attributes: [:id, :pro_number, :irb_of_record, :submission_type, :approval_pending, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :_destroy, study_phase_ids: []]
+        irb_records_attributes: [:id, :rmid_id, :pro_number, :irb_of_record, :submission_type, :approval_pending, :initial_irb_approval_date, :irb_approval_date, :irb_expiration_date, :_destroy, study_phase_ids: []]
       ],
       impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
       investigational_products_info_attributes: [:id, :protocol_id, :ind_number, :inv_device_number, :exemption_type, :ind_on_hold],

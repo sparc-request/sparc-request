@@ -32,6 +32,16 @@ FactoryBot.define do
       to_create { |instance| instance.save(validate: false) }
     end
 
+    trait :without_validations_or_callbacks do
+      to_create { |instance| 
+        IrbRecord.skip_callback(:save, :before, :check_for_rmid_irb)
+        instance.save(validate: false)
+        IrbRecord.set_callback(:save, :before, :check_for_rmid_irb) 
+      }
+    end
+
     factory :irb_record_without_validations, traits: [:without_validations]
+    
+    factory :irb_record_without_validations_or_callbacks, traits: [:without_validations_or_callbacks]
   end
 end

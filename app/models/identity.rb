@@ -126,7 +126,7 @@ class Identity < ApplicationRecord
     return if term.blank?
 
     identity_arel = Identity.arel_table
-    attrs = [:last_name, :first_name, :email, :institution]
+    attrs = [:last_name, :first_name, :ldap_uid, :email, :institution]
 
     where (attrs
       .map { |attr| identity_arel[attr].matches("%#{term}%")}
@@ -472,6 +472,14 @@ class Identity < ApplicationRecord
     arr = arr.flatten.compact.uniq
 
     arr
+  end
+
+  def draft_protocols
+    if Setting.get_value("exclude_archived_protocols")
+      self.protocols.joins(:sub_service_requests).where(sub_service_requests: { status: 'draft'}, archived: false).uniq.sort_by(&:id)
+    else
+      self.protocols.joins(:sub_service_requests).where(sub_service_requests: { status: 'draft'}).uniq.sort_by(&:id)
+    end
   end
 
   # short_interactions report

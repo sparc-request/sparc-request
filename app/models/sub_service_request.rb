@@ -52,8 +52,8 @@ class SubServiceRequest < ApplicationRecord
   has_many :admin_rates, through: :line_items
   has_many :admin_rate_changes, through: :line_items
 
-  has_many :service_forms, -> { active }, through: :services, source: :forms
-  has_many :organization_forms, -> { active }, through: :organization, source: :forms
+  has_many :service_forms, through: :services, source: :forms
+  has_many :organization_forms, through: :organization, source: :forms
 
   ########################
   ### CWF Associations ###
@@ -142,6 +142,22 @@ class SubServiceRequest < ApplicationRecord
     return "#{protocol_id}-#{ssr_id || 'DRAFT'}"
   end
 
+  def recent_submitted_by_name
+    if recent_submitted_by.present?
+      Identity.where(id: recent_submitted_by).first.full_name
+    else
+      ''
+    end
+  end
+
+  def current_user_name
+    if current_user_id
+      Identity.where(id: current_user_id).first.full_name
+    else
+      ''
+    end
+  end
+
   def has_subsidy?
     pending_subsidy.present? or approved_subsidy.present?
   end
@@ -158,7 +174,7 @@ class SubServiceRequest < ApplicationRecord
   def direct_cost_total
     total = 0.0
 
-    self.line_items.eager_load(:service_request, :admin_rates, line_items_visits: [:visits, :arm], service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).each do |li|
+    self.line_items.eager_load(:service_request, :admin_rates, line_items_visits: [:arm], service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).each do |li|
       if li.service.one_time_fee
         total += li.direct_costs_for_one_time_fee
       else
@@ -237,7 +253,7 @@ class SubServiceRequest < ApplicationRecord
   def display_services
     self.services.map(&:name).join("; ")
   end
-  
+
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
@@ -264,7 +280,7 @@ class SubServiceRequest < ApplicationRecord
         old_status      = self.status
         submitted_prior = self.previously_submitted?
         past_status     = self.past_statuses.last.try(:status)
-        self.update_attributes(status: new_status, submitted_at: Time.now)
+        self.update_attributes(status: new_status, submitted_at: Time.now, recent_submitted_by: current_user_id)
         return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)
@@ -392,10 +408,10 @@ class SubServiceRequest < ApplicationRecord
   #############
   ### FORMS ###
   #############
-  def forms_to_complete
-    completed_ids = self.responses.pluck(:survey_id)
 
-    (self.service_forms + self.organization_forms).select{ |f| !completed_ids.include?(f.id) }.group_by{ |f| f.surveyable.name }
+  def forms_to_complete
+    completed_access_codes = self.responses.joins(:survey).pluck(:access_code)
+    (self.service_forms.active + self.organization_forms.active).reject { |f| completed_access_codes.include?(f.access_code) }.group_by { |f| f.surveyable.name }
   end
 
   def form_completed?(form)
@@ -406,23 +422,33 @@ class SubServiceRequest < ApplicationRecord
     self.responses.where(survey: self.service_forms + self.organization_forms).any?
   end
 
-  def all_forms_completed?
-    (self.service_forms + self.organization_forms).count == self.responses.joins(:survey).where(surveys: { type: 'Form' }).count
-  end
-
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
-  # Distributes all available surveys to primary pi and ssr requester
+  # Distributes all available surveys to those on the recipient list
   def distribute_surveys
-    primary_pi = protocol.primary_pi
     # do nothing if we don't have any available surveys
     unless available_surveys.empty?
-      SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
-    # only send survey email to both users if they are unique
-      if primary_pi != service_requester
-        SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
+      
+      #Initializes a new hash with the expectation that each value element will be an array
+      surveys_for_recipients = Hash.new{|k,v| k[v] = []}
+
+      #For each survey...
+      available_surveys.each do |available_survey|
+        #Generate list of recipients
+        recipients = survey_recipient_list(available_survey)
+
+        #For each recipient..
+        recipients.each do |recipient|
+          #Add recipient to hash and join recipient with survey
+          surveys_for_recipients[recipient] << available_survey
+        end
       end
+
+      #Now, send out surveys for each recipient
+      surveys_for_recipients.map{|recipient, surveys| 
+        SurveyNotification.service_survey(surveys, [recipient], self).deliver
+      }
     end
   end
 
@@ -440,6 +466,51 @@ class SubServiceRequest < ApplicationRecord
 
   def survey_latest_sent_date
     self.responses.joins(:survey).where(surveys: { type: 'SystemSurvey' }).first.try(:updated_at)
+  end
+
+  # The following is a method for generating additional recipients for a survey or form based on the intended recipient list created by the survey owner
+  def survey_recipient_list (survey)
+    # Create an empty array that will hold the final identities list
+    project_role_identities = []
+  
+    # Get the list of roles to be notified, transformed into their proper text forms
+    roles = JSON.parse(survey.notify_roles).map{|role| PermissibleValue.find(role).key}
+
+    # Find the protocol associated with this response
+    protocol = self.service_request.protocol
+
+
+    # Only bother with the next steps if the SSR has a protocol associated with it (since, apparently, SSRs can exist without a protocol)
+    if protocol.present?
+      # For each role...
+      roles.each do |role|
+        # Get the list of project_role holders that match that specific role for the protocol (but do not have project rights of "view" or "none")...
+        project_roles = protocol.project_roles.where(role: role).where.not(project_rights: ['none', 'view'])
+
+        # If there are any identities associated with that project role, then...
+        if project_roles.present?
+          #...for each project role...
+          project_roles.each do |project_role|
+            # Get the project_role's identity and add to the final identities list array
+            project_role_identities << project_role.identity
+          end
+        else
+          # If there are no identities associated with this project role for this protocol, then move on to the next role
+          next
+        end
+      end
+
+      # If the survey settings require that we notify the requester then get the service requester
+      if survey.notify_requester
+        requester = self.service_requester
+        if requester.present?
+          project_role_identities << requester
+        end
+      end
+    end
+    
+    # Return the final identities list as the conclusion for this method after filtering out any duplicates
+    return project_role_identities.uniq
   end
 
   ###############################

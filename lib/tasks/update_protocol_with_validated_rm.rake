@@ -90,17 +90,45 @@ namespace :data do
         protocol.rmid_validated = true
         protocol.save(validate: false)
 
-        if protocol.has_human_subject_info? && protocol.human_subjects_info.irb_records.any?
-          protocol
-            .human_subjects_info
-            .irb_records
-            .first
-            .update_attributes(
-              pro_number:                 vrm['eirb_pro_number'],
-              initial_irb_approval_date:  vrm['date_initially_approved'],
-              irb_approval_date:          vrm['date_approved'],
-              irb_expiration_date:        vrm['date_expiration']
-            )
+        
+        # Having an eirb number implies that the protocol should have human subjects checked in research types info.  Therefore, if it does not, either go ahead and create a research types info record or update the existing one.
+        if protocol.research_types_info.blank?
+          protocol.create_research_types_info(human_subjects: true)
+        elsif protocol.research_types_info.human_subjects == false
+          protocol.research_types_info.update(human_subjects: true)
+        end
+
+        # Having an eirb number implies that the protocol should have human subjects info.  Therefore, if it does not, go ahead and create a human subjects record
+        unless protocol.has_human_subject_info?
+          protocol.create_human_subjects_info
+        end
+
+        # If protocol already has a human subjects info record AND has an exisiting irb record in the database, override that with the irb info coming from RMID.  Otherwise, create a new irb record with the relevant data.
+        if protocol.has_human_subject_info? 
+          if protocol.human_subjects_info.irb_records.any?
+            protocol
+              .human_subjects_info
+              .irb_records
+              .first
+              .update_attributes(
+                pro_number:                 vrm['eirb_pro_number'],
+                initial_irb_approval_date:  vrm['date_initially_approved'],
+                irb_approval_date:          vrm['date_approved'],
+                irb_expiration_date:        vrm['date_expiration'],
+                rmid_id:                    protocol.research_master_id
+              )
+          else
+            protocol
+              .human_subjects_info
+              .irb_records
+              .create(
+                pro_number:                 vrm['eirb_pro_number'],
+                initial_irb_approval_date:  vrm['date_initially_approved'],
+                irb_approval_date:          vrm['date_approved'],
+                irb_expiration_date:        vrm['date_expiration'],
+                rmid_id:                    protocol.research_master_id
+              )
+          end
         end
 
         newly_validated_count += 1

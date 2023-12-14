@@ -46,10 +46,31 @@ else
     html:       true
     trigger:    'manual'
     placement:  'left'
+    container:  'body'
   )
 
-  # Logic for smoother closing of visit group popovers
+  # This is a hack to fix https://www.pivotaltracker.com/story/show/185417863
+  $vg.on 'inserted.bs.popover', ->
+    if $('.popover').length > 1
+      $p1 = $('.popover').first()
+      $p2 = $('.popover').last()
+      if $('#templateTabLink').hasClass('active')
+        $p1.attr('title', title).find('.popover-body').html($content)
+        $p2.remove()
+        fixPopoverPosition($p1)
+      else
+        $p2.attr('title', title).find('.popover-body').html($content)
+        $p1.remove()
+        fixPopoverPosition($p2)
+
+  fixPopoverPosition = (misbehavingPopover) ->
+    misbehavingPopover.hide().on('hidden.bs.popover', ->
+      y = $(window).scrollTop()
+      $(window).scrollTop(y+1).scrollTop(y-1)
+    ).show()
+
   $vg.on 'shown.bs.popover', ->
+
     $(document).one 'hide.bs.popover', 'body', ->
       $vg.removeClass('active').trigger('focus')
   $vg.addClass('active').trigger('focus').popover('show')

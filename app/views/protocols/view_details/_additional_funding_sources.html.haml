@@ -1,0 +1,60 @@
+%tr.bg-light
+  %td{ colspan: 2 }
+    %h6.mb-0
+      = t('protocols.form.financial_information.additional_funding_sources')
+- protocol.additional_funding_sources.each_with_index do |additional_funding_source, index|
+  %tr
+    %td.w-25.alert-success
+      %label.mb-0
+        = "Additional Funding Source #{index + 1}"
+    %td.w-75.alert-success
+      = additional_funding_source.display_additional_funding_source_value
+  %tr
+    %td.w-25
+      %label.mb-0
+        = AdditionalFundingSource.human_attribute_name(:sponsor_name)
+    %td.w-75
+      = additional_funding_source.sponsor_name.present? ? additional_funding_source.sponsor_name : t('constants.na')
+
+
+  - if additional_funding_source.funding_source == 'federal'
+    %tr
+      %td.w-25
+        %label.mb-0
+          = AdditionalFundingSource.human_attribute_name(:federal_grant_code)
+      %td.w-75
+        = additional_funding_source.federal_grant_code.present? ? additional_funding_source.federal_grant_code : t('constants.na')
+    %tr
+      %td.w-25
+        %label.mb-0
+          = AdditionalFundingSource.human_attribute_name(:federal_grant_serial_number)
+      %td.w-75
+        = additional_funding_source.federal_grant_serial_number.present? ? additional_funding_source.federal_grant_serial_number : t('constants.na')
+    %tr
+      %td.w-25
+        %label.mb-0
+          = AdditionalFundingSource.human_attribute_name(:federal_grant_title)
+      %td.w-75
+        = additional_funding_source.federal_grant_title.present? ? additional_funding_source.federal_grant_title : t('constants.na')
+    %tr
+      %td.w-25
+        %label.mb-0
+          = AdditionalFundingSource.human_attribute_name(:phs_sponsor)
+      %td.w-75
+        = additional_funding_source.phs_sponsor.present? ? additional_funding_source.phs_sponsor : t('constants.na')
+    %tr
+      %td.w-25
+        %label.mb-0
+          = AdditionalFundingSource.human_attribute_name(:non_phs_sponsor)
+      %td.w-75
+        = additional_funding_source.non_phs_sponsor.present? ? additional_funding_source.non_phs_sponsor : t('constants.na')
+
+  %tr
+  %td.w-25
+    %label.mb-0
+      = AdditionalFundingSource.human_attribute_name(:comments)
+  %td.w-75
+    = additional_funding_source.comments.present? ? additional_funding_source.comments : t('constants.na')
+
+
+

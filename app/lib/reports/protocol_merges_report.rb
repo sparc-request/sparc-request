@@ -41,7 +41,7 @@ class ProtocolMergesReport < ReportingModule
     attrs["Date of Merge"] = "self.updated_at.try(:strftime, \"%D\")"
     attrs["Master Protocol ID"] = :master_protocol_id
     attrs["Subordinate Protocol ID"] = :merged_protocol_id
-    attrs["Merged By"] = "identity.try(:full_name)"
+    attrs["Merged By"] = "identity.try(:full_name) ? identity.try(:full_name) : 'Backend Admin'"
     attrs["Short Title"] = "master_protocol.try(:short_title)"
     attrs["PI"] = "master_protocol.try(:primary_pi).try(:full_name)"
     attrs["IRB#"] = "master_protocol.try(:irb_records).nil? ? '' : master_protocol.try(:irb_records).first.try(:pro_number)"

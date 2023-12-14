@@ -189,5 +189,14 @@ module Dashboard::SubServiceRequestsHelper
       link_to icon('fas', 'edit'), dashboard_sub_service_request_path(ssr), title: t('dashboard.service_requests.tooltips.admin_edit'), class: "btn btn-warning edit-request", data: { toggle: 'tooltip', boundary: 'window' }
     end
   end
+
+  def display_status(ssr)
+    status = PermissibleValue.get_value('status', ssr.status)
+    if status == 'Draft'
+      content_tag :label, status, title: t('dashboard.sub_service_requests.tooltips.draft'), data: { toggle: 'tooltip', placement: 'right' }
+    else
+      status
+    end
+  end
 end
 

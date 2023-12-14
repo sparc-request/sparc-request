@@ -22,7 +22,7 @@ require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /api/v1/irb_record/:id.json' do
-    let!(:irb_record) { irb = create(:irb_record_without_validations)}
+    let!(:irb_record) { irb = create(:irb_record_without_validations_or_callbacks)}
 
     context 'request for :shallow record' do
       before { send_api_get_request(resource: 'irb_records', id: irb_record.id, depth: 'shallow') }
@@ -43,7 +43,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)['irb_record']).to eq(
           irb_record.attributes.
-          except('id', 'created_at', 'updated_at', 'deleted_at').
+          except('id', 'rmid_id', 'created_at', 'updated_at', 'deleted_at').
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,
@@ -63,7 +63,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body)['irb_record']).to eq(
           irb_record.attributes.
-          except('id', 'created_at', 'updated_at', 'deleted_at').
+          except('id', 'rmid_id', 'created_at', 'updated_at', 'deleted_at').
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,

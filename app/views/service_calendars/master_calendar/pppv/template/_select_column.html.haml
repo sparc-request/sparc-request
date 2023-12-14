@@ -25,7 +25,7 @@
 - when "t" then billing_type_method = "insurance_billing_qty"
 - when "o" then billing_type_method = "effort_billing_qty"
 
-- checked = visit_group.visits.includes(line_item: [:sub_service_request]).none?{ |v| v.public_send(billing_type_method).zero? && editable_ssrs.include?(v.line_items_visit.line_item.sub_service_request) }
+- checked = visit_group.visits.none?{ |v| v.public_send(billing_type_method).zero? && editable_ssrs.include?(v.line_items_visit.line_item.sub_service_request) }
 
 - check_param         = checked ? 'uncheck'     : 'check'
 - icon                = checked ? 'times'       : 'check'

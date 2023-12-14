@@ -51,13 +51,21 @@ class Arm < ApplicationRecord
   validates :subject_count, numericality: { greater_than: 0 }
 
   def visit_groups_valid?
-    self.errors.add(:visit_groups, :invalid) unless self.visit_groups.all?(&:valid?)
-    self.errors.add(:visit_groups, :out_of_order) unless self.visit_groups.all?(&:in_order?)
+    loaded_visit_groups = visit_groups.to_a.each{|vg| vg.skip_order_validation = true}
+    self.errors.add(:visit_groups, :invalid) if loaded_visit_groups.detect(&:invalid?)
+    self.errors.add(:visit_groups, :out_of_order) unless visit_groups_in_order?(loaded_visit_groups)
     self.errors.none?
   end
 
   # To add errors for moving a visit's position
   attr_accessor :visit_group_id
+
+  def visit_groups_in_order?(loaded_visit_groups = visit_groups)
+    vg_ids_by_position = loaded_visit_groups.sort{|a,b| a.position <=> b.position}.map(&:id)
+    vg_ids_by_day = loaded_visit_groups.sort{|a,b| a.day <=> b.day}.map(&:id)
+
+    vg_ids_by_position === vg_ids_by_day
+  end
 
   def display_line_items_visits(display_all_services)
     if Setting.get_value('use_epic')
@@ -104,21 +112,11 @@ class Arm < ApplicationRecord
   end
 
   def direct_costs_for_visit_based_service line_items_visits=self.line_items_visits
-    total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.direct_costs_for_visit_based_service
-    end
-    return total
+    line_items_visits.sum(&:direct_costs_for_visit_based_service)
   end
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
-    total = 0.0
-    if Setting.get_value("use_indirect_cost")
-      line_items_visits.each do |vg|
-        total += vg.indirect_costs_for_visit_based_service
-      end
-    end
-    return total
+    Setting.get_value("use_indirect_cost") ? line_items_visits.sum(&:indirect_costs_for_visit_based_service) : 0.0
   end
 
   def total_costs_for_visit_based_service line_items_visits=self.line_items_visits

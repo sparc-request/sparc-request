@@ -31,15 +31,18 @@ class SurveyNotification < ActionMailer::Base
     mail(to: recipient, cc: cc, from: @identity.email, subject: subject)
   end
 
-  def service_survey(surveys, identity, ssr)
-    @identity  = identity
+  def service_survey(surveys, identities, ssr)
+    @identities  = identities
     @ssr        = ssr
     @surveys    = surveys
     @protocol   = @ssr.protocol
     from        = Setting.get_value("no_reply_from")
     subject     = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header], ssr_id: @ssr.display_id)
 
-    send_email(@identity, from, subject)
+    @identities.each do |identity|
+      @identity = identity
+      send_email(identity, from, subject)
+    end
   end
 
   def service_survey_completed(response, ssr, super_user)

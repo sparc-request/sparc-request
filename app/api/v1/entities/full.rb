@@ -95,7 +95,10 @@ module V1
 
     expose  :arm_id,
             :line_item_id,
-            :subject_count
+            :subject_count,
+            :visit_r_quantity,
+            :visit_i_quantity,
+            :visit_e_quantity
   end
 
   class OrganizationFull < OrganizationShallow
@@ -156,7 +159,8 @@ module V1
             :billing_business_manager_static_email,
             :selected_for_epic,
             :study_type_question_group_id,
-            :archived
+            :archived,
+            :show_additional_funding_sources
 
     with_options(format_with: :iso_timestamp) do
       expose :start_date

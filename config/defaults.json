@@ -230,6 +230,16 @@
     "parent_value":   "true"
   },
   {
+    "key":            "exclude_archived_protocols",
+    "value":          "true",
+    "friendly_name":  "Exclude Archived Protocols from Unsubmitted Requests List",
+    "description":    "This determines whether or not the application will exclude archived protocols from unsubmitted requests task list.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "use_task_list",
+    "parent_value":   "true"
+  },
+  {
     "key":            "faq_url",
     "value":          "http://academicdepartments.musc.edu/sctr/sparc_request/faq.html",
     "friendly_name":  "FAQs URL",
@@ -611,9 +621,9 @@
   },
   {
     "key":            "noneditable_identity_fields",
-    "value":          "[\"last_name\", \"first_name\", \"email\"]",
+    "value":          "[\"last_name\", \"first_name\", \"ldap_uid\", \"email\"]",
     "friendly_name":  "noneditable user profile fields",
-    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, and last_name are configurable.",
+    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, last_name, and ldap_uid are configurable.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -1100,6 +1110,16 @@
     "parent_value":   ""
   },
   {
+    "key":            "use_task_list",
+    "value":          "true",
+    "friendly_name":  "Use Task List",
+    "description":    "This determines whether the application will use the task feature to manage unsubmitted requests.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
+  },
+  {
     "key":            "wkhtmltopdf_location",
     "value":          "/usr/local/bin/wkhtmltopdf",
     "friendly_name":  "WKHTMLTOPDF Location",
@@ -1158,6 +1178,15 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "use_additional_funding_sources",
+    "value":          "true",
+    "friendly_name":  "Use Additional Funding Sources",
+    "description":    "This determines whether the application will display the Additional Funding Sources section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
-
 ]

@@ -44,19 +44,19 @@ module ServicesHelper
 
       content_tag(:div, class: 'w-100 d-flex flex-wrap') do
         content_tag(:div, class: 'w-100') do
-          content_tag(:span, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full]/100)}"
+          content_tag(:span, "#{Service::RATE_TYPES[:full]}: ") + "$#{'%.2f' % (rates[:full].round/100.0)}"
         end +
         content_tag(:div, class: 'w-25') do
-          content_tag(:span, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal]/100)}"
+          content_tag(:span, "#{Service::RATE_TYPES[:federal].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:federal].round/100.0)}"
         end +
         content_tag(:div, class: 'w-25') do
-          content_tag(:span, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate]/100)}"
+          content_tag(:span, "#{Service::RATE_TYPES[:corporate].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:corporate].round/100.0)}"
         end +
         content_tag(:div, class: 'w-25') do
-          content_tag(:span, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member]/100)}"
+          content_tag(:span, "#{Service::RATE_TYPES[:member].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:member].round/100.0)}"
         end +
         content_tag(:div, class: 'w-25') do
-          content_tag(:span, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other]/100)}"
+          content_tag(:span, "#{Service::RATE_TYPES[:other].gsub(' Rate', '')}: ") + "$#{'%.2f' % (rates[:other].round/100.0)}"
         end
       end
     end

@@ -108,7 +108,7 @@ class ServiceRequest < ApplicationRecord
     # add required services to line items
     service.required_services.each do |rs|
       next unless rs.parents_available?
-      rs_line_items = create_line_items_for_service(service: rs, optional: false, recursive_call: true)
+      rs_line_items = create_line_items_for_service(service: rs, requester: requester, optional: false, recursive_call: true)
       line_items   += rs_line_items if rs_line_items
     end
 
@@ -117,7 +117,7 @@ class ServiceRequest < ApplicationRecord
     unless recursive_call
       service.optional_services.each do |os|
         next unless os.parents_available?
-        os_line_items = create_line_items_for_service(service: os, optional: true, recursive_call: true)
+        os_line_items = create_line_items_for_service(service: os, requester: requester, optional: true, recursive_call: true)
         line_items   += os_line_items if os_line_items
       end
     end
@@ -263,7 +263,10 @@ class ServiceRequest < ApplicationRecord
   def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
     arms.each do |arm|
-      livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(:visits, line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+      livs = (line_items.nil? ?
+        arm.line_items_visits :
+        arm.line_items_visits.where(line_item: line_items)).
+        includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
       total += arm.direct_costs_for_visit_based_service(livs)
     end
     total
@@ -273,7 +276,10 @@ class ServiceRequest < ApplicationRecord
     total = 0.0
     if Setting.get_value("use_indirect_cost")
       arms.each do |arm|
-        livs = (line_items.nil? ? arm.line_items_visits : arm.line_items_visits.where(line_item: line_items)).eager_load(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
+        livs = (line_items.nil? ?
+          arm.line_items_visits :
+          arm.line_items_visits.where(line_item: line_items)).
+          includes(line_item: [:admin_rates, :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]])
         total += arm.indirect_costs_for_visit_based_service(livs)
       end
     end
@@ -332,8 +338,33 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      ssr.organization_forms.each{ |f| forms << [f, ssr] }
-      ssr.service_forms.each{ |f| forms << [f, ssr] }
+      active_forms = ssr.organization_forms.active + ssr.service_forms.active
+      responded_forms = ssr.organization_forms
+        .joins(:responses)
+        .where(responses: { respondable: ssr }) + ssr.service_forms
+        .joins(:responses).where(responses: { respondable: ssr })
+
+      # Only show active form if no other version of the form has a response
+      active_forms.each do |active_form|
+        unless responded_forms.any? { |responded_form| responded_form.access_code == active_form.access_code && responded_form.version != active_form.version }
+          forms << [active_form, ssr]
+          end
+      end
+
+      # If there are multiple versions of a form that have been responded to, only show the latest version
+      active_forms_grouped = active_forms.group_by(&:access_code)
+      responded_forms_grouped = responded_forms.group_by(&:access_code)
+
+      active_forms_grouped.each do |access_code, active_forms|
+        responded_forms_by_access_code = responded_forms_grouped[access_code]
+
+        if responded_forms_by_access_code && responded_forms_by_access_code.size > 1
+          max_version_form = responded_forms_by_access_code.max_by(&:version)
+          forms << [max_version_form, ssr] if max_version_form
+        else
+          forms << [responded_forms_by_access_code.first, ssr] if responded_forms_by_access_code&.any?
+        end
+      end
     end
     forms
   end
@@ -342,8 +373,19 @@ class ServiceRequest < ApplicationRecord
     forms = []
     # Because there can be multiple SSRs with the same services/organizations we need to loop over each one
     self.sub_service_requests.each do |ssr|
-      ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
-      ssr.service_forms.joins(:responses).where(responses: { respondable: ssr }).each{ |f| forms << [f, ssr] }
+      forms_with_responses = ssr.organization_forms.joins(:responses).where(responses: { respondable: ssr }) + ssr.service_forms.joins(:responses).where(responses: { respondable: ssr })
+
+      # If multiple versions of a form have a response, only show the latest version
+      grouped_by_access_code = forms_with_responses.group_by(&:access_code)
+      grouped_by_access_code.each do |access_code, responded_forms|
+        ssr_forms = grouped_by_access_code[access_code]
+        if ssr_forms&.size > 1
+          max_version_form = ssr_forms.max_by(&:version)
+          forms << [max_version_form, ssr] if max_version_form
+        else
+          forms << [ssr_forms.first, ssr] if ssr_forms&.any?
+        end
+      end
     end
     forms
   end

@@ -63,6 +63,7 @@ class Protocol < ApplicationRecord
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
   has_many :external_organizations,       dependent: :destroy
+  has_many :additional_funding_sources,   dependent: :destroy
 
   has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
@@ -101,6 +102,7 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :primary_pi_role,               allow_destroy: true
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
+  accepts_nested_attributes_for :additional_funding_sources,   allow_destroy: true
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -121,6 +123,7 @@ class Protocol < ApplicationRecord
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
   before_create :set_next_ssr_id
+  after_save :check_for_inactive_irb_record
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -139,8 +142,15 @@ class Protocol < ApplicationRecord
         headers: {'Content-Type' => 'application/json',
                   'Authorization' => "Token token=\"#{Setting.get_value("rmid_api_token")}\""})
       return true
-    rescue
+    rescue Exception => e
       @@rmid_server_down = true
+      teams_webhook = Setting.get_value("epic_user_api_error_teams_webhook")
+      if teams_webhook.present?
+        message =  "RMID connection is down for SPARC in: #{Rails.env}\n"
+        message += "\nError message: #{e}\n"
+        notifier = Teams.new(teams_webhook)
+        notifier.post(message)
+      end
       return false
     end
   end
@@ -326,6 +336,12 @@ class Protocol < ApplicationRecord
     joins(:sub_service_requests).
     where(sub_service_requests: {owner_id: owner_ids}).
       where.not(sub_service_requests: {status: 'first_draft'})
+  }
+
+  scope :protocol_merge_search_query, -> (term) {
+    return if term.blank?
+
+    where (Protocol.arel_table[:id].eq(term))
   }
 
   def research_master_id=(rmid)
@@ -655,7 +671,13 @@ class Protocol < ApplicationRecord
   end
 
   def all_forms_completed?
-    self.sub_service_requests.all?(&:all_forms_completed?)
+    self.sub_service_requests.all? do |ssr|
+      # Check for a form response by access_code group, so that we don't ask for a new response when a new version of a form is added
+      completed_access_codes = ssr.responses.joins(:survey).pluck(:access_code)
+      ssr_forms_access_codes = (ssr.service_forms + ssr.organization_forms).pluck(:access_code)
+
+      (ssr_forms_access_codes - completed_access_codes).empty?
+    end
   end
 
   private
@@ -687,6 +709,16 @@ class Protocol < ApplicationRecord
   def validate_unique_rmid
     if existing_protocol = Protocol.where(research_master_id: self.research_master_id).where.not(id: self.id).first
       self.errors.add(:base, I18n.t('protocols.rmid.errors.taken', rmid: self.research_master_id, protocol_id: existing_protocol.id))
+    end
+  end
+
+  def check_for_inactive_irb_record
+    if self.irb_records.where.not(rmid_id: nil).present?
+      existing_irb_record = self.irb_records.where.not(rmid_id: nil).first
+
+      if existing_irb_record.rmid_id != self.research_master_id
+        existing_irb_record.destroy
+      end
     end
   end
 end

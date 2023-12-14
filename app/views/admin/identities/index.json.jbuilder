@@ -2,6 +2,7 @@ json.total @total
 json.rows(@identities) do |identity|
   json.name            display_name(identity)
   json.institution     identity.institution
+  json.ldap_uid        identity.ldap_uid
   json.email           identity.email
   json.created_at      format_date(identity.created_at)
   json.last_sign_in_at format_date(identity.current_sign_in_at)

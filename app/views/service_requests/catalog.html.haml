@@ -18,6 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- if Setting.get_value('use_task_list') && current_user
+  = render '/service_requests/navigation/draft_requests'
 = form_tag navigate_service_request_path(srid: @service_request.id), id: 'serviceCatalogForm', class: 'w-100' do
   = render '/service_requests/navigation/steps'
   = render '/service_requests/navigation/header'

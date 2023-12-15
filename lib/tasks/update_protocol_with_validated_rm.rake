@@ -99,7 +99,7 @@ namespace :data do
         end
 
         # Having an eirb number implies that the protocol should have human subjects info.  Therefore, if it does not, go ahead and create a human subjects record
-        unless protocol.has_human_subject_info?
+        unless protocol.human_subjects_info.blank?
           protocol.create_human_subjects_info
         end
 

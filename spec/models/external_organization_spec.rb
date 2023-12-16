@@ -14,6 +14,4 @@ RSpec.describe ExternalOrganization, type: :model do
     ExternalOrganization.create collaborating_org_name:'Other', collaborating_org_type:'Other'
     expect(ExternalOrganization.count).to eq 1
   end
-
-  it 
 end

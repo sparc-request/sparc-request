@@ -63,6 +63,7 @@ class Protocol < ApplicationRecord
   has_many :responses,                    through: :sub_service_requests
   has_many :irb_records,                  through: :human_subjects_info
   has_many :external_organizations,       dependent: :destroy
+  has_many :additional_funding_sources,   dependent: :destroy
 
   has_many :principal_investigator_roles, -> { where(role: ['pi', 'primary-pi']) }, class_name: "ProjectRole", dependent: :destroy
   has_many :principal_investigators, through: :principal_investigator_roles, source: :identity
@@ -101,6 +102,7 @@ class Protocol < ApplicationRecord
   accepts_nested_attributes_for :primary_pi_role,               allow_destroy: true
   accepts_nested_attributes_for :arms,                          allow_destroy: true
   accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
+  accepts_nested_attributes_for :additional_funding_sources,   allow_destroy: true
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
   validates :research_master_id, presence: true, if: :rmid_requires_validation?
@@ -121,6 +123,7 @@ class Protocol < ApplicationRecord
   validates_associated :primary_pi_role, message: "You must add a Primary PI to the study/project"
 
   before_create :set_next_ssr_id
+  after_save :check_for_inactive_irb_record
 
   def rmid_requires_validation?
     # bypassing rmid validations for overlords, admins, and super users only when in Dashboard [#139885925] & [#151137513]
@@ -706,6 +709,16 @@ class Protocol < ApplicationRecord
   def validate_unique_rmid
     if existing_protocol = Protocol.where(research_master_id: self.research_master_id).where.not(id: self.id).first
       self.errors.add(:base, I18n.t('protocols.rmid.errors.taken', rmid: self.research_master_id, protocol_id: existing_protocol.id))
+    end
+  end
+
+  def check_for_inactive_irb_record
+    if self.irb_records.where.not(rmid_id: nil).present?
+      existing_irb_record = self.irb_records.where.not(rmid_id: nil).first
+
+      if existing_irb_record.rmid_id != self.research_master_id
+        existing_irb_record.destroy
+      end
     end
   end
 end

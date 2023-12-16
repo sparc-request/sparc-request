@@ -124,6 +124,7 @@ SparcRails::Application.routes.draw do
       get :edit_billing
       patch :update_protocol_type
       patch :update_billing
+      patch :update_additional_funding_sources
     end
   end
 
@@ -137,6 +138,7 @@ SparcRails::Application.routes.draw do
 
   resource :external_organizations
   resource :irb_records, only: [:new, :create, :edit, :update, :destroy]
+  resource :additional_funding_sources, only: [:new, :create, :edit, :update, :destroy]
 
   resources :associated_users, except: [:show] do
     collection do

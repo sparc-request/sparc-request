@@ -20,7 +20,7 @@
 
 $("#irb<%= params[:index] %>").removeClass('d-flex').addClass('d-none').append("<%= j render 'irb_records/destroy', index: params[:index] %>")
 
-if $('.irb-record:not(.d-none)').length == 1
+if $('.irb-record:not(.d-none .rmid-record)').length == 1
   $('.primary-irb .delete-irb').addClass('text-danger').removeClass('text-muted').
     prop('disabled', false).
     attr('data-original-title', I18n.t('irb_records.tooltips.delete'))

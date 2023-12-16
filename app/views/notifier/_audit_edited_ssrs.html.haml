@@ -25,10 +25,10 @@
     - if @role == 'none'
       %td.skinny-black-border.left
         %a.link{href: link}
-          %strike=ssr.display_id
+          %strike= ssr.display_id
     - else
       %td.skinny-black-border.left
-        %strike=ssr.display_id
+        %strike= ssr.display_id
     %td.skinny-black-border
       %strike= service_info.name
     %td.skinny-black-border.center
@@ -38,10 +38,9 @@
   %tr.skinny-black-border
     - if @role == 'none'
       %td.skinny-black-border.left
-        %a.link{href: link}=ssr.display_id
+        %a.link{href: link}= ssr.display_id
     - else
-      %td.skinny-black-border.left
-        =ssr.display_id
-    %td.skinny-black-border = service_info.name
-    %td.skinny-black-border.center = AUDIT_ACTIONS[last_change.action]
-    %td.skinny-black-border.center = ssr.recent_submitted_by_name
+      %td.skinny-black-border.left= ssr.display_id
+    %td.skinny-black-border= service_info.name
+    %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+    %td.skinny-black-border.center= ssr.recent_submitted_by_name

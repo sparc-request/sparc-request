@@ -126,7 +126,7 @@ class Identity < ApplicationRecord
     return if term.blank?
 
     identity_arel = Identity.arel_table
-    attrs = [:last_name, :first_name, :email, :institution]
+    attrs = [:last_name, :first_name, :ldap_uid, :email, :institution]
 
     where (attrs
       .map { |attr| identity_arel[attr].matches("%#{term}%")}

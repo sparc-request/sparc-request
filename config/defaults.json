@@ -621,9 +621,9 @@
   },
   {
     "key":            "noneditable_identity_fields",
-    "value":          "[\"last_name\", \"first_name\", \"email\"]",
+    "value":          "[\"last_name\", \"first_name\", \"ldap_uid\", \"email\"]",
     "friendly_name":  "noneditable user profile fields",
-    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, and last_name are configurable.",
+    "description":    "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, last_name, and ldap_uid are configurable.",
     "group":          "",
     "version":        "",
     "parent_key":     "",
@@ -1178,6 +1178,15 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "use_additional_funding_sources",
+    "value":          "true",
+    "friendly_name":  "Use Additional Funding Sources",
+    "description":    "This determines whether the application will display the Additional Funding Sources section on a Study Form.",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
-
 ]

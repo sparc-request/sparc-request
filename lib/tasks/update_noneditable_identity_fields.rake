@@ -17,45 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-require 'rails_helper'
 
-RSpec.describe 'User wants to archive/unarchive a protocol', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
-
-  context 'archive protocol' do
-    before :each do
-      @project  = create(:unarchived_project_without_validations, primary_pi: jug2)
-                  create(:service_request_without_validations, protocol: @project)
-
-      visit dashboard_protocol_path(@project)
-      wait_for_javascript_to_finish
-    end
-
-    it 'should archive the protocol' do
-      click_link I18n.t('protocols.summary.archive')
-      wait_for_javascript_to_finish
-
-      expect(@project.reload.archived).to eq(true)
-      expect(page).to have_content(I18n.t('protocols.summary.unarchive'))
-    end
-  end
-
-  context 'unarchive protocol' do
-    before :each do
-      @project  = create(:archived_project_without_validations, primary_pi: jug2)
-                  create(:service_request_without_validations, protocol: @project)
-
-      visit dashboard_protocol_path(@project)
-      wait_for_javascript_to_finish
-    end
-
-    it 'should unarchive the protocol' do
-      click_link I18n.t('protocols.summary.unarchive')
-      wait_for_javascript_to_finish
-
-      expect(@project.reload.archived).to eq(false)
-      expect(page).to have_content(I18n.t('protocols.summary.archive'))
-    end
-  end
+desc "Updates the 'noneditable_identity_fields' database setting to include 'ldap_uid' in the value array and 'ldap_uid' as configurable in the description"
+task update_noneditable_identity_fields: :environment do
+  setting = Setting.find_by(key: "noneditable_identity_fields")
+  setting.update(value: ["last_name", "first_name", "email", "ldap_uid"])
+  setting.update(description: "Determines which identity fields are read-only on the edit profile page, currently only email, first_name, last_name, and ldap_uid are configurable.")
 end

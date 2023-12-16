@@ -134,6 +134,8 @@ module Dashboard
     end
 
     def self.visits_select_options(arm, cur_page=1)
+      # TODO This should be refactored
+      # both to not need all the visit groups loaded, and to be more concise
       per_page = Visit.per_page
       visit_count = arm.visit_count
       num_pages = (visit_count / per_page.to_f).ceil

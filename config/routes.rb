@@ -155,6 +155,7 @@ SparcRails::Application.routes.draw do
       get 'table'
       get 'merged_calendar'
       get 'view_full_calendar'
+      post 'async_load_line_items'
     end
     collection do
       post 'toggle_calendar_row'

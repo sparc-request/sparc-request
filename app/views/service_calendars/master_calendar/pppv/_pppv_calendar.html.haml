@@ -40,3 +40,8 @@
       %tbody{ class: "arm-#{arm.id}-service-calendar-tbody" }
         - if render_line_items_partial
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+        - else
+          .card.loader
+            .card-body.text-center
+              %h3.d-flex.justify-content-center.align-items-center.mb-0
+                = t('constants.search.loading')

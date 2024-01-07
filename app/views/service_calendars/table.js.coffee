@@ -33,9 +33,23 @@ $("#<%= @tab.camelize(:lower) %>TabLink").addClass('active')
 $("#<%= @tab.camelize(:lower) %>Tab").html("<%= j render 'service_calendars/table', service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, merged: @merged, consolidated: @consolidated, pages: @pages, page: @page %>").addClass('active show')
 <% @service_request.arms.joins(:visit_groups).distinct.each do |arm| %>
 <% page = @pages[arm.id.to_s] %>
-<% visit_groups = arm.visit_groups.page(page) %>
-$(".arm-<%= arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: arm, tab: @tab, pages: @pages, page: page, merged: @merged, consolidated: @consolidated, visit_groups: visit_groups %>")
+
+$.ajax
+  method: 'POST'
+  dataType: 'script'
+  url: "/service_calendars/async_load_line_items"
+  data:
+    arm_id: <%= arm.id %>
+    ssrid: <%= @sub_service_request.id %>
+    protocol_id: <%= arm.protocol_id %>
+    merged: <%= @merged %>
+    consolidated: <%= @consolidated %>
+    tab: "<%= @tab %>"
+    page: "<%= page %>"
+
 <% end %>
+<% arm = Arm.find(24291) %>
+$(".arm-<%= arm.id %>-service-calendar-tbody").html("<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: arm, tab: @tab, page: 1, merged: @merged, consolidated: @consolidated, visit_groups: arm.visit_groups.page(1) %>")
 <% end %>
 
 toggleServicesToggle(false)

@@ -39,9 +39,9 @@ class ServiceCalendarsController < ApplicationController
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
 
-  before_action :preload_service_request
+  before_action :preload_service_request, except: [:async_load_line_items]
 
-  after_action :set_service_calendar_cookie, only: [:table, :merged_calendar]
+  after_action :set_service_calendar_cookie, only: [:table, :merged_calendar, :async_load_line_items]
 
 
   def table
@@ -140,6 +140,17 @@ class ServiceCalendarsController < ApplicationController
       editable_ssrs.where.not(status: 'draft').update_all(status: 'draft')
       @service_request.update_attribute(:status, "draft") unless (@service_request.submitted? || @service_request.previously_submitted?)
     end
+
+    respond_to :js
+  end
+
+  def async_load_line_items
+    @arm = Arm.find(params[:arm_id])
+    @tab = params[:tab]
+    @merged = ActiveRecord::Type::Boolean.new.cast(params[:merged])
+    @consolidated = ActiveRecord::Type::Boolean.new.cast(params[:consolidated])
+    @page = params[:page]
+    @visit_groups = @arm.visit_groups.page(@page)
 
     respond_to :js
   end

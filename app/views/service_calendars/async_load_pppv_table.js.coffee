@@ -22,11 +22,13 @@
 # Load line items partial for arm here:
 arm_id = <%= @arm.id %>
 
-## Working, but not for all arms... even if they are the only one
-$(".arm-#{arm_id}-container .arm-#{arm_id}-service-calendar-tbody").html(
-  "<%= j render "service_calendars/master_calendar/pppv/#{@tab}/#{@tab}_line_items", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, page: @page, merged: @merged, consolidated: @consolidated, visit_groups: @visit_groups %>"
+$(".arm-#{arm_id}-container .arm_loading_container").html(
+  "<%= j render "service_calendars/master_calendar/pppv/pppv_table", service_request: @service_request, sub_service_request: @sub_service_request, arm: @arm, tab: @tab, page: @page, pages: @pages, merged: @merged, consolidated: @consolidated, visit_groups: @visit_groups %>"
 )
 
-# Show/Hide loader and table once loading is complete
+# Show/Hide loader, table, and header once loading is complete
 $(".arm-#{arm_id}-container .loader").hide()
-$(".arm-#{arm_id}-container table").show()
+$(".arm-#{arm_id}-container table").fadeIn("slow")
+
+adjustCalendarHeaders()
+$(document).trigger('ajax:complete')

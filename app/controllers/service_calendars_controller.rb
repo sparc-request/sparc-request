@@ -39,9 +39,9 @@ class ServiceCalendarsController < ApplicationController
   before_action :authorize_identity,          unless: :in_dashboard?
   before_action :authorize_dashboard_access,  if: :in_dashboard?
 
-  before_action :preload_service_request, except: [:async_load_line_items]
+  before_action :preload_service_request
 
-  after_action :set_service_calendar_cookie, only: [:table, :merged_calendar, :async_load_line_items]
+  after_action :set_service_calendar_cookie, only: [:table, :merged_calendar, :async_load_pppv_table]
 
 
   def table
@@ -144,12 +144,13 @@ class ServiceCalendarsController < ApplicationController
     respond_to :js
   end
 
-  def async_load_line_items
+  def async_load_pppv_table
     @arm = Arm.find(params[:arm_id])
     @tab = params[:tab]
     @merged = ActiveRecord::Type::Boolean.new.cast(params[:merged])
     @consolidated = ActiveRecord::Type::Boolean.new.cast(params[:consolidated])
-    @page = params[:page]
+    @page = params[:page].to_i
+    @pages = JSON.parse(params[:pages])
     @visit_groups = @arm.visit_groups.page(@page)
 
     respond_to :js

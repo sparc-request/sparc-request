@@ -18,14 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render 'service_calendars/fields', merged: merged, consolidated: consolidated, tab: tab
-
-- if sub_service_request ? sub_service_request.has_per_patient_per_visit_services? : service_request.has_per_patient_per_visit_services?
-  - service_request.arms.joins(:visit_groups).distinct.each do |arm|
-    = render 'service_calendars/master_calendar/pppv/pppv_calendar', tab: tab, arm: arm, service_request: service_request, sub_service_request: sub_service_request, page: pages[arm.id.to_s], pages: pages, merged: merged, consolidated: consolidated
-
-- if !in_dashboard? && (sub_service_request ? sub_service_request.has_one_time_fee_services? : service_request.has_one_time_fee_services?)
-  = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: sub_service_request, merged: merged, consolidated: consolidated
-
-- if tab == 'calendar'
-  = render 'service_calendars/master_calendar/merged_grand_totals', service_request: service_request
+%table.table.table-bordered.service-calendar-table{style: "display: none;"}
+  %thead
+    = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+  %tbody{ class: "arm-#{arm.id}-service-calendar-tbody" }
+    = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, merged: merged, consolidated: consolidated, visit_groups: visit_groups

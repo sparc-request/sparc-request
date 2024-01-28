@@ -37,7 +37,7 @@ class LineItemsController < ApplicationController
       @line_item.current_user_id = current_user.id
     end
 
-    if @line_item.displayed_cost_valid?(line_item_params[:displayed_cost]) && @line_item.update_attributes(line_item_params)
+    if @line_item.displayed_cost_valid?(line_item_params[:displayed_cost]) && @line_item.update(line_item_params)
       if @field != 'displayed_cost'
         @service_request.update_attribute(:status, 'draft') unless @service_request.previously_submitted?
         @line_item.sub_service_request.update_attribute(:status, 'draft')

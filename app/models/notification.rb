@@ -97,9 +97,9 @@ class Notification < ApplicationRecord
     # this notification been read by this user
     case user.id
     when originator_id
-      self.update_attributes(read_by_originator: read)
+      self.update(read_by_originator: read)
     when other_user_id
-      self.update_attributes(read_by_other_user: read)
+      self.update(read_by_other_user: read)
     else
       false
     end

@@ -90,9 +90,9 @@ class ServiceCalendarsController < ApplicationController
         unit_minimum = @line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
         set_billing_quantities(@arm.protocol.default_billing_type, unit_minimum)
 
-        @visits.each{ |v| v.update_attributes(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity) }
+        @visits.each{ |v| v.update(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity) }
       elsif params[:uncheck]
-        @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
+        @visits.each{ |v| v.update(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
       end
     end
 
@@ -128,10 +128,10 @@ class ServiceCalendarsController < ApplicationController
           unit_minimum = v.service.displayed_pricing_map.unit_minimum
           set_billing_quantities(@arm.protocol.default_billing_type, unit_minimum)
 
-          v.update_attributes(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
+          v.update(quantity: unit_minimum, research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
         end
       elsif params[:uncheck]
-        @visits.each{ |v| v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
+        @visits.each{ |v| v.update(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0) }
       end
     end
 

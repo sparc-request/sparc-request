@@ -206,7 +206,7 @@ def build_service_request
 
   before :each do
     program.tag_list.add("ctrc")
-    program.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+    program.available_statuses.where(status: 'administrative_review').first.update(selected: true)
 
     [program, core_13, core_15, core_16, core_17, core_62].each do |organization|
       organization.tag_list.add("clinical work fulfillment")
@@ -230,7 +230,7 @@ def build_project
   build_study_type_questions()
   let!(:project) {
     protocol = Project.create(attributes_for(:protocol))
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: nil, study_type_question_group_id: study_type_question_group_version_2.id)
+    protocol.update(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: nil, study_type_question_group_id: study_type_question_group_version_2.id)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(
@@ -259,7 +259,7 @@ def build_study
     protocol = build(:study)
     identity = Identity.find_by_ldap_uid('jug2')
     identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, primary_pi_role_attributes: {identity_id: identity.id, project_rights: "approve", role: "primary-pi"})
+    protocol.update(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first, primary_pi_role_attributes: {identity_id: identity.id, project_rights: "approve", role: "primary-pi"})
     protocol.project_roles.create({identity_id: identity2.id, project_rights:  "approve", role: "business-grants-manager"})
     protocol.save validate: false
     protocol
@@ -272,7 +272,7 @@ def build_empty_study
   build_study_type_questions()
   let!(:study) {
     protocol = build(:study)
-    protocol.update_attributes(funding_status: "funded", funding_source: "college", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
+    protocol.update(funding_status: "funded", funding_source: "college", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(

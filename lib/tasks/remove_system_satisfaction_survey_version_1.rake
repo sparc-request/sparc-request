@@ -77,7 +77,7 @@ namespace :data do
   def fix_associated_surveys
     AssociatedSurvey.where(survey_id: @sys_sat_survey_v1_id).each do |as|
       @associated_survey_count+=1
-      as.update_attributes(survey_id: @sys_sat_survey_v0_id)
+      as.update(survey_id: @sys_sat_survey_v0_id)
     end
   end
 
@@ -91,7 +91,7 @@ namespace :data do
   def fix_response_sets
     ResponseSet.where(survey_id: @sys_sat_survey_v1_id).each do |rs|
       @response_set_count+=1
-      rs.update_attributes(survey_id: @sys_sat_survey_v0_id)
+      rs.update(survey_id: @sys_sat_survey_v0_id)
     end
   end
 
@@ -102,7 +102,7 @@ namespace :data do
         @question_count+=1
         Response.where(question_id: q.id).each do |r|
           @response_count+=1
-          r.update_attributes(question_id: r.question_id - 3)
+          r.update(question_id: r.question_id - 3)
         end
       end
     end

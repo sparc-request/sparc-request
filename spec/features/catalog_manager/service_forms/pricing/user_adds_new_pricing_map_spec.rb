@@ -94,7 +94,7 @@ RSpec.describe 'User adds Service Pricing Map', js: true do
 
       it 'should create a new pricing map for non clinical service' do
         create(:pricing_setup, organization: @program)
-        @service.update_attributes(one_time_fee: true)
+        @service.update(one_time_fee: true)
 
         find('a span', text: @service.name).click
         wait_for_javascript_to_finish

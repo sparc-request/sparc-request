@@ -135,7 +135,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    @service_request.protocol.update_attributes(milestones_params) if milestones_params
+    @service_request.protocol.update(milestones_params) if milestones_params
     @service_request.update_status('draft', current_user)
 
     respond_to :js
@@ -230,7 +230,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def validate_protocol
-    @service_request.protocol.update_attributes(milestones_params) if milestones_params
+    @service_request.protocol.update(milestones_params) if milestones_params
 
     unless @service_request.protocol_valid?
       redirect_to protocol_service_request_path(srid: @service_request.id) and return false unless action_name == 'protocol'
@@ -272,7 +272,7 @@ class ServiceRequestsController < ApplicationController
   def should_queue_epic?(protocol)
     queues = EpicQueue.where(protocol_id: protocol.id)
     if (queues.size == 1)
-      queues.first.update_attributes(user_change: false)
+      queues.first.update(user_change: false)
       return false
     else
       return true

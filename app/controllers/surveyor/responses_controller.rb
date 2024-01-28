@@ -109,7 +109,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def update
-    if @response.update_attributes(response_params)
+    if @response.update(response_params)
       flash[:success] = t(:surveyor)[:responses][:completed]
     else
       @errors = @response.errors

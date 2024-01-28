@@ -24,7 +24,7 @@ namespace :data do
 
     PastStatus.where("status LIKE ?", "% %").each do |past_status|
       old_status = past_status.status
-      past_status.update_attributes(status: old_status.parameterize.underscore)
+      past_status.update(status: old_status.parameterize.underscore)
       puts "Fixed past status: #{past_status.id}. Changed status from: #{old_status} to: #{old_status.parameterize.underscore}"
     end
   end

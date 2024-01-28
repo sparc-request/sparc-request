@@ -51,7 +51,7 @@ task destroy_bad_arm_and_liv_data: :environment do
 
   good_arms.each do |arm|
     puts "Updating arm with an id of #{arm.id}"
-    arm.update_attributes(subject_count: 1)
+    arm.update(subject_count: 1)
   end
 
   puts ""

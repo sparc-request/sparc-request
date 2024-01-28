@@ -72,20 +72,20 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
           #transfer the project roles as needed
           @merged_protocol.project_roles.each do |role|
             if role.role != 'primary-pi' && role_should_be_assigned?(role, @master_protocol)
-              role.update_attributes(protocol_id: @master_protocol.id)
+              role.update(protocol_id: @master_protocol.id)
             end
           end
 
           # checking for and assigning research types, impact areas, and affiliations...
           if has_research?(@merged_protocol, 'human_subjects') && !has_research?(@master_protocol, 'human_subjects')
-            @master_protocol.research_types_info.update_attributes(human_subjects: true)
-            @merged_protocol.irb_records.each { |irb_record| irb_record.update_attributes(human_subjects_info_id: @master_protocol.human_subjects_info.id) }
+            @master_protocol.research_types_info.update(human_subjects: true)
+            @merged_protocol.irb_records.each { |irb_record| irb_record.update(human_subjects_info_id: @master_protocol.human_subjects_info.id) }
           elsif has_research?(@merged_protocol, 'vertebrate_animals') && !has_research?(@master_protocol, 'vertebrate_animals')
-            @merged_protocol.vertebrate_animals_info.update_attributes(protocol_id: @master_protocol.id)
+            @merged_protocol.vertebrate_animals_info.update(protocol_id: @master_protocol.id)
           elsif has_research?(@merged_protocol, 'investigational_products') && !has_research?(@master_protocol, 'investigational_products')
-            @merged_protocol.investigational_products_info.update_attributes(protocol_id: @master_protocol.id)
+            @merged_protocol.investigational_products_info.update(protocol_id: @master_protocol.id)
           elsif has_research?(@merged_protocol, 'ip_patents') && !has_research?(@master_protocol, 'ip_patents')
-            @merged_protocol.ip_patents_info.update_attributes(protocol_id: @master_protocol.id)
+            @merged_protocol.ip_patents_info.update(protocol_id: @master_protocol.id)
           end
 
           if (@master_protocol.research_master_id == nil) && (@merged_protocol.research_master_id != nil)
@@ -113,7 +113,7 @@ class Dashboard::ProtocolMergesController < Dashboard::BaseController
             request.protocol_id = @master_protocol.id
             request.save(validate: false)
             request.sub_service_requests.each do |ssr|
-              ssr.update_attributes(protocol_id: @master_protocol.id)
+              ssr.update(protocol_id: @master_protocol.id)
               @master_protocol.next_ssr_id = (@master_protocol.try(:next_ssr_id) || 1) + 1
               @master_protocol.save(validate: false)
               if ssr.in_work_fulfillment

@@ -57,7 +57,7 @@ RSpec.describe SubServiceRequest, type: :model do
       @approval1 = create(:approval, sub_service_request: @ssr, approval_type: 'Nursing/Nutrition Approved')
       @approval2 = create(:approval, sub_service_request: @ssr, approval_type: 'Imaging Approved')
       @past_staus = create(:past_status, sub_service_request: @ssr, status: 'draft')
-      @ssr.update_attributes(status: 'draft')
+      @ssr.update(status: 'draft')
 
       @ssr.reload
       expect(@ssr.update_status_and_notify('submitted', @identity)).to eq(@ssr.id)

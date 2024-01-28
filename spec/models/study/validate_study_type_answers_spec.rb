@@ -89,10 +89,10 @@ RSpec.describe Protocol, type: :model do
   end
 
   def update_answers (answer_array)
-    answer1_version_3.update_attributes(answer: answer_array[0])
-    answer2_version_3.update_attributes(answer: answer_array[1])
-    answer3_version_3.update_attributes(answer: answer_array[2])
-    answer4_version_3.update_attributes(answer: answer_array[3])
-    answer5_version_3.update_attributes(answer: answer_array[4])
+    answer1_version_3.update(answer: answer_array[0])
+    answer2_version_3.update(answer: answer_array[1])
+    answer3_version_3.update(answer: answer_array[2])
+    answer4_version_3.update(answer: answer_array[3])
+    answer5_version_3.update(answer: answer_array[4])
   end
 end

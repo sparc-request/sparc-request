@@ -24,7 +24,7 @@ class UpdateServicesIfOneTimeFees < ActiveRecord::Migration[4.2]
 
     services.each do |service|
       if service.pricing_maps.last.is_one_time_fee
-        service.update_attributes(one_time_fee: true)
+        service.update(one_time_fee: true)
       end
     end
   end

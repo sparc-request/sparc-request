@@ -36,7 +36,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         v         = arm.visits.first
 
-        v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+        v.update(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
 
@@ -65,7 +65,7 @@ RSpec.describe ServiceCalendarsController do
         arm       = create(:arm, protocol: protocol)
         v         = arm.visits.first
 
-        v.update_attributes(quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+        v.update(quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
 

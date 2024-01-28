@@ -35,7 +35,7 @@ class AssociatedUserUpdater
 
       if @protocol_role.role == 'primary-pi'
         protocol.project_roles.where(role: 'primary-pi').where.not(identity_id: @protocol_role.identity_id).each do |pr|
-          pr.update_attributes(project_rights: 'approve', role: 'general-access-user')
+          pr.update(project_rights: 'approve', role: 'general-access-user')
         end
       end
 

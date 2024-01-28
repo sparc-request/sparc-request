@@ -65,7 +65,7 @@ namespace :data do
             ]
 
             if rmid_record
-              protocol.human_subjects_info.update_attributes(
+              protocol.human_subjects_info.update(
                 pro_number:                 rmid_record['eirb_id'],
                 initial_irb_approval_date:  rmid_record['date_initially_approved'],
                 irb_approval_date:          rmid_record['date_approved'],
@@ -74,7 +74,7 @@ namespace :data do
 
               records_changed += 1
             else
-              protocol.human_subjects_info.update_attributes(
+              protocol.human_subjects_info.update(
                 initial_irb_approval_date:  nil,
                 irb_approval_date:          nil,
                 irb_expiration_date:        nil

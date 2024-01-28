@@ -33,7 +33,7 @@ RSpec.describe Protocol, type: :model do
 
     context "study is version_1" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
       end
 
       it "should return version 1" do
@@ -42,7 +42,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "study is nil" do
       before :each do
-        study.update_attributes(study_type_question_group_id: nil)
+        study.update(study_type_question_group_id: nil)
       end
 
       it "should return nil" do
@@ -51,7 +51,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "study is version 2" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       end
 
       it "should return true" do
@@ -60,7 +60,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "project is version 3" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
       end
 
       it "should return false" do

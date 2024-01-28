@@ -147,7 +147,7 @@ class VisitGroup < ApplicationRecord
     # note: this is only for already-existing visits
     if vg = self.lower_item_with_day
       vg.neighbor_moved = true
-      vg.update_attributes(day: vg.day + 1)
+      vg.update(day: vg.day + 1)
     end
   end
 

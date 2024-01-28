@@ -72,7 +72,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       end
     end
 
-    if @service.update_attributes(service_params.except(:program, :core))
+    if @service.update(service_params.except(:program, :core))
       flash[:success] = "#{@service.name} saved correctly."
       @institutions = Institution.order('`order`')
       @editable_organizations = current_user.catalog_manager_organizations
@@ -122,7 +122,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def update_epic_info
     @service = Service.find(params[:service_id])
 
-    if @service.update_attributes(service_params)
+    if @service.update(service_params)
       flash[:success] = "#{@service.name} saved successfully."
     else
       flash[:alert] = "Error updating #{@service.name}."
@@ -151,7 +151,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service_relation = ServiceRelation.find(params[:service_relation_id])
     @service = @service_relation.service
 
-    if @service_relation.update_attributes(service_relation_params)
+    if @service_relation.update(service_relation_params)
       flash[:success] = "Related service updated successfully."
     else
       flash[:alert] = "Error updating related service."

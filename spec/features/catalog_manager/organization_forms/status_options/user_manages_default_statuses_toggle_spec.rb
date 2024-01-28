@@ -54,7 +54,7 @@ RSpec.describe 'User manages status options', js: true do
 
   context 'and Use Default Statuses option is false' do
     before :each do
-      @provider.update_attributes(use_default_statuses: false)
+      @provider.update(use_default_statuses: false)
 
       visit catalog_manager_catalog_index_path
       wait_for_javascript_to_finish

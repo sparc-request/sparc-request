@@ -26,7 +26,7 @@ class PopulatePastStatusChangedById < ActiveRecord::Migration[4.2]
         audit = AuditRecovery.where(auditable_id: status.id).where(auditable_type: 'PastStatus').first
         unless audit.nil?
           changed_by_id = Identity.where(id: audit[:user_id]).pluck(:id).first
-          status.update_attributes(changed_by_id: changed_by_id)
+          status.update(changed_by_id: changed_by_id)
           puts "Updating status' changed_by_id column to identity id of #{changed_by_id}"
         end
       end

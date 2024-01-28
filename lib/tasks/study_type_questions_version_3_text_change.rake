@@ -23,6 +23,6 @@ task :study_type_questions_version_3_text_change => :environment do
 
 	# Updating question #4
 	new_question = "4. Is it appropriate to display the yellow \"Research Participant\" advisory for all study participants?"
-	StudyTypeQuestion.where(study_type_question_group_id: 3, friendly_id: 'research_active').first.update_attributes(question: new_question)
+	StudyTypeQuestion.where(study_type_question_group_id: 3, friendly_id: 'research_active').first.update(question: new_question)
 
 end

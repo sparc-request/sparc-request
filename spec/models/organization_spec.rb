@@ -33,9 +33,9 @@ RSpec.describe Organization, type: :model do
       let!(:submission_email_3) {create(:submission_email, organization_id: core.id)}
 
       before :each do
-        provider.update_attributes(process_ssrs: 1)
-        core.update_attributes(process_ssrs: 1)
-        sub_service_request.update_attributes(organization_id: core.id)
+        provider.update(process_ssrs: 1)
+        core.update(process_ssrs: 1)
+        sub_service_request.update(organization_id: core.id)
       end
 
       it "should return the first submission e-mails it finds" do
@@ -149,7 +149,7 @@ RSpec.describe Organization, type: :model do
       let!(:core3)    { create(:core, parent_id: program4.id) }
 
       before :each do
-        service.update_attributes(organization_id: core.id)
+        service.update(organization_id: core.id)
       end
 
       it 'should return the correct service for a core' do
@@ -367,7 +367,7 @@ RSpec.describe Organization, type: :model do
       end
 
       it "should return the child's service providers if process ssrs is set" do
-        provider.update_attributes(process_ssrs: 1)
+        provider.update(process_ssrs: 1)
         expect(provider.all_service_providers).to include(service_provider)
       end
     end
@@ -383,7 +383,7 @@ RSpec.describe Organization, type: :model do
       end
 
       it "should return the child's super users" do
-        provider.update_attributes(process_ssrs: 1)
+        provider.update(process_ssrs: 1)
         expect(provider.all_super_users).to include(super_user)
       end
     end
@@ -392,8 +392,8 @@ RSpec.describe Organization, type: :model do
 
       context "process_ssrs is false" do
         it "should return parent statuses" do
-          core.parent.update_attributes(process_ssrs: true, use_default_statuses: false)
-          core.parent.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+          core.parent.update(process_ssrs: true, use_default_statuses: false)
+          core.parent.available_statuses.where(status: 'administrative_review').first.update(selected: true)
 
           expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
         end
@@ -401,14 +401,14 @@ RSpec.describe Organization, type: :model do
 
       context "process_ssrs is true" do
         it "should return default statuses if use_default_statuses is true" do
-          core.update_attributes(process_ssrs: true)
+          core.update(process_ssrs: true)
 
           expect(core.get_available_statuses).to include(AvailableStatus.statuses.slice(*AvailableStatus.defaults))
         end
 
         it "should return custom statuses if use_default_statuses is false" do
-          core.update_attributes(process_ssrs: true)
-          core.available_statuses.where(status: 'administrative_review').first.update_attributes(selected: true)
+          core.update(process_ssrs: true)
+          core.available_statuses.where(status: 'administrative_review').first.update(selected: true)
 
           expect(core.get_available_statuses).to include({"administrative_review"=>"Administrative Review"})
         end

@@ -28,7 +28,7 @@ task :migrate_cofc => :environment do
 				puts "Second Question is NOT answered"
 				if protocol.has_cofc
 					puts "Updated new answer for the protocol"
-					answer.update_attributes(answer: true)
+					answer.update(answer: true)
 					puts "Updated #{answer.inspect}"
 				end
 			end	

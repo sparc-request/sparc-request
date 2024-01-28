@@ -124,7 +124,7 @@ RSpec.describe SurveyNotification do
   end
 
   before :each do
-    org.update_attributes(survey_completion_alerts: true)
+    org.update(survey_completion_alerts: true)
   end
 
   describe 'service system satisfaction survey completed ' do

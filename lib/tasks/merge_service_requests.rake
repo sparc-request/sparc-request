@@ -38,13 +38,13 @@ task :merge_service_requests => :environment do
 
   def assign_sub_service_requests(master_request, request)
     request.sub_service_requests.each do |ssr|
-      ssr.update_attributes(service_request_id: master_request.id)
+      ssr.update(service_request_id: master_request.id)
     end
   end
 
   def assign_line_items(master_request, request)
     request.line_items.each do |line_item|
-      line_item.update_attributes(service_request_id: master_request.id)
+      line_item.update(service_request_id: master_request.id)
     end 
   end
 

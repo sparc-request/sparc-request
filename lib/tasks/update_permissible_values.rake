@@ -28,7 +28,7 @@ task update_permissible_values: :environment do
     if reserved_categories.include?(category)
       puts "Updating reserved status of #{category}"
       values.each do |value|
-        value.update_attributes(reserved: true)
+        value.update(reserved: true)
       end
     end
   end

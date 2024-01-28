@@ -101,7 +101,7 @@ def create_identity
   print_breakline
 
   if identity = Identity.find_by_ldap_uid(args[:ldap_uid]) then
-    identity.update_attributes(args)
+    identity.update(args)
   else
     identity = Identity.create(args)
   end

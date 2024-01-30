@@ -73,6 +73,7 @@ gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
 # gem 'rails', '5.2.8.1'
 gem 'rails', '6.1.7.6'
+# gem "sprockets-rails" Probably needed for Rails 7
 gem 'rails-html-sanitizer' # Check usage
 gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage

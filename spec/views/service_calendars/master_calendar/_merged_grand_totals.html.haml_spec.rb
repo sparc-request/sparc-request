@@ -20,8 +20,6 @@
 
 require 'rails_helper'
 
-#RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :view do
-
 RSpec.describe 'rendering merged_grand_totals partial', type: :view do
 
   let_there_be_lane

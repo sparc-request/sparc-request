@@ -35,7 +35,7 @@ gem 'dynamic_form' # Check usage
 gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
-gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
+gem 'filterrific'
 gem 'grape', '1.7.0'
 gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'

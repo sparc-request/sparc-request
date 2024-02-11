@@ -26,7 +26,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   end
 
   def create
-    protocol_filter = current_user.protocol_filters.create(create_params)
+    protocol_filter = current_user.protocol_filters.new(create_params)
 
     if protocol_filter.save
       flash[:success] = 'Search Saved!'

@@ -6,12 +6,6 @@ GIT
       iconv
 
 GIT
-  remote: https://github.com/ayaman/filterrific.git
-  revision: 292ecd953df4ec70f2f9a879105ef5aba5b77e95
-  specs:
-    filterrific (2.1.2)
-
-GIT
   remote: https://github.com/jleonardw9/grouped_validations.git
   revision: dc4207a7966fe691a240a47718b3d9689861a76f
   branch: master
@@ -275,6 +269,7 @@ GEM
     faker (3.0.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
+    filterrific (5.2.5)
     font-awesome-sass (5.15.1)
       sassc (>= 1.11)
     globalid (1.0.1)
@@ -693,7 +688,7 @@ DEPENDENCIES
   execjs
   factory_bot_rails
   faker
-  filterrific!
+  filterrific
   font-awesome-sass
   grape (= 1.7.0)
   grape-entity (~> 0.10.2)

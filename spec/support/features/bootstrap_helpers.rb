@@ -66,7 +66,7 @@ module Features
           first('.dropdown-menu.show span.text', text: selection).click
         end
       end
-      find('body').click # Click away
+      first('h4.alert-danger').click # Click away
       wait_for_javascript_to_finish
     end
 
@@ -84,7 +84,7 @@ module Features
       field.click
       field.send_keys(:delete)
       field.set(text)
-      find('body').click # Click away
+      first('h4.alert-danger').click # Click away
       wait_for_javascript_to_finish
     end
 
@@ -131,7 +131,7 @@ module Features
           first('.dropdown-menu.open span.text', text: selection).click
         end
       end
-      find('body').click # Click away
+      first('h4.alert-danger').click # Click away
       wait_for_javascript_to_finish
     end
 

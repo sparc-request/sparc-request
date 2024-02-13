@@ -53,10 +53,8 @@ class Notification < ApplicationRecord
   def self.shared_with(identity, sub_service_request_id=nil)
     notifications = of_ssr(sub_service_request_id).
                       where(shared: true).
-                      where.not(
-                        originator: identity,
-                        other_user: identity
-                      )
+                      where.not(originator: identity).
+                      where.not(other_user: identity)
 
     if identity.catalog_overlord?
       notifications

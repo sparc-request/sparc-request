@@ -13,13 +13,6 @@ GIT
     grouped_validations (0.3.3)
 
 GIT
-  remote: https://github.com/rails/rails-observers.git
-  revision: 389b577322d8b17336730b2dc4e179060a23c8e7
-  specs:
-    rails-observers (0.2.0)
-      activemodel (>= 4.2)
-
-GIT
   remote: https://github.com/randym/axlsx
   revision: 8e7b4b3b7259103452c191f73ce0bf64f66033fe
   branch: master
@@ -736,7 +729,6 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rails-html-sanitizer
-  rails-observers!
   redcarpet
   request_store
   rest-client

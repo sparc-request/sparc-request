@@ -21,7 +21,7 @@
 # See Atlassian Confluence API docs here:
 # https://developer.atlassian.com/cloud/confluence/rest-api-examples/
 module NewsFeed
-  class AtlassianAdapter < NewsFeed::ApiAdapter
+  class AtlassianAdapter < NewsFeed::APIAdapter
     def initialize
       api_string  = "/rest/api/content/search"
       limit       = NewsFeed::Base::POST_LIMIT

@@ -36,7 +36,7 @@ gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
 gem 'filterrific'
-gem 'grape', '1.7.0'
+gem 'grape'
 gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage

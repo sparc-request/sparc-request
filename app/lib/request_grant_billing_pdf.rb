@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class RequestGrantBillingPdf
+class RequestGrantBillingPDF
 
   def self.text_box_options options
     default_text_box_options = { :height => 10, :overflow => :shrink_to_fit, :min_font_size => 7 }
@@ -106,4 +106,4 @@ end
 
 # uncomment below for testing
 # sr = ServiceRequest.find 11704
-# RequestGrantBillingPdf.generate_pdf sr
+# RequestGrantBillingPDF.generate_pdf sr

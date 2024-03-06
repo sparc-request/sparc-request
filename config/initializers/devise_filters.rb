@@ -20,18 +20,20 @@
 
 module DeviseFilters
   def self.add_filters
-    # Example of adding a before_action to all the Devise controller
-    # actions we care about.
-    [
-      Devise::SessionsController,
-      Devise::RegistrationsController,
-      Devise::PasswordsController
-    ].each do |controller|
-      controller.before_action :initialize_service_request
-    end
+    Rails.application.config.to_prepare do
+      # Example of adding a before_action to all the Devise controller
+      # actions we care about.
+      [
+        Devise::SessionsController,
+        Devise::RegistrationsController,
+        Devise::PasswordsController
+      ].each do |controller|
+        controller.before_action :initialize_service_request
+      end
 
-    # Example of adding one selective before_action.
-    #Devise::RegistrationsController.before_action :check_invite_code, :only => :new
+      # Example of adding one selective before_action.
+      #Devise::RegistrationsController.before_action :check_invite_code, :only => :new
+    end
   end
 
   self.add_filters

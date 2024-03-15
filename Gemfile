@@ -76,7 +76,7 @@ gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Nee
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
-gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/MUSC-BMIC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.13.0'

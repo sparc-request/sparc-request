@@ -7,7 +7,7 @@ GIT
       activerecord (~> 5.0)
 
 GIT
-  remote: https://github.com/HSSC/sanitized_data.git
+  remote: https://github.com/MUSC-BMIC/sanitized_data.git
   revision: afdb1cfd7161ae5bc0ba6bd2f07af22da54d64e0
   specs:
     sanitized_data (0.0.4)
@@ -764,4 +764,4 @@ DEPENDENCIES
   x-editable-rails
 
 BUNDLED WITH
-   2.3.19
+   2.4.14

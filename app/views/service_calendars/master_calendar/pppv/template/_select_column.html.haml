@@ -27,6 +27,12 @@
 
 - checked = visit_group.visits.none?{ |v| v.public_send(billing_type_method).zero? && editable_ssrs.include?(v.line_items_visit.line_item.sub_service_request) }
 
+-# TODO: Possible refactor, but needs to factor in editability somehow:
+-# all_visits_indicated = case service_request.protocol.default_billing_type
+  -# when "r" then visit_group.visits.where(research_billing_qty: 0).none?
+  -# when "t" then visit_group.visits.where(insurance_billing_qty: 0).none?
+  -# when "o" then visit_group.visits.where(effort_billing_qty: 0).none?
+
 - check_param         = checked ? 'uncheck'     : 'check'
 - icon                = checked ? 'times'       : 'check'
 - klass               = checked ? 'btn-danger'  : 'btn-success'

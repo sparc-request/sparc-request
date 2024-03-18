@@ -60,7 +60,7 @@
 
       %th{ colspan: 2 }
 
-      - visits      = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: [:admin_rates, service_request: :protocol, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]] })
+      - visits = liv.ordered_visits.page(page).eager_load(line_items_visit: { line_item: { service: :pricing_maps } })
       - visits.each do |v|
         %td.visit.calendar-visit.text-center{ class: ["visit-#{v.id}", editable ? 'editable' : ''], colspan: 3 }
           = render "service_calendars/master_calendar/pppv/#{tab}/#{tab}_visit_input", visit: v

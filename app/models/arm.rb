@@ -165,7 +165,7 @@ class Arm < ApplicationRecord
   end
 
   def update_minimum_counts
-    self.update_attributes(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
+    self.update(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
   end
 
   ### audit reporting methods ###
@@ -198,7 +198,7 @@ class Arm < ApplicationRecord
 
   def update_liv_subject_counts
     self.line_items_visits.select{ |liv| (liv.sub_service_request.can_be_edited? && liv.subject_count.nil?) || liv.subject_count > self.subject_count }.each do |liv|
-      liv.update_attributes(subject_count: self.subject_count)
+      liv.update(subject_count: self.subject_count)
     end
   end
 

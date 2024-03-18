@@ -82,13 +82,13 @@ class ProtocolsController < ApplicationController
         indicated_quantity = determine_visit_billing_quantity(visit, old_billing_type)
         set_billing_quantities(protocol_params[:default_billing_type], indicated_quantity)
 
-        visit.update_attributes(research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
+        visit.update(research_billing_qty: @r_quantity, insurance_billing_qty: @t_quantity, effort_billing_qty: @o_quantity)
       end
     end
   end
 
   def update
-    if @protocol.update_attributes(protocol_params)
+    if @protocol.update(protocol_params)
       if @service_request.status == 'first_draft'
         @service_request.update_status('draft', current_user)
       end

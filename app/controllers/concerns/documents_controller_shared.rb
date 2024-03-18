@@ -59,7 +59,7 @@ module DocumentsControllerShared
   def update
     respond_to :js
 
-    if @document.update_attributes(document_params)
+    if @document.update(document_params)
       assign_organization_access
 
       flash.now[:success] = t(:documents)[:updated]

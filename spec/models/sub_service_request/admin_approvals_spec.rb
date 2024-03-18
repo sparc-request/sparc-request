@@ -29,7 +29,8 @@ RSpec.describe SubServiceRequest, type: :model do
       @org             = create(:organization, process_ssrs: true)
       @protocol        = create(:protocol_without_validations, primary_pi: jug2)
       @sr              = create(:service_request_without_validations, protocol: @protocol)
-      @ssr             = create(:sub_service_request_without_validations, organization: @org, service_request: @sr, status: 'complete')
+      @ssr             = create(:sub_service_request_without_validations, organization: @org, service_request: @sr, status: 'complete', submitted_at: DateTime.yesterday.to_time)
+      @past_status     = create(:past_status, sub_service_request: @ssr, status: 'draft', new_status: 'complete')
       @identity        = build_stubbed(:identity)
     end
 
@@ -56,15 +57,16 @@ RSpec.describe SubServiceRequest, type: :model do
     it 'should not reset the admin approvals when ssr is resubmitted' do
       @approval1 = create(:approval, sub_service_request: @ssr, approval_type: 'Nursing/Nutrition Approved')
       @approval2 = create(:approval, sub_service_request: @ssr, approval_type: 'Imaging Approved')
-      @past_staus = create(:past_status, sub_service_request: @ssr, status: 'draft')
-      @ssr.update_attributes(status: 'draft')
+      @ssr.update(status: 'draft')
 
       @ssr.reload
-      expect(@ssr.update_status_and_notify('submitted', @identity)).to eq(@ssr.id)
+      @ssr.past_statuses.reload
+      expect(@ssr.update_status_and_notify('submitted', @identity)).to eq(nil)#Previously submitted SSRs do not re-notify
+      @ssr.reload
 
       expect(Approval.count).to eq(2)
-      expect(@ssr.reload.nursing_nutrition_approved?).to eq(true)
-      expect(@ssr.reload.imaging_approved?).to eq(true)
+      expect(@ssr.nursing_nutrition_approved?).to eq(true)
+      expect(@ssr.imaging_approved?).to eq(true)
     end
 
   end

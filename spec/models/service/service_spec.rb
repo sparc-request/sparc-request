@@ -53,7 +53,7 @@ RSpec.describe Service, type: :model do
   describe 'parents' do
 
     it 'should return an array with only the organization if there are no parents' do
-      service.update_attributes(organization_id: institution.id)
+      service.update(organization_id: institution.id)
       expect(service.parents).to eq [ institution ]
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Service, type: :model do
       end
 
       it 'should return the organization if the organization is a core' do
-        service.update_attributes(organization_id: core.id)
+        service.update(organization_id: core.id)
         expect(service.core).to eq(core)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Service, type: :model do
     context 'program' do
 
       it 'should return nil if the organization is neither a core nor a program' do
-        service.update_attributes(organization_id: institution.id)
+        service.update(organization_id: institution.id)
         expect(service.program).to eq(nil)
       end
 
@@ -90,7 +90,7 @@ RSpec.describe Service, type: :model do
       end
 
       it 'should return the program the core belongs to if the organization is a core' do
-        service.update_attributes(organization_id: core.id)
+        service.update(organization_id: core.id)
         expect(service.program).to eq(program)
       end
     end
@@ -98,22 +98,22 @@ RSpec.describe Service, type: :model do
     context 'provider' do
 
       it "should return nil if the organization is an insitution" do
-        service.update_attributes(organization_id: institution.id)
+        service.update(organization_id: institution.id)
         expect(service.provider).to eq nil
       end
 
       it "should return the provider if the organization is a provider" do
-        service.update_attributes(organization_id: provider.id)
+        service.update(organization_id: provider.id)
         expect(service.provider).to eq(provider)
       end
 
       it "should return the provider if the organization is a program" do
-        service.update_attributes(organization_id: program.id)
+        service.update(organization_id: program.id)
         expect(service.provider).to eq(provider)
       end
 
       it "should return the provider the core belongs to if the organization is a core" do
-        service.update_attributes(organization_id: core.id)
+        service.update(organization_id: core.id)
         expect(service.provider).to eq(provider)
       end
     end
@@ -121,22 +121,22 @@ RSpec.describe Service, type: :model do
     context 'institution' do
 
       it "should return the institution is the organization is an institution" do
-        service.update_attributes(organization_id: institution.id)
+        service.update(organization_id: institution.id)
         expect(service.institution).to eq(institution)
       end
 
       it "should return the institution if the organization is a provider" do
-        service.update_attributes(organization_id: provider.id)
+        service.update(organization_id: provider.id)
         expect(service.institution).to eq(institution)
       end
 
       it "should return the institution is the organization is a program" do
-        service.update_attributes(organization_id: program.id)
+        service.update(organization_id: program.id)
         expect(service.institution).to eq(institution)
       end
 
       it "should return the insitution if the organization is a core" do
-        service.update_attributes(organization_id: core.id)
+        service.update(organization_id: core.id)
         expect(service.institution).to eq(institution)
       end
     end
@@ -180,7 +180,7 @@ RSpec.describe Service, type: :model do
       end
 
       it "should concatenate cpt code to the name if it exists" do
-        service.update_attributes(cpt_code: "Bar")
+        service.update(cpt_code: "Bar")
         expect(service.display_service_name).to eq("Foo (Bar)")
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe Service, type: :model do
 
     it "should raise an exception if the display date is nil" do
       pricing_map = service.pricing_maps[0]
-      pricing_map.update_attributes(display_date: nil)
+      pricing_map.update(display_date: nil)
       expect(lambda { service.displayed_pricing_map }).to raise_exception(TypeError)
     end
   end
@@ -271,7 +271,7 @@ RSpec.describe Service, type: :model do
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
     before(:each) do
-      pricing_map.update_attributes(
+      pricing_map.update(
           full_rate: 100,
           display_date: Date.today - 1)
     end
@@ -296,7 +296,7 @@ RSpec.describe Service, type: :model do
     let!(:survey2) { create(:system_survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", version: 3) }
 
     it "should return an array of available surveys for the service" do
-      service.update_attributes(organization_id: core.id)
+      service.update(organization_id: core.id)
       service.reload
       # should find at the program level if this is the only one
       program.associated_surveys.create survey_id: survey2.id

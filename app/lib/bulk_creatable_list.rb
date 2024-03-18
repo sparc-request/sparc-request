@@ -34,7 +34,7 @@ module BulkCreateableList
       # Insert n items into the database
       for i in 1..n do
         rec = self.new(args, :update_positions => false)
-        rec.update_attributes!(:position => max + i)
+        rec.update!(:position => max + i)
         rec.save!
         rec.update_positions = true
         records << rec

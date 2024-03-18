@@ -21,13 +21,13 @@
 class UpdateObtainResearchPricingAvailableStatuses < ActiveRecord::Migration[4.2]
   def up
     AvailableStatus.where(:status => 'obtain_research_pricing').each do |as|
-      as.update_attributes({:status => 'get_a_cost_estimate'})
+      as.update({:status => 'get_a_cost_estimate'})
     end
   end
 
   def down
     AvailableStatus.where(:status => 'get_a_cost_estimate').each do |as|
-      as.update_attributes({:status => 'obtain_research_pricing'})
+      as.update({:status => 'obtain_research_pricing'})
     end
   end
 end

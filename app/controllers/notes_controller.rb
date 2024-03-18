@@ -54,7 +54,7 @@ class NotesController < ApplicationController
   def update
     @notes = @notable.notes
 
-    if @note.update_attributes(note_params)
+    if @note.update(note_params)
       @notes  = @notable.notes
       @note   = current_user.notes.new(notable_id: @notable_id, notable_type: @notable_type)
     else

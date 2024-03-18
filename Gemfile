@@ -5,7 +5,8 @@ gem 'activerecord-import' # Use this more! In particular for arms/calendar creat
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
-gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+# gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
 gem 'audited', '~> 5.0'
 gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
 gem 'axlsx_rails'
@@ -34,8 +35,8 @@ gem 'dynamic_form' # Check usage
 gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
-gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.7.0'
+gem 'filterrific'
+gem 'grape'
 gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -70,9 +71,10 @@ gem 'prawn', '2.4.0' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.8.1'
+# gem 'rails', '5.2.8.1'
+gem 'rails', '6.1.7.6'
+# gem "sprockets-rails" Probably needed for Rails 7
 gem 'rails-html-sanitizer' # Check usage
-gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
@@ -120,7 +122,7 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 5.1'
+  gem 'rspec-rails'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage

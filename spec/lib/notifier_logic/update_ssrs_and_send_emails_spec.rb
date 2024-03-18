@@ -472,7 +472,7 @@ RSpec.describe NotifierLogic do
         li_2        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: create(:service, organization: @org, one_time_fee: true, pricing_map_count: 1))
 
         destroyed_li_id = li_2.id
-        @ssr2.update_attributes(status: 'submitted', submitted_at: Time.now.yesterday.utc + 1.hours)
+        @ssr2.update(status: 'submitted', submitted_at: Time.now.yesterday.utc + 1.hours)
         li_2.destroy
         @ssr2.update_attribute(:status, 'draft')
         @sr.reload
@@ -661,7 +661,7 @@ RSpec.describe NotifierLogic do
     deleted_ssrs_since_previous_submission.first.update_attribute(:user_id, logged_in_user.id)
     ### Change last status to an 'unupdatable' status ###
     destroyed_ssr = AuditRecovery.where("auditable_id = #{ssr.id} AND action = 'update'").order(created_at: :desc).first
-    destroyed_ssr.update_attributes(audited_changes: {'status'=>["submitted", "blah"]} )
+    destroyed_ssr.update(audited_changes: {'status'=>["submitted", "blah"]} )
 
 
     sr.previous_submitted_at = sr.submitted_at

@@ -78,7 +78,7 @@ RSpec.describe 'User edits Service Pricing Map', js: true do
       end
 
       it 'should disable display date and effective date if the catalog manager cannot edit historic data' do
-        @catalog_manager.update_attributes(edit_historic_data: false)
+        @catalog_manager.update(edit_historic_data: false)
         find('.edit_pricing_map_link').click
         wait_for_javascript_to_finish
 

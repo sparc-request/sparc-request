@@ -110,7 +110,7 @@ namespace :data do
               .human_subjects_info
               .irb_records
               .first
-              .update_attributes(
+              .update(
                 pro_number:                 vrm['eirb_pro_number'],
                 initial_irb_approval_date:  vrm['date_initially_approved'],
                 irb_approval_date:          vrm['date_approved'],

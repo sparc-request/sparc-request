@@ -46,7 +46,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
   def update
     @pricing_map = PricingMap.find(params[:id])
 
-    if @pricing_map.update_attributes(pricing_map_params)
+    if @pricing_map.update(pricing_map_params)
       flash[:success] = "Pricing Map updated successfully."
       @service = @pricing_map.service
     else

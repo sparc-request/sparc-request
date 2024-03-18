@@ -57,7 +57,7 @@ module VisitGroupsHelper
 
       if vg_at_position
         # Find the next closest previous visit with a day foor the minimum
-        min = vg_at_position.higher_items.where.not(id: visit_group.id, day: nil).maximum(:day).try(:+, 1)
+        min = vg_at_position.higher_items.where.not(id: visit_group.id).where.not(day: nil).maximum(:day).try(:+, 1)
         max =
           # Visit has moved to a position between conseecutive days,
           # so min == max and there is only 1 option for the day
@@ -70,7 +70,7 @@ module VisitGroupsHelper
           # The visit has a blank day but is between two "consecutive" day visits
           # (which are therefore invalid) so the day must equal the day of the
           # next visit
-          elsif (day = vg_at_position.lower_items.where.not(id: visit_group.id, day: nil).minimum(:day)) == min
+          elsif (day = vg_at_position.lower_items.where.not(id: visit_group.id).where.not(day: nil).minimum(:day)) == min
             day
           # Otherwise the maximum day can be the next highest day
           # minus 1
@@ -80,7 +80,7 @@ module VisitGroupsHelper
       else
         # The only time this is hit is when you're moving a visit to the
         # very last position so get the maximum day + 1 if there is one
-        min = arm.visit_groups.where.not(id: visit_group.id, day: nil).maximum(:day).try(:+, 1)
+        min = arm.visit_groups.where.not(id: visit_group.id).where.not(day: nil).maximum(:day).try(:+, 1)
         max = nil
       end
 

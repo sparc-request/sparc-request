@@ -26,7 +26,7 @@ class MakeFirstPiPrimary < ActiveRecord::Migration[4.2]
       protocols.each do |protocol|
         protocol.project_roles.each do |pr|
           if pr.role == 'pi'
-            pr.update_attributes(:role => 'primary-pi')
+            pr.update(:role => 'primary-pi')
             break
           end
         end

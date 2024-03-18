@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe '/service_calendar/master_calendar/otf/totals/_otf_totals', type: :view do
+RSpec.describe 'rendering otf_totals partial', type: :view do
 
   let_there_be_lane
 

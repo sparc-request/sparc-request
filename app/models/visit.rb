@@ -116,30 +116,30 @@ class Visit < ApplicationRecord
   def add_billing_quantity_to_liv_quantity_sum
     if research_billing_qty > 0 
       new_sum = line_items_visit.visit_r_quantity += research_billing_qty
-      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+      line_items_visit.update(visit_r_quantity: new_sum)
     end
     if insurance_billing_qty > 0
       new_sum = line_items_visit.visit_i_quantity += insurance_billing_qty
-      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+      line_items_visit.update(visit_i_quantity: new_sum)
     end
     if effort_billing_qty > 0
       new_sum = line_items_visit.visit_e_quantity += effort_billing_qty
-      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+      line_items_visit.update(visit_e_quantity: new_sum)
     end
   end
 
   def remove_billing_quantity_from_liv_quantity_sum
     if research_billing_qty > 0
       new_sum = line_items_visit.visit_r_quantity -= research_billing_qty
-      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+      line_items_visit.update(visit_r_quantity: new_sum)
     end
     if insurance_billing_qty > 0
       new_sum = line_items_visit.visit_i_quantity -= insurance_billing_qty
-      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+      line_items_visit.update(visit_i_quantity: new_sum)
     end
     if effort_billing_qty > 0
       new_sum = line_items_visit.visit_e_quantity -= effort_billing_qty
-      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+      line_items_visit.update(visit_e_quantity: new_sum)
     end
   end
 
@@ -147,17 +147,17 @@ class Visit < ApplicationRecord
     if saved_change_to_research_billing_qty?
       old_quantity, new_quantity = saved_change_to_research_billing_qty
       new_sum = line_items_visit.visit_r_quantity += (new_quantity - old_quantity)
-      line_items_visit.update_attributes(visit_r_quantity: new_sum)
+      line_items_visit.update(visit_r_quantity: new_sum)
     end
     if saved_change_to_insurance_billing_qty?
       old_quantity, new_quantity = saved_change_to_insurance_billing_qty
       new_sum = line_items_visit.visit_i_quantity += (new_quantity - old_quantity)
-      line_items_visit.update_attributes(visit_i_quantity: new_sum)
+      line_items_visit.update(visit_i_quantity: new_sum)
     end
     if saved_change_to_effort_billing_qty?
       old_quantity, new_quantity = saved_change_to_effort_billing_qty
       new_sum = line_items_visit.visit_e_quantity += (new_quantity - old_quantity)
-      line_items_visit.update_attributes(visit_e_quantity: new_sum)
+      line_items_visit.update(visit_e_quantity: new_sum)
     end
   end
 end

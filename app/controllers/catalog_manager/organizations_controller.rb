@@ -142,7 +142,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   ####Actions for status sub-form####
   def toggle_default_statuses
     @organization = Organization.find(status_params[:organization_id])
-    if @organization.update_attributes(use_default_statuses: status_params[:checked])
+    if @organization.update(use_default_statuses: status_params[:checked])
       flash[:success] = "Organization updated successfully."
     else
       flash[:alert] = "Error updating organization."
@@ -158,7 +158,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     @status_key = @status.status
     @status_value = @status.humanize
 
-    if @status.update_attributes(selected: status_params[:selected])
+    if @status.update(selected: status_params[:selected])
       flash[:success] = "Status updated successfully."
     else
       flash[:alert] = "Error updating status."
@@ -251,7 +251,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     #detects if incoming name/abbreviation is different from the old name/abbreviation
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
 
-    if @organization.update_attributes(@attributes)
+    if @organization.update(@attributes)
       @organization.update_ssr_org_name if (@organization.type != "Institution" && name_change)
       update_services
       true
@@ -267,7 +267,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     elsif params[:all_services_availability] != 'keep'
       # enable immediate child services
       @organization.services.each do |service|
-        service.update_attributes(is_available: params[:all_services_availability] == 'true')
+        service.update(is_available: params[:all_services_availability] == 'true')
       end
     end
   end

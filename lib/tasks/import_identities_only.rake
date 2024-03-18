@@ -28,7 +28,7 @@ namespace :data do
             uid = row[0] << args[:uid_domain]
             identity = Identity.where(:ldap_uid => uid).first
             if identity
-              identity.update_attributes(first_name: row[1], last_name: row[2], email: row[3], institution: row[4], department: row[5], college: row[6]) 
+              identity.update(first_name: row[1], last_name: row[2], email: row[3], institution: row[4], department: row[5], college: row[6]) 
               puts "updated " + uid 
             else
               identity = Identity.create :ldap_uid => uid, :first_name => row[1], :last_name => row[2], :email => row[3], 

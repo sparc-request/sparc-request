@@ -53,7 +53,7 @@ class Identities::RegistrationsController < Devise::RegistrationsController
   def update
     @identity = current_user
     @identity.updater_id = current_user.id
-    if @identity.update_attributes(identity_params)
+    if @identity.update(identity_params)
       flash[:success] = t(:devise)[:profile][:updated]
       @path = stored_location_for(resource) || root_path
     else

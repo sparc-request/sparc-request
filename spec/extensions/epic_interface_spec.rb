@@ -301,7 +301,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should not emit a subjectOf for a Billing Business Manager without Epic Access Rights' do
-      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
+      study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
@@ -518,7 +518,7 @@ RSpec.describe EpicInterface do
     describe 'emitting a subjectOf for an version 1 study type' do
 
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
       end
 
       it 'should have value = NO_COFC' do
@@ -698,7 +698,7 @@ RSpec.describe EpicInterface do
     describe 'emitting a subjectOf for an version 2 study type' do
 
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       end
 
       it 'should return YES_COFC' do
@@ -878,7 +878,7 @@ RSpec.describe EpicInterface do
 
 
     it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
-      study.update_attributes(funding_source: 'college')
+      study.update(funding_source: 'college')
 
       epic_interface.send_study_creation(study)
 
@@ -905,7 +905,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
-      study.update_attributes(funding_source: 'industry')
+      study.update(funding_source: 'industry')
 
       epic_interface.send_study_creation(study)
 
@@ -935,7 +935,7 @@ RSpec.describe EpicInterface do
   describe 'emitting a subjectOf for an version 3 study type' do
 
     before :each do
-      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
+      study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
     end
 
     it 'should return YES_COFC' do
@@ -1053,7 +1053,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
-      study.update_attributes(funding_source: 'college')
+      study.update(funding_source: 'college')
 
       epic_interface.send_study_creation(study)
 
@@ -1080,7 +1080,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
-      study.update_attributes(funding_source: 'industry')
+      study.update(funding_source: 'industry')
 
       epic_interface.send_study_creation(study)
 
@@ -1109,7 +1109,7 @@ RSpec.describe EpicInterface do
 
   describe 'send_billing_calendar' do
     before :each do
-      study.update_attributes(start_date: Time.now, end_date: Time.now + 10.days)
+      study.update(start_date: Time.now, end_date: Time.now + 10.days)
     end
 
     it 'should work (smoke test)' do
@@ -1488,27 +1488,27 @@ RSpec.describe EpicInterface do
 
   def update_answers (version, answer_array)
     if version == 3
-      answer1_version_3.update_attributes(answer: answer_array[0])
-      answer2_version_3.update_attributes(answer: answer_array[1])
-      answer3_version_3.update_attributes(answer: answer_array[2])
-      answer4_version_3.update_attributes(answer: answer_array[3])
-      answer5_version_3.update_attributes(answer: answer_array[4])
-      answer6_version_3.update_attributes(answer: answer_array[5])
-      answer7_version_3.update_attributes(answer: answer_array[6])
+      answer1_version_3.update(answer: answer_array[0])
+      answer2_version_3.update(answer: answer_array[1])
+      answer3_version_3.update(answer: answer_array[2])
+      answer4_version_3.update(answer: answer_array[3])
+      answer5_version_3.update(answer: answer_array[4])
+      answer6_version_3.update(answer: answer_array[5])
+      answer7_version_3.update(answer: answer_array[6])
     elsif version == 2
-      answer1_version_2.update_attributes(answer: answer_array[0])
-      answer2_version_2.update_attributes(answer: answer_array[1])
-      answer3_version_2.update_attributes(answer: answer_array[2])
-      answer4_version_2.update_attributes(answer: answer_array[3])
-      answer5_version_2.update_attributes(answer: answer_array[4])
-      answer6_version_2.update_attributes(answer: answer_array[5])
+      answer1_version_2.update(answer: answer_array[0])
+      answer2_version_2.update(answer: answer_array[1])
+      answer3_version_2.update(answer: answer_array[2])
+      answer4_version_2.update(answer: answer_array[3])
+      answer5_version_2.update(answer: answer_array[4])
+      answer6_version_2.update(answer: answer_array[5])
     elsif version == 1
-      answer1_version_1.update_attributes(answer: answer_array[0])
-      answer2_version_1.update_attributes(answer: answer_array[1])
-      answer3_version_1.update_attributes(answer: answer_array[2])
-      answer4_version_1.update_attributes(answer: answer_array[3])
-      answer5_version_1.update_attributes(answer: answer_array[4])
-      answer6_version_1.update_attributes(answer: answer_array[5])
+      answer1_version_1.update(answer: answer_array[0])
+      answer2_version_1.update(answer: answer_array[1])
+      answer3_version_1.update(answer: answer_array[2])
+      answer4_version_1.update(answer: answer_array[3])
+      answer5_version_1.update(answer: answer_array[4])
+      answer6_version_1.update(answer: answer_array[5])
     end
   end
 end

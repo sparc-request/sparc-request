@@ -79,7 +79,7 @@ class EpicQueue < ApplicationRecord
   #after_create :update_protocol
 
   #def update_protocol
-  #  protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
+  #  protocol.update({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
   #end
 end
 

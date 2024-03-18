@@ -235,7 +235,7 @@ Your institution may opt to integrate an external blog to display posts in the n
 
 There are currently two ways to retrieve posts for the news feed - through an external API, or by parsing an HTML document for specific CSS selectors.
 
-You may opt to use an external API to retrieve posts. Currently the application allows the use of an Atlassian Confluence API. If you wish to integrate new APIs, you will need to create an adapter in `app/lib/news_feed` that extends the `ApiAdapter` class. This adapter should be named `<YourAPIName>Adapter`, where `<YourAPIName>` is the value of the `news_feed_api` setting.
+You may opt to use an external API to retrieve posts. Currently the application allows the use of an Atlassian Confluence API. If you wish to integrate new APIs, you will need to create an adapter in `app/lib/news_feed` that extends the `APIAdapter` class. This adapter should be named `<YourAPIName>Adapter`, where `<YourAPIName>` is the value of the `news_feed_api` setting.
 
 - **use_news_feed_api**: This determines whether the news feed will be retrieved using an external API. When disabled, the application will attempt to retrieve content through CSS selectors.
 - **news_feed_api**: This is the name of the API to pull the news feed from. This name is used to find a corresponding adapter for that API.

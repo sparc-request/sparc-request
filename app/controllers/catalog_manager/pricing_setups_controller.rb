@@ -44,7 +44,7 @@ class CatalogManager::PricingSetupsController < CatalogManager::AppController
   def update
     @pricing_setup = PricingSetup.find(params[:id])
 
-    if @pricing_setup.update_attributes(pricing_setup_params)
+    if @pricing_setup.update(pricing_setup_params)
       flash[:success] = "Pricing Setup updated successfully."
       @organization = @pricing_setup.organization
     else

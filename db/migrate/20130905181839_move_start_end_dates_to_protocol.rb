@@ -28,7 +28,7 @@ class MoveStartEndDatesToProtocol < ActiveRecord::Migration[4.2]
   	Protocol.all.each do |p|
       start_date = p.service_requests.minimum(:start_date)
       end_date = p.service_requests.maximum(:end_date)
-  		p.update_attributes(start_date: start_date, end_date: end_date)
+  		p.update(start_date: start_date, end_date: end_date)
     end
 
   	remove_column :service_requests, :start_date

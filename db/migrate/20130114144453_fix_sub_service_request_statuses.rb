@@ -22,7 +22,7 @@ class FixSubServiceRequestStatuses < ActiveRecord::Migration[4.2]
   def up
     SubServiceRequest.all.each do |ssr|
       if ssr.status.nil?
-        ssr.update_attributes({:status => ssr.service_request.status})
+        ssr.update({:status => ssr.service_request.status})
       end
     end
   end

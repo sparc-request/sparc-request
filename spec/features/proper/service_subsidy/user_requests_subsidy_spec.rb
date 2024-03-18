@@ -32,7 +32,7 @@ RSpec.describe 'User requests a new subsidy', js: true do
     @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: org, status: 'draft')
                 create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-    org.subsidy_map.update_attributes(max_dollar_cap: 100, max_percentage: 100)
+    org.subsidy_map.update(max_dollar_cap: 100, max_percentage: 100)
 
     visit service_subsidy_service_request_path(srid: @sr.id)
     wait_for_javascript_to_finish

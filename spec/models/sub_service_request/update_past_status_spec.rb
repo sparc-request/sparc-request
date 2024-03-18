@@ -47,7 +47,7 @@ RSpec.describe SubServiceRequest, type: :model do
                     service_request: @service_request,
                     status: 'first_draft')
 
-      ssr.update_attributes(status: 'draft')
+      ssr.update(status: 'draft')
 
       expect(PastStatus.count).to eq(1)
       expect(PastStatus.first.sub_service_request_id).to eq(ssr.id)
@@ -58,7 +58,7 @@ RSpec.describe SubServiceRequest, type: :model do
                     service_request: @service_request,
                     status: 'first_draft')
 
-      ssr.update_attributes(status: 'first_draft')
+      ssr.update(status: 'first_draft')
 
       expect(PastStatus.count).to eq(0)
     end

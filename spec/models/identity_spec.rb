@@ -110,12 +110,12 @@ RSpec.describe Identity, type: :model do
       describe "can edit service request " do
 
         it "should return false if the users rights are not 'approve' or request" do
-          project_role.update_attributes(project_rights: 'none')
+          project_role.update(project_rights: 'none')
           expect(user.can_edit_service_request?(service_request)).to eq(false)
         end
 
         it "should return true no matter what the service request's status is" do
-          service_request.update_attributes(status: 'approved')
+          service_request.update(status: 'approved')
           expect(user.can_edit_service_request?(service_request)).to eq(true)
         end
       end
@@ -135,7 +135,7 @@ RSpec.describe Identity, type: :model do
       describe "can edit historical data for" do
 
         it "should return true if 'edit historic data' flag is set for the user's catalog manager relationship" do
-          catalog_manager.update_attributes(edit_historic_data: true)
+          catalog_manager.update(edit_historic_data: true)
           expect(user.can_edit_historical_data_for?(institution)).to eq(true)
         end
 

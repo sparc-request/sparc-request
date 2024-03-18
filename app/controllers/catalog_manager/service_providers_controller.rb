@@ -58,7 +58,7 @@ class CatalogManager::ServiceProvidersController < CatalogManager::AppController
     @organization = @service_provider.organization
     @user_rights  = user_rights(@organization.id)
 
-    if @service_provider.update_attributes(service_provider_params)
+    if @service_provider.update(service_provider_params)
       flash[:notice] = "Service Provider successfully updated."
     else
       flash[:alert] = "Error updating Service Provider."

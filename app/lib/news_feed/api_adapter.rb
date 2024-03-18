@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 module NewsFeed
-  class ApiAdapter < NewsFeed::Base
+  class APIAdapter < NewsFeed::Base
     def initialize(api_string, opts={})
       @content_type = opts[:content_type] || 'application/json'
       @headers      = opts[:headers] || { 'Content-Type' => @content_type }

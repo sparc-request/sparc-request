@@ -234,10 +234,10 @@ class Organization < ApplicationRecord
   def update_descendants_availability(is_available)
     child_orgs_with_self = Organization.where(id: all_child_organizations_with_self)
     child_orgs_with_self.each do |org|
-      org.update_attributes(is_available: is_available)
+      org.update(is_available: is_available)
     end
     Service.where(organization_id: child_orgs_with_self).each do |service|
-      service.update_attributes(is_available: is_available)
+      service.update(is_available: is_available)
     end
   end
 

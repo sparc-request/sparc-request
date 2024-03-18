@@ -212,7 +212,7 @@ class Directory
              identity.last_name != last_name or
              identity.first_name != first_name then
 
-            identity.update_attributes!(
+            identity.update!(
                 email:      email,
                 first_name: first_name,
                 last_name:  last_name)

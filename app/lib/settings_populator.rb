@@ -31,7 +31,7 @@ class SettingsPopulator
     ActiveRecord::Base.transaction do
       @defaults.each do |hash|
         if Setting.exists?(key: hash['key'])
-          Setting.find_by_key(hash['key']).update_attributes(hash.without('key', 'value'))
+          Setting.find_by_key(hash['key']).update(hash.without('key', 'value'))
         else
           setting = Setting.create(
             key:            hash['key'],

@@ -20,7 +20,8 @@
 
 module ValidatorsV1
 
-  class RecordPresence < Grape::Validations::Base
+  # class RecordPresence < Grape::Validations::Base #Deprecated
+  class RecordPresence < Grape::Validations::Validators::Base
 
     def validate_param!(attr_name, params)
 

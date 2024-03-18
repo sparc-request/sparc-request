@@ -49,7 +49,7 @@ class Admin::SettingsController < Admin::ApplicationController
   def update
     @setting = Setting.find(params[:id])
 
-    if @setting.update_attributes(setting_params)
+    if @setting.update(setting_params)
       flash.now[:success] = t('admin.settings.updated')
     else
       @errors = @setting.errors

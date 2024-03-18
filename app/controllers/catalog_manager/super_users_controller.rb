@@ -58,7 +58,7 @@ class CatalogManager::SuperUsersController < CatalogManager::AppController
     @organization = @super_user.organization
     @user_rights  = user_rights(@organization.id)
 
-    if @super_user.update_attributes(super_user_params)
+    if @super_user.update(super_user_params)
       flash[:notice] = "Super User successfully updated."
     else
       flash[:alert] = "Error updating Super Userr."

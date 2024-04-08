@@ -177,7 +177,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def notify_ssr_button(ssr)
-    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr
+    render partial: 'dashboard/notifications/dropdown', locals: { sub_service_request: ssr }, formats: [:html]
   end
 
   def view_ssr_button(ssr)

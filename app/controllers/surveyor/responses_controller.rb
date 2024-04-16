@@ -203,9 +203,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def preload_responses
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(@responses.select { |r| r.respondable_type == SubServiceRequest.name }, [:question_responses, :identity, respondable: { protocol: :primary_pi } ])
-    preloader.preload(@responses.select { |r| r.respondable_type == ServiceRequest.name }, [:question_responses, :identity, respondable: { protocol: :primary_pi } ])
+    ActiveRecord::Associations::Preloader.new(records: @responses.where(respondable_type: [SubServiceRequest.name, ServiceRequest.name]), associations: [:question_responses, :identity, respondable: { protocol: :primary_pi } ]).call
   end
 
   def get_incomplete_form_responses

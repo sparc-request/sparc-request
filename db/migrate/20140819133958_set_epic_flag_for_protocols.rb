@@ -20,7 +20,7 @@
 
 class SetEpicFlagForProtocols < ActiveRecord::Migration[4.2]
   def up
-    protocols = Protocol.where("last_epic_push_time != ?", false)
+    protocols = Protocol.where("last_epic_push_time != ?", nil)
     protocols.each do |protocol|
       protocol.selected_for_epic = true
       protocol.save

@@ -203,7 +203,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
   end
 
   def preload_responses
-    ActiveRecord::Associations::Preloader.new(records: @responses.where(respondable_type: [SubServiceRequest.name, ServiceRequest.name]), associations: [:question_responses, :identity, respondable: { protocol: :primary_pi } ]).call
+    ActiveRecord::Associations::Preloader.new(records: @responses.where(respondable_type: [SubServiceRequest.name, ServiceRequest.name]), associations: [:question_responses, :identity, respondable: { protocol: :primary_pi } ])
   end
 
   def get_incomplete_form_responses
@@ -215,9 +215,7 @@ class Surveyor::ResponsesController < Surveyor::BaseController
 
     responses = []
     ssrs      = SubServiceRequest.eager_load(:responses, :service_forms, :organization_forms).where(organization_id: @admin_org_ids) # It should only shows those admin have access to
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(ssrs, service_forms: :surveyable)
-    preloader.preload(ssrs, organization_forms: :surveyable)
+    ActiveRecord::Associations::Preloader.new(records: ssrs, associations: { service_forms: :surveyable, organization_forms: :surveyable })
 
     ssrs.each do |ssr|
       ssr.forms_to_complete.values.flatten.select do |f|

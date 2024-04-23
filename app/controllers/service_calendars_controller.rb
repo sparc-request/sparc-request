@@ -153,7 +153,7 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def preload_service_request
-    ActiveRecord::Associations::Preloader.new.preload(@service_request, { sub_service_requests: { organization: [:editable_statuses, parent: [:editable_statuses, parent: [:editable_statuses, :parent]]] } })
+    ActiveRecord::Associations::Preloader.new(records: @service_request, associations: { sub_service_requests: { organization: [:editable_statuses, parent: [:editable_statuses, parent: [:editable_statuses, :parent]]] } })
   end
 
   def set_service_calendar_cookie

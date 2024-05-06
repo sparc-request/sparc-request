@@ -28,7 +28,7 @@ namespace :data do
     end
 
     import_file = prompt "Enter the file to be imported: "
-    raise 'Import file not found' if import_file.blank? or not File.exists?(import_file)
+    raise 'Import file not found' if import_file.blank? or not File.exist?(import_file)
 
     count = 0
     ActiveRecord::Base.transaction do

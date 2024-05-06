@@ -32,7 +32,7 @@ namespace :data do
     puts "No import file specified or the file specified does not exist in db/imports" if error
     file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
 
-    while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+    while file.blank? or not File.exist?(Rails.root.join("db", "imports", file))
       file = get_file(true)
     end
 

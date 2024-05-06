@@ -52,7 +52,7 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.4'
+gem 'mysql2', '0.5.6'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
@@ -67,7 +67,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.4.0' # Check usage
+gem 'prawn' # Check usage
 gem 'premailer-rails'
 gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
@@ -94,6 +94,7 @@ gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails'
 gem 'msteams-ruby-client'
 gem 'wkhtmltopdf-binary'
+gem 'webrick'
 
 group :production do
 end

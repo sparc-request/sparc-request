@@ -61,15 +61,15 @@ class SettingsPopulator
     @defaults = JSON.parse(File.read(Rails.root.join('config', 'defaults.json')))
     @stored   = {}
 
-    if File.exists? Rails.root.join('config', 'application.yml')
+    if File.exist? Rails.root.join('config', 'application.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env])
     end
 
-    if File.exists? Rails.root.join('config', 'epic.yml')
+    if File.exist? Rails.root.join('config', 'epic.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env])
     end
 
-    if File.exists? Rails.root.join('config', 'ldap.yml')
+    if File.exist? Rails.root.join('config', 'ldap.yml')
       @stored.merge!(YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env])
     end
   end

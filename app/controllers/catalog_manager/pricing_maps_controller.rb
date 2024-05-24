@@ -34,7 +34,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
       @programs = @service.provider.programs
       @cores    = @service.program.cores
     else
-      @errors = @pricing_map.errors
+      @errors = @pricing_map.errors.map(&:full_message)
     end
   end
 
@@ -50,7 +50,7 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
       flash[:success] = "Pricing Map updated successfully."
       @service = @pricing_map.service
     else
-      @errors = @pricing_map.errors
+      @errors = @pricing_map.errors.map(&:full_message)
     end
   end
 

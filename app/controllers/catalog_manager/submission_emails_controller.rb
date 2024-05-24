@@ -26,7 +26,7 @@ class CatalogManager::SubmissionEmailsController < CatalogManager::AppController
     if @submission_email.save
       flash[:success] = "Submission Email added successfully."
     else
-      @errors = @submission_email.errors
+      @errors = @submission_email.errors.map(&:full_message)
     end
   end
 

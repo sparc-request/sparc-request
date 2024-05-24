@@ -341,7 +341,7 @@ class Service < ApplicationRecord
 
   def one_time_fee_choice
     if one_time_fee.nil?
-      errors[:base] << "You must choose either One Time Fee, or Clinical Service."
+      errors.add(:base, "You must choose either One Time Fee, or Clinical Service.")
     end
   end
 

@@ -24,7 +24,10 @@ class CreatePaymentUploads < ActiveRecord::Migration[4.2]
       t.references :payment
       t.timestamps
     end
-    add_attachment :payment_uploads, :file
+    add_column :payment_uploads, :file_file_name, :string
+    add_column :payment_uploads, :file_file_size, :integer
+    add_column :payment_uploads, :file_content_type, :string
+    add_column :payment_uploads, :file_updated_at, :datetime
     add_index :payment_uploads, :payment_id
   end
 

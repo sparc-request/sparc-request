@@ -51,9 +51,9 @@ class AddRequestUuidToAudits < ActiveRecord::Migration[4.2]
     end
   end
 
-  def add_index_unless_exists(table_name, column_name, options = {})
+  def add_index_unless_exists(table_name, column_name, **options)
     return false if index_exists?(table_name, column_name)
-    add_index(table_name, column_name, options)
+    add_index(table_name, column_name, **options)
   end
 
   def index_exists?(table_name, column_name)

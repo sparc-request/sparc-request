@@ -22,7 +22,10 @@ class CreateReports < ActiveRecord::Migration[4.2]
   def change
     create_table :reports do |t|
       t.belongs_to :sub_service_request
-      t.attachment :xlsx
+      t.string :xlsx_file_name
+      t.integer :xlsx_file_size
+      t.string :xlsx_content_type
+      t.datetime :xlsx_updated_at
       t.string :report_type
       t.timestamps
     end

@@ -41,7 +41,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @editable_organizations = current_user.catalog_manager_organizations
       flash[:success] = "New Service created successfully."
     else
-      @errors = @service.errors
+      @errors = @service.errors.map(&:full_message)
     end
   end
 
@@ -78,7 +78,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @editable_organizations = current_user.catalog_manager_organizations
     else
       flash[:alert] = "Failed to update service."
-      @errors = @service.errors
+      @errors = @service.errors.map(&:full_message)
     end
 
     @service.reload

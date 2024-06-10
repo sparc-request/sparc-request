@@ -107,8 +107,7 @@ class EpicInterface
   # Send a full study to the Epic InterConnect server.
   def send_study(study)
     # Preload associations to improve performance
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+    ActiveRecord::Associations::Preloader.new(records: study, associations: { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
 
     message = full_study_message(study)
     call('RetrieveProtocolDefResponse', message)
@@ -119,8 +118,7 @@ class EpicInterface
   # Send a study creation to the Epic InterConnect server.
   def send_study_creation(study)
     # Preload associations to improve performance
-    preloader = ActiveRecord::Associations::Preloader.new
-    preloader.preload(study, { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
+    ActiveRecord::Associations::Preloader.new(records: study, associations: { project_roles: :identity, arms: [:visit_groups, line_items: [:sub_service_request, :service], line_items_visits: :visits] })
 
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)

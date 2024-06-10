@@ -30,6 +30,9 @@ Bundler.require(*Rails.groups)
 module SparcRails
   class Application < Rails::Application
 
+    # config.load_defaults 6.1
+    # config.active_support.cache_format_version = 6.1
+
     Dotenv::Railtie.load
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -39,11 +42,6 @@ module SparcRails
     config.action_dispatch.default_headers.merge!({'X-Frame-Options' => 'ALLOWALL', 'X-UA-Compatible' => 'IE=edge,chrome=1'})
 
     config.eager_load = true
-
-    config.autoloader = :zeitwerk
-    # Rails.autoloaders.main.ignore(
-    #   root.join("app/api")
-    # )
 
     config.action_view.field_error_proc = Proc.new { |html_tag, instance| html_tag }
     # Only load the plugins named here, in the order given (default is alphabetical).

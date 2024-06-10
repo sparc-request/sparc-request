@@ -31,7 +31,7 @@ RSpec.describe Arm, type: :model do
       arm.name = ''
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Arm Name can't be blank")
+      expect(arm.errors[:name][0]).to eq("can't be blank")
     end
 
     it 'sanitize_data must remove: [ ] ^ |' do

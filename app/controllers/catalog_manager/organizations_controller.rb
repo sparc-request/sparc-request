@@ -51,7 +51,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
       flash[:success] = "New Organization created successfully."
     else
-      @errors = @organization.errors
+      @errors = @organization.errors.map(&:full_message)
     end
   end
 
@@ -83,7 +83,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       flash.now[:success] = "#{@organization.name} saved correctly."
     else
       flash.now[:alert] = "Failed to update organization."
-      @errors = @organization.errors
+      @errors = @organization.errors.map(&:full_message)
     end
 
     @institutions = Institution.order(Arel.sql('`order`,`name`'))

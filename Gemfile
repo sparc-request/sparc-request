@@ -28,7 +28,7 @@ gem 'curb', '~> 0.9.11'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.8'
+gem 'devise'
 gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
@@ -72,8 +72,9 @@ gem 'premailer-rails'
 gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
 # gem 'rails', '5.2.8.1'
-gem 'rails', '6.1.7.6'
-# gem "sprockets-rails" Probably needed for Rails 7
+# gem 'rails', '6.1.7.6'
+gem 'rails', '7.0.8.1'
+gem "sprockets-rails"
 gem 'rails-html-sanitizer' # Check usage
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
@@ -83,7 +84,7 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.13.0'
 gem 'slack-notifier'
-gem 'sprockets', '~> 4.2'
+# gem 'sprockets', '~> 4.2'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
@@ -99,7 +100,6 @@ end
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.8.1' # Check usage
-  gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage
   gem 'faker'

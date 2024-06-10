@@ -32,7 +32,7 @@ class CatalogManager::SubsidyMapsController < CatalogManager::AppController
 
       flash[:success] = "Subsidy Map updated successfully."
     else
-      @errors = @subsidy_map.errors
+      @errors = @subsidy_map.errors.map(&:full_message)
     end
   end
 

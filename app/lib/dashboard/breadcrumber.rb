@@ -33,8 +33,8 @@ class Dashboard::Breadcrumber
       @crumbs = Hash.new
     end
 
-    if opts[:filters]
-      @filters = opts[:filters]
+    if opts[:filters] && !opts[:filters].empty?
+      @filters = opts[:filters].to_h
     end
 
     self

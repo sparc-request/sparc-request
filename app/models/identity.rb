@@ -354,7 +354,7 @@ class Identity < ApplicationRecord
   def self.send_reset_password_instructions(attributes={})
     recoverable = find_or_initialize_with_errors(reset_password_keys, attributes, :not_found)
     if !recoverable.approved?
-      recoverable.errors[:base] << I18n.t("devise.failure.not_approved")
+      recoverable.errors.add(:base, I18n.t("devise.failure.not_approved"))
     elsif recoverable.persisted?
       recoverable.send_reset_password_instructions
     end

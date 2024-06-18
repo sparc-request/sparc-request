@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2024_01_29_154925) do
 
-  create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
+  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", charset: "utf8mb3", force: :cascade do |t|
+  create_table "active_storage_blobs", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "additional_funding_sources", charset: "utf8mb3", force: :cascade do |t|
+  create_table "additional_funding_sources", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "funding_source"
     t.string "funding_source_other"
     t.string "sponsor_name"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.index ["protocol_id"], name: "index_additional_funding_sources_on_protocol_id"
   end
 
-  create_table "admin_rate_changes", charset: "utf8mb3", force: :cascade do |t|
+  create_table "admin_rate_changes", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.bigint "line_item_id"
     t.bigint "identity_id"
     t.integer "admin_cost"

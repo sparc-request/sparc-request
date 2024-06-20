@@ -122,8 +122,9 @@ namespace :data do
 
       if protocol
         valid_ids += 1
-        sr = protocol.service_requests.create(status: "complete")
+        sr = protocol.service_requests.first
         ssr = sr.sub_service_requests.create(organization: organization, status: "complete")
+        line_item = ssr.line_items.create(service_request: sr, service: service, quantity: 1, units_per_quantity: 1)
       else
         invalid_ids << id
         STDOUT.puts "Unable to find Protocol #{id}"
@@ -133,7 +134,7 @@ namespace :data do
     STDOUT.puts " "
     STDOUT.puts "#{valid_ids} protocols had service '#{service.name.strip}' added successfully from organization '#{organization.name.strip}'!"
     if invalid_ids.present?
-      STDOUT.puts "The following protocol ids could not be found.  Please run this task again after confirm the correct ids for these protocols:"
+      STDOUT.puts "The following protocol ids could not be found.  Please run this task again after confirming the correct ids for these protocols:"
       STDOUT.puts "#{invalid_ids}"
     end
   end

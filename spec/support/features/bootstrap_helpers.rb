@@ -84,7 +84,8 @@ module Features
       field.click
       field.send_keys(:delete)
       field.set(text)
-      first('h4', text: 'Test').click # Click away
+      # Note from IEE - 8/2/2024:  commenting out the line below because it seems to be causing issues with the current test suite.  If commenting out doesn't produce problems elsewhere, will delete line entirely
+      # first('h4', text: 'Test').click # Click away
       wait_for_javascript_to_finish
     end
 

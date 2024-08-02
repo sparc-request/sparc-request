@@ -39,9 +39,16 @@ RSpec.describe 'User sets milestone dates', js: true do
 
   it 'should update the milestones' do
     bootstrap_datepicker '#protocol_start_date', '01/02/2016'
+    wait_for_javascript_to_finish
     first('.card-header').click
+
     bootstrap_datepicker '#protocol_end_date', '03/04/2016'
-    first('.card-header').click
+    wait_for_javascript_to_finish
+
+    # Sleep to give extra time for actions to complete
+    sleep 1
+
+    click_button 'Close'
 
     click_button I18n.t('proper.navigation.bottom.save_and_continue.full')
     wait_for_javascript_to_finish

@@ -48,6 +48,8 @@ RSpec.describe 'User sets milestone dates', js: true do
     # Sleep to give extra time for actions to complete
     sleep 1
 
+    #adding temporary line to force test to re-run
+
     click_button 'Close'
 
     click_button I18n.t('proper.navigation.bottom.save_and_continue.full')

@@ -52,7 +52,7 @@ namespace :data do
 
       if (continue == 'y') || (continue == 'Y')
 
-        CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
+        CSV.foreach(input_file, headers: true, :encoding => 'windows-1251:utf-8') do |row|
           
           begin
             revenue_code = row['Revenue Code'].rjust(4, '0')

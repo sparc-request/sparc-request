@@ -101,7 +101,7 @@ task :update_hb_services => :environment do
 
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
-      CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
+      CSV.foreach(input_file, headers: true, :encoding => 'windows-1251:utf-8') do |row|
         puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
         updated = false

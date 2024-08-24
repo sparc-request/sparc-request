@@ -51,6 +51,8 @@ config/initializers/abstract_mysql_adapter.rb
 public/portal
 public/catalog_manager
 
+docker-compose.yml
+
 import/checkpoints
 import/config/alfresco.yml
 import/*.sql

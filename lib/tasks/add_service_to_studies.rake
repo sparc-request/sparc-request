@@ -123,8 +123,10 @@ namespace :data do
       if protocol
         valid_ids += 1
         sr = protocol.service_requests.first
-        ssr = sr.sub_service_requests.create(organization: organization, status: "complete")
+        ssr = sr.sub_service_requests.create(organization: organization, status: "submitted", submitted_at: Time.now)
         line_item = ssr.line_items.create(service_request: sr, service: service, quantity: 1, units_per_quantity: 1)
+        ssr.update(synch_to_fulfillment: true)
+        ssr.update(status: 'complete')
       else
         invalid_ids << id
         STDOUT.puts "Unable to find Protocol #{id}"

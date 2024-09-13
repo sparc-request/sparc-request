@@ -1,15 +1,15 @@
-version: '3.8'
-
 services:
-  db:
+  sparc_db:
     image: mysql:8.3
     volumes:
-      - db_data:/var/lib/mysql
+      - sparc_db_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: <choose_root_password>
       MYSQL_DATABASE: sparc-docker_development
       MYSQL_USER: <choose_username>
       MYSQL_PASSWORD: <choose_password>
+    networks:
+      - sparc_network
 
   web:
     build: .
@@ -20,15 +20,21 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - sparc_db
     environment:
-      DATABASE_HOST: db
+      DATABASE_HOST: sparc_db
       DATABASE_USERNAME: <mysql_user_from_above>
       DATABASE_PASSWORD: <mysql_password_from_above>
       DATABASE_NAME: sparc-docker_development
       RAILS_ENV: development
     env_file:
       - .env
+    networks:
+      - sparc_network
 
 volumes:
-  db_data:
+  sparc_db_data:
+
+networks:
+  sparc_network:
+    external: true

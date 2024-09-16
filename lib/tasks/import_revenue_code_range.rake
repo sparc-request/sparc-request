@@ -18,21 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-namespace :data do
-  desc "Fix Service Requests that should be Submitted Status"
-  task fix_submitted_srs: :environment do
+desc "add new revenue code range"
+task :import_revenue_code_range => :environment do
 
-    bad_srs = ServiceRequest.where.not(submitted_at: nil).where.not(status: "submitted")
-    bar = ProgressBar.new(bad_srs.size)
-
-    CSV.open("tmp/corrected_srs.csv", "wb") do |csv|
-      csv << ["Service Request ID", "Old Status"]
-
-      bad_srs.each do |sr|
-        csv << [sr.id, sr.status]
-        sr.update_attribute(:status, "submitted")
-        bar.increment!
-      end
-    end
+  CSV.foreach(Rails.root.join("tmp/revenue_code_range.csv"), headers: true) do |row|
+    # #<CSV::Row "from":"949" "to":"949" "percentage":"18" "applied_org_id":"185" "vendor":"dhhs" "version":"5">
+    RevenueCodeRange.create from: row['from'], to: row['to'], percentage: row['percentage'],
+                            applied_org_id: row['applied_org_id'], vendor: row['vendor'], version: row['version']
   end
 end

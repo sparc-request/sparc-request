@@ -53,7 +53,7 @@ namespace :data do
         id = row["identity_id"]
         i = Identity.find(id.to_i)
         password = Devise.friendly_token
-        i.update_attributes(password: password,
+        i.update(password: password,
                             password_confirmation: password)
         print i.ldap_uid
         print "  -  "

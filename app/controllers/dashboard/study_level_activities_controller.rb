@@ -63,7 +63,7 @@ class Dashboard::StudyLevelActivitiesController < Dashboard::BaseController
   end
 
   def update
-    if @line_item.update_attributes(line_item_params)
+    if @line_item.update(line_item_params)
       ssr = @line_item.sub_service_request
       if @line_item.service.one_time_fee && ssr.imported_to_fulfillment?
         FulfillmentSynchronization.create(sub_service_request_id: ssr.id, line_item_id: @line_item.id, action: 'update')

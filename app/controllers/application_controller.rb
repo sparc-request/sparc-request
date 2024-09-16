@@ -255,8 +255,12 @@ class ApplicationController < ActionController::Base
     @page   = params[:page].try(:to_i) || 1
     arm_id  = params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
+    @service_calendar_pages = {}
+    
+    @pages_params = params.slice(:pages).permit! if params[:pages].present?
+    @service_calendar_pages = @pages_params.to_h
 
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages]          = @service_calendar_pages if !@service_calendar_pages.empty?
     session[:service_calendar_pages][arm_id]  = @page if @page && arm_id
 
     @service_request.arms.each do |arm|

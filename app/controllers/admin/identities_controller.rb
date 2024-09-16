@@ -48,7 +48,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
   def update
     @identity = Identity.find(params[:id])
     @identity.updater_id = current_user.id
-    if @identity.update_attributes(identity_params)
+    if @identity.update(identity_params)
       flash[:success] = t('admin.identities.updated')
     else
       @errors = @identity.errors

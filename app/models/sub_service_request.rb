@@ -233,7 +233,7 @@ class SubServiceRequest < ApplicationRecord
 
   def update_line_item line_item, args
     if self.line_items.map {|li| li.id}.include? line_item.id
-      line_item.update_attributes!(args)
+      line_item.update!(args)
     else
       raise ArgumentError, "Line item #{line_item.id} does not exist for sub service request #{self.id} "
     end
@@ -280,7 +280,7 @@ class SubServiceRequest < ApplicationRecord
         old_status      = self.status
         submitted_prior = self.previously_submitted?
         past_status     = self.past_statuses.last.try(:status)
-        self.update_attributes(status: new_status, submitted_at: Time.now, recent_submitted_by: current_user_id)
+        self.update(status: new_status, submitted_at: Time.now, recent_submitted_by: current_user_id)
         return self.id if !submitted_prior && (old_status != 'draft' || (old_status == 'draft' && (past_status.nil? || (past_status != new_status && Status.updatable?(past_status))))) # past_status == nil indicates a newly created SSR
       else
         self.update_attribute(:status, new_status)
@@ -316,7 +316,7 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def set_to_draft
-    self.update_attributes(status: 'draft') unless status == 'draft'
+    self.update(status: 'draft') unless status == 'draft'
   end
 
   def nursing_nutrition_approved?
@@ -341,14 +341,14 @@ class SubServiceRequest < ApplicationRecord
     new_sr.save validate: false
 
     #update line items
-    self.line_items.each {|li| li.update_attributes(service_request_id: new_sr.id)}
+    self.line_items.each {|li| li.update(service_request_id: new_sr.id)}
 
     #create new documents and/or change service request id for existing documents
     documents_to_create = []
 
     self.documents.each do |doc|
       if doc.sub_service_requests.count == 1
-        doc.update_attributes(service_request_id: new_sr.id)
+        doc.update(service_request_id: new_sr.id)
       else
         documents_to_create << doc
       end
@@ -360,7 +360,7 @@ class SubServiceRequest < ApplicationRecord
       self.documents.delete doc
     end
 
-    self.update_attributes(service_request_id: new_sr.id)
+    self.update(service_request_id: new_sr.id)
   end
 
   def update_past_status

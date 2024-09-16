@@ -71,13 +71,13 @@ class VisitGroup < ApplicationRecord
   # Like the #higher_item method from acts_as_list but checks for
   # the closest higher item with a non-null day
   def higher_item_with_day
-    self.arm.visit_groups.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id, day: nil).first
+    self.arm.visit_groups.where(VisitGroup.arel_table[:position].lteq(self.position)).where.not(id: self.id).where.not(day: nil).first
   end
 
   # Like the #lower_item method from acts_as_list but checks for
   # the closest lower item with a non-null day
   def lower_item_with_day
-    self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id, day: nil).first
+    self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).where.not(id: self.id).where.not(day: nil).first
   end
 
   ### audit reporting methods ###
@@ -102,7 +102,7 @@ class VisitGroup < ApplicationRecord
     #   consecutive visits
     @moved_and_update ||= neighbor_moved ||
                           (self.new_record? && self.arm && self.day && self.day == self.arm.visit_groups.where(VisitGroup.arel_table[:position].gteq(self.position)).minimum(:day)) ||
-                          ((self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id, day: nil).minimum(:day)) &&
+                          ((self.persisted? && day_changed? && self.day == self.lower_items.where.not(id: self.id).where.not(day: nil).minimum(:day)) &&
                           (self.persisted? && day_changed? && self.day == self.lower_item_with_day.try(:day)))
     @moved_and_update
   end
@@ -112,7 +112,7 @@ class VisitGroup < ApplicationRecord
   # have to use lteq instead of lt because of the conflicting
   # position
   def in_order?
-    self.arm.visit_groups.where.not(id: self.id, day: nil).where(
+    self.arm.visit_groups.where.not(id: self.id).where.not(day: nil).where(
       (self.position_changed? && self.position_change[0].present? && self.position_change[0] < self.position_change[1] ?
         VisitGroup.arel_table[:position].lteq(self.position) :
         VisitGroup.arel_table[:position].lt(self.position)).and(
@@ -147,7 +147,7 @@ class VisitGroup < ApplicationRecord
     # note: this is only for already-existing visits
     if vg = self.lower_item_with_day
       vg.neighbor_moved = true
-      vg.update_attributes(day: vg.day + 1)
+      vg.update(day: vg.day + 1)
     end
   end
 

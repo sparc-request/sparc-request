@@ -36,7 +36,7 @@ RSpec.describe SubServiceRequest, type: :model do
           @ppv = create(:service, organization_id: core.id) # PPV Service
           @otf = create(:service, organization_id: core.id, one_time_fee: true) # OTF Service
           @otf.pricing_maps.build(attributes_for(:pricing_map))
-          sub_service_request.update_attributes(organization_id: core.id)
+          sub_service_request.update(organization_id: core.id)
 
           @ssr = sub_service_request
         end
@@ -99,7 +99,7 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return the direct cost for services that are visit based" do
-          service.update_attributes(one_time_fee: false)
+          service.update(one_time_fee: false)
           expect(sub_service_request.direct_cost_total).to eq(0)
         end
       end
@@ -158,7 +158,7 @@ RSpec.describe SubServiceRequest, type: :model do
       context "subsidy organization" do
 
         it "should return the core if max dollar cap or max percentage is > 0" do
-          subsidy_map.update_attributes(max_dollar_cap: 100)
+          subsidy_map.update(max_dollar_cap: 100)
           expect(sub_service_request.organization).to eq(program)
         end
       end
@@ -166,17 +166,17 @@ RSpec.describe SubServiceRequest, type: :model do
       context "eligible for subsidy" do
 
         it "should return true if the organization's max dollar cap is > 0" do
-          subsidy_map.update_attributes(max_dollar_cap: 100)
+          subsidy_map.update(max_dollar_cap: 100)
           expect(sub_service_request.eligible_for_subsidy?).to eq(true)
         end
 
         it "should return true if the organization's max percentage is > 0" do
-          subsidy_map.update_attributes(max_percentage: 50)
+          subsidy_map.update(max_percentage: 50)
           expect(sub_service_request.eligible_for_subsidy?).to eq(true)
         end
 
         it "should return false is organization is excluded from subsidy" do
-          subsidy_map.update_attributes(max_dollar_cap: 100)
+          subsidy_map.update(max_dollar_cap: 100)
           create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
           expect(sub_service_request.eligible_for_subsidy?).to eq(false)
         end
@@ -186,26 +186,26 @@ RSpec.describe SubServiceRequest, type: :model do
     describe "sub service request status" do
       context "can be edited" do
         before :each do
-          sub_service_request.organization.update_attributes(process_ssrs: true)
+          sub_service_request.organization.update(process_ssrs: true)
         end
 
         it "should return true if the status is draft" do
-          sub_service_request.update_attributes(status: "draft")
+          sub_service_request.update(status: "draft")
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return true if the status is submitted" do
-          sub_service_request.update_attributes(status: "submitted")
+          sub_service_request.update(status: "submitted")
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
         it "should return false if status is anything other than above states" do
-          sub_service_request.update_attributes(status: "incomplete")
+          sub_service_request.update(status: "incomplete")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
 
         it 'should should return false if the status is complete' do
-          sub_service_request.update_attributes(status: 'complete')
+          sub_service_request.update(status: 'complete')
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
       end
@@ -218,9 +218,9 @@ RSpec.describe SubServiceRequest, type: :model do
         let!(:user)               { create(:identity) }
 
         before :each do
-          provider.update_attributes(process_ssrs: true)
-          program.update_attributes(process_ssrs: true)
-          core.update_attributes(process_ssrs: true)
+          provider.update(process_ssrs: true)
+          program.update(process_ssrs: true)
+          core.update(process_ssrs: true)
         end
 
         it "should return all identities associated with the sub service request's organization, children, and parents" do
@@ -228,12 +228,12 @@ RSpec.describe SubServiceRequest, type: :model do
         end
 
         it "should return the owner" do
-          sub_service_request.update_attributes(owner_id: user.id)
+          sub_service_request.update(owner_id: user.id)
           expect(sub_service_request.candidate_owners).to include(user, jug2)
         end
 
         it "should not return the same identity twice if it is both the owner and service provider" do
-          sub_service_request.update_attributes(owner_id: user.id)
+          sub_service_request.update(owner_id: user.id)
           expect(sub_service_request.candidate_owners.uniq.length).to eq(sub_service_request.candidate_owners.length)
         end
       end

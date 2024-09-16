@@ -65,7 +65,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    if @sub_service_request.update_attributes(sub_service_request_params)
+    if @sub_service_request.update(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = t('dashboard.sub_service_requests.updated')
     else
@@ -127,14 +127,14 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
             params = {sync: {action: 'update', line_item: {sparc_id: line_item.id, quantity_requested: line_item.quantity, service_id: line_item.service_id}}}
           end
         else
-          sync.update_attributes(synched: true) ##Mark as completed since nothing needed done
+          sync.update(synched: true) ##Mark as completed since nothing needed done
         end
       end
 
       if params #Because of the above check for syncs that are duplicative
         RestClient.post(url, params, content_type: 'application/json') do |response, request, result, &block|
           if JSON.parse(response.body)['result'] == "success"
-            sync.update_attributes(synched: true)
+            sync.update(synched: true)
           end
         end
       end

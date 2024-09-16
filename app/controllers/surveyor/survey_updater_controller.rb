@@ -37,7 +37,7 @@ class Surveyor::SurveyUpdaterController < Surveyor::BaseController
     @object.assign_attributes(@params)
     @object.valid?
 
-    if @object.errors.keys.include?(@field.to_sym)
+    if @object.errors.key?(@field.to_sym)
       @errors = @object.errors
     else
       @object.save(validate: false)

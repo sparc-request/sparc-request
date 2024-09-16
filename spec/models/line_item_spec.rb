@@ -30,7 +30,7 @@ RSpec.describe LineItem, type: :model do
   describe 'applicable_rate' do
     it 'should raise an exception if it has a pricing setup but no pricing maps' do
       organization = create(:organization, pricing_setup_count: 1)
-      organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
+      organization.pricing_setups[0].update(display_date: Date.today - 1)
       service = build(:service, organization_id: organization.id, pricing_map_count: 0)
       service.save!(validate: false)
       project = Project.new(attributes_for(:protocol))
@@ -44,7 +44,7 @@ RSpec.describe LineItem, type: :model do
     it 'should raise an exception if it has a pricing map but no pricing setups' do
       organization = create(:organization, pricing_setup_count: 0)
       service = create(:service, organization_id: organization.id, pricing_map_count: 1)
-      service.pricing_maps[0].update_attributes(display_date: Date.today - 1)
+      service.pricing_maps[0].update(display_date: Date.today - 1)
 
       project = Project.create(attributes_for(:protocol))
       service_request = ServiceRequest.create(attributes_for(:service_request, protocol_id: project.id)); service_request.save!(validate: false); service_request
@@ -61,10 +61,10 @@ RSpec.describe LineItem, type: :model do
     #   project.save(validate: false)
     #
     #   organization = create(:organization, pricing_setup_count: 1)
-    #   organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
+    #   organization.pricing_setups[0].update(display_date: Date.today - 1)
     #
     #   service = create(:service, organization_id: organization.id, pricing_map_count: 1)
-    #   service.pricing_maps[0].update_attributes(display_date: Date.today)
+    #   service.pricing_maps[0].update(display_date: Date.today)
     #
     #   service_request = ServiceRequest.create(attributes_for(:service_request, protocol_id: project.id)); service_request.save!(validate: false); service_request
     #   service_request.save(validate: false)
@@ -94,10 +94,10 @@ RSpec.describe LineItem, type: :model do
     #   study.save(validate: false)
     #
     #   organization = create(:organization, pricing_setup_count: 1)
-    #   organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
+    #   organization.pricing_setups[0].update(display_date: Date.today - 1)
     #
     #   service = create(:service, organization_id: organization.id, pricing_map_count: 1)
-    #   service.pricing_maps[0].update_attributes(display_date: Date.today)
+    #   service.pricing_maps[0].update(display_date: Date.today)
     #
     #   service_request = build(:service_request, protocol_id: study.id)
     #   service_request.save(validate: false)
@@ -139,7 +139,7 @@ RSpec.describe LineItem, type: :model do
       end
 
       it "should return the pricing map cost if there are no admin rate's" do
-        @admin_rate.update_attributes(line_item_id: line_item.id)
+        @admin_rate.update(line_item_id: line_item.id)
         expect(line_item2.applicable_rate).to eq(3000)
       end
     end
@@ -173,8 +173,8 @@ RSpec.describe LineItem, type: :model do
     describe "units per package" do
 
       it "should select the correct pricing map based on display date" do
-        pricing_map2.update_attributes(display_date: Time.now + 1.day)
-        pricing_map2.update_attributes(unit_factor: 10)
+        pricing_map2.update(display_date: Time.now + 1.day)
+        pricing_map2.update(unit_factor: 10)
         expect(line_item.units_per_package).to eq(1)
       end
 
@@ -191,14 +191,14 @@ RSpec.describe LineItem, type: :model do
       context "direct costs for one time fee" do
 
         it "should return the correct direct cost with a unit factor of 1" do
-          service.update_attributes(one_time_fee: true)
-          line_item.update_attributes(quantity: 10)
+          service.update(one_time_fee: true)
+          line_item.update(quantity: 10)
           expect(line_item.reload.direct_costs_for_one_time_fee).to eq(10000)
         end
 
         it "should return the correct direct cost with a unit factor other than 1" do
-          pricing_map.update_attributes(unit_factor: 6)
-          line_item.update_attributes(quantity: 10)
+          pricing_map.update(unit_factor: 6)
+          line_item.update(quantity: 10)
           expect(line_item.reload.direct_costs_for_one_time_fee).to eq(2000.0)
         end
 
@@ -222,8 +222,8 @@ RSpec.describe LineItem, type: :model do
       context "indirect costs for one time fee" do
 
         it "should return the correct indirect cost" do
-          service.update_attributes(one_time_fee: true)
-          line_item.update_attributes(quantity: 10)
+          service.update(one_time_fee: true)
+          line_item.update(quantity: 10)
           if Setting.get_value("use_indirect_cost")
             expect(line_item.indirect_costs_for_one_time_fee).to eq(400)
           else
@@ -232,8 +232,8 @@ RSpec.describe LineItem, type: :model do
         end
 
         it "should return zero if the displayed pricing map is excluded from indirect costs" do
-          service.update_attributes(one_time_fee: true)
-          pricing_map.update_attributes(exclude_from_indirect_cost: true)
+          service.update(one_time_fee: true)
+          pricing_map.update(exclude_from_indirect_cost: true)
           expect(line_item.indirect_costs_for_one_time_fee).to eq(0)
         end
       end
@@ -281,7 +281,7 @@ RSpec.describe LineItem, type: :model do
     end
 
     it "should concatenate cpt code to the abbreviation if it exists" do
-      service.update_attributes(cpt_code: "def")
+      service.update(cpt_code: "def")
       expect(line_item.display_service_abbreviation).to eq("(0001) abc (def)")
     end
   end

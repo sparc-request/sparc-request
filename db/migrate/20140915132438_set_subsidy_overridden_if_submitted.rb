@@ -23,7 +23,7 @@ class SetSubsidyOverriddenIfSubmitted < ActiveRecord::Migration[4.2]
     ssrs = SubServiceRequest.where(:status => "submitted")
     ssrs.each do |ssr|
       if ssr.subsidy && !ssr.subsidy.overridden
-        ssr.subsidy.update_attributes(:overridden => true)
+        ssr.subsidy.update(:overridden => true)
       end
     end
   end

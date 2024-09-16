@@ -28,7 +28,7 @@ RSpec.describe 'User adds a line items visit note', js: true do
     org       = create(:organization, :process_ssrs)
     pricing   = create(:pricing_setup, organization: org)
     otf       = create(:service, organization: org, one_time_fee: true, pricing_map_count: 1)
-    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
+    otf.pricing_maps.first.update(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     sr        = create(:service_request_without_validations, protocol: protocol)

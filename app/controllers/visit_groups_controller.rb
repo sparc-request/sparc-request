@@ -86,7 +86,7 @@ class VisitGroupsController < ApplicationController
     # so add 1 to insert it into the correct position
     params[:visit_group][:position] = params[:visit_group][:position].to_i + 1 if @visit_group.position > params[:visit_group][:position].to_i
 
-    if @visit_group.update_attributes(visit_group_params)
+    if @visit_group.update(visit_group_params)
       flash[:success] = t('visit_groups.updated')
     else
       @errors = @visit_group.errors

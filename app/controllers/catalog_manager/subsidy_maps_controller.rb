@@ -26,13 +26,13 @@ class CatalogManager::SubsidyMapsController < CatalogManager::AppController
   def update
     @subsidy_map = SubsidyMap.find(params[:id])
 
-    if @subsidy_map.update_attributes(subsidy_map_params.except(:excluded_funding_sources))
+    if @subsidy_map.update(subsidy_map_params.except(:excluded_funding_sources))
       ##Update the excluded funding sources
       update_excluded_funding_sources(subsidy_map_params[:excluded_funding_sources].delete_if{|source| source == ""}, @subsidy_map)
 
       flash[:success] = "Subsidy Map updated successfully."
     else
-      @errors = @subsidy_map.errors
+      @errors = @subsidy_map.errors.map(&:full_message)
     end
   end
 

@@ -43,7 +43,7 @@ namespace :data do
     fulfillments.each do |row|
       note = notes_to_fix.find_by(body: row['notes'])
       unless note.nil?
-        note.update_attributes(created_at: row['created_at'], updated_at: row['updated_at'])
+        note.update(created_at: row['created_at'], updated_at: row['updated_at'])
         fixed_notes << note
       end
     end
@@ -51,7 +51,7 @@ namespace :data do
     service_requests.each do |row|
       note = notes_to_fix.find_by(body: row['notes'])
       unless note.nil?
-        note.update_attributes(created_at: row['created_at'], updated_at: row['updated_at'])
+        note.update(created_at: row['created_at'], updated_at: row['updated_at'])
         fixed_notes << note
       end
     end

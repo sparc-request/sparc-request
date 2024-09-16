@@ -87,7 +87,7 @@ class DocumentsController < ApplicationController
     if document_ids
       document_ids.each do |id|
         doc = Document.find(id)
-        doc.update_attributes(share_all: params[:share_all])
+        doc.update(share_all: params[:share_all])
         doc.sub_service_requests = protocol.sub_service_requests.where(organization_id: params[:org_ids])
       end
     end

@@ -100,7 +100,7 @@ RSpec.describe 'User moves visit within an arm', js: true do
   end
 
   it 'should increment consecutive visits correctly when moved between two consecutive visits' do
-    @visit_group2.update_attributes(day: 2)
+    @visit_group2.update(day: 2)
 
     first(".visit-group-#{@visit_group3.id} a").click
     wait_for_javascript_to_finish
@@ -119,8 +119,8 @@ RSpec.describe 'User moves visit within an arm', js: true do
   end
 
   it 'should set the day correctly for consecutive visits when moved between two consecutive visits' do
-    @visit_group2.update_attributes(day: 2)
-    @visit_group3.update_attributes(day: 3)
+    @visit_group2.update(day: 2)
+    @visit_group3.update(day: 3)
     @visit_group4 = create(:visit_group, arm_id: @arm.id, name: 'Visit 4', position: 4, day: 4)
 
     visit service_details_service_request_path(srid: @sr.id)

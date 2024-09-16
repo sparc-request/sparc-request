@@ -49,7 +49,7 @@ class SubsidiesController < ApplicationController
   end
 
   def update
-    @subsidy.update_attributes(subsidy_params)
+    @subsidy.update(subsidy_params)
     flash[:success] = t(:subsidies)[:updated]
 
     respond_to :js

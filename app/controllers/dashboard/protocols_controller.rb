@@ -178,7 +178,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       # admin is not able to activate study_type_question_group
       @protocol.bypass_stq_validation = !current_user.can_edit_protocol?(@protocol) && @protocol.selected_for_epic.nil? && protocol_params[:selected_for_epic].nil?
 
-      if @protocol.update_attributes(protocol_params)
+      if @protocol.update(protocol_params)
         if Setting.get_value("use_epic") && @protocol.selected_for_epic && (@protocol.last_epic_push_time != nil) && Setting.get_value("queue_epic")
           if EpicQueue.where(protocol_id: @protocol.id).size == 0
             EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id, user_change: true)

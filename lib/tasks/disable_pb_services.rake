@@ -32,7 +32,7 @@ task :disable_pb_services => :environment do
       map = service.current_effective_pricing_map
       if (map.federal_rate == 0) && (map.corporate_rate == 0) && (map.other_rate == 0) && (map.member_rate == 0)
         puts "Disabling service #{service.name} with id of #{service.id}"
-        service.update_attributes(is_available: false)
+        service.update(is_available: false)
         csv << [service.name]
       end
     end

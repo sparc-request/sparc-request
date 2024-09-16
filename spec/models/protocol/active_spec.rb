@@ -34,7 +34,7 @@ RSpec.describe Protocol, type: :model do
 
     context "study is inactive" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
       end
 
       it "should return false" do
@@ -43,7 +43,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "study is nil" do
       before :each do
-        study.update_attributes(study_type_question_group_id: nil)
+        study.update(study_type_question_group_id: nil)
       end
 
       it "should return false" do
@@ -52,7 +52,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "study is active" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+        study.update(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
       end
 
       it "should return true" do
@@ -61,7 +61,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "project is inactive" do
       before :each do
-        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+        project.update(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
       end
 
       it "should return false" do
@@ -70,7 +70,7 @@ RSpec.describe Protocol, type: :model do
     end
     context "project is active" do
       before :each do
-        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+        project.update(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
       end
 
       it "should return true" do

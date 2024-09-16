@@ -117,7 +117,6 @@ namespace :data do
     invalid_ids = []
     valid_ids = 0
     admin_identity = Identity.where(system_admin: true).first
-
     protocols.each do |protocol|
       id = protocol["Protocol ID"].to_i
       protocol = Protocol.find_by_id(id)

@@ -52,7 +52,7 @@ class Admin::ApplicationsController < Doorkeeper::ApplicationsController
   def update
     respond_to :js
 
-    if @application.update_attributes(application_params)
+    if @application.update(application_params)
       flash.now[:success] = t('admin.applications.updated')
     else
       @errors = @application.errors

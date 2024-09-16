@@ -86,7 +86,7 @@ task process_ssrs_move: :environment do
                                               service_requester_id: ssr.service_requester.id, submitted_at: ssr.submitted_at,
                                               protocol_id: protocol.id, in_work_fulfillment: ssr.in_work_fulfillment)
           new_ssr.save(validate: false)
-          item.update_attributes(sub_service_request_id: new_ssr.id)
+          item.update(sub_service_request_id: new_ssr.id)
           protocol.next_ssr_id = protocol.next_ssr_id + 1
           protocol.save(validate: false)
           new_ssr.update_org_tree
@@ -96,7 +96,7 @@ task process_ssrs_move: :environment do
           # All we have to do is assign this line item to that ssr.
           puts "Assigning to ssr"
           existing_ssr = SubServiceRequest.where(organization_id: line_item_org_id).last
-          item.update_attributes(sub_service_request_id: existing_ssr.id)
+          item.update(sub_service_request_id: existing_ssr.id)
         end
       end
     end

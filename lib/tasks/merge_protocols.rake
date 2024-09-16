@@ -80,7 +80,7 @@ task :protocol_merge => :environment do
         puts 'It looks like one of the arm names for the secondary protocol conflicts'
         puts 'with an arm name on the master protocol.'
         new_name = prompt('Please enter a unique name: ')
-        second_protocol_arm.update_attributes(name: new_name)
+        second_protocol_arm.update(name: new_name)
       end
     end
   end
@@ -127,20 +127,20 @@ task :protocol_merge => :environment do
 
     second_protocol.project_roles.each do |role|
       if role.role != 'primary-pi' && role_should_be_assigned?(role, first_protocol)
-        role.update_attributes(protocol_id: first_protocol.id)
+        role.update(protocol_id: first_protocol.id)
       end
     end
 
     puts "Project roles have been assigned, checking for and assigning research types, impact areas, and affiliations..."
 
     if has_research?(second_protocol, 'human_subjects') && !has_research?(first_protocol, 'human_subjects')
-      second_protocol.human_subjects_info.update_attributes(protocol_id: first_protocol.id)
+      second_protocol.human_subjects_info.update(protocol_id: first_protocol.id)
     elsif has_research?(second_protocol, 'vertebrate_animals') && !has_research?(first_protocol, 'vertebrate_animals')
-      second_protocol.vertebrate_animals_info.update_attributes(protocol_id: first_protocol.id)
+      second_protocol.vertebrate_animals_info.update(protocol_id: first_protocol.id)
     elsif has_research?(second_protocol, 'investigational_products') && !has_research?(first_protocol, 'investigational_products')
-      second_protocol.investigational_products_info.update_attributes(protocol_id: first_protocol.id)
+      second_protocol.investigational_products_info.update(protocol_id: first_protocol.id)
     elsif has_research?(second_protocol, 'ip_patents') && !has_research?(first_protocol, 'ip_patents')
-      second_protocol.ip_patents_info.update_attributes(protocol_id: first_protocol.id)
+      second_protocol.ip_patents_info.update(protocol_id: first_protocol.id)
     end
 
     second_protocol.impact_areas.each do |area|
@@ -160,7 +160,7 @@ task :protocol_merge => :environment do
       request.protocol_id = first_protocol.id
       request.save(validate: false)
       request.sub_service_requests.each do |ssr|
-        ssr.update_attributes(protocol_id: first_protocol.id)
+        ssr.update(protocol_id: first_protocol.id)
         first_protocol.next_ssr_id = (first_protocol.next_ssr_id + 1)
         first_protocol.save(validate: false)
         if ssr.in_work_fulfillment

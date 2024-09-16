@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_07_131936) do
+ActiveRecord::Schema.define(version: 2024_09_04_154310) do
 
-  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -30,10 +30,17 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.bigint "byte_size", null: false
     t.string "checksum", null: false
     t.datetime "created_at", null: false
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "additional_funding_sources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "active_storage_variant_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "additional_funding_sources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "funding_source"
     t.string "funding_source_other"
     t.string "sponsor_name"
@@ -49,7 +56,7 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.index ["protocol_id"], name: "index_additional_funding_sources_on_protocol_id"
   end
 
-  create_table "admin_rate_changes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "admin_rate_changes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.bigint "line_item_id"
     t.bigint "identity_id"
     t.integer "admin_cost"
@@ -276,7 +283,7 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "external_organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "collaborating_org_name"
     t.string "collaborating_org_type"
     t.text "comments"
@@ -363,6 +370,7 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
+    t.boolean "system_admin"
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["first_name"], name: "index_identities_on_first_name"
@@ -1128,8 +1136,8 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type"
-    t.string "surveyable_type"
     t.bigint "surveyable_id"
+    t.string "surveyable_type"
     t.index ["surveyable_id", "surveyable_type"], name: "index_surveys_on_surveyable_id_and_surveyable_type"
   end
 
@@ -1204,6 +1212,7 @@ ActiveRecord::Schema.define(version: 2023_12_07_131936) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "additional_funding_sources", "protocols"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"

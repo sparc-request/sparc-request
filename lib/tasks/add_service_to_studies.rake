@@ -116,6 +116,7 @@ namespace :data do
     # The following is, in fact, an n+1 query and a terrible practice but was the best possible compromise at the time for acknowledging that the list of user entered values may contain an id that does not exist in the database.  If a better  method is found in the future, please replace this loop.
     invalid_ids = []
     valid_ids = 0
+    admin_identity = Identity.where(system_admin: true).first
     protocols.each do |protocol|
       id = protocol["Protocol ID"].to_i
       protocol = Protocol.find_by_id(id)
@@ -123,7 +124,7 @@ namespace :data do
       if protocol
         valid_ids += 1
         sr = protocol.service_requests.first
-        ssr = sr.sub_service_requests.create(organization: organization, status: "submitted", submitted_at: Time.now)
+        ssr = sr.sub_service_requests.create(organization: organization, status: "submitted", submitted_at: Time.now, service_requester: admin_identity)
         line_item = ssr.line_items.create(service_request: sr, service: service, quantity: 1, units_per_quantity: 1)
         ssr.update(synch_to_fulfillment: true)
         ssr.update(status: 'complete')

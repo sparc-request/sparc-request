@@ -364,8 +364,15 @@ class SubServiceRequest < ApplicationRecord
   end
 
   def update_past_status
+    updater_identity = 
+      if self.current_user_id.present?
+        self.current_user_id
+      else
+        Identity.where(system_admin: true).first
+      end
+
     if saved_change_to_status? && !@prev_status.blank?
-      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now, changed_by_id: self.current_user_id)
+      past_status = self.past_statuses.create(status: @prev_status, new_status: status, date: Time.now, changed_by_id: updater_identity)
 
       # fall back to old method of assigning using audit trail, TODO: this is more of safety measure as it is hard to tell everywhere a SSR is saved/updated
       if past_status.changed_by_id.blank?

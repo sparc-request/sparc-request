@@ -26,7 +26,10 @@ class AddDocuments < ActiveRecord::Migration[4.2]
       t.string :doc_type
       t.timestamps
     end
-    add_attachment :documents, :document
+    add_column :documents, :document_file_name, :string
+    add_column :documents, :document_file_size, :integer
+    add_column :documents, :document_content_type, :string
+    add_column :documents, :document_updated_at, :datetime
   end
 
   def down

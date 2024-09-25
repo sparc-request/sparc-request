@@ -26,12 +26,12 @@ set :repo_url, "git@github.com:bmic-development/sparc-request.git"
 set :user, 'capistrano'
 set :use_sudo, false
 
-set :stages, %w(testing demo demo2 staging production)
+set :stages, %w(testing demo demo2 staging production new_production)
 set :default_stage, 'testing'
 
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/fulfillment_db.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env', 'app/views/shared/_analytics.html.haml', 'config/storage.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/fulfillment_db.yml', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml', '.env', 'app/views/shared/_analytics.html.haml', 'config/storage.yml')
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/assets', 'public/images', 'storage')
 set :delayed_job_workers, 4

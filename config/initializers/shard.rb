@@ -20,9 +20,9 @@
 
 path = File.join(Rails.root, "config", "fulfillment_db.yml")
 FULFILLMENT_DB =
-  if File.exists?(path)
+  if File.exist?(path)
     yaml = Pathname.new(path)
-    YAML.load(ERB.new(yaml.read).result)[Rails.env.to_s]
+    YAML.load(ERB.new(yaml.read).result, aliases: true)[Rails.env.to_s]
   else
     nil
   end

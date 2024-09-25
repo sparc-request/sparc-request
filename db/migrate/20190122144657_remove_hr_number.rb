@@ -45,7 +45,7 @@ class RemoveHrNumber < ActiveRecord::Migration[5.2]
   def down
     add_column :human_subjects_info, :hr_number, :string
 
-    if File.exists?('tmp/hr_number_export.csv')
+    if File.exist?('tmp/hr_number_export.csv')
       ActiveRecord::Base.transaction do
         CSV.parse(File.read('tmp/hr_number_export.csv'), headers: true).each do |row|
           Protocol.find(row[0]).human_subjects_info.update_attribute(:hr_number, row[1])

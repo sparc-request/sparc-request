@@ -39,3 +39,18 @@ test:
   database: cwf_test # for travis-ci, needs to match sparc-fulfillment test database name
   username: travis
   password:
+
+
+# Docker Config Example
+# default: &default
+#   adapter: mysql2
+#   username: <%= ENV['CWF_DATABASE_USERNAME'] %>
+#   password: <%= ENV['CWF_DATABASE_PASSWORD'] %>
+#   host: <%= ENV['CWF_DATABASE_HOST'] %>
+#   encoding: utf8
+#   timeout: 5000
+#   pool: 5
+
+# development:
+#   <<: *default
+#   database: <%= ENV['CWF_DATABASE_NAME'] %>

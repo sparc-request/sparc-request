@@ -27,6 +27,11 @@ services:
       DATABASE_PASSWORD: <mysql_password_from_above>
       DATABASE_NAME: sparc-docker_development
       RAILS_ENV: development
+      ##CWF Info
+      CWF_DB_HOST: cwf_db # Host for the cwf_db service cwf docker-compose file
+      CWF_DB_USERNAME: <cwf mysql user>
+      CWF_DB_PASSWORD: <cwf mysql password>
+      CWF_DB_NAME: cwf-docker_development
     env_file:
       - .env
     networks:

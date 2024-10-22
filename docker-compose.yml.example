@@ -10,8 +10,10 @@ services:
       MYSQL_PASSWORD: <choose_password>
     networks:
       - sparc_network
+    ports:
+      - "3306:3306"
 
-  web:
+  sparc_web:
     build: .
     command: bundle exec rails s -b '0.0.0.0' -p 3000
     volumes:
@@ -42,4 +44,4 @@ volumes:
 
 networks:
   sparc_network:
-    external: true
+    name: sparc_network

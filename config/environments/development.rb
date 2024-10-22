@@ -62,4 +62,11 @@ SparcRails::Application.configure do
 
   # ActiveStorage config
   config.active_storage.service = :local
+
+  config.hosts = [
+    IPAddr.new("0.0.0.0/0"), # All IPv4 addresses.
+    IPAddr.new("::/0"),      # All IPv6 addresses.
+    "localhost",             # The localhost reserved domain.
+    "sparc_web"   # Allow this to be addressed when running in containers via docker-compose.yml.
+  ]
 end

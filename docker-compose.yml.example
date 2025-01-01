@@ -4,10 +4,8 @@ services:
     volumes:
       - sparc_db_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: <choose_root_password>
+      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: sparc-docker_development
-      MYSQL_USER: <choose_username>
-      MYSQL_PASSWORD: <choose_password>
     networks:
       - sparc_network
     ports:
@@ -18,21 +16,18 @@ services:
     command: bundle exec rails s -b '0.0.0.0' -p 3000
     volumes:
       - .:/app
-      - /app/node_modules # This ensures node_modules is not overwritten
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - sparc_db
     environment:
       DATABASE_HOST: sparc_db
-      DATABASE_USERNAME: <mysql_user_from_above>
-      DATABASE_PASSWORD: <mysql_password_from_above>
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root_password
       DATABASE_NAME: sparc-docker_development
       RAILS_ENV: development
       ##CWF Info
-      CWF_DATABASE_HOST: cwf_db # Host for the cwf_db service cwf docker-compose file
-      CWF_DATABASE_USERNAME: <cwf mysql user>
-      CWF_DATABASE_PASSWORD: <cwf mysql password>
       CWF_DATABASE_NAME: cwf-docker_development
     env_file:
       - .env

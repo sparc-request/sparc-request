@@ -44,12 +44,14 @@ test:
 # Docker Config Example
 # default: &default
 #   adapter: mysql2
-#   username: <%= ENV['CWF_DATABASE_USERNAME'] %>
-#   password: <%= ENV['CWF_DATABASE_PASSWORD'] %>
-#   host: <%= ENV['CWF_DATABASE_HOST'] %>
+#   username: <%= ENV['DATABASE_USERNAME'] %>
+#   password: <%= ENV['DATABASE_PASSWORD'] %>
+#   host: <%= ENV['DATABASE_HOST'] %>
 #   encoding: utf8
 #   timeout: 5000
 #   pool: 5
+#  variables:
+#    sql_mode: TRADITIONAL
 
 # development:
 #   <<: *default

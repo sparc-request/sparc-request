@@ -50,8 +50,8 @@ test:
 #   encoding: utf8
 #   timeout: 5000
 #   pool: 5
-#  variables:
-#    sql_mode: TRADITIONAL
+#   variables:
+#     sql_mode: TRADITIONAL
 
 # development:
 #   <<: *default

@@ -51,7 +51,7 @@ class VisitGroup < ApplicationRecord
   validates :position, presence: true
   validates :window_before, :window_after, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: Proc.new{ |vg| vg.day.present? }
 
-  validates :day, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
+  validates :day, presence: true, numericality: { only_integer: true }, if: Proc.new{ |vg| vg.day.present? }
 
   validate :day_must_be_in_order, if: Proc.new{ |vg| vg.day.present? && !vg.skip_order_validation }
 

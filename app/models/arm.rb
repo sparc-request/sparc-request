@@ -62,7 +62,7 @@ class Arm < ApplicationRecord
 
   def visit_groups_in_order?(loaded_visit_groups = visit_groups)
     vg_ids_by_position = loaded_visit_groups.sort{|a,b| a.position <=> b.position}.map(&:id)
-    vg_ids_by_day = loaded_visit_groups.sort{|a,b| a.day <=> b.day}.map(&:id)
+    vg_ids_by_day = loaded_visit_groups.sort{|a,b| a.day && b.day ? a.day <=> b.day : a.day ? 1 : -1}.map(&:id) #allows sorting even if visit groups have nil values, nil values placed before all others
 
     vg_ids_by_position === vg_ids_by_day
   end

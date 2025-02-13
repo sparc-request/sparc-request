@@ -107,6 +107,7 @@ module CostAnalysis
           :border_width => 1,
           :border_color => '4c4c4c',
           :overflow => :shrink_to_fit,
+          :valign => :center,
           :size => 8
         }
 
@@ -130,6 +131,7 @@ module CostAnalysis
           :border_width => 1,
           :border_color => '4c4c4c',
           :overflow => :shrink_to_fit,
+          :valign => :center,
           :size => 8
         }
 
@@ -200,6 +202,7 @@ module CostAnalysis
           :border_width => 1,
           :border_color => '4c4c4c',
           :overflow => :shrink_to_fit,
+          :valign => :center,
           :size => 8
         }
 
@@ -226,7 +229,7 @@ module CostAnalysis
         investigator_table = @doc.make_table(
           @study_information.primary_investigators.map{ |p| ["Primary Investigator", p.name, p.email] } + @study_information.additional_contacts.map{ |p| [p.role.titleize, p.name, p.email] },
           :width => 700,
-          :cell_style => {:border_width => 1, :border_color => 'E8E8E8'})
+          :cell_style => {:border_width => 1, :valign => :center, :border_color => 'E8E8E8'})
 
           @doc.move_down 20
 

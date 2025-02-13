@@ -105,7 +105,7 @@ module SparcRails
     }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
       
     ##  Error pages
-    config.exceptions_app = self.routes
+    config.exceptions_app = routes
 
     config.to_prepare do
       Doorkeeper::ApplicationsController.layout 'application'

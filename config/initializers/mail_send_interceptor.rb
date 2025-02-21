@@ -31,12 +31,15 @@ class MailSendInterceptor
   end
 end
 
-begin
-  send_emails_to_real_users = Setting.get_value("send_emails_to_real_users")
-rescue
-  send_emails_to_real_users = nil
-end
+Rails.application.config.to_prepare do
 
-if send_emails_to_real_users != true
-  ActionMailer::Base.register_interceptor(MailSendInterceptor)
+  begin
+    send_emails_to_real_users = Setting.get_value("send_emails_to_real_users")
+  rescue
+    send_emails_to_real_users = nil
+  end
+
+  if send_emails_to_real_users != true
+    ActionMailer::Base.register_interceptor(MailSendInterceptor)
+  end
 end

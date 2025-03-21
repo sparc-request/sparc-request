@@ -18,16 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-begin
-  wkhtmltopdf_location = Setting.get_value('wkhtmltopdf_location')
-rescue
-  wkhtmltopdf_location = nil
-end
+Rails.application.config.to_prepare do
+  begin
+    wkhtmltopdf_location = Setting.get_value('wkhtmltopdf_location')
+  rescue
+    wkhtmltopdf_location = nil
+  end
 
-if wkhtmltopdf_location
-  # Setup PDFKit
-  PDFKit.configure do |config|
-    config.wkhtmltopdf = wkhtmltopdf_location
+  if wkhtmltopdf_location
+    # Setup PDFKit
+    PDFKit.configure do |config|
+      config.wkhtmltopdf = wkhtmltopdf_location
+    end
   end
 end
 

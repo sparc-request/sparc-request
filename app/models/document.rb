@@ -64,8 +64,10 @@ class Document < ApplicationRecord
   end
 
   def supported_file_types
-    if document.attached? && !document.content_type.in?(%w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff))
-      document.purge_later
+    return unless document.attached?
+
+    supported_types = %w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff)
+    unless supported_types.include?(document.content_type)
       errors.add(:document, 'file type is not supported.')
     end
   end

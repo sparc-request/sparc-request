@@ -343,6 +343,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.1.0)
+    microsoft_teams_incoming_webhook_ruby (1.0.2)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
@@ -719,6 +720,7 @@ DEPENDENCIES
   json (>= 1.8)
   launchy
   letter_opener
+  microsoft_teams_incoming_webhook_ruby
   momentjs-rails (>= 2.8.1)
   msteams-ruby-client
   mysql2 (= 0.5.6)

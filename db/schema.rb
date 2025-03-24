@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_29_154925) do
-
+ActiveRecord::Schema[7.0].define(version: 2025_03_24_182446) do
   create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -29,7 +28,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -51,8 +50,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "phs_sponsor"
     t.string "non_phs_sponsor"
     t.bigint "protocol_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["protocol_id"], name: "index_additional_funding_sources_on_protocol_id"
   end
 
@@ -61,9 +60,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "identity_id"
     t.integer "admin_cost"
     t.boolean "cost_reset", default: false
-    t.datetime "date_of_change"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "date_of_change", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["identity_id"], name: "index_admin_rate_changes_on_identity_id"
     t.index ["line_item_id"], name: "index_admin_rate_changes_on_line_item_id"
   end
@@ -71,25 +70,25 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "admin_rates", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.integer "admin_cost"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "identity_id"
   end
 
   create_table "affiliations", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["protocol_id"], name: "index_affiliations_on_protocol_id"
   end
 
   create_table "alerts", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "alert_type"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "applications", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
@@ -97,18 +96,18 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "description"
     t.string "domain"
     t.text "token_ciphertext"
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "created_by"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["created_by"], name: "index_applications_on_created_by"
   end
 
   create_table "approvals", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
-    t.datetime "approval_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "approval_date", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "approval_type", default: "Resource Approval"
     t.bigint "sub_service_request_id"
     t.index ["identity_id"], name: "index_approvals_on_identity_id"
@@ -118,8 +117,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "arms", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "visit_count", default: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "subject_count", default: 1
     t.bigint "protocol_id"
     t.boolean "new_with_draft", default: false
@@ -132,8 +131,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "associable_id"
     t.string "associable_type"
     t.bigint "survey_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["associable_id"], name: "index_associated_surveys_on_associable_id"
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
@@ -151,7 +150,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.integer "version", default: 0
     t.string "comment"
     t.string "remote_address"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.string "request_uuid"
     t.index ["associated_id", "associated_type"], name: "associated_index"
     t.index ["auditable_id", "auditable_type"], name: "auditable_index"
@@ -163,8 +162,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "available_statuses", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "organization_id"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "selected", default: false
     t.index ["organization_id"], name: "index_available_statuses_on_organization_id"
   end
@@ -172,9 +171,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "catalog_managers", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "edit_historic_data"
     t.index ["identity_id"], name: "index_catalog_managers_on_identity_id"
     t.index ["organization_id"], name: "index_catalog_managers_on_organization_id"
@@ -184,9 +183,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "service_request_id"
     t.bigint "service_id"
     t.decimal "charge_amount", precision: 12, scale: 4
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["service_id"], name: "index_charges_on_service_id"
     t.index ["service_request_id"], name: "index_charges_on_service_request_id"
   end
@@ -194,8 +193,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "clinical_providers", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["identity_id"], name: "index_clinical_providers_on_identity_id"
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id"
   end
@@ -203,8 +202,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "cover_letters", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "content"
     t.bigint "sub_service_request_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id"
   end
 
@@ -213,21 +212,21 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.integer "attempts", default: 0, null: false
     t.text "handler", size: :long, null: false
     t.text "last_error", size: :long
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
     t.string "locked_by"
     t.string "queue"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "documents", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.string "doc_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
@@ -243,8 +242,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "editable_statuses", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "organization_id"
     t.string "status", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "selected", default: false
     t.index ["organization_id"], name: "index_editable_statuses_on_organization_id"
   end
@@ -252,16 +251,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "epic_queue_records", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "origin"
     t.bigint "identity_id"
   end
 
   create_table "epic_queues", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "identity_id"
     t.boolean "attempted_push", default: false
     t.boolean "user_change", default: false
@@ -270,16 +269,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "epic_rights", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "project_role_id"
     t.string "right"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "excluded_funding_sources", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "subsidy_map_id"
     t.string "funding_source"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
@@ -287,8 +286,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "collaborating_org_name"
     t.string "collaborating_org_type"
     t.text "comments"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "protocol_id"
     t.string "collaborating_org_name_other"
     t.string "collaborating_org_type_other"
@@ -299,8 +298,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.text "message"
     t.string "name"
     t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "fulfillment_synchronizations", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
@@ -315,10 +314,10 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "line_item_id"
     t.string "timeframe"
     t.string "time"
-    t.datetime "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "date", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "unit_type"
     t.string "quantity_type"
     t.integer "quantity"
@@ -328,9 +327,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
 
   create_table "human_subjects_info", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "nct_number"
     t.index ["protocol_id"], name: "index_human_subjects_info_on_protocol_id"
   end
@@ -344,18 +343,18 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "catalog_overlord"
     t.string "credentials_other"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.text "reason"
@@ -382,9 +381,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "impact_areas", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "other_text"
     t.index ["protocol_id"], name: "index_impact_areas_on_protocol_id"
   end
@@ -394,9 +393,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "ind_number"
     t.boolean "ind_on_hold"
     t.string "inv_device_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "exemption_type", default: ""
     t.index ["protocol_id"], name: "index_investigational_products_info_on_protocol_id"
   end
@@ -405,9 +404,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "protocol_id"
     t.string "patent_number"
     t.text "inventors"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
@@ -421,8 +420,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.date "irb_approval_date"
     t.date "irb_expiration_date"
     t.boolean "approval_pending"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
   end
 
@@ -439,11 +438,11 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "service_id"
     t.boolean "optional", default: true
     t.integer "quantity"
-    t.datetime "complete_date"
-    t.datetime "in_process_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "complete_date", precision: nil
+    t.datetime "in_process_date", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.integer "units_per_quantity", default: 1
     t.index ["service_id"], name: "index_line_items_on_service_id"
     t.index ["service_request_id"], name: "index_line_items_on_service_request_id"
@@ -454,8 +453,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "arm_id"
     t.bigint "line_item_id"
     t.integer "subject_count"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "visit_r_quantity", default: 0
     t.integer "visit_i_quantity", default: 0
     t.integer "visit_e_quantity", default: 0
@@ -469,8 +468,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "from"
     t.string "email"
     t.text "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["from"], name: "index_messages_on_from"
     t.index ["notification_id"], name: "index_messages_on_notification_id"
     t.index ["to"], name: "index_messages_on_to"
@@ -479,8 +478,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "notes", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.text "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "notable_id"
     t.string "notable_type"
     t.index ["identity_id"], name: "index_notes_on_identity_id"
@@ -491,8 +490,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "notifications", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.bigint "originator_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "subject"
     t.bigint "other_user_id"
     t.boolean "read_by_originator"
@@ -508,8 +507,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "token", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
-    t.datetime "created_at", null: false
-    t.datetime "revoked_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "revoked_at", precision: nil
     t.string "scopes", default: "", null: false
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
@@ -522,8 +521,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "ip_address", null: false
     t.string "status", null: false
     t.text "failure_reason"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["access_token_id"], name: "index_oauth_access_requests_on_access_token_id"
     t.index ["application_id"], name: "index_oauth_access_requests_on_application_id"
   end
@@ -534,8 +533,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
-    t.datetime "revoked_at"
-    t.datetime "created_at", null: false
+    t.datetime "revoked_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
@@ -552,8 +551,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.text "redirect_uri"
     t.string "scopes", default: "", null: false
     t.boolean "confidential", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
@@ -561,16 +560,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "protocol_id"
     t.integer "calendar_version"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["protocol_id"], name: "index_oncore_records_on_protocol_id"
   end
 
   create_table "options", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "question_id"
     t.text "content", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["question_id"], name: "index_options_on_question_id"
   end
 
@@ -585,9 +584,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.text "ack_language"
     t.boolean "process_ssrs", default: false
     t.boolean "is_available", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "use_default_statuses", default: true
     t.boolean "survey_completion_alerts", default: false
     t.index ["is_available"], name: "index_organizations_on_is_available"
@@ -597,10 +596,10 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "past_statuses", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.string "status"
-    t.datetime "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "date", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.bigint "changed_by_id"
     t.string "new_status"
     t.index ["changed_by_id"], name: "index_past_statuses_on_changed_by_id"
@@ -611,9 +610,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "sub_service_request_id"
     t.integer "total_at_approval"
     t.bigint "approved_by"
-    t.datetime "approved_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "approved_at", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.float "percent_subsidy", default: 0.0
     t.index ["approved_by"], name: "index_past_subsidies_on_approved_by"
     t.index ["sub_service_request_id"], name: "index_past_subsidies_on_sub_service_request_id"
@@ -622,16 +621,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "patient_registrars", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["identity_id"], name: "index_patient_registrars_on_identity_id"
     t.index ["organization_id"], name: "index_patient_registrars_on_organization_id"
   end
 
   create_table "payment_uploads", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "payment_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["payment_id"], name: "index_payment_uploads_on_payment_id"
   end
 
@@ -643,8 +642,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.date "date_received"
     t.string "payment_method"
     t.text "details"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.float "percent_subsidy"
     t.index ["sub_service_request_id"], name: "index_payments_on_sub_service_request_id"
   end
@@ -658,8 +657,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "category"
     t.boolean "default"
     t.boolean "reserved"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "is_available"
   end
 
@@ -674,9 +673,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.decimal "federal_rate", precision: 12, scale: 4
     t.decimal "corporate_rate", precision: 12, scale: 4
     t.date "effective_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.date "display_date"
     t.decimal "other_rate", precision: 12, scale: 4
     t.decimal "member_rate", precision: 12, scale: 4
@@ -702,7 +701,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "investigator_rate_type"
     t.string "internal_rate_type"
     t.string "foundation_rate_type"
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.string "unfunded_rate_type"
     t.index ["organization_id"], name: "index_pricing_setups_on_organization_id"
   end
@@ -718,9 +717,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "identity_id"
     t.string "project_rights"
     t.string "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "role_other"
     t.boolean "epic_access", default: false
     t.index ["identity_id"], name: "index_project_roles_on_identity_id"
@@ -734,8 +733,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "search_query"
     t.string "with_organization"
     t.string "with_status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "admin_filter"
     t.string "with_owner"
   end
@@ -744,8 +743,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.integer "master_protocol_id"
     t.integer "merged_protocol_id"
     t.integer "identity_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "protocols", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
@@ -761,29 +760,29 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "funding_rfa"
     t.string "funding_status"
     t.string "funding_source"
-    t.datetime "funding_start_date"
+    t.datetime "funding_start_date", precision: nil
     t.string "federal_grant_serial_number"
     t.string "federal_grant_title"
     t.string "federal_grant_code_id"
     t.string "federal_non_phs_sponsor"
     t.string "federal_phs_sponsor"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.string "funding_source_other"
-    t.datetime "last_epic_push_time"
+    t.datetime "last_epic_push_time", precision: nil
     t.string "last_epic_push_status"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.datetime "initial_budget_sponsor_received_date"
-    t.datetime "budget_agreed_upon_date"
+    t.datetime "start_date", precision: nil
+    t.datetime "end_date", precision: nil
+    t.datetime "initial_budget_sponsor_received_date", precision: nil
+    t.datetime "budget_agreed_upon_date", precision: nil
     t.bigint "initial_amount"
     t.bigint "initial_amount_clinical_services"
     t.bigint "negotiated_amount"
     t.bigint "negotiated_amount_clinical_services"
     t.string "billing_business_manager_static_email"
-    t.datetime "recruitment_start_date"
-    t.datetime "recruitment_end_date"
+    t.datetime "recruitment_start_date", precision: nil
+    t.datetime "recruitment_end_date", precision: nil
     t.boolean "selected_for_epic"
     t.boolean "archived", default: false
     t.bigint "study_type_question_group_id"
@@ -804,8 +803,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "response_id"
     t.text "content"
     t.boolean "required", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["question_id"], name: "index_question_responses_on_question_id"
     t.index ["response_id"], name: "index_question_responses_on_response_id"
   end
@@ -817,8 +816,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "question_type", null: false
     t.text "description"
     t.boolean "required", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "depender_id"
     t.index ["depender_id"], name: "index_questions_on_depender_id"
     t.index ["section_id"], name: "index_questions_on_section_id"
@@ -828,24 +827,24 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "to"
     t.string "from"
     t.text "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "races", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.bigint "identity_id"
     t.string "name", null: false
     t.string "other_text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["identity_id"], name: "index_races_on_identity_id"
   end
 
   create_table "reports", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.string "report_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "research_types_info", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
@@ -854,9 +853,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.boolean "vertebrate_animals"
     t.boolean "investigational_products"
     t.boolean "ip_patents"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id"
   end
 
@@ -869,15 +868,15 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "start_date"
     t.string "end_date"
     t.boolean "include_incomplete"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "responses", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "survey_id"
     t.bigint "identity_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "respondable_id"
     t.string "respondable_type"
     t.index ["identity_id"], name: "index_responses_on_identity_id"
@@ -892,16 +891,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "applied_org_id"
     t.string "vendor"
     t.integer "version"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "sections", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "survey_id"
     t.string "title"
     t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["survey_id"], name: "index_sections_on_survey_id"
   end
 
@@ -909,10 +908,10 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "identity_id"
     t.bigint "organization_id"
     t.boolean "is_primary_contact"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "hold_emails"
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.index ["identity_id"], name: "index_service_providers_on_identity_id"
     t.index ["organization_id"], name: "index_service_providers_on_organization_id"
   end
@@ -921,9 +920,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "service_id"
     t.bigint "related_service_id"
     t.boolean "required"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["related_service_id"], name: "index_service_relations_on_related_service_id"
     t.index ["service_id"], name: "index_service_relations_on_service_id"
   end
@@ -931,10 +930,10 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "service_requests", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "status"
-    t.datetime "submitted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "submitted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.date "original_submitted_date"
     t.index ["protocol_id"], name: "index_service_requests_on_protocol_id"
     t.index ["status"], name: "index_service_requests_on_status"
@@ -952,9 +951,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "revenue_code"
     t.bigint "organization_id"
     t.string "order_code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "send_to_epic", default: false
     t.bigint "revenue_code_range_id"
     t.boolean "one_time_fee", default: false
@@ -969,8 +968,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "sessions", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["session_id"], name: "index_sessions_on_session_id"
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
@@ -985,8 +984,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.string "version"
     t.string "parent_key"
     t.string "parent_value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
@@ -998,8 +997,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.integer "duration_in_minutes"
     t.string "subject"
     t.text "note"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "interaction_type"
     t.index ["identity_id"], name: "index_short_interactions_on_identity_id"
   end
@@ -1008,40 +1007,40 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.integer "order"
     t.string "phase"
     t.integer "version", default: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "study_type_answers", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.bigint "study_type_question_id"
     t.boolean "answer"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "study_type_question_groups", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "version"
     t.boolean "active", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "study_type_questions", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "order"
     t.text "question"
     t.string "friendly_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "study_type_question_group_id"
   end
 
   create_table "study_types", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["protocol_id"], name: "index_study_types_on_protocol_id"
   end
 
@@ -1051,16 +1050,16 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "owner_id"
     t.string "ssr_id"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.datetime "consult_arranged_date"
-    t.datetime "requester_contacted_date"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
+    t.datetime "consult_arranged_date", precision: nil
+    t.datetime "requester_contacted_date", precision: nil
     t.boolean "in_work_fulfillment", default: false
     t.string "routing"
     t.text "org_tree_display"
     t.bigint "service_requester_id"
-    t.datetime "submitted_at"
+    t.datetime "submitted_at", precision: nil
     t.bigint "recent_submitted_by"
     t.bigint "protocol_id"
     t.boolean "imported_to_fulfillment", default: false
@@ -1078,22 +1077,22 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "submission_emails", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "organization_id"
     t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["organization_id"], name: "index_submission_emails_on_organization_id"
   end
 
   create_table "subsidies", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "overridden"
     t.bigint "sub_service_request_id"
     t.integer "total_at_approval"
     t.string "status", default: "Pending"
     t.bigint "approved_by"
-    t.datetime "approved_at"
+    t.datetime "approved_at", precision: nil
     t.float "percent_subsidy", default: 0.0
     t.index ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id"
   end
@@ -1102,9 +1101,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "organization_id"
     t.decimal "max_dollar_cap", precision: 12, scale: 4, default: "0.0"
     t.decimal "max_percentage", precision: 5, scale: 2, default: "0.0"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.float "default_percentage", default: 0.0
     t.text "instructions"
     t.index ["organization_id"], name: "index_subsidy_maps_on_organization_id"
@@ -1113,9 +1112,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "super_users", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.bigint "organization_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.boolean "access_empty_protocols", default: false
     t.boolean "billing_manager"
     t.boolean "allow_credit"
@@ -1132,8 +1131,8 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.boolean "active", null: false
     t.string "notify_roles"
     t.boolean "notify_requester", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "type"
     t.bigint "surveyable_id"
     t.string "surveyable_type"
@@ -1147,7 +1146,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "tagger_id"
     t.string "tagger_type"
     t.string "context", limit: 128
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
@@ -1163,9 +1162,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "service_request_id"
     t.bigint "identity_id"
     t.string "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["identity_id"], name: "index_tokens_on_identity_id"
     t.index ["service_request_id"], name: "index_tokens_on_service_request_id"
   end
@@ -1174,19 +1173,19 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
     t.bigint "protocol_id"
     t.string "iacuc_number"
     t.string "name_of_iacuc"
-    t.datetime "iacuc_approval_date"
-    t.datetime "iacuc_expiration_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "iacuc_approval_date", precision: nil
+    t.datetime "iacuc_expiration_date", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.index ["protocol_id"], name: "index_vertebrate_animals_info_on_protocol_id"
   end
 
   create_table "visit_groups", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "arm_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "position"
     t.integer "day"
     t.integer "window_before", default: 0
@@ -1197,9 +1196,9 @@ ActiveRecord::Schema.define(version: 2024_01_29_154925) do
   create_table "visits", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "quantity", default: 0
     t.string "billing"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.bigint "research_billing_qty", default: 0
     t.integer "insurance_billing_qty", default: 0
     t.integer "effort_billing_qty", default: 0

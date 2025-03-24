@@ -1188,5 +1188,15 @@
     "version":        "",
     "parent_key":     "",
     "parent_value":   ""
+  },
+  {
+    "key":            "exempt_inactive_services",
+    "value":          "",
+    "friendly_name":  "Exempt Inactive Services",
+    "description":    "List of service IDs that are inactive (is_available = false) but should still be viewable in the Fulfillment application participant's visit calendar and visit report",
+    "group":          "",
+    "version":        "",
+    "parent_key":     "",
+    "parent_value":   ""
   }
 ]

@@ -10,6 +10,9 @@ RUN apt-get update -qq && apt-get install -y curl gnupg && \
 # Install the default MySQL client
 RUN apt-get install -y default-mysql-client
 
+# Install tzdata package to allow time zone config in docker-compose.yml
+RUN apt-get update && apt-get install -y tzdata
+
 # Set the working directory in the container
 WORKDIR /app
 

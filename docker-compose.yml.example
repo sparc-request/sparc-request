@@ -6,6 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: sparc-docker_development
+      TZ: America/New_York
     networks:
       - sparc_network
     ports:
@@ -27,6 +28,7 @@ services:
       DATABASE_PASSWORD: root_password
       DATABASE_NAME: sparc-docker_development
       RAILS_ENV: development
+      TZ: America/New_York
       ##CWF Info
       CWF_DATABASE_NAME: cwf-docker_development
     env_file:

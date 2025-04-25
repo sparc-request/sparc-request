@@ -23,10 +23,7 @@ class Document < ApplicationRecord
   audited
 
   SUPPORTED_FILE_TYPES = [
-    /\.pdf$/i,  /\.docx?$/i, /\.xlsx?$/i, /\.txt$/i,
-    /\.csv$/i,  /\.ppt?$/i,  /\.msg$/i,   /\.eml$/i,
-    /\.jpg$/i,  /\.gif$/i,   /\.png$/i,   /\.tiff$/i,
-    /\.jpeg$/i
+    /\.pdf$/i, /\.docx?$/i, /\.xlsx?$/i, /\.pptx?$/i, /\.txt$/i, /\.csv$/i, /\.msg$/i, /\.eml$/i, /\.jpg$/i, /\.jpeg$/i, /\.gif$/i, /\.png$/i, /\.tiff$/i 
   ]
 
   belongs_to :protocol
@@ -66,7 +63,7 @@ class Document < ApplicationRecord
   def supported_file_types
     return unless document.attached?
 
-    supported_types = %w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet text/plain text/csv application/vnd.ms-powerpoint application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff)
+    supported_types = %w(application/pdf application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/vnd.openxmlformats-officedocument.presentationml.presentation text/plain text/csv application/vnd.ms-outlook message/rfc822 image/jpeg image/gif image/png image/tiff)
     unless supported_types.include?(document.content_type)
       errors.add(:document, 'file type is not supported.')
     end

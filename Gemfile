@@ -71,7 +71,6 @@ gem 'pdfkit'  # Check usage
 gem 'prawn-table'
 gem 'prawn' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
 # gem 'rails', '5.2.8.1'
 # gem 'rails', '6.1.7.6'
@@ -102,6 +101,7 @@ group :production do
 end
 
 group :development, :test, :profile do
+  gem 'puma', '~> 5.6'
   gem 'addressable', '~> 2.8.1' # Check usage
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

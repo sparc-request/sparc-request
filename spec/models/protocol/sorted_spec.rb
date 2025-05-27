@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe Protocol, type: :model do
     describe ".sorted" do
         it "sorts by cleaned short_title ASC" do
-            p1 = Protocol.create!(short_title: "/tZebra")
+            p1 = Protocol.create!(short_title: "\tZebra")
             p2 = Protocol.create!(short_title: "  Apple")
             p3 = Protocol.create!(short_title: "Banana")
 
@@ -33,7 +33,7 @@ RSpec.describe Protocol, type: :model do
         end
 
         it "sorts by cleaned _short_title DESC" do
-            p1 = Protocol.create!(short_title: "/tZebra")
+            p1 = Protocol.create!(short_title: "\tZebra")
             p2 = Protocol.create!(short_title: "  Apple")
             p3 = Protocol.create!(short_title: "Banana")
 

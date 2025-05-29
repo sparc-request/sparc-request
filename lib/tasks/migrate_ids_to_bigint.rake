@@ -78,7 +78,15 @@ task :migrate_ids_to_bigint => :environment do
           opts = {}
           opts[:auto_increment] = true if column[key_index] == 'PRI' && column[extra_index].include?('auto_increment')
           puts "Updating #{table_name}.#{column[name_index]}"
-          ApplicationRecord.connection.change_column table_name, column[name_index], :bigint, opts
+          if column[key_index] == 'PRI' && column[extra_index].include?('auto_increment')
+            if Rails.version.to_f >= 6.1
+              ApplicationRecord.connection.change_column table_name, column[name_index], :bigint, auto_increment: true
+            else 
+              ApplicationRecord.connection.change_column table_name, column[name_index], :bigint, opts
+            end
+          else
+            ApplicationRecord.connection.change_column table_name, column[name_index], :bigint
+          end
         end
       end
     end

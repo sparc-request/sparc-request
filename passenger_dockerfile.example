@@ -1,0 +1,36 @@
+FROM phusion/passenger-ruby33
+
+ENV HOME=/root
+
+RUN openssl req -x509 -nodes -days 365 \
+    -newkey rsa:2048 \
+    -keyout /etc/ssl/private/nginx-selfsigned.key \
+    -out /etc/ssl/certs/nginx-selfsigned.crt \
+    -subj "/CN=localhost"
+
+ENV PASSENGER_APP_ENV=production
+
+RUN rm -f /etc/service/nginx/down
+
+RUN rm /etc/nginx/sites-enabled/default
+ADD webapp.conf /etc/nginx/sites-enabled/webapp.conf
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libmariadb-dev nodejs yarn && \
+    apt-get install -y curl gnupg libcurl4-gnutls-dev shared-mime-info && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home/app/webapp
+COPY Gemfile* ./
+RUN bundle install
+COPY --chown=app:app . /home/app/webapp/
+RUN yarn install
+RUN RAILS_ENV=production bundle exec rake assets:precompile
+EXPOSE 80
+
+CMD ["/sbin/my_init"]

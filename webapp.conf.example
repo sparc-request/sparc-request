@@ -1,0 +1,25 @@
+server {
+  listen 80;
+  server_name _;
+  return 301 https://$host$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name _;
+
+  ssl_certificate     /etc/ssl/certs/nginx-selfsigned.crt;
+  ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+
+  root /home/app/webapp/public;
+
+  passenger_enabled on;
+  passenger_user app;
+
+  # For Ruby 3.3
+  passenger_ruby /usr/bin/ruby3.3;
+
+  # Nginx has a default limit of 1 MB for request bodies, which also applies
+  # to file uploads. The following line enables uploads of up to 50 MB:
+  client_max_body_size 50M;
+}

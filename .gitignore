@@ -51,6 +51,7 @@ config/initializers/abstract_mysql_adapter.rb
 public/portal
 public/catalog_manager
 
+Dockerfile
 docker-compose.yml
 
 import/checkpoints

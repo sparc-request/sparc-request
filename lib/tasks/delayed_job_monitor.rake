@@ -26,7 +26,7 @@ task delayed_job_monitor: :environment do
   dj_slack_webhook = Setting.get_value("delayed_job_monitor_slack_webhook")
   dj_teams_webhook = Setting.get_value("delayed_job_monitor_teams_webhook")
 
-  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job status")
+  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n 4 status")
   prev_status = stderr
 
   if stderr =~ /delayed_job: no instances running/
@@ -38,7 +38,7 @@ task delayed_job_monitor: :environment do
       message += "delayed_job: attempting restart\n"
     end
 
-    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job start")
+    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n 4 restart")
     curr_status = stdout
 
     if dj_slack_webhook.present? || dj_teams_webhook.present?

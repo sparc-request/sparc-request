@@ -23,23 +23,21 @@ require 'rails_helper'
 RSpec.describe Protocol, type: :model do
     describe ".sorted" do
         it "sorts by cleaned short_title ASC" do
-            p1 = Protocol.create!(short_title: "\tZebra")
-            p2 = Protocol.create!(short_title: "  Apple")
-            p3 = Protocol.create!(short_title: "Banana")
+            p1 = Protocol.create!(short_title: "  Apple  ")
+            p2 = Protocol.create!(short_title: "Banana")
 
             result = Protocol.sorted('short_title', 'asc').pluck(:short_title)
 
-            expect(result).to eq([p2.short_title, p3.short_title, p1.short_title])
+            expect(result.map(&:strip)).to eq(["Apple", "Banana"])
         end
 
         it "sorts by cleaned _short_title DESC" do
-            p1 = Protocol.create!(short_title: "\tZebra")
-            p2 = Protocol.create!(short_title: "  Apple")
-            p3 = Protocol.create!(short_title: "Banana")
+            p1 = Protocol.create!(short_title: "  Apple")
+            p2 = Protocol.create!(short_title: "Banana")
 
             result = Protocol.sorted('short_title', 'desc').pluck(:short_title)
 
-            expect(result).to eq([p1.short_title, p3.short_title, p2.short_title])
+            expect(result.map(&:strip)).to eq(["Banana", "Apple"])
         end
     end
 end

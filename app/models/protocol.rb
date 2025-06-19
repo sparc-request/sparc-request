@@ -196,7 +196,8 @@ class Protocol < ApplicationRecord
     when 'id'
       order(id: order)
     when 'short_title'
-      Protocol.order(Arel.sql("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}"))
+      #Protocol.order(Arel.sql("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}"))
+      order(Arel.sql("trim(replace(short_title, char(9), '')) #{order}"))
     when 'pis'
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'

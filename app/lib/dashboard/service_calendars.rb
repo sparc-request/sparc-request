@@ -67,7 +67,7 @@ module Dashboard
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
-      statuses_hidden = 
+      statuses_hidden =
         if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
@@ -77,31 +77,34 @@ module Dashboard
         end
 
       # View Full Calendar
-      if opts[:merged] && opts[:consolidated]
-        if opts[:show_unchecked]
-          arm.line_items_visits.
-            includes(sub_service_request: :services).
-            where.not(sub_service_requests: { status: statuses_hidden }).
-            where(services: { one_time_fee: false })
+      line_items_visits =
+        if opts[:merged] && opts[:consolidated]
+          if opts[:show_unchecked]
+            arm.line_items_visits.
+              includes(sub_service_request: :services).
+              where.not(sub_service_requests: { status: statuses_hidden }).
+              where(services: { one_time_fee: false })
+          else
+            arm.line_items_visits.
+              includes(sub_service_request: :services).
+              where.not(sub_service_requests: { status: statuses_hidden }).
+              where(services: { one_time_fee: false }).
+              where.not("visit_r_quantity = 0 and visit_i_quantity = 0 and visit_e_quantity = 0" )
+          end
         else
-          arm.line_items_visits.
+          (sub_service_request || service_request).line_items_visits.
             includes(sub_service_request: :services).
             where.not(sub_service_requests: { status: statuses_hidden }).
-            where(services: { one_time_fee: false }).
-            where.not("visit_r_quantity = 0 and visit_i_quantity = 0 and visit_e_quantity = 0" )
+            where(services: { one_time_fee: false }, arm_id: arm.id)
         end
-      else
-        (sub_service_request || service_request).line_items_visits.
-          includes(sub_service_request: :services).
-          where.not(sub_service_requests: { status: statuses_hidden }).
-          where(services: { one_time_fee: false }, arm_id: arm.id)
-      end.group_by do |liv|
-        liv.sub_service_request
+        grouped_line_items_visits = line_items_visits.group_by do |liv|
+          liv.sub_service_request
+        end
+        sorted_grouped_line_items_visits = grouped_line_items_visits.sort_by { |ssr, _line_items_visits_for_ssr| ssr.ssr_id }.to_h
       end
-    end
 
     def self.otf_line_items_to_display(service_request, sub_service_request, opts = {})
-      statuses_hidden = 
+      statuses_hidden =
         if opts[:merged] && opts[:consolidated] && !opts[:show_draft] # View Full Calendar may hide `draft` as well as `first_draft`
           %w(first_draft draft)
         elsif opts[:merged] && !opts[:consolidated] # Merged Calendar does not hide by status
@@ -110,7 +113,7 @@ module Dashboard
           %w(first_draft)
         end
 
-      (opts[:merged] && opts[:consolidated] ? service_request : (sub_service_request || service_request)).line_items.
+      grouped_line_items = (opts[:merged] && opts[:consolidated] ? service_request : (sub_service_request || service_request)).line_items.
         eager_load(:admin_rates, :notes, :protocol).
         includes(sub_service_request: :organization, service: [:pricing_maps, organization: [:pricing_setups, parent: [:pricing_setups, parent: [:pricing_setups, :parent]]]]).
         where.not(sub_service_requests: { status: statuses_hidden }).
@@ -118,6 +121,10 @@ module Dashboard
         group_by do |li|
           li.sub_service_request
         end
+      
+      sorted_grouped_line_items = grouped_line_items.sort_by { |ssr, _line_items_for_ssr| ssr.ssr_id }.to_h
+
+      sorted_grouped_line_items
     end
 
     def self.glyph_class(obj)

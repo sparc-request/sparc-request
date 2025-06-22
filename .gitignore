@@ -53,6 +53,7 @@ public/catalog_manager
 
 Dockerfile
 docker-compose.yml
+webapp.conf
 
 import/checkpoints
 import/config/alfresco.yml

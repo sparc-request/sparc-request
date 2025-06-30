@@ -28,6 +28,8 @@ RSpec.describe 'User creates a survey', js: true do
 
   context 'surveys' do
     before :each do
+      allow_any_instance_of(Identity).to receive(:is_site_admin?).and_return(true)
+      
       visit surveyor_surveys_path
       wait_for_javascript_to_finish
 

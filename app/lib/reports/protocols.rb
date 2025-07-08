@@ -59,7 +59,7 @@ class ProtocolsReport < ReportingModule
     attrs["NCT #"]                        = "human_subjects_info.try(:nct_number).try{prepend(' ')}"
 
     attrs["Number of IRBs"]               = "irb_records.length"
-    attrs["PRO #"]                        = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.pro_number]}}.try(:join, ', ') : irb_records.first.try(:pro_number).try{prepend(' ')}"
+    attrs["IRB #"]                        = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.pro_number]}}.try(:join, ', ') : irb_records.first.try(:pro_number).try{prepend(' ')}"
     attrs["IRB of Record"]                = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_of_record]}}.try(:join, ', ') : irb_records.first.try(:irb_of_record)"
     attrs["Study Phase"]                  = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.study_phases.map(&:phase).join(', ')]}}.try(:join, ', ') : irb_records.first.try{study_phases.map(&:phase).join(', ')}"
     attrs["IRB Expiration Date"]          = "irb_records.length > 1 ? irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_expiration_date.try(:strftime, '%D').to_s]}}.try(:join, ', ') : irb_records.first.try(:irb_expiration_date).try(:strftime, '%D')"

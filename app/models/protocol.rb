@@ -209,7 +209,7 @@ class Protocol < ApplicationRecord
   scope :search_query, -> (search_attrs) {
     return if search_attrs.search_text.blank?
 
-    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
+    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'IRB#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
@@ -249,7 +249,7 @@ class Protocol < ApplicationRecord
       where(id: others & unscoped).distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
-    when "PRO#"
+    when "IRB#"
       joins(:irb_records).
         where(pro_num_query).distinct
     when "RMID"

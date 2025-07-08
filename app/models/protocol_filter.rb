@@ -51,9 +51,9 @@ class ProtocolFilter < ApplicationRecord
 
   def self.search_filters
     if Setting.get_value("research_master_enabled")
-        ['Authorized User', 'NCT#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
+        ['Authorized User', 'NCT#', 'PI', 'Protocol ID', 'IRB#', 'RMID', 'Short/Long Title']
     else
-        ['Authorized User', 'NCT#', 'PI', 'Protocol ID', 'PRO#', 'Short/Long Title']
+        ['Authorized User', 'NCT#', 'PI', 'Protocol ID', 'IRB#', 'Short/Long Title']
     end
   end
 end

@@ -24,6 +24,7 @@ class ServiceRequest < ApplicationRecord
   audited
 
   belongs_to :protocol
+  validates_associated :protocol
 
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
@@ -56,11 +57,53 @@ class ServiceRequest < ApplicationRecord
     self.errors.none?
   end
 
-  def protocol_valid?
-    self.errors.add(:protocol, :blank) if self.protocol_id.blank?
-    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.valid?
-    self.errors.add(:protocol, :invalid) if self.protocol && !self.protocol.validate_dates
-    self.errors.none?
+  def extract_errors(errors)
+    errors.details.flat_map do |attr, details_array|
+      details_array.map do |detail|
+        begin
+          errors.full_message(attr, detail[:error]) ||
+          "#{attr.to_s.humanize} #{detail[:error].to_s.humanize.downcase}"
+        rescue
+          "#{attr.to_s.humanize} #{detail[:error].to_s.humanize.downcase}"
+        end
+      end
+    end
+  end
+
+  def protocol_valid?(return_errors: false)
+    self.errors.delete(:protocol)
+
+    if self.protocol_id.blank?
+      self.errors.add(:protocol, "must be present")
+    end
+
+    if self.protocol
+      self.protocol.errors.clear
+
+      # Force RMID presence validation for auditing
+      self.protocol.define_singleton_method(:rmid_requires_validation?) { true }
+
+      # Run all Protocol validations
+      self.protocol.valid?
+
+      # Extract and add protocol model errors to the SR's base errors
+      extract_errors(self.protocol.errors).each do |msg|
+        self.errors.add(:base, msg)
+      end
+
+      # Also run and extract any date validation errors, also adding them to SR's base errors
+      unless self.protocol.validate_dates
+        if self.protocol.errors.empty?
+          self.errors.add(:base, 'Protocol has invalid dates')
+        else
+          extract_errors(self.protocol.errors).each do |msg|
+            self.errors.add(:base, msg)
+          end
+        end
+      end
+    end
+
+    return_errors ? self.errors.messages : self.errors.none?
   end
 
   def service_details_valid?

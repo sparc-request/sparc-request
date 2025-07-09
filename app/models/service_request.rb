@@ -80,9 +80,6 @@ class ServiceRequest < ApplicationRecord
     if self.protocol
       self.protocol.errors.clear
 
-      # Force RMID presence validation for auditing
-      self.protocol.define_singleton_method(:rmid_requires_validation?) { true }
-
       # Run all Protocol validations
       self.protocol.valid?
 

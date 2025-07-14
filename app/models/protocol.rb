@@ -224,10 +224,13 @@ class Protocol < ApplicationRecord
       protocol_id_query = Protocol.arel_table[:id].eq(search_attrs[:search_text])
     end
 
-    pro_num_query     = IrbRecord.arel_table[:pro_number].matches(like_search_term)
-    rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
-    title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
-    nct_num_query     = HumanSubjectsInfo.arel_table[:nct_number].matches(like_search_term)
+    pro_num_query      = IrbRecord.arel_table[:pro_number].matches(like_search_term)
+    rmid_query         = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
+    title_query        = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
+    nct_num_query      = HumanSubjectsInfo.arel_table[:nct_number].matches(like_search_term)
+    cpt_eap_query      = Service.arel_table[:cpt_code].matches(like_search_term).or(Service.arel_table[:eap_id].matches(like_search_term))
+    service_name_query = Service.arel_table[:name].matches(like_search_term)
+
     ### END SEARCH QUERIES ###
 
     case search_attrs[:search_drop]
@@ -239,13 +242,13 @@ class Protocol < ApplicationRecord
 
       where(id: others & unscoped).distinct
 
+    when "CPT/EAP Code"
+      joins(service_requests: { line_items: :service }).where(cpt_eap_query).distinct
     when "NCT#"
       joins(:human_subjects_info).where(nct_num_query).distinct
-
     when "PI"
       unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
-
       where(id: others & unscoped).distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
@@ -256,6 +259,8 @@ class Protocol < ApplicationRecord
       where(rmid_query).distinct
     when "Short/Long Title"
       where(title_query).distinct
+    when "Service"
+      joins(service_requests: { line_items: :service }).where(service_name_query).distinct
     when ""
       joins(:identities).left_outer_joins(:irb_records, :human_subjects_info).
         where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query).or(nct_num_query)).

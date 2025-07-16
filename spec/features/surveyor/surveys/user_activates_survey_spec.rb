@@ -25,9 +25,10 @@ RSpec.describe 'User activates a survey', js: true do
   fake_login_for_each_test
 
   stub_config("site_admins", ["jug2"])
-  
+
   context 'surveys' do
     before :each do
+      allow_any_instance_of(Identity).to receive(:is_site_admin?).and_return(true)
       @survey = create(:system_survey)
       section = create(:section, survey: @survey)
       create(:question, question_type: 'dropdown', section: section)

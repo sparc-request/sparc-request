@@ -601,7 +601,7 @@ GEM
     temple (0.9.1)
     terrapin (0.6.0)
       climate_control (>= 0.0.3, < 1.0)
-    thor (1.3.1)
+    thor (1.4.0)
     tilt (2.0.11)
     timecop (0.9.5)
     timeout (0.4.1)

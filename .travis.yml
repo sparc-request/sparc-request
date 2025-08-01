@@ -2,7 +2,8 @@ language: ruby
 cache: bundler
 dist: focal
 addons:
-  firefox: latest
+  # firefox: latest
+  firefox: "140.0.4" # this was the version used in the last successful build
 env:
   - MOZ_HEADLESS=1
 services:

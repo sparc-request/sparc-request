@@ -2,7 +2,7 @@ language: ruby
 cache: bundler
 dist: focal
 addons:
-  firefox: latest
+  firefox: "140.0.4"
 env:
   - MOZ_HEADLESS=1
 services:

@@ -345,8 +345,8 @@ class Service < ApplicationRecord
       pricing_maps.exists? &&
       !pricing_maps.where('full_rate > 0').exists?
 
-    if has_admin_requirements != is_administrative
-      update_column(:is_administrative, has_admin_requirements)
+    if !has_admin_requirements && self.is_administrative
+      update_column(:is_administrative, false)
     end
   end
 

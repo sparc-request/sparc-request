@@ -31,6 +31,8 @@ RUN bundle install
 COPY --chown=app:app . /home/app/webapp/
 RUN yarn install
 RUN RAILS_ENV=production bundle exec rake assets:precompile
+RUN mkdir -p /home/app/webapp/tmp/cache/assets && \
+    chown -R app:app /home/app/webapp/tmp
 EXPOSE 80
 
 CMD ["/sbin/my_init"]

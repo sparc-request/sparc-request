@@ -1,12 +1,6 @@
 server {
-  listen 80;
-  server_name _;
-  return 301 https://$host$request_uri;
-}
-
-server {
   listen 443 ssl;
-  server_name _;
+  server_name sparc;
 
   ssl_certificate     /etc/ssl/certs/nginx-selfsigned.crt;
   ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;

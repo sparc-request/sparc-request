@@ -212,7 +212,8 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       :revenue_code_range_id,
       :line_items_count,
       :one_time_fee,
-      :component
+      :component,
+      :is_administrative
     )
   end
 

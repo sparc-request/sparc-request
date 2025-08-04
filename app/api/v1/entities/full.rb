@@ -198,7 +198,8 @@ module V1
             :one_time_fee,
             :line_items_count,
             :components,
-            :direct_link
+            :direct_link,
+            :is_administrative
 
     expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end

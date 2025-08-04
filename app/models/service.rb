@@ -64,6 +64,8 @@ class Service < ApplicationRecord
   validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
+  after_touch :update_administrative_status
+
   default_scope -> {
     order(:order, :name)
   }
@@ -335,6 +337,17 @@ class Service < ApplicationRecord
 
   def direct_link
     "#{ENV.fetch('ROOT_URL')}/services/#{id}"
+  end
+
+  def update_administrative_status
+    has_admin_requirements =
+      one_time_fee? &&
+      pricing_maps.exists? &&
+      !pricing_maps.where('full_rate > 0').exists?
+
+    if !has_admin_requirements && self.is_administrative
+      update_column(:is_administrative, false)
+    end
   end
 
   private

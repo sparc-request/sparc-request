@@ -369,6 +369,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_24_182446) do
     t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
+    t.boolean "system_admin"
     t.index ["approved"], name: "index_identities_on_approved"
     t.index ["email"], name: "index_identities_on_email"
     t.index ["first_name"], name: "index_identities_on_first_name"

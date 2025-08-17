@@ -53,8 +53,14 @@ class Arm < ApplicationRecord
   def visit_groups_valid?
     loaded_visit_groups = visit_groups.to_a.each{|vg| vg.skip_order_validation = true}
     self.errors.add(:visit_groups, :invalid) if loaded_visit_groups.detect(&:invalid?)
-    self.errors.add(:visit_groups, :out_of_order) unless visit_groups_in_order?(loaded_visit_groups)
-    self.errors.none?
+
+    # only run this check if first check passes
+    if self.errors.none?
+      self.errors.add(:visit_groups, :out_of_order) unless visit_groups_in_order?(loaded_visit_groups)
+      return self.errors.none?
+    else
+      return false
+    end
   end
 
   # To add errors for moving a visit's position

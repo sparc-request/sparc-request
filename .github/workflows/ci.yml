@@ -53,7 +53,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version-file: sparc-request/.ruby-version
+          working-directory: ./sparc-request
           bundler-cache: true
       - name: Install system dependencies and start Xvfb
         run: |

@@ -1,0 +1,98 @@
+name: Ruby CI
+
+on:
+  pull_request:
+    branches:
+      - "v*"
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        rspec_files:
+          - "spec/api spec/extensions spec/jobs spec/helpers spec/mailers spec/lib spec/models spec/views spec/controllers"
+          - "spec/features/dashboard spec/features/surveyor"
+          - "spec/features/proper spec/features/catalog_manager"
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_USER: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    env:
+      RAILS_ENV: test
+      TZ: America/New_York
+      DISPLAY: :99.0
+      MOZ_HEADLESS: 1
+      DATABASE_HOST: 127.0.0.1
+
+    steps:
+      - name: Checkout sparc-request
+        uses: actions/checkout@v4
+        with:
+          path: sparc-request
+      - name: Checkout sparc-fulfillment
+        uses: actions/checkout@v4
+        with:
+          repository: sparc-request/sparc-fulfillment
+          ref: v3.6.1
+          path: sparc-fulfillment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14.19.2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version-file: sparc-request/.ruby-version
+          bundler-cache: true
+      - name: Install system dependencies and start Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb mysql-client
+          Xvfb :99 -screen 0 1024x768x24 &
+      - name: Set up db and apps
+        working-directory: ./sparc-request
+        run: |
+          cp config/database.yml.example config/database.yml
+          cp config/fulfillment_db.yml.example config/fulfillment_db.yml
+          cp dotenv.example .env
+
+          mysql -h 127.0.0.1 -u root -e 'create database test_sparc_request;'
+          mysql -h 127.0.0.1 -u root -e 'create database cwf_test;'
+
+          bundle exec rake db:migrate
+          bundle exec rake db:test:prepare
+
+          cd ../sparc-fulfillment
+          export BUNDLE_GEMFILE=$PWD/Gemfile
+          bundle install --jobs=4 --retry=3
+
+          cp config/database.yml.example config/database.yml
+          cp config/sparc_db.yml.example config/sparc_db.yml
+          cp config/klok_db.yml.example config/klok_db.yml
+          cp dotenv.example .env
+          bundle exec rake db:migrate
+
+          cd ../sparc-request
+
+          corepack enable
+          yarn install
+
+          bundle exec rake assets:precompile
+
+      - name: Run RSpec tests
+        working-directory: ./sparc-request
+        run: bundle exec rspec ${{ matrix.rspec_files }}
+
+

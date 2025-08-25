@@ -58,7 +58,7 @@ jobs:
       - name: Install system dependencies and start Xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb mysql-client
+          sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
           Xvfb :99 -screen 0 1024x768x24 &
       - name: Set up db and apps
         working-directory: ./sparc-request

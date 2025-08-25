@@ -93,8 +93,11 @@ class NotifierLogic
 
   def send_initial_submission_email
     unless @to_notify.empty?
-      sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
-      send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify).includes(:services)
+
+      # Suppress emails for SSRs that only contain administrative services
+      non_admin_ssrs = sub_service_requests.reject { |ssr| ssr.services.all(&:is_administrative?) }
+      send_notifications(non_admin_ssrs) unless non_admin_ssrs.empty?
     end
   end
 

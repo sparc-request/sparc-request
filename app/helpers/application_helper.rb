@@ -169,6 +169,12 @@ module ApplicationHelper
     end
   end
 
+  def admin_service_tag
+    content_tag(:small, class: 'text-danger ml-1') do
+      content_tag(:em, '(admin service)')
+    end
+  end
+
   ##Sets css bootstrap classes for rails flash message types##
   def twitterized_type type
     case type.to_sym

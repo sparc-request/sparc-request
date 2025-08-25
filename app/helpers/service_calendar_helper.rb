@@ -28,12 +28,13 @@ module ServiceCalendarHelper
     text      = line_item.service.display_service_name
     text     += inactive_tag unless line_item.service.is_available
     text     += " (In SPARCFulfillment)" if in_fulfillment?(line_item)
+    text     += admin_service_tag if line_item.service.is_administrative?
     raw(text)
   end
 
   # Only one time fees for now
   def in_fulfillment?(line_item)
-    if line_item.service.one_time_fee && Setting.get_value("fulfillment_contingent_on_catalog_manager") 
+    if line_item.service.one_time_fee && Setting.get_value("fulfillment_contingent_on_catalog_manager")
       Shard::Fulfillment::LineItem.where(sparc_id: line_item.id).size > 0
     else
       false

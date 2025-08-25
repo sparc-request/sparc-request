@@ -70,6 +70,13 @@ class Service < ApplicationRecord
     order(:order, :name)
   }
 
+  # Only show non-admin services in SPARC shopping area unless user is service provider AND catalog overlord
+  scope :with_admin_services, -> (user) {
+    unless user.present? && user.catalog_overlord? && user.service_providers.any?
+      where(is_administrative: false)
+    end
+  }
+
   scope :available, -> {
     where(is_available: true)
   }

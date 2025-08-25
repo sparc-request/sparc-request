@@ -40,26 +40,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: sparc-request
+
       - name: Checkout sparc-fulfillment
         uses: actions/checkout@v4
         with:
           repository: sparc-request/sparc-fulfillment
           ref: v3.6.1
           path: sparc-fulfillment
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 14.19.2
+
+      - name: Install system dependencies and start Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
+          Xvfb :99 -screen 0 1024x768x24 &# ruby-version-file: sparc-request/.ruby-version
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           working-directory: ./sparc-request
           bundler-cache: true
-      - name: Install system dependencies and start Xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
-          Xvfb :99 -screen 0 1024x768x24 &
+
       - name: Set up db and apps
         working-directory: ./sparc-request
         run: |

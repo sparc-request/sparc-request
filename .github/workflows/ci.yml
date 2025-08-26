@@ -20,7 +20,7 @@ jobs:
           - "spec/features/proper spec/features/catalog_manager"
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_PASSWORD: ''

@@ -66,10 +66,16 @@ jobs:
           sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
           Xvfb :99 -screen 0 1024x768x24 &# ruby-version-file: sparc-request/.ruby-version
 
-      - name: Set up Ruby
+      - name: Set up SPARC ruby
         uses: ruby/setup-ruby@v1
         with:
           working-directory: ./sparc-request
+          bundler-cache: true
+
+      - name: Set up CWF ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-fulfillment
           bundler-cache: true
 
       - name: Set up db and apps

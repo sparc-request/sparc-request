@@ -114,11 +114,13 @@ jobs:
         run: |
           PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH
           cd sparc-fulfillment
+          bundle config set --local path 'vendor/bundle'
           bundle install --jobs=4 --retry=3
           cd ..
 
           PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
           cd sparc-request
+          bundle config set --local path 'vendor/bundle'
           bundle install --jobs=4 --retry=3
           cd ..
 

@@ -82,7 +82,8 @@ jobs:
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
-          bundle exec rake db:migrate
+          # bundle exec rake db:migrate
+          bundle exec rake db:schema:load
           bundle exec rake db:test:prepare
 
           cd ../sparc-fulfillment

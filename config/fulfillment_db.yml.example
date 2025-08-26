@@ -43,7 +43,7 @@ development:
  # configured for github actions ci
 test:
   <<: *default
-  database: <%= ENV.fetch('FULFILLMENT_DATABASE_NAME', 'cwf_test') %
+  database: <%= ENV.fetch('FULFILLMENT_DATABASE_NAME', 'cwf_test') %>
   username: <%= ENV.fetch('DATABASE_USERNAME', 'root') %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
   host: <%= ENV['DATABASE_HOST'] %>

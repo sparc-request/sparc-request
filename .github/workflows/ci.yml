@@ -34,6 +34,10 @@ jobs:
       DISPLAY: :99.0
       MOZ_HEADLESS: 1
       DATABASE_HOST: 127.0.0.1
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: ''
+      DATABASE_NAME: test_sparc_request
+      FULFILLMENT_DATABASE_NAME: cwf_test
 
     steps:
       - name: Checkout sparc-request
@@ -72,8 +76,8 @@ jobs:
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
 
-          mysql -h 127.0.0.1 -u root -e 'create database test_sparc_request;'
-          mysql -h 127.0.0.1 -u root -e 'create database cwf_test;'
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e 'create database $DATABASE_NAME;'
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e 'create database $FULFILLMENT_DATABASE_NAME;'
 
           bundle exec rake db:migrate
           bundle exec rake db:test:prepare

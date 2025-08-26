@@ -34,11 +34,19 @@ development:
   password:
 
 # configured for travis-ci
+# test:
+ # <<: *default
+ # database: cwf_test # for travis-ci, needs to match sparc-fulfillment test database name
+ # username: travis
+ # password:
+
+ # configured for github actions ci
 test:
   <<: *default
-  database: cwf_test # for travis-ci, needs to match sparc-fulfillment test database name
-  username: travis
-  password:
+  database: <%= ENV.fetch('FULFILLMENT_DATABASE_NAME', 'cwf_test') %
+  username: <%= ENV.fetch('DATABASE_USERNAME', 'root') %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
 
 
 # Docker Config Example

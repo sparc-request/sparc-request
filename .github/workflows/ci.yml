@@ -122,8 +122,8 @@ jobs:
           bundle install --jobs=4 --retry=3
           cd ..
 
-          mysql -h $DATABASE_HOST -u $DATABASE_USER -e "create database $DATABASE_NAME;"
-          mysql -h $DATABASE_HOST -u $DATABASE_USER -e "create database $FULFILLMENT_DATABASE_NAME;"
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
           # Use SPARC's Ruby for its rake tasks
           PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
@@ -150,6 +150,8 @@ jobs:
 
       - name: Run RSpec tests
         working-directory: ./sparc-request
-        run: bundle exec rspec ${{ matrix.rspec_files }}
+        run: |
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
+          bundle exec rspec ${{ matrix.rspec_files }}
 
 

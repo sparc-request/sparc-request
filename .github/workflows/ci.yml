@@ -79,8 +79,8 @@ jobs:
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
 
-          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e 'create database $DATABASE_NAME;'
-          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e 'create database $FULFILLMENT_DATABASE_NAME;'
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
           bundle exec rake db:migrate
           bundle exec rake db:test:prepare

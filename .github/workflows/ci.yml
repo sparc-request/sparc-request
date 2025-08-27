@@ -90,25 +90,45 @@ jobs:
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
-      - name: Setup sparc-fulfillment database
-        working-directory: ./sparc-fulfillment
-        run: |
-          cp config/database.yml.example config/database.yml
-          sed -i 's|host: <%= ENV.* %>|host: 127.0.0.1|' config/database.yml
-          cp config/sparc_db.yml.example config/sparc_db.yml
-          cp config/klok_db.yml.example config/klok_db.yml
-          cp dotenv.example .env
-          bundle exec rake db:migrate
-
       - name: Setup sparc-request database
         working-directory: ./sparc-request
         run: |
           cp config/database.yml.example config/database.yml
-          sed -i 's|host: <%= ENV.* %>|host: 127.0.0.1|' config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
+          RAILS_ENV=test bundle exec rake db:migrate
+          RAILS_ENV=test bundle exec rake db:test:prepare
+
+      - name: Setup sparc-fulfillment database
+        working-directory: ./sparc-fulfillment
+        run: |
+          cat <<EOF > config/database.yml
+          test:
+            adapter: mysql2
+            encoding: utf8
+            database: ${FULFILLMENT_DATABASE_NAME}
+            username: ${DATABASE_USERNAME}
+            password: "${DATABASE_PASSWORD}"
+            host: ${DATABASE_HOST}
+          EOF
+          # Create sparc_db.yml for sparc-fulfillment to connect to sparc-request
+          cat <<EOF > config/sparc_db.yml
+          test:
+            adapter: mysql2
+            encoding: utf8
+            database: ${DATABASE_NAME}
+            username: ${DATABASE_USERNAME}
+            password: "${DATABASE_PASSWORD}"
+            host: ${DATABASE_HOST}
+          EOF
+          # The klok_db is not used by tests, but a valid connection config is needed.
+          cp config/klok_db.yml.example config/klok_db.yml
+          sed -i 's/username: travis/username: root/' config/klok_db.yml
+          sed -i '/username: root/a \ \ host: 127.0.0.1' config/klok_db.yml
+          cp dotenv.example .env
           bundle exec rake db:migrate
-          bundle exec rake db:test:prepare
+
+
 
       - name: Install Node dependencies and precompile assets
         working-directory: ./sparc-request

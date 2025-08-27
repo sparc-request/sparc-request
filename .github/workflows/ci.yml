@@ -31,6 +31,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
+
     env:
       RAILS_ENV: test
       TZ: America/New_York
@@ -64,94 +65,69 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
-          Xvfb :99 -screen 0 1024x768x24 &# ruby-version-file: sparc-request/.ruby-version
+          Xvfb :99 -screen 0 1024x768x24 &
 
-      - name: Set up SPARC ruby
+      - name: Set up Ruby for sparc-request (3.3.1)
         uses: ruby/setup-ruby@v1
         id: setup_ruby_sparc
         with:
           working-directory: ./sparc-request
-          bundler-cache: false
 
-      - name: Set up CWF ruby
+      - name: Set up Ruby for sparc-fulfillment (2.7.5)
         uses: ruby/setup-ruby@v1
         id: setup_ruby_cwf
         with:
           working-directory: ./sparc-fulfillment
-          bundler-cache: false
 
-      # - name: Set up db and apps
-      #   working-directory: ./sparc-request
-      #   run: |
-      #     cp config/database.yml.example config/database.yml
-      #     cp config/fulfillment_db.yml.example config/fulfillment_db.yml
-      #     cp dotenv.example .env
-
-      #     mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
-      #     mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
-
-      #     # bundle exec rake db:migrate
-      #     bundle exec rake db:schema:load
-      #     bundle exec rake db:test:prepare
-
-      #     cd ../sparc-fulfillment
-      #     export BUNDLE_GEMFILE=$PWD/Gemfile
-      #     bundle install --jobs=4 --retry=3
-
-      #     cp config/database.yml.example config/database.yml
-      #     cp config/sparc_db.yml.example config/sparc_db.yml
-      #     cp config/klok_db.yml.example config/klok_db.yml
-      #     cp dotenv.example .env
-      #     bundle exec rake db:migrate
-
-      #     cd ../sparc-request
-
-      #     corepack enable
-      #     yarn install
-
-      #     bundle exec rake assets:precompile
-      - name: Install dependencies and setup databases
+      - name: Install dependencies and setup app
+        env:
+          SPARC_RUBY_PATH: ${{ steps.setup_ruby_sparc.outputs.ruby-path }}
+          CWF_RUBY_PATH: ${{ steps.setup_ruby_cwf.outputs.ruby-path }}
         run: |
-
+          echo "--- Installing sparc-fulfillment dependencies ---"
           cd sparc-fulfillment
-          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle config set --local path 'vendor/bundle'
-          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle install --jobs=4 --retry=3
+          PATH=$CWF_RUBY_PATH/bin:$PATH bundle config set --local path 'vendor/bundle'
+          PATH=$CWF_RUBY_PATH/bin:$PATH bundle install --jobs=4 --retry=3
           cd ..
 
+          echo "--- Installing sparc-request dependencies ---"
           cd sparc-request
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle config set --local path 'vendor/bundle'
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle install --jobs=4 --retry=3
+          PATH=$SPARC_RUBY_PATH/bin:$PATH bundle config set --local path 'vendor/bundle'
+          PATH=$SPARC_RUBY_PATH/bin:$PATH bundle install --jobs=4 --retry=3
           cd ..
 
+          echo "--- Creating databases ---"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
+          echo "--- Setting up sparc-request database ---"
           cd sparc-request
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle exec rake db:schema:load
+          PATH=$SPARC_RUBY_PATH/bin:$PATH bundle exec rake db:schema:load
           cd ..
 
+          echo "--- Setting up sparc-fulfillment database ---"
           cd sparc-fulfillment
           export BUNDLE_GEMFILE=$PWD/Gemfile
           cp config/database.yml.example config/database.yml
           cp config/sparc_db.yml.example config/sparc_db.yml
           cp config/klok_db.yml.example config/klok_db.yml
           cp dotenv.example .env
-          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle exec rake db:schema:load
+          PATH=$CWF_RUBY_PATH/bin:$PATH bundle exec rake db:schema:load
           cd ..
 
+          echo "--- Precompiling assets for sparc-request ---"
           cd sparc-request
           export BUNDLE_GEMFILE=$PWD/Gemfile
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH corepack enable
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH yarn install
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle exec rake assets:precompile
+          PATH=$SPARC_RUBY_PATH/bin:$PATH corepack enable
+          PATH=$SPARC_RUBY_PATH/bin:$PATH yarn install
+          PATH=$SPARC_RUBY_PATH/bin:$PATH bundle exec rake assets:precompile
 
       - name: Run RSpec tests
         working-directory: ./sparc-request
+        env:
+          SPARC_RUBY_PATH: ${{ steps.setup_ruby_sparc.outputs.ruby-path }}
         run: |
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
-          bundle exec rspec ${{ matrix.rspec_files }}
-
-
+          PATH=$SPARC_RUBY_PATH/bin:$PATH bundle exec rspec ${{ matrix.rspec_files }}

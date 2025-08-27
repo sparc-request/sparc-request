@@ -57,13 +57,13 @@ jobs:
           ref: v3.4.0
           path: sparc-fulfillment
 
-      - name: Set up Node.js
+      - name: Set up node
         uses: actions/setup-node@v4
         with:
           node-version: 14.19.2
 
-      - name: Install Firefox
-        uses: firefox-devtools/action-install-firefox@v1
+      - name: Install firefox
+        uses: browser-actions/setup-firefox@latest
         with:
           firefox-version: '140.0.4'
 

@@ -94,19 +94,21 @@ jobs:
         working-directory: ./sparc-fulfillment
         run: |
           cp config/database.yml.example config/database.yml
+          sed -i 's|host: <%= ENV.* %>|host: 127.0.0.1|' config/database.yml
           cp config/sparc_db.yml.example config/sparc_db.yml
           cp config/klok_db.yml.example config/klok_db.yml
           cp dotenv.example .env
-          DATABASE_HOST=$DATABASE_HOST bundle exec rake db:migrate
+          bundle exec rake db:migrate
 
       - name: Setup sparc-request database
         working-directory: ./sparc-request
         run: |
           cp config/database.yml.example config/database.yml
+          sed -i 's|host: <%= ENV.* %>|host: 127.0.0.1|' config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
-          DATABASE_HOST=$DATABASE_HOST bundle exec rake db:migrate
-          DATABASE_HOST=$DATABASE_HOST bundle exec rake db:test:prepare
+          bundle exec rake db:migrate
+          bundle exec rake db:test:prepare
 
       - name: Install Node dependencies and precompile assets
         working-directory: ./sparc-request

@@ -18,6 +18,7 @@ jobs:
           - "spec/api spec/extensions spec/jobs spec/helpers spec/mailers spec/lib spec/models spec/views spec/controllers"
           - "spec/features/dashboard spec/features/surveyor"
           - "spec/features/proper spec/features/catalog_manager"
+
     services:
       mysql:
         image: mysql:8.0
@@ -108,6 +109,8 @@ jobs:
           (
             cd sparc-request
             export PATH="$SPARC_RUBY_PATH/bin:$PATH"
+            echo "Using Ruby: $(which ruby)"
+            echo "Ruby version: $(ruby -v)"
             cp config/database.yml.example config/database.yml
             cp config/fulfillment_db.yml.example config/fulfillment_db.yml
             cp dotenv.example .env

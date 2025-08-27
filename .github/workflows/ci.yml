@@ -127,18 +127,22 @@ jobs:
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
-          # Use SPARC's Ruby for its rake tasks
           PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
           cd sparc-request
+          cp config/database.yml.example config/database.yml
+          cp config/fulfillment_db.yml.example config/fulfillment_db.yml
+          cp dotenv.example .env
           bundle exec rake db:schema:load
           cd ..
 
-          echo "--- Setting up sparc-fulfillment database ---"
-          # Use CWF's Ruby for its rake tasks
           PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH
           cd sparc-fulfillment
           export BUNDLE_GEMFILE=$PWD/Gemfile
-          bundle exec rake db:migrate
+          cp config/database.yml.example config/database.yml
+          cp config/sparc_db.yml.example config/sparc_db.yml
+          cp config/klok_db.yml.example config/klok_db.yml
+          cp dotenv.example .env
+          bundle exec rake db:schema:load
           cd ..
 
           echo "--- Precompiling assets for sparc-request ---"

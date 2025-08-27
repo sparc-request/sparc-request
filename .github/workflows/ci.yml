@@ -108,6 +108,7 @@ jobs:
           echo "--- Setting up sparc-request database ---"
           (
             cd sparc-request
+            export BUNDLE_GEMFILE=$PWD/Gemfile
             export PATH="$SPARC_RUBY_PATH/bin:$PATH"
             echo "Using Ruby: $(which ruby)"
             echo "Ruby version: $(ruby -v)"

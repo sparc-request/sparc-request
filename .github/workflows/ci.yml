@@ -112,6 +112,9 @@ jobs:
             export PATH="$SPARC_RUBY_PATH/bin:$PATH"
             echo "Using Ruby: $(which ruby)"
             echo "Ruby version: $(ruby -v)"
+            echo "SPARC_RUBY_PATH: $SPARC_RUBY_PATH"
+            echo "contents of $SPARC_RUBY_PATH/bin:"
+            ls -la $SPARC_RUBY_PATH/bin
             cp config/database.yml.example config/database.yml
             cp config/fulfillment_db.yml.example config/fulfillment_db.yml
             cp dotenv.example .env

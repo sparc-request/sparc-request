@@ -115,7 +115,7 @@ jobs:
             cp config/database.yml.example config/database.yml
             cp config/fulfillment_db.yml.example config/fulfillment_db.yml
             cp dotenv.example .env
-            bundle exec rake db:schema:load
+            $SPARC_RUBY_PATH/bin/bundle exec rake db:schema:load
           )
 
           echo "--- Setting up sparc-fulfillment database ---"

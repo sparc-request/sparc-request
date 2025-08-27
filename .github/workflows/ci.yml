@@ -97,6 +97,7 @@ jobs:
           cp config/sparc_db.yml.example config/sparc_db.yml
           cp config/klok_db.yml.example config/klok_db.yml
           cp dotenv.example .env
+          echo "DATABASE_HOST=$DATABASE_HOST" >> .env
           bundle exec rake db:migrate
 
       - name: Setup sparc-request database
@@ -105,6 +106,7 @@ jobs:
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
+          echo "DATABASE_HOST=$DATABASE_HOST" >> .env
           bundle exec rake db:migrate
           bundle exec rake db:test:prepare
 

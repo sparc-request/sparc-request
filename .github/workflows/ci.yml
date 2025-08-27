@@ -112,47 +112,41 @@ jobs:
       #     bundle exec rake assets:precompile
       - name: Install dependencies and setup databases
         run: |
-          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH
+
           cd sparc-fulfillment
-          bundle config set --local path 'vendor/bundle'
-          bundle install --jobs=4 --retry=3
+          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle config set --local path 'vendor/bundle'
+          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle install --jobs=4 --retry=3
           cd ..
 
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
           cd sparc-request
-          bundle config set --local path 'vendor/bundle'
-          bundle install --jobs=4 --retry=3
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle config set --local path 'vendor/bundle'
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle install --jobs=4 --retry=3
           cd ..
 
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
           mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
 
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
           cd sparc-request
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
-          bundle exec rake db:schema:load
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle exec rake db:schema:load
           cd ..
 
-          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH
           cd sparc-fulfillment
           export BUNDLE_GEMFILE=$PWD/Gemfile
           cp config/database.yml.example config/database.yml
           cp config/sparc_db.yml.example config/sparc_db.yml
           cp config/klok_db.yml.example config/klok_db.yml
           cp dotenv.example .env
-          bundle exec rake db:schema:load
+          PATH=${{ steps.setup_ruby_cwf.outputs.ruby-path }}/bin:$PATH bundle exec rake db:schema:load
           cd ..
 
-          echo "--- Precompiling assets for sparc-request ---"
-          # Use SPARC's Ruby for the final asset tasks
-          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH
           cd sparc-request
           export BUNDLE_GEMFILE=$PWD/Gemfile
-          corepack enable
-          yarn install
-          bundle exec rake assets:precompile
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH corepack enable
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH yarn install
+          PATH=${{ steps.setup_ruby_sparc.outputs.ruby-path }}/bin:$PATH bundle exec rake assets:precompile
 
       - name: Run RSpec tests
         working-directory: ./sparc-request

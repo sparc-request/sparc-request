@@ -91,14 +91,9 @@ jobs:
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
+          cp config/epic.yml.example config/epic.yml
           bundle exec rake db:migrate
           bundle exec rake db:test:prepare
-
-          bundle exec rails runner "
-            Setting.create!(key: 'use_epic', value: 'true', group: 'application')
-            Setting.create!(key: 'epic_test_mode', value: 'true', group: 'epic_settings')
-            Setting.create!(key: 'epic_study_root', value: '1.2.3.4', group: 'epic_settings')
-          "
 
       # switch to cwf to set up its db
       - name: Set up ruby for sparc-fulfillment

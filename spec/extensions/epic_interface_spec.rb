@@ -22,6 +22,9 @@ require 'epic_interface'
 require 'fake_epic_soap_server'
 require 'rails_helper'
 
+require 'httpi'
+HTTPI.adapter = :net_http
+
 def strip_xml_whitespace!(root)
   root.xpath('//text()').each do |n|
     if n.content =~ /^\s+$/ then

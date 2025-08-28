@@ -1,142 +1,126 @@
-name: CI
-
 name: sparc ci
 
 on:
   push:
+    branches: ["v*"]
   pull_request:
+    branches: ["v*"]
 
 jobs:
-  name: sparc ci
-
-  on:
-    push:
-    pull_request:
-
-  jobs:
-    name: sparc ci
-
-    on:
-      push:
-        branches: ["v*"]
-      pull_request:
-        branches: ["v*"]
-
-    jobs:
-      test:
-        runs-on: ubuntu-latest
-        services:
-          mysql:
-            image: mysql:5.7
-            env:
-              MYSQL_ROOT_PASSWORD: password
-            ports:
-              - 3306:3306
-            options: >-
-              --health-cmd="mysqladmin ping --silent -h localhost -uroot -ppassword"
-              --health-interval=10s
-              --health-timeout=5s
-              --health-retries=3
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
         env:
-          TZ: America/New_York
-          MOZ_HEADLESS: 1
-          RAILS_ENV: test
-        strategy:
-          matrix:
-            include:
-              - name: "unit-and-integration"
-                rspec: |
-                  spec/api spec/extensions spec/jobs spec/helpers spec/mailers spec/lib spec/models spec/views spec/controllers
-              - name: "features-dashboard-surveyor"
-                rspec: |
-                  spec/features/dashboard spec/features/surveyor
-              - name: "features-proper-catalog"
-                rspec: |
-                  spec/features/proper spec/features/catalog_manager
-        steps:
-          - name: Checkout sparc-request
-            uses: actions/checkout@v3
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent -h localhost -uroot -ppassword"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    env:
+      TZ: America/New_York
+      MOZ_HEADLESS: 1
+      RAILS_ENV: test
+    strategy:
+      matrix:
+        include:
+          - name: "unit-and-integration"
+            rspec: |
+              spec/api spec/extensions spec/jobs spec/helpers spec/mailers spec/lib spec/models spec/views spec/controllers
+          - name: "features-dashboard-surveyor"
+            rspec: |
+              spec/features/dashboard spec/features/surveyor
+          - name: "features-proper-catalog"
+            rspec: |
+              spec/features/proper spec/features/catalog_manager
+    steps:
+      - name: Checkout sparc-request
+        uses: actions/checkout@v3
 
-          - name: Checkout sparc-fulfillment (sibling repo)
-            uses: actions/checkout@v3
-            with:
-              repository: sparc-request/sparc-fulfillment
-              ref: v3.4.0
-              path: sparc-fulfillment
+      - name: Checkout sparc-fulfillment (sibling repo)
+        uses: actions/checkout@v3
+        with:
+          repository: sparc-request/sparc-fulfillment
+          ref: v3.4.0
+          path: sparc-fulfillment
 
-          - name: Set up Ruby
-            uses: ruby/setup-ruby@v1
-            with:
-              ruby-version-file: .ruby-version
-              bundler-cache: true
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version-file: .ruby-version
+          bundler-cache: true
 
-          - name: Set up Node 14
-            uses: actions/setup-node@v3
-            with:
-              node-version: 14.19.2
+      - name: Set up Node 14
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.2
 
-          - name: Install system packages and start Xvfb
-            run: |
-              sudo apt-get update
-              sudo apt-get install -y default-mysql-client xvfb firefox
-              Xvfb :99 -screen 0 1024x768x24 &
+      - name: Install system packages and start Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-mysql-client xvfb firefox
+          Xvfb :99 -screen 0 1024x768x24 &
 
-          - name: Cache Ruby gems
-            uses: actions/cache@v3
-            with:
-              path: vendor/bundle
-              key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Cache Ruby gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
 
-          - name: Cache Yarn
-            uses: actions/cache@v3
-            with:
-              path: ~/.cache/yarn
-              key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: Cache Yarn
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-          - name: Prepare sparc-request DB config
-            run: |
-              cp config/database.yml.example config/database.yml
-              cp config/fulfillment_db.yml.example config/fulfillment_db.yml || true
-              cp dotenv.example .env || true
+      - name: Prepare sparc-request DB config
+        run: |
+          cp config/database.yml.example config/database.yml
+          cp config/fulfillment_db.yml.example config/fulfillment_db.yml || true
+          cp dotenv.example .env || true
 
-          - name: Wait for MySQL
-            run: |
-              for i in {1..30}; do mysql -h127.0.0.1 -uroot -ppassword -e 'select 1' && break || sleep 1; done
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do mysql -h127.0.0.1 -uroot -ppassword -e 'select 1' && break || sleep 1; done
 
-          - name: Create test databases
-            run: |
-              mysql -h127.0.0.1 -uroot -ppassword -e 'create database if not exists test_sparc_request;'
-              mysql -h127.0.0.1 -uroot -ppassword -e 'create database if not exists cwf_test;'
+      - name: Create test databases
+        run: |
+          mysql -h127.0.0.1 -uroot -ppassword -e 'create database if not exists test_sparc_request;'
+          mysql -h127.0.0.1 -uroot -ppassword -e 'create database if not exists cwf_test;'
 
-          - name: Install gems for sparc-request
-            run: |
-              bundle config set --local path 'vendor/bundle'
-              bundle install --jobs=3 --retry=3 --path vendor/bundle
+      - name: Install gems for sparc-request
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install --jobs=3 --retry=3 --path vendor/bundle
 
-          - name: Migrate sparc-request DB
-            run: |
-              RAILS_ENV=test bundle exec rake db:migrate
-              bundle exec rake db:test:prepare || true
+      - name: Migrate sparc-request DB
+        run: |
+          RAILS_ENV=test bundle exec rake db:migrate
+          bundle exec rake db:test:prepare || true
 
-          - name: Install gems and migrate sparc-fulfillment
-            working-directory: ./sparc-fulfillment
-            run: |
-              bundle config set --local path 'vendor/bundle'
-              bundle install --jobs=3 --retry=3 --path vendor/bundle
-              cp config/database.yml.example config/database.yml || true
-              cp config/sparc_db.yml.example config/sparc_db.yml || true
-              cp config/klok_db.yml.example config/klok_db.yml || true
-              cp dotenv.example .env || true
-              RAILS_ENV=test bundle exec rake db:migrate || true
+      - name: Install gems and migrate sparc-fulfillment
+        working-directory: ./sparc-fulfillment
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install --jobs=3 --retry=3 --path vendor/bundle
+          cp config/database.yml.example config/database.yml || true
+          cp config/sparc_db.yml.example config/sparc_db.yml || true
+          cp config/klok_db.yml.example config/klok_db.yml || true
+          cp dotenv.example .env || true
+          RAILS_ENV=test bundle exec rake db:migrate || true
 
-          - name: Install node deps and precompile assets
-            run: |
-              npm install -g yarn
-              yarn install
-              RAILS_ENV=test bundle exec rake assets:precompile
+      - name: Install node deps and precompile assets
+        run: |
+          npm install -g yarn
+          yarn install
+          RAILS_ENV=test bundle exec rake assets:precompile
 
-          - name: Run RSpec (matrix)
-            run: |
-              echo "Running: ${{ matrix.name }}"
-              xvfb-run -a bundle exec rspec ${{ matrix.rspec }}
-            shell: bash
+      - name: Run RSpec (matrix)
+        run: |
+          echo "Running: ${{ matrix.name }}"
+          xvfb-run -a bundle exec rspec ${{ matrix.rspec }}
+        shell: bash

@@ -101,9 +101,10 @@ jobs:
           working-directory: ./sparc-fulfillment
           bundler-cache: true
 
-      - name: Setup sparc-fulfillment database
+      - name: Set up sparc-fulfillment database
         working-directory: ./sparc-fulfillment
         run: |
+          mkdir -p tmp
           cat > config/database.yml <<EOF
           test:
             adapter: mysql2

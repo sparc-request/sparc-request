@@ -73,16 +73,11 @@ jobs:
           sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
           Xvfb :99 -screen 0 1024x768x24 &
 
+      # sparc proper context to start
       - name: Set up ruby for sparc-request
         uses: ruby/setup-ruby@v1
         with:
           working-directory: ./sparc-request
-          bundler-cache: true
-
-      - name: Set up ruby for sparc-fulfillment
-        uses: ruby/setup-ruby@v1
-        with:
-          working-directory: ./sparc-fulfillment
           bundler-cache: true
 
       - name: Create databases
@@ -96,13 +91,20 @@ jobs:
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
-          RAILS_ENV=test bundle exec rake db:migrate
-          RAILS_ENV=test bundle exec rake db:test:prepare
+          bundle exec rake db:migrate
+          bundle exec rake db:test:prepare
+
+      # switch to cwf to set up its db
+      - name: Set up ruby for sparc-fulfillment
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-fulfillment
+          bundler-cache: true
 
       - name: Setup sparc-fulfillment database
         working-directory: ./sparc-fulfillment
         run: |
-          cat <<EOF > config/database.yml
+          cat > config/database.yml <<EOF
           test:
             adapter: mysql2
             encoding: utf8
@@ -110,9 +112,13 @@ jobs:
             username: ${DATABASE_USERNAME}
             password: "${DATABASE_PASSWORD}"
             host: ${DATABASE_HOST}
+            pool: 5
+            timeout: 5000
+            variables:
+              sql_mode: TRADITIONAL
           EOF
-          # Create sparc_db.yml for sparc-fulfillment to connect to sparc-request
-          cat <<EOF > config/sparc_db.yml
+
+          cat > config/sparc_db.yml <<EOF
           test:
             adapter: mysql2
             encoding: utf8
@@ -120,15 +126,21 @@ jobs:
             username: ${DATABASE_USERNAME}
             password: "${DATABASE_PASSWORD}"
             host: ${DATABASE_HOST}
+            port: 3306
+            timeout: 5000
+            pool: 5
           EOF
-          # The klok_db is not used by tests, but a valid connection config is needed.
+
           cp config/klok_db.yml.example config/klok_db.yml
-          sed -i 's/username: travis/username: root/' config/klok_db.yml
-          sed -i '/username: root/a \ \ host: 127.0.0.1' config/klok_db.yml
           cp dotenv.example .env
           bundle exec rake db:migrate
 
-
+      # back to sparc
+      - name: Set up ruby for sparc-request
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-request
+          bundler-cache: true
 
       - name: Install Node dependencies and precompile assets
         working-directory: ./sparc-request

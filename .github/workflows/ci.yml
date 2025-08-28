@@ -91,7 +91,6 @@ jobs:
           cp config/database.yml.example config/database.yml
           cp config/fulfillment_db.yml.example config/fulfillment_db.yml
           cp dotenv.example .env
-          cp config/epic.yml.example config/epic.yml
           bundle exec rake db:migrate
           bundle exec rake db:test:prepare
 
@@ -154,6 +153,4 @@ jobs:
       - name: Run RSpec tests
         working-directory: ./sparc-request
         run: |
-          cp config/epic.yml.example config/epic.yml
-
           bundle exec rspec ${{ matrix.rspec_files }}

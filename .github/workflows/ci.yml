@@ -50,11 +50,6 @@ jobs:
         with:
           path: sparc-request
 
-      - name: Patch epic initializer for httpi adapter
-        working-directory: ./sparc-request
-        run: |
-          sed -i '/Rails.application.config.to_prepare do/a HTTPI::Adapter.use = :net_http' config/initializers/epic_interface.rb
-
       - name: Checkout sparc-fulfillment
         uses: actions/checkout@v4
         with:

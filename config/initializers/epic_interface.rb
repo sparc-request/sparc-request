@@ -21,7 +21,6 @@
 require 'epic_interface'
 
 Rails.application.config.to_prepare do
-  HTTPI::Adapter.use = :net_http
   begin
     use_epic = Setting.get_value("use_epic")
   rescue

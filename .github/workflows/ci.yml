@@ -43,8 +43,6 @@ jobs:
       DATABASE_PASSWORD: ''
       DATABASE_NAME: test_sparc_request
       FULFILLMENT_DATABASE_NAME: cwf_test
-      USE_EPIC: "true"
-      EPIC_TEST_MODE: "true"
 
     steps:
       - name: Checkout sparc-request

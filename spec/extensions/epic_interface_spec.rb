@@ -22,9 +22,6 @@ require 'epic_interface'
 require 'fake_epic_soap_server'
 require 'rails_helper'
 
-require 'httpi'
-HTTPI.adapter = :net_http
-
 def strip_xml_whitespace!(root)
   root.xpath('//text()').each do |n|
     if n.content =~ /^\s+$/ then
@@ -71,6 +68,8 @@ RSpec.describe EpicInterface do
   end
 
   let!(:epic_interface) {
+    require 'httpi'
+    HTTPI.adapter = :net_http
     EpicInterface.new(
         'epic_wsdl' => "http://localhost:#{server.port}/wsdl",
         'epic_study_rsh_root' => '1.2.5.2.3.4',

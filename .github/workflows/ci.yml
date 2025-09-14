@@ -43,6 +43,8 @@ jobs:
       DATABASE_PASSWORD: ''
       DATABASE_NAME: test_sparc_request
       FULFILLMENT_DATABASE_NAME: cwf_test
+      USE_EPIC: "true"
+      EPIC_TEST_MODE: "true"
 
     steps:
       - name: Checkout sparc-request
@@ -54,7 +56,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sparc-request/sparc-fulfillment
-          ref: v3.4.0
+          # ref: v3.4.0
+          ref: update-db-configs-for-gh-actions
           path: sparc-fulfillment
 
       - name: Set up node
@@ -105,32 +108,8 @@ jobs:
         working-directory: ./sparc-fulfillment
         run: |
           mkdir -p tmp
-          cat > config/database.yml <<EOF
-          test:
-            adapter: mysql2
-            encoding: utf8
-            database: ${FULFILLMENT_DATABASE_NAME}
-            username: ${DATABASE_USERNAME}
-            password: "${DATABASE_PASSWORD}"
-            host: ${DATABASE_HOST}
-            pool: 5
-            timeout: 5000
-            variables:
-              sql_mode: TRADITIONAL
-          EOF
-
-          cat > config/sparc_db.yml <<EOF
-          test:
-            adapter: mysql2
-            encoding: utf8
-            database: ${DATABASE_NAME}
-            username: ${DATABASE_USERNAME}
-            password: "${DATABASE_PASSWORD}"
-            host: ${DATABASE_HOST}
-            port: 3306
-            timeout: 5000
-            pool: 5
-          EOF
+          cp config/database.yml.example config/database.yml
+          cp config/sparc_db.yml.example config/sparc_db.yml
 
           cp config/klok_db.yml.example config/klok_db.yml
           cp dotenv.example .env

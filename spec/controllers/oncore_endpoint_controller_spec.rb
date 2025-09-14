@@ -32,11 +32,61 @@ RSpec.describe OncoreEndpointController do
     sr        = create(:service_request, protocol: @study)
     default_service = create(:service_with_process_ssrs_organization, :with_pricing_map, id: 41714, name: "OnCore Procedure Push", cpt_code: "00000")
     @wsdl     = "http://app#{oncore_endpoint_wsdl_path}"
-    @client   = Savon.client(wsdl: @wsdl)
+    wsdl_xml = <<-END
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions
+        name="ProtocolExecutor"
+        targetNamespace="http://tempuri.org/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+        xmlns:tns="http://tempuri.org/"
+        xmlns:i0="urn:ihe:qrph:rpe:2009">
+    <wsdl:message name="RetrieveProtocolDefResponseRequest"/>
+    <wsdl:message name="RetrieveProtocolDefResponseResponse"/>
+    <wsdl:portType name="IProtocolExecutor">
+        <wsdl:operation name="retrieve_protocol_def_response">
+            <wsdl:input message="tns:RetrieveProtocolDefResponseRequest"/>
+            <wsdl:output message="tns:RetrieveProtocolDefResponseResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="IProtocolExecutor" type="i0:IProtocolExecutor">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="retrieve_protocol_def_response">
+            <soap:operation soapAction="urn:ihe:qrph:rpe:2009:RetrieveProtocolDefResponse"/>
+            <wsdl:input><soap:body use="literal"/></wsdl:input>
+            <wsdl:output><soap:body use="literal"/></wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ProtocolExecutor">
+        <wsdl:port name="IProtocolExecutor" binding="tns:IProtocolExecutor">
+            <soap:address location="http://app/oncore_endpoint"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
+END
+
+    stub_request(:get, @wsdl)
+      .with(headers: {'User-Agent' => 'Ruby' })
+      .to_return(status: 200, body: wsdl_xml, headers: { 'Content-Type' => 'text/xml' })
+
+    @client   = Savon.client(
+      adapter: :rack,
+      wsdl: @wsdl,
+      log: false,
+      namespace_identifier: nil,
+      element_form_default: :qualified,
+      env_namespace: :soap,
+      namespaces: {
+        "xmlns:soap" => "http://schemas.xmlsoap.org/soap/envelope/",
+        "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
+        "xmlns:xsd" => "http://www.w3.org/2001/XMLSchema"
+      }
+    )
     @crpc_message = crpc_message(@study) # CRPC message with 2 arms, 3 VISITS per arm (not SPARC Visits), and 2 Procedures
     @rpe_message = rpe_message(@study) # RPE message (CRPC message without calendar information)
   end
-  
+
   describe '#retrieve_protocol_def CRPC message' do
     it 'should import the service calendar structure' do
       @client.call(:retrieve_protocol_def_response, message: @crpc_message)

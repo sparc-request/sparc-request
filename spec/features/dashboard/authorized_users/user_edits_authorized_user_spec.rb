@@ -65,6 +65,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
       wait_for_javascript_to_finish
 
       find('[for="project_role_project_rights_none"]').click
+      sleep 0.5
       click_button I18n.t('actions.submit')
       wait_for_javascript_to_finish
 

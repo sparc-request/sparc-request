@@ -22,6 +22,10 @@ require 'date'
 require 'rails_helper'
 
 RSpec.describe Protocol, type: :model do
+  before do
+    stub_const('EPIC_INTERFACE', double('EpicInterface').as_null_object)
+  end
+
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study()

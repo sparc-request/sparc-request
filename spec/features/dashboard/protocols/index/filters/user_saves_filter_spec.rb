@@ -45,13 +45,13 @@ RSpec.describe "User saves a filter", js: :true do
 
   it 'should save the filter' do
     find("#saveProtocolFilters").click
-    wait_for_javascript_to_finish
+    expect(page).to have_css('.modal.show', visible: true) # wait for modal
 
     fill_in 'protocol_filter_search_name', with: 'My Filter'
     click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
 
-    expect(ProtocolFilter.count).to eq(1)
+    expect(ProtocolFilter.count).to eq(1) # flaky in local docker and gh-actions
     filter = ProtocolFilter.first
     expect(filter.show_archived).to eq(true)
     expect(filter.with_status).to eq(['ctrc_approved', 'complete'])

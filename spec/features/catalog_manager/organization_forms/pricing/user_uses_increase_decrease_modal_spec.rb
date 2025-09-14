@@ -49,12 +49,13 @@ RSpec.describe 'User edits organization subsidy map', js: true do
 
       it 'should change pricing maps as needed' do
         old_pm_count = @service.pricing_maps.size
-        old_rate = @service.pricing_maps.first.full_rate.to_i
+        old_rate     = @service.pricing_maps.first.full_rate.to_i
 
-        fill_in 'percent_of_change', with: "-50"
+        fill_in 'percent_of_change', with: '-50'
 
-        bootstrap3_datepicker('#display_date')
-        bootstrap3_datepicker('#effective_date')
+        future = Time.zone.today + 1.day
+        bootstrap3_datepicker('#display_date',  future)
+        bootstrap3_datepicker('#effective_date', future)
 
         click_button 'Adjust Rates'
         wait_for_javascript_to_finish

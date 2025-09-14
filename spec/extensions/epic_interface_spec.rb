@@ -68,6 +68,8 @@ RSpec.describe EpicInterface do
   end
 
   let!(:epic_interface) {
+    require 'httpi'
+    HTTPI.adapter = :net_http
     EpicInterface.new(
         'epic_wsdl' => "http://localhost:#{server.port}/wsdl",
         'epic_study_rsh_root' => '1.2.5.2.3.4',

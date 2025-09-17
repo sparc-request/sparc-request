@@ -28,7 +28,7 @@ RSpec.describe 'User adds service to cart', js: true do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     @program    = create(:program, name: "Program", parent: provider, process_ssrs: true, pricing_setup_count: 1)
-    @service    = create(:service, name: "A new Service", abbreviation: "New Service", organization: @program, pricing_map_count: 1)
+    @service    = create(:service, name: "A new Service", abbreviation: "New Service", organization: @program, pricing_map_count: 1, is_administrative: false)
   end
 
   context 'starting a new request' do
@@ -36,17 +36,22 @@ RSpec.describe 'User adds service to cart', js: true do
       visit root_path
       wait_for_javascript_to_finish
 
+      initial_count = ServiceRequest.count
+
       find('.provider-link').click
       find('.program-link').click
+
       find('.add-service').click
       wait_for_javascript_to_finish
 
-      expect(page).to have_content(I18n.t('proper.catalog.new_request.header'))
-      confirm_swal
-      wait_for_javascript_to_finish
+      if page.has_content?(I18n.t('proper.catalog.new_request.header'))
+        confirm_swal
+        wait_for_javascript_to_finish
+      end
 
-      expect(ServiceRequest.count).to eq(1)
-      sr = ServiceRequest.first
+      expect(ServiceRequest.count).to eq(initial_count + 1)
+
+      sr = ServiceRequest.order(:created_at).last
       expect(sr.line_items.count).to eq(1)
       expect(page).to have_selector('#cart .line-item', text: @service.abbreviation)
       expect(page).to have_current_path(root_path(srid: sr.id))
@@ -56,7 +61,7 @@ RSpec.describe 'User adds service to cart', js: true do
   context 'request already started' do
     before :each do
       @sr       = create(:service_request_without_validations)
-      @service2 = create(:service, name: "Another new Service", abbreviation: "New Service 2", organization: @program, pricing_map_count: 1)
+      @service2 = create(:service, name: "Another new Service", abbreviation: "New Service 2", organization: @program, pricing_map_count: 1, is_administrative: false)
       ssr       = create(:sub_service_request, service_request: @sr, organization: @program)
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service2)
     end

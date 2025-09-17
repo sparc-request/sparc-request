@@ -90,13 +90,16 @@ class NotifierLogic
     ssrs_that_have_been_updated_from_a_un_updatable_status
   end
 
-
   def send_initial_submission_email
     unless @to_notify.empty?
       sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify).includes(:services)
 
-      # Suppress emails for SSRs that only contain administrative services
-      non_admin_ssrs = sub_service_requests.reject { |ssr| ssr.services.all(&:is_administrative?) }
+      # We don't want to send emails if the request only contains administrative services
+      non_admin_ssrs = sub_service_requests.reject do |ssr|
+        services = ssr.services.to_a
+        services.any? && services.all? { |s| s.is_administrative? == true }
+      end
+
       send_notifications(non_admin_ssrs) unless non_admin_ssrs.empty?
     end
   end

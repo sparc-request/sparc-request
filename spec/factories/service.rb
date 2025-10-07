@@ -28,6 +28,7 @@ FactoryBot.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words.first }
     revenue_code        { Faker::Lorem.words.first }
+    is_administrative   { false }
     sequence(:order)    { |n| n }
 
     trait :without_validations do

@@ -57,7 +57,8 @@ jobs:
         with:
           repository: sparc-request/sparc-fulfillment
           # ref: v3.4.0
-          ref: update-db-configs-for-gh-actions
+          # ref: update-db-configs-for-gh-actions
+          ref: v3.7.0
           path: sparc-fulfillment
 
       - name: Set up node

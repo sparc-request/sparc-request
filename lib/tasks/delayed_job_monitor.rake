@@ -25,11 +25,12 @@ require 'microsoft_teams_incoming_webhook_ruby'
 task delayed_job_monitor: :environment do
   dj_slack_webhook = Setting.get_value("delayed_job_monitor_slack_webhook")
   dj_teams_webhook = Setting.get_value("delayed_job_monitor_teams_webhook")
+  workers = ENV.fetch("DJ_WORKERS", 4).to_i
 
-  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n 4 status")
+  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n #{workers} status")
   prev_status = stderr
 
-  if stderr =~ /delayed_job: no instances running/
+  if stderr =~ /no instances running/
     message = ""
     if dj_slack_webhook.present? || dj_teams_webhook.present?
       message += "```\n[SPARCRequest][#{Rails.env}]\n"
@@ -38,7 +39,7 @@ task delayed_job_monitor: :environment do
       message += "delayed_job: attempting restart\n"
     end
 
-    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n 4 restart")
+    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n #{workers} restart")
     curr_status = stdout
 
     if dj_slack_webhook.present? || dj_teams_webhook.present?

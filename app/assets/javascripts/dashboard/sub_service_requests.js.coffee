@@ -50,6 +50,55 @@ $ ->
       return
     ), 5000)
 
+  # This manages the bulk status edit checkboxes on dashboard > protocols > requests section
+  $(document).on 'click', '.service-requests-table #select-all', ->
+    checked = $(this).prop('checked')
+    $('.service-requests-table tbody tr input[type="checkbox"]').each (index, row) ->
+      $(this).prop('checked', checked)
+
+  $(document).on 'change', '.service-requests-table input[type="checkbox"]', ->
+    if $('.service-requests-table input[type="checkbox"][name^="select-ssr"]:checked').length <= 1
+      $('.bulk-status-edit').addClass('disabled')
+    else
+      $('.bulk-status-edit').removeClass('disabled')
+
+    if $('.service-requests-table input[type="checkbox"][name^="select-ssr"]:checked').length == $('.service-requests-table input[type="checkbox"][name^="select-ssr"]').length
+      $('.service-requests-table #select-all').prop('checked', true)
+    else
+      $('.service-requests-table #select-all').prop('checked', false)
+
+  $(document).on 'click', '.bulk-status-edit', ->
+    id_numbers = []
+    $('.service-requests-table input[type="checkbox"][name^="select-ssr"]:checked').each (index, row) ->
+      id_numbers.push(this.value)
+    
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/bulk_status_edit"
+      data:
+        id:
+          id_numbers
+      # success: ->
+      #   refreshFulfillmentButton()
+
+  $(document).on 'click', '.bulk-status-dropdown-item', ->
+    $(this).parent('.dropdown-toggle').removeClass('text-success text-danger border-success border-danger')
+    $(this).parent('.dropdown-toggle').addClass('text-warning')
+
+  $(document).on 'click', '#bulk_status_submit_button', ->
+    $.ajax
+      type: 'POST'
+      dataType: 'script'
+      url: "/dashboard/sub_service_requests/bulk_status_update"
+      data:
+        ids:
+          $('#ssr_ids').val().split(' ')
+        status:
+          $('#status_select_dropdown').val()
+    
+    
+
   # SERVICE REQUEST INFO LISTENERS BEGIN
   if $('#fulfillmentStatus').length
     refreshFulfillmentButton()

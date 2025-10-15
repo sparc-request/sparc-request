@@ -152,6 +152,37 @@ module Dashboard::SubServiceRequestsHelper
     end.join(''))
   end
 
+  def ssr_status_bulk_dropdown_statuses(ssr)
+    available_statuses = ssr.organization.available_statuses.selected.pluck(:status)
+
+    statuses = 
+      if ssr.is_complete?
+        PermissibleValue.get_inverted_hash('status').sort.select{ |_, status| Status.complete?(status) }
+      else
+        PermissibleValue.get_inverted_hash('status').sort
+      end.select{ |_, status| available_statuses.include?(status) }
+
+    raw(statuses.map do |label, status|
+      if !ssr.organization.has_editable_status?(status)
+        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.locked_status'), data: { toggle: 'tooltip' } do
+          link_to '#', class: ['dropdown-item bulk-status-dropdown-item alert-danger', status == ssr.status ? 'active' : ''] do
+            icon('fas', 'lock mr-2') + label
+          end
+        end
+      elsif Status.complete?(status)
+        content_tag :span, class: 'tooltip-wrapper', title: t('dashboard.sub_service_requests.tooltips.finished_status'), data: { toggle: 'tooltip' } do
+          link_to '#', class: ['dropdown-item bulk-status-dropdown-item alert-success', status == ssr.status ? 'active' : ''], data: { confirm_swal: ssr.is_complete? ? 'false' : 'true', html: t('dashboard.sub_service_requests.confirm.finished_status.text', status: label) } do
+            icon('fas', 'check mr-2') + label
+          end
+        end
+      else
+        link_to '#', class: ['dropdown-item bulk-status-dropdown-item', status == ssr.status ? 'active' : ''] do
+          content_tag :span, label, class: 'ml-3 pl-2'
+        end
+      end
+    end.join(''))
+  end
+
   def user_display_protocol_total protocol, service_request
     return (protocol.grand_total(service_request) / 100.0)
   end
@@ -197,6 +228,14 @@ module Dashboard::SubServiceRequestsHelper
     else
       status
     end
+  end
+
+  def display_ssr_check_box(ssr, opts={})
+    check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
+  
+    # unless in_dashboard? && !opts[:permission]
+    #   check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
+    # end
   end
 end
 

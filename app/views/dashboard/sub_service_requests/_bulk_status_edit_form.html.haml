@@ -1,0 +1,81 @@
+-# Copyright © 2011-2022 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.modal-dialog{ role: 'document' }
+  .modal-content
+    -# = form_for in_dashboard? ? [:dashboard, document] : document, remote: true do |f|
+    -#   = f.hidden_field :protocol_id
+    -#   - unless in_dashboard?
+    -#     = hidden_field_tag :srid, service_request.id
+    = hidden_field_tag :ssr_ids, sub_service_requests.pluck(:id).to_a
+    .modal-header
+      %h3.modal-title
+        = "Edit Request Statuses"
+      %button.close{ type: 'button', data: { dismiss: 'modal' }, aria: { label: t('actions.close') } }
+        %span{ aria: { hidden: 'true' } } &times;
+    .modal-body
+      %table.ssr-modal-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', striped: 'true', sort_name: 'srid', sort_order: 'ASC'} }
+        %thead.bg-light
+          %tr
+            %th
+              = "SRID"
+            %th
+              = "Organization"
+            %th
+              = "Owner"
+            %th
+              = "Status"
+            %th
+              = "Submitted On"
+        %tbody
+          - sub_service_requests.each do |ssr|
+            %tr
+              %td 
+                = ssr.display_id
+              %td 
+                = ssr.org_tree_display
+              %td 
+                = ssr.owner.try(&:full_name)
+              %td
+                = display_status(ssr)
+              = hidden_field_tag "ssr_#{ssr.id}", value: "", class: 'updated_status'
+              %td 
+                = format_datetime(ssr.submitted_at)
+      .mt-3
+        %label{for: 'status_select'}
+          = "Change All Statuses To"
+        %select{name: 'status_select', id: 'status_select_dropdown'}
+          %option{value: 'awaiting_pi_approval'} 
+            = 'Awaiting Requestor Response'
+          %option{value: 'complete'} 
+            = 'Complete'
+          %option{value: 'draft'} 
+            = 'Draft'
+          %option{value: 'in_process'} 
+            = 'In Process'
+          %option{value: 'on_hold'} 
+            = 'On Hold' 
+          %option{value: 'submitted'} 
+            = 'Submitted' 
+    .modal-footer
+      %button.btn.btn-secondary{ type: 'button', data: { dismiss: 'modal' } }
+        = t(:actions)[:close]
+      %button.btn.btn-primary{ type: 'submit', id: 'bulk_status_submit_button', data: { disable: true } }<
+        = t('actions.submit')

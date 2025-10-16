@@ -79,7 +79,7 @@ class SPARCAccountReport < ReportingModule
 
   # Conditions
   def where args={}
-    fdate = (args[:created_at_from].nil? ? self.default_options["Created Date Range"][:from] : DateTime.strptime(args[:created_at_from], "%m/%d/%Y")).to_s(:db)
+    fdate = (args[:created_at_from].nil? ? self.default_options["Created Date Range"][:from] : DateTime.strptime(args[:created_at_from], "%m/%d/%Y")).to_fs(:db)
     tdate = (args[:created_at_to].nil? ? self.default_options["Created Date Range"][:to] : DateTime.strptime(args[:created_at_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
     created_at = fdate..tdate
     statuses = args[:approved] || [1, 0]

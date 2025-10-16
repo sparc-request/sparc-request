@@ -47,9 +47,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,
-            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_s(:db),
-            'irb_approval_date'         => irb_record.irb_approval_date.to_s(:db),
-            'irb_expiration_date'       => irb_record.irb_expiration_date.to_s(:db),
+            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_fs(:db),
+            'irb_approval_date'         => irb_record.irb_approval_date.to_fs(:db),
+            'irb_expiration_date'       => irb_record.irb_expiration_date.to_fs(:db),
             'study_phase_values'        => []
           })
         )
@@ -67,9 +67,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           merge({
             'sparc_id'                  => irb_record.id,
             'callback_url'              => irb_record.remote_service_callback_url,
-            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_s(:db),
-            'irb_approval_date'         => irb_record.irb_approval_date.to_s(:db),
-            'irb_expiration_date'       => irb_record.irb_expiration_date.to_s(:db),
+            'initial_irb_approval_date' => irb_record.initial_irb_approval_date.to_fs(:db),
+            'irb_approval_date'         => irb_record.irb_approval_date.to_fs(:db),
+            'irb_expiration_date'       => irb_record.irb_expiration_date.to_fs(:db),
             'study_phase_values'        => [],
             'human_subjects_info'       => nil
           })

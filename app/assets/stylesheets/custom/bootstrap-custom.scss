@@ -18,6 +18,11 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+// Tooltip text color
+.tooltip.show .tooltip-inner .text-danger {
+  color: white !important;
+}
+
 /////////////
 /// Alert ///
 /////////////
@@ -462,7 +467,7 @@ form, .form {
 
   &.modal-sm {
     width: 20vw;
-    max-width: 20vw;  
+    max-width: 20vw;
   }
 
   &.modal-lg {

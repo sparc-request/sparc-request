@@ -62,10 +62,11 @@
       - elsif service.pricing_maps.empty?
         %span{style: "padding-left: 15px;"}
           = t(:catalog_manager)[:service_form][:no_pricing_maps]
-  .form-group
-    = f.label :is_administrative, 'Administrative Only', class: 'col-sm-3 control-label'
-    .col-sm-9
-      = f.check_box :is_administrative, { checked: service.is_administrative, disabled: (service.pricing_maps.empty? || !service.one_time_fee? || service.pricing_maps.any? { |pm| pm.full_rate.to_i > 0 }), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
+  - if Setting.get_value('use_admin_services')
+    .form-group
+      = f.label :is_administrative, 'Administrative Only', class: 'col-sm-3 control-label'
+      .col-sm-9
+        = f.check_box :is_administrative, { checked: service.is_administrative, disabled: (service.pricing_maps.empty? || !service.one_time_fee? || service.pricing_maps.any? { |pm| pm.full_rate.to_i > 0 }), data: {toggle: 'toggle', on: 'Yes', off: 'No'}}
   - if (tags = Tag.for_services).any?
     .form-group
       = f.label :tag_list, t(:catalog_manager)[:organization_form][:tag_list], class: 'col-sm-3 control-label'

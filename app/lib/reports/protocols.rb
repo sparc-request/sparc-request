@@ -35,8 +35,17 @@ class ProtocolsReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Include Additional Funding Sources": { field_type: :check_box_tag, for: 'show_additional_funding_source_cols', field_label: 'Include Additional Funding Source Columns' },
-      "Include External Organizations": { field_type: :check_box_tag, for: 'show_external_organization_cols', field_label: 'Include External Organization Columns' },
+      "Authorized Users" => {
+        field_type: :multi_select_tag,
+        for: "authorized_user_roles",
+        collection: PermissibleValue
+                      .get_hash("user_role")
+                      .except('primary-pi', 'business-grants-manager', 'research-assistant-coordinator')
+                      .map { |k, v| [v, k] }, # -> [[<label>, <value>], ...]
+        field_label: 'Authorized Users'
+      },
+      "Include Additional Funding Sources" => { field_type: :check_box_tag, for: 'show_additional_funding_source_cols', field_label: 'Include Additional Funding Source Columns' },
+      "Include External Organizations" => { field_type: :check_box_tag, for: 'show_external_organization_cols', field_label: 'Include External Organization Columns' },
       "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'},
       "Include Investigational Device Columns" => { field_type: :check_box_tag, for: 'show_device_cols', field_label: "Include Investigational Device Columns" },
       "Include Pre-Submission Protocols" => { field_type: :check_box_tag, for: 'include_presubmitted', field_label: 'Include Pre-Submission Protocols' }
@@ -84,6 +93,15 @@ class ProtocolsReport < ReportingModule
     attrs["Business Manager(s)"]          = "billing_managers.try(:map, &:full_name).try(:join, ', ')"
     attrs["Business Manager Email(s)"]    = "billing_business_manager_email"
 
+    if params[:authorized_user_roles].present?
+      Array(params[:authorized_user_roles]).each do |role|
+        next if role.blank?
+        role_name = PermissibleValue.get_value('user_role', role)
+        attrs["#{role_name} Name(s)"] = "project_roles.select{|pr| pr.role == '#{role}'}.map{|pr| pr.identity.full_name}.join('; ')"
+        attrs["#{role_name} Email(s)"] = "project_roles.select{|pr| pr.role == '#{role}'}.map{|pr| pr.identity.email}.join('; ')"
+      end
+    end
+
     if params[:show_external_organization_cols]
       attrs["External Organization(s)"]   = "external_organizations.map{|eo| [(eo.collaborating_org_name == 'other' ? eo.collaborating_org_name_other : eo.collaborating_org_name).titleize, (eo.collaborating_org_type == 'other' ? eo.collaborating_org_type_other : eo.collaborating_org_type).titleize].join(' - ')}.join(', ')"
     end
@@ -126,7 +144,7 @@ class ProtocolsReport < ReportingModule
 
   # Other tables to preload
   def preload
-    [:additional_funding_sources, :protocol_merges, :billing_managers, :coordinators, :external_organizations, :human_subjects_info, :investigational_products_info, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }]
+    [:additional_funding_sources, :protocol_merges, :billing_managers, :coordinators, :external_organizations, :human_subjects_info, :investigational_products_info, project_roles: :identity, irb_records: :study_phases, primary_pi: { professional_organization: { parent: { parent: :parent } } }]
   end
 
   # Conditions

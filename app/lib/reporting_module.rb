@@ -129,7 +129,10 @@ class ReportingModule
     value = v
     klass = k.delete(' ').safe_constantize
 
-    if self.attrs.keys.include? klass # we've matched a class in our attrs hash
+    if k == "Authorized User Roles" && v.is_a?(Array)
+      value = v.map { |role| PermissibleValue.get_value('user_role', role).titleize }.join(', ')
+
+    elsif self.attrs.keys.include? klass # we've matched a class in our attrs hash
       obj = klass.find(v)
 
       m = self.attrs[klass][1]

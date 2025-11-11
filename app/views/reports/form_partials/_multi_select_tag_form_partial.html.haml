@@ -1,0 +1,7 @@
+- collection     = options[:collection]
+- selected       = options[:selected]
+- id             = options[:for]
+- name           = "report[#{id}][]"
+
+= label_tag id, field_label, class: 'mr-2'
+= select_tag name, options_for_select(collection, selected), multiple: true, id: id, class: 'selectpicker reporting-field'

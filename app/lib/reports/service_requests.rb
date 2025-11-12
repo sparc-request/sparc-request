@@ -170,7 +170,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     if args[:submitted_at_from] and args[:submitted_at_to]
-      submitted_at = DateTime.strptime(args[:submitted_at_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+      submitted_at = DateTime.strptime(args[:submitted_at_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
     end
 
     # default values if none are provided

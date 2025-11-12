@@ -88,9 +88,9 @@ class NottificationsReport < ReportingModule
 
     created_at =
       if args[:messages_created_at_from] && args[:messages_created_at_to]
-        DateTime.strptime(args[:messages_created_at_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:messages_created_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+        DateTime.strptime(args[:messages_created_at_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:messages_created_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
       else
-        self.default_options["Date Range"][:from].to_s(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
+        self.default_options["Date Range"][:from].to_fs(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
       end
 
     return { organizations: { id: ssr_organization_ids }, notifications: { created_at: created_at } }

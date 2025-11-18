@@ -230,12 +230,11 @@ module Dashboard::SubServiceRequestsHelper
     end
   end
 
-  def display_ssr_check_box(ssr, opts={})
-    check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
-  
-    # unless in_dashboard? && !opts[:permission]
-    #   check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
-    # end
+  def display_ssr_check_box(ssr, admin_orgs, opts={})
+    admin_access = (admin_orgs & ssr.org_tree).any?
+    if admin_access
+      check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
+    end
   end
 end
 

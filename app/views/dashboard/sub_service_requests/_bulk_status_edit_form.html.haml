@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.modal-dialog{ role: 'document' }
+.modal-dialog.modal-lg{ role: 'document' }
   .modal-content
     -# = form_for in_dashboard? ? [:dashboard, document] : document, remote: true do |f|
     -#   = f.hidden_field :protocol_id
@@ -35,29 +35,39 @@
         %thead.bg-light
           %tr
             %th
-              = "SRID"
+              .px-3
+                = "SRID"
             %th
-              = "Organization"
+              .px-3
+                = "Organization"
             %th
-              = "Owner"
+              .px-3
+                = "Owner"
             %th
-              = "Status"
+              .px-3
+                = "Status"
             %th
-              = "Submitted On"
+              .px-3
+                = "Submitted On"
         %tbody
           - sub_service_requests.each do |ssr|
             %tr
               %td 
-                = ssr.display_id
+                .px-3
+                  = ssr.display_id
               %td 
-                = ssr.org_tree_display
+                .px-3
+                  = ssr.org_tree_display
               %td 
-                = ssr.owner.try(&:full_name)
+                .px-3
+                  = ssr.owner.try(&:full_name)
               %td
-                = display_status(ssr)
+                .px-3
+                  = display_status(ssr)
               = hidden_field_tag "ssr_#{ssr.id}", value: "", class: 'updated_status'
               %td 
-                = format_datetime(ssr.submitted_at)
+                .px-3
+                  = format_datetime(ssr.submitted_at)
       .mt-3
         %label{for: 'status_select'}
           = "Change All Statuses To"

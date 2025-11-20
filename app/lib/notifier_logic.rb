@@ -95,16 +95,15 @@ class NotifierLogic
       sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify).includes(:services)
 
       # We don't want to send emails if the request only contains administrative services
-      non_admin_ssrs = sub_service_requests.reject do |ssr|
-        services = ssr.services.to_a
-        services.any? && services.all? { |s| s.is_administrative? == true }
-      end
+      non_admin_ssrs = exclude_administrative_only_ssrs(sub_service_requests)
 
       send_notifications(non_admin_ssrs) unless non_admin_ssrs.empty?
     end
   end
 
   def send_request_amendment_email_evaluation
+    @ssrs_updated_from_un_updatable_status = exclude_administrative_only_ssrs(@ssrs_updated_from_un_updatable_status)
+    @created_ssrs_needing_notification = exclude_administrative_only_ssrs(@created_ssrs_needing_notification)
     if @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
       send_user_notifications(request_amendment: true, admin_delete_ssr: false, deleted_ssr: nil)
     end
@@ -230,5 +229,12 @@ class NotifierLogic
 
   def find_draft_ssrs(ssrids)
     @service_request.sub_service_requests.select{ |ssr| (ssrids.blank? || ssrids.include?(ssr.id.to_s)) && ssr.status == "draft" }
+  end
+
+  def exclude_administrative_only_ssrs(sub_service_requests)
+    sub_service_requests.reject do |ssr|
+      services = ssr.services.to_a
+      services.any? && services.all? { |s| s.is_administrative? == true }
+    end
   end
 end

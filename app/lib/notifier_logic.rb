@@ -233,8 +233,19 @@ class NotifierLogic
 
   def exclude_administrative_only_ssrs(sub_service_requests)
     sub_service_requests.reject do |ssr|
-      services = ssr.services.to_a
-      services.any? && services.all? { |s| s.is_administrative? == true }
+      valid_ssr =
+        if ssr.is_a?(SubServiceRequest)
+          ssr
+        elsif ssr.is_a?(AuditRecovery)
+          SubServiceRequest.find_by(id: ssr.auditable_id)
+        end
+
+      if valid_ssr
+        services = valid_ssr.services.to_a
+        services.any? && services.all? { |s| s.is_administrative? == true }
+      else
+        false
+      end
     end
   end
 end

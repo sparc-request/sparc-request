@@ -170,8 +170,10 @@ module ApplicationHelper
   end
 
   def admin_service_tag
-    content_tag(:small, class: 'text-danger ml-1') do
-      content_tag(:em, '(admin service)')
+    if Setting.get_value('use_admin_services')
+      content_tag(:small, class: 'text-danger ml-1') do
+        content_tag(:em, t('constants.admin_service'))
+      end
     end
   end
 
@@ -247,7 +249,7 @@ module ApplicationHelper
   def request_referrer_controller
     Rails.application.routes.recognize_path(request.referrer)[:controller] rescue nil
   end
-  
+
   def set_billing_quantities(type, unit_minimum)
     @r_quantity = type == "r" ? unit_minimum : 0
     @t_quantity = type == "t" ? unit_minimum : 0

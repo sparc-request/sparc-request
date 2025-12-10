@@ -19,7 +19,7 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //= require i18n/translations
-//= require jquery
+//= require jquery/dist/jquery.min
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-select-custom
@@ -27,7 +27,7 @@
 //= require bootstrap-table-export
 //= require bootstrap-table-custom
 //= require bootstrap-toggle
-//= require moment
+//= require moment/min/moment-with-locales.min
 //= require bootstrap-datetimepicker
 //= require catalog_manager/catalog
 //= require catalog_manager/form

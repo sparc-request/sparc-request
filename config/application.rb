@@ -18,6 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'logger'
 require_relative 'boot'
 
 require 'rails/all'
@@ -103,7 +104,7 @@ module SparcRails
       margin_bottom: '1in',
       print_media_type: true
     }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
-      
+
     ##  Error pages
     config.exceptions_app = routes
 

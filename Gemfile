@@ -48,6 +48,7 @@ gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
 gem 'jquery_datepicker' # Check usage
+gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'

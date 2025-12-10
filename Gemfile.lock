@@ -704,6 +704,7 @@ DEPENDENCIES
   icalendar
   icalendar-recurrence
   jbuilder (~> 2.11)
+  jquery-rails
   jquery_datepicker
   json (>= 1.8)
   launchy

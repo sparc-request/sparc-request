@@ -144,7 +144,7 @@ class SearchController < ApplicationController
   end
 
   def admin_text(item)
-    text = item.is_administrative ? "(admin service)" : ""
+    text = item.is_administrative ? "(Admin Service)" : ""
   end
 
   def breadcrumb_text_bs3(item)

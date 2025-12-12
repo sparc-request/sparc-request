@@ -174,6 +174,8 @@ module ApplicationHelper
       content_tag(:small, class: 'text-danger ml-1') do
         content_tag(:em, t('constants.admin_service'))
       end
+    else
+      ""
     end
   end
 

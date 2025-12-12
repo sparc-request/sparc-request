@@ -193,7 +193,7 @@ module FeeAgreement
 
   # Represents a row in a NonClinicalServiceTable.
   class NonClinicalServiceRow
-    attr_reader :program_name, :service_name, :service_cost, :quantity, :total, :notes
+    attr_reader :program_name, :service_name, :service_cost, :quantity, :total, :notes, :is_administrative
 
     # @param line_item : LineItem
     def initialize(line_item)
@@ -203,6 +203,7 @@ module FeeAgreement
       @quantity = line_item.quantity
       @total = Service.cents_to_dollars(@service_cost * @quantity)
       @notes = line_item.notes.map(&:body).join("; ")
+      @is_administrative = line_item.service.is_administrative
     end
 
     def displayed_service_cost

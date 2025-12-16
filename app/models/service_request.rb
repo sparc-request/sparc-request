@@ -255,7 +255,11 @@ class ServiceRequest < ApplicationRecord
       end
     end
 
-    groupings
+    groupings.each do |_, group|
+      group[:line_items].sort_by!{ |li| li.sub_service_request&.ssr_id || '' }
+    end
+
+    groupings.sort_by { |_, group| group[:line_items].first.sub_service_request&.ssr_id || '' }.to_h
   end
 
   def has_ssrs_for_resubmission?

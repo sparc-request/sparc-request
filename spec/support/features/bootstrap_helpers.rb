@@ -135,11 +135,12 @@ module Features
       wait_for_javascript_to_finish
     end
 
-    def bootstrap3_datepicker(element)
-      e = page.find(element)
-      e.click
-      e.set(Date.today.strftime('%Y-%m-%d'))
-      find(".dropdown-menu td.today").click
+    def bootstrap3_datepicker(element, date = Date.current)
+      input = page.find(element)
+      input.click
+      input.set(date.iso8601)
+      input.send_keys(:tab)
+      wait_for_javascript_to_finish
     end
   end
 end

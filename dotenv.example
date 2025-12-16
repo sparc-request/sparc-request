@@ -31,3 +31,5 @@ oncore_client_id=client_id_from_oncore
 oncore_client_secret=client_secret_from_oncore
 EXCEPTION_SENDER_ADDRESS=
 EXCEPTION_RECIPIENTS=
+# Number of dealyed_job worker processes
+DJ_WORKERS=4

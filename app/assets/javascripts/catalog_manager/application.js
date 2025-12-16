@@ -27,7 +27,7 @@
 //= require bootstrap-table-export
 //= require bootstrap-table-custom
 //= require bootstrap-toggle
-//= require moment
+//= require moment/min/moment-with-locales.min
 //= require bootstrap-datetimepicker
 //= require catalog_manager/catalog
 //= require catalog_manager/form

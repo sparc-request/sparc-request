@@ -8,8 +8,6 @@ gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 # gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
 gem 'audited', '~> 5.0'
-gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
-gem 'axlsx_rails'
 gem 'babel-transpiler'
 gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
@@ -23,6 +21,8 @@ gem 'capistrano-rails', require: false
 gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
 gem 'capistrano-yarn'
+gem 'caxlsx'
+gem 'caxlsx_rails'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
@@ -53,7 +53,6 @@ gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
 gem 'microsoft_teams_incoming_webhook_ruby'
-gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
 gem 'mysql2', '0.5.6'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage

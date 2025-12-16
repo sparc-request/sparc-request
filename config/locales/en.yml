@@ -162,7 +162,7 @@ en:
         irb_approval_date: "Current IRB Approval Date"
         irb_expiration_date: "IRB Expiration Date"
         irb_of_record: "IRB of Record"
-        pro_number: "PRO #"
+        pro_number: "IRB #"
         study_phase_ids: "Study Phase(s)"
         submission_type: "Submission Type"
       line_item:
@@ -244,7 +244,7 @@ en:
         sponsor_name: "Sponsor Name"
         start_date: "Start Date"
         study_type_questions: "Study Type Questions"
-        udak_project_number: "Financial Account (UDAK #)"
+        udak_project_number: "Financial Account (AWD #)"
         protocol_merge: "Merged Protocol ID(s)"
       protocol_filter:
         search_name: "Name"
@@ -583,6 +583,7 @@ en:
   # CONSTANTS #
   #############
   constants:
+    admin_service: "(Admin Service)"
     currency: "$"
     yes_select: "Yes"
     no_select: "No"

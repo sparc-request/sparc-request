@@ -21,7 +21,7 @@
 class PricingMap < ApplicationRecord
   audited
 
-  belongs_to :service
+  belongs_to :service, touch: true
 
   before_save :upcase_otf_unit_type
   before_save :zero_out_negatives

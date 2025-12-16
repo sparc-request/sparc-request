@@ -1,0 +1,135 @@
+name: sparc ci
+
+on:
+  push:
+    branches:
+      - "v*"
+  pull_request:
+    branches:
+      - "v*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rspec_files:
+          - "spec/api spec/extensions spec/jobs spec/helpers spec/mailers spec/lib spec/models spec/views spec/controllers"
+          - "spec/features/dashboard spec/features/surveyor"
+          - "spec/features/proper spec/features/catalog_manager"
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ''
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    env:
+      RAILS_ENV: test
+      TZ: America/New_York
+      DISPLAY: :99.0
+      MOZ_HEADLESS: 1
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: ''
+      DATABASE_NAME: test_sparc_request
+      FULFILLMENT_DATABASE_NAME: cwf_test
+      USE_EPIC: "true"
+      EPIC_TEST_MODE: "true"
+
+    steps:
+      - name: Checkout sparc-request
+        uses: actions/checkout@v4
+        with:
+          path: sparc-request
+
+      - name: Checkout sparc-fulfillment
+        uses: actions/checkout@v4
+        with:
+          repository: sparc-request/sparc-fulfillment
+          ref: v3.7.0
+          # ref: update-db-configs-for-gh-actions
+          path: sparc-fulfillment
+
+      - name: Set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14.19.2
+
+      - name: Install firefox
+        uses: browser-actions/setup-firefox@latest
+        with:
+          firefox-version: '140.0.4'
+
+      - name: Install system dependencies and start Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
+          Xvfb :99 -screen 0 1024x768x24 &
+
+      # sparc proper context to start
+      - name: Set up ruby for sparc-request
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-request
+          bundler-cache: true
+
+      - name: Create databases
+        run: |
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $DATABASE_NAME;"
+          mysql -h $DATABASE_HOST -u $DATABASE_USERNAME -e "create database $FULFILLMENT_DATABASE_NAME;"
+
+      - name: Setup sparc-request database
+        working-directory: ./sparc-request
+        run: |
+          cp config/database.yml.example config/database.yml
+          cp config/fulfillment_db.yml.example config/fulfillment_db.yml
+          cp dotenv.example .env
+          bundle exec rake db:migrate
+          bundle exec rake db:test:prepare
+
+      # switch to cwf to set up its db
+      - name: Set up ruby for sparc-fulfillment
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-fulfillment
+          bundler-cache: true
+
+      - name: Set up sparc-fulfillment database
+        working-directory: ./sparc-fulfillment
+        run: |
+          mkdir -p tmp
+          cp config/database.yml.example config/database.yml
+          cp config/sparc_db.yml.example config/sparc_db.yml
+
+          cp config/klok_db.yml.example config/klok_db.yml
+          cp dotenv.example .env
+          bundle exec rake db:migrate
+
+      # back to sparc
+      - name: Set up ruby for sparc-request
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ./sparc-request
+          bundler-cache: true
+
+      - name: Install Node dependencies and precompile assets
+        working-directory: ./sparc-request
+        run: |
+          npm install -g yarn
+          yarn install
+          bundle exec rake assets:precompile
+
+      - name: Run RSpec tests
+        working-directory: ./sparc-request
+        run: |
+          bundle exec rspec ${{ matrix.rspec_files }}

@@ -366,6 +366,11 @@ SparcRails::Application.routes.draw do
         get :rate_history
         get :refresh_tab
       end
+
+      collection do
+        get :bulk_status_edit
+        post :bulk_status_update
+      end
     end
 
     root to: 'protocols#index'

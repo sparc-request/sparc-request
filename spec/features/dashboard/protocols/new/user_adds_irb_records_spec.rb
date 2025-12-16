@@ -41,15 +41,14 @@ RSpec.describe 'User wants to make a new Study with IRB Records', js: true do
 
     find('#protocol_research_types_info_attributes_human_subjects + label').click
 
-    find('#newIrbRecord').click
-    wait_for_javascript_to_finish
+    page.execute_script("document.getElementById('newIrbRecord').click()")
+    sleep 0.5
 
     fill_in 'irb_record_pro_number', with: '1111111111'
     click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
-
-    find('#newIrbRecord').click
-    wait_for_javascript_to_finish
+    page.execute_script("document.getElementById('newIrbRecord').click()")
+    sleep 0.5
 
     fill_in 'irb_record_pro_number', with: '2222222222'
     click_button I18n.t('actions.submit')

@@ -55,6 +55,13 @@ class NotifierLogic
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false)
     audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
+
+    # Only send if there are non-admin services involved
+    if audit_report
+      audit_report[:line_items] = filter_administrative_service_audits(audit_report[:line_items])
+      return if audit_report[:line_items].empty?
+    end
+
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
@@ -65,6 +72,12 @@ class NotifierLogic
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       audit_report = request_amendment ? sub_service_request.audit_line_items(@current_user) : nil
+
+      if audit_report
+        audit_report[:line_items] = filter_administrative_service_audits(audit_report[:line_items])
+        next if audit_report[:line_items].empty?
+      end
+
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         if ssr_destroyed
           Notifier.notify_admin(submission_email.email, @current_user, sub_service_request, audit_report, ssr_destroyed).deliver_now
@@ -90,15 +103,20 @@ class NotifierLogic
     ssrs_that_have_been_updated_from_a_un_updatable_status
   end
 
-
   def send_initial_submission_email
     unless @to_notify.empty?
-      sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
-      send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify).includes(:services)
+
+      # We don't want to send emails if the request only contains administrative services
+      non_admin_ssrs = exclude_administrative_only_ssrs(sub_service_requests)
+
+      send_notifications(non_admin_ssrs) unless non_admin_ssrs.empty?
     end
   end
 
   def send_request_amendment_email_evaluation
+    @ssrs_updated_from_un_updatable_status = exclude_administrative_only_ssrs(@ssrs_updated_from_un_updatable_status)
+    @created_ssrs_needing_notification = exclude_administrative_only_ssrs(@created_ssrs_needing_notification)
     if @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
       send_user_notifications(request_amendment: true, admin_delete_ssr: false, deleted_ssr: nil)
     end
@@ -183,6 +201,10 @@ class NotifierLogic
 
     audit_report = filter_audit_trail(@current_user, ssr_ids_that_need_auditing)
     audit_report = [audit_report, destroyed_lis].flatten
+
+    # Remove the audits regarding admin services
+    audit_report = filter_administrative_service_audits(audit_report)
+
     filtered_audit_report = { :line_items => [] }
 
     audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|
@@ -201,6 +223,15 @@ class NotifierLogic
       end
     end
     filtered_audit_report[:line_items].present? ? filtered_audit_report : nil
+  end
+
+  def filter_administrative_service_audits(audit_report)
+    return audit_report unless Setting.get_value("use_admin_services")
+    audit_report.reject do |audit|
+      service_id = audit.audited_changes["service_id"]
+      service = Service.find_by(id: service_id)
+      service&.is_administrative?
+    end
   end
 
   def destroyed_ssr_that_needs_a_request_amendment_email
@@ -224,5 +255,26 @@ class NotifierLogic
 
   def find_draft_ssrs(ssrids)
     @service_request.sub_service_requests.select{ |ssr| (ssrids.blank? || ssrids.include?(ssr.id.to_s)) && ssr.status == "draft" }
+  end
+
+  def exclude_administrative_only_ssrs(sub_service_requests)
+
+    return sub_service_requests unless Setting.get_value("use_admin_services")
+
+    sub_service_requests.reject do |ssr|
+      valid_ssr =
+        if ssr.is_a?(SubServiceRequest)
+          ssr
+        elsif ssr.is_a?(AuditRecovery)
+          SubServiceRequest.find_by(id: ssr.auditable_id)
+        end
+
+      if valid_ssr
+        services = valid_ssr.services.to_a
+        services.any? && services.all? { |s| s.is_administrative? == true }
+      else
+        false
+      end
+    end
   end
 end

@@ -25,4 +25,8 @@ $("#pricing_map_submit").removeAttr('disabled')
 $("#modalContainer").modal('hide')
 $("#flashContainer").replaceWith("<%= escape_javascript(render( 'layouts/flash' )) %>")
 $("#pricing_maps_container").html("<%= j render '/catalog_manager/services/pricing_form', service: @service %>")
+
+generalInfoPanel = $("#general-info-panel")
+generalInfoPanel.html("<%= j render '/catalog_manager/services/general_info_form', service: @service %>")
+generalInfoPanel.find('input[type=checkbox][data-toggle=toggle]').bootstrapToggle()
 <% end %>

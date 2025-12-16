@@ -49,6 +49,8 @@ class CatalogManager::PricingMapsController < CatalogManager::AppController
     if @pricing_map.update(pricing_map_params)
       flash[:success] = "Pricing Map updated successfully."
       @service = @pricing_map.service
+      @programs = @service.provider.programs
+      @cores    = @service.program.cores
     else
       @errors = @pricing_map.errors.map(&:full_message)
     end

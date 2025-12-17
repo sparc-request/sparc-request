@@ -156,18 +156,26 @@ task :protocol_merge => :environment do
     puts "Research types, impact areas, and affiliations have been transferred. Assigning service requests..."
 
     fulfillment_ssrs = []
+    existing_ssr_ids = first_protocol.sub_service_requests.pluck(:ssr_id).map(&:to_i)
+    most_recent_ssr_id = existing_ssr_ids.max.to_i
+
     second_protocol.service_requests.each do |request|
       request.protocol_id = first_protocol.id
       request.save(validate: false)
+
       request.sub_service_requests.each do |ssr|
-        ssr.update(protocol_id: first_protocol.id)
-        first_protocol.next_ssr_id = (first_protocol.next_ssr_id + 1)
-        first_protocol.save(validate: false)
-        if ssr.in_work_fulfillment
-          fulfillment_ssrs << ssr
-        end
+        most_recent_ssr_id += 1
+
+        ssr.update(
+          protocol_id: first_protocol.id,
+          ssr_id: format('%04d', most_recent_ssr_id))
+
+        fulfillment_ssrs << ssr if ssr.in_work_fulfillment
       end
     end
+
+    first_protocol.next_ssr_id = most_recent_ssr_id
+    first_protocol.save(validate: false)
 
     puts "Service requests have been transferred. Assigning arms..."
 

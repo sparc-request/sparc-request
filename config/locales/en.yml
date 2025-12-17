@@ -368,12 +368,10 @@ en:
             recruitment_start_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
             research_master_id:
-              blank: "Research Master ID can't be blank."
               not_a_number: "The Research Master ID entered is invalid."
             selected_for_epic:
               inclusion: "can't be blank"
             start_date:
-              blank: "Start Date can't be blank."
               invalid: "Start Date must come before End Date"
             study_type_answers:
               blank: "can't be blank"

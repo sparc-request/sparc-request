@@ -30,8 +30,8 @@
 %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id), striped: 'true', toolbar: ".service-requests-table-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC'} }
   %thead.bg-light
     %tr
-      %th{ data: { field: 'checkbox', checkbox: true, align: 'left' } }
-        = check_box_tag 'select-all'
+      -# %th{ data: { field: 'checkbox', checkbox: true, align: 'left' } }
+        -# = check_box_tag 'select-all'
       %th.w-10{ data: { field: 'srid', align: 'left', sortable: 'true' } }
         = ServiceRequest.human_attribute_name(:id)
       %th{ data: { field: 'organization', align: 'left', sortable: 'true' } }

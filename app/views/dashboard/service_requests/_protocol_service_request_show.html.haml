@@ -25,8 +25,8 @@
     = link_to catalog_service_request_path(srid: service_request.id), title: t('dashboard.service_requests.tooltips.modify_request'), class: 'btn btn-success', data: { toggle: 'tooltip' } do
       = succeed t('dashboard.service_requests.modify_request') do
         = icon('fas', 'plus mr-2')
-    %button.btn.btn-success.mx-2.bulk-status-edit.disabled
-      = 'Edit Request Statuses'
+    -# %button.btn.btn-success.mx-2.bulk-status-edit.disabled
+      -# = 'Edit Request Statuses'
 %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id), striped: 'true', toolbar: ".service-requests-table-toolbar-#{service_request.id}", sort_name: 'srid', sort_order: 'ASC'} }
   %thead.bg-light
     %tr

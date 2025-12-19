@@ -19,17 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
-  before_action :find_sub_service_request,  except: :index
+  before_action :find_sub_service_request,  except: [:index, :bulk_status_edit, :bulk_status_update]
   before_action :find_service_request,      only: :index
   before_action :find_permissions,          only: :index
   before_action :find_admin_orgs,           except: :refresh_tab, unless: :show_js?
   before_action :authorize_protocol,        only: :index
-  before_action :authorize_admin,           except: [:index, :refresh_tab], unless: :show_js?
+  before_action :authorize_admin,           except: [:index, :refresh_tab, :bulk_status_edit, :bulk_status_update], unless: :show_js?
 
   respond_to :json, :js, :html
 
   def index
     @sub_service_requests = @service_request.sub_service_requests.eager_load(:service_forms, :organization_forms, organization: { service_providers: :identity }, protocol: { project_roles: :identity }).where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
+  end
+
+  def bulk_status_edit
+    @sub_service_requests = SubServiceRequest.find(params[:id])
+
+    puts @sub_service_requests
+  end
+
+  def bulk_status_update
+    @sub_service_requests = SubServiceRequest.where(id: params[:ids])
+
+    # puts @sub_service_requests
+    
+    @sub_service_requests.update_all(status: params[:status])
+
   end
 
   def show
@@ -65,7 +80,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    if @sub_service_request.update_attributes(sub_service_request_params)
+    if @sub_service_request.update(sub_service_request_params)
       @sub_service_request.distribute_surveys if (@sub_service_request.status == 'complete' && sub_service_request_params[:status].present?)
       flash[:success] = t('dashboard.sub_service_requests.updated')
     else
@@ -127,14 +142,14 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
             params = {sync: {action: 'update', line_item: {sparc_id: line_item.id, quantity_requested: line_item.quantity, service_id: line_item.service_id}}}
           end
         else
-          sync.update_attributes(synched: true) ##Mark as completed since nothing needed done
+          sync.update(synched: true) ##Mark as completed since nothing needed done
         end
       end
 
       if params #Because of the above check for syncs that are duplicative
         RestClient.post(url, params, content_type: 'application/json') do |response, request, result, &block|
           if JSON.parse(response.body)['result'] == "success"
-            sync.update_attributes(synched: true)
+            sync.update(synched: true)
           end
         end
       end

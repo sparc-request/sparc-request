@@ -59,10 +59,6 @@ RSpec.describe SurveyNotification do
       survey_link_path = "surveyor/responses/#{response.id}"
       expect(mail.body.include?(survey_link_path)).to eq(true)
     end
-
-    it 'should not contain the SCTR grant citation paragraph' do
-      expect(mail.body.include?("#sctr-grant-citation")).to eq(false)
-    end
   end
 
   describe 'service system satisfaction survey' do
@@ -87,10 +83,6 @@ RSpec.describe SurveyNotification do
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
       expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
-    end
-
-    it 'should not contain the SCTR grant citation paragraph' do
-      expect(mail.body.include?("#sctr-grant-citation")).to eq(false)
     end
   end
 
@@ -117,14 +109,10 @@ RSpec.describe SurveyNotification do
     it 'should contain the survey link' do
       expect(["/surveyor/responses/", "/edit.html"].all? { |s| mail.body.include?(s) }).to eq(true)
     end
-
-    it 'should contain the SCTR grant citation paragraph' do
-      expect(mail.body.include?("id='sctr-grant-citation'")).to eq(true)
-    end
   end
 
   before :each do
-    org.update_attributes(survey_completion_alerts: true)
+    org.update(survey_completion_alerts: true)
   end
 
   describe 'service system satisfaction survey completed ' do

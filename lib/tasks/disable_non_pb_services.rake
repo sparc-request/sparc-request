@@ -27,6 +27,6 @@ task :disable_non_pb_services => :environment do
 
   services.each do |service|
     puts "Disabling service #{service.name} with id of #{service.id}"
-    service.update_attributes(is_available: false)
+    service.update(is_available: false)
   end
 end

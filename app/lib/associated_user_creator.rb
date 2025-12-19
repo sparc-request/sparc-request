@@ -30,7 +30,7 @@ class AssociatedUserCreator
       @successful = true
       if @protocol_role.role == 'primary-pi'
         protocol.project_roles.primary_pis.each do |pr|
-          pr.update_attributes(project_rights: 'approve', role: 'general-access-user')
+          pr.update(project_rights: 'approve', role: 'general-access-user')
         end
       end
       @protocol_role.save

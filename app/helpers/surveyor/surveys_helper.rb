@@ -57,7 +57,7 @@ module Surveyor::SurveysHelper
   end
 
   def survey_options(survey)
-    render 'surveyor/surveys/actions_dropdown.html', survey: survey
+    render partial: 'surveyor/surveys/actions_dropdown', locals: { survey: survey }, formats: [:html]
   end
 
   ### Surveys Form ###

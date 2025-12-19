@@ -66,7 +66,7 @@ class Admin::PermissibleValuesController < Admin::ApplicationController
   def update
     @permissible_value = PermissibleValue.find(params[:id])
 
-    if @permissible_value.update_attributes(permissible_value_params)
+    if @permissible_value.update(permissible_value_params)
       flash.now[:success] = t('admin.permissible_values.updated')
     else
       @errors = @permissible_value.errors

@@ -46,14 +46,6 @@ $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 
 <% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>
 $('#modalContainer').modal('hide')
-<% if @response.respondable.has_ssrs_for_resubmission? %>
-$.ajax
-  method: 'GET'
-  dataType: 'script'
-  url: '/service_request/confirmation'
-  data:
-    srid: getSRId()
-<% end %>
 <% else %>
 window.location = "/surveyor/responses/<%=@response.id%>/complete"
 <% end %>

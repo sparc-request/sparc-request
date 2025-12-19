@@ -38,7 +38,7 @@ namespace :data do
       puts ""
       continue = prompt "Password of all users will be changed!  Press any key to continue or CTRL-C to exit"
       puts ""
-      while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+      while file.blank? or not File.exist?(Rails.root.join("db", "imports", file))
         file = get_file(true)
       end
 
@@ -53,7 +53,7 @@ namespace :data do
         id = row["identity_id"]
         i = Identity.find(id.to_i)
         password = Devise.friendly_token
-        i.update_attributes(password: password,
+        i.update(password: password,
                             password_confirmation: password)
         print i.ldap_uid
         print "  -  "

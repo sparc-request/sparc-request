@@ -35,7 +35,7 @@
         %h4.panel-title
           = link_to t(:catalog_manager)[:organization_form][:headers][:general_info], '#general-info-collapse', data: {toggle: 'collapse', parent: '#cm-form-accordion'}
       .panel-collapse.collapse.in#general-info-collapse
-        .panel-body
+        .panel-body#general-info-panel
           = render "catalog_manager/services/general_info_form", service: service
 
     .panel.panel-default#service-components{ class: service.one_time_fee? && service.process_ssrs_organization.tag_list.include?("clinical work fulfillment") ? '' : 'hidden' }

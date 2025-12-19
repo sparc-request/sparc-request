@@ -68,7 +68,7 @@ task :remove_or_update_SR_in_first_draft_status => :environment do
          # If the SR has associated SSRs all with "draft" status, then change the SR status to "draft"
         if ssr_statuses.first == 'draft' && ssr_statuses.count == 1
           csv << ["UPDATED SR TO DRAFT STATUS", protocol.id, sr.id, sr.submitted_at.try(:to_date), sr.original_submitted_date.try(:to_date), sr.status]
-          sr.update_attributes(status: 'draft')
+          sr.update(status: 'draft')
           sr.save(validate: false)
           puts "Updated SR #{sr.id}"
         # Change SR status to "submitted" and change SR submitted_at date and original_submitted_at date
@@ -82,19 +82,19 @@ task :remove_or_update_SR_in_first_draft_status => :environment do
 
           csv << ["UPDATED", protocol.id, sr.id, sr.submitted_at.try(:to_date), sr.original_submitted_date.try(:to_date), sr.status]
 
-          sr.update_attributes(status: 'submitted')
+          sr.update(status: 'submitted')
 
           
           # Update SR to the most recent submitted_at date
           if (most_recently_submitted_at_ssr.submitted_at) > (sr.submitted_at)
-            sr.update_attributes(submitted_at: most_recently_submitted_at_ssr.submitted_at)
+            sr.update(submitted_at: most_recently_submitted_at_ssr.submitted_at)
           end
 
           # Update SR to the most recent submitted_at date
           if (sr.submitted_at) < (oldest_submitted_at_ssr.submitted_at)
-            sr.update_attributes(original_submitted_date: sr.submitted_at)
+            sr.update(original_submitted_date: sr.submitted_at)
           else
-            sr.update_attributes(original_submitted_date: oldest_submitted_at_ssr.submitted_at)
+            sr.update(original_submitted_date: oldest_submitted_at_ssr.submitted_at)
           end
 
           sr.save(validate: false)
@@ -102,7 +102,7 @@ task :remove_or_update_SR_in_first_draft_status => :environment do
         elsif sr.submitted_at.nil? && sub_service_requests.map(&:submitted_at).compact.empty?
           # If SR and SSRS do not have submitted_at dates, leave the SR and SSR dates blank, and change the SR to Draft 
           csv << ["UPDATED (SR & SSRS had no submitted_at dates)", protocol.id, sr.id, sr.submitted_at.try(:to_date), sr.original_submitted_date.try(:to_date), sr.status]
-          sr.update_attributes(status: 'draft')
+          sr.update(status: 'draft')
           sr.save(validate: false)
           puts "Updated SR #{sr.id}"
         else

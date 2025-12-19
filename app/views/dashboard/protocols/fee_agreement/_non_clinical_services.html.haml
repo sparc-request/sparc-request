@@ -36,10 +36,11 @@
           - unless params[:hide_non_clinical_notes]
             %th=t('dashboard.fee_agreement.non_clinical_services.service_notes')
         %tbody
+          - use_admin_services = Setting.get_value('use_admin_services')
           - @fee_agreement.non_clinical_service_table.rows.each do |row|
             %tr
               %td= row.program_name
-              %td= row.service_name
+              %td= h(row.service_name) + (use_admin_services && row.is_administrative ? admin_service_tag : '')
               %td= number_to_currency(row.displayed_service_cost)
               %td= row.quantity
               %td= number_to_currency(row.total)

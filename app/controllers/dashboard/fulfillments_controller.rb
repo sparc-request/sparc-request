@@ -53,7 +53,7 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   def update
-    if @fulfillment.update_attributes(fulfillment_params)
+    if @fulfillment.update(fulfillment_params)
       @line_item = @fulfillment.line_item
       flash[:success] = t('dashboard.sub_service_requests.study_level_activities.fulfillments.updated')
     else

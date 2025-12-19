@@ -32,7 +32,7 @@ namespace :data do
     puts "No import file specified or the file specified does not exist in db/imports" if error
     file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
 
-    while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+    while file.blank? or not File.exist?(Rails.root.join("db", "imports", file))
       file = get_file(true)
     end
 
@@ -45,14 +45,14 @@ namespace :data do
 
       skipped_services = CSV.open("tmp/skipped_hospital_services_#{Time.now.strftime('%m%d%Y%T')}.csv", "wb")
 
-      skipped_services << ['REASON','EAP ID','CPT Code','Charge Code','Revenue Code','Send to Epic','Procedure Name','Service Rate','Corporate Rate ','Federal Rate','Member Rate','Other Rate','Is One Time Fee?','Clinical Qty Type','Unit Factor','Qty Min','Display Date','Effective Date']
+      skipped_services << ['REASON','EAP ID','CPT Code','Charge Code','Revenue Code','Send to Epic','Procedure Name', 'Is Available', 'Service Rate','Corporate Rate ','Federal Rate','Member Rate','Other Rate','Is One Time Fee?','Clinical Qty Type','Unit Factor','Qty Min','Display Date','Effective Date']
 
       input_file = Rails.root.join("db", "imports", get_file)
       continue = prompt('Preparing to modify the services. Are you sure you want to continue? (y/n): ')
 
       if (continue == 'y') || (continue == 'Y')
 
-        CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
+        CSV.foreach(input_file, headers: true, :encoding => 'windows-1251:utf-8') do |row|
           
           begin
             revenue_code = row['Revenue Code'].rjust(4, '0')
@@ -92,7 +92,7 @@ namespace :data do
                                   abbreviation: row['Procedure Name'],
                                   order: 1,
                                   one_time_fee: (row['Is One Time Fee?'] == 'Y' ? true : false),
-                                  is_available: true,
+                                  is_available: row['Is Available'],
                                   audit_comment: 'imported by script')
 
               service.tag_list = "epic" if row['Send to Epic'] == 'Y'

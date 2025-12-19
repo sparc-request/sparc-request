@@ -71,7 +71,7 @@ class ProtocolMergesReport < ReportingModule
   # Conditions
   def where args={}
 
-    from_date = (args[:protocols_merged_date_from].nil? ? self.default_options["Merged Date Range"][:from] : DateTime.strptime(args[:protocols_merged_date_from], "%m/%d/%Y")).to_s(:db)
+    from_date = (args[:protocols_merged_date_from].nil? ? self.default_options["Merged Date Range"][:from] : DateTime.strptime(args[:protocols_merged_date_from], "%m/%d/%Y")).to_fs(:db)
     to_date = (args[:protocols_merged_date_to].nil? ? self.default_options["Merged Date Range"][:to] : DateTime.strptime(args[:protocols_merged_date_to], "%m/%d/%Y")).strftime("%Y-%m-%d 23:59:59")
     merged_date = from_date..to_date
 

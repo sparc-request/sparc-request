@@ -58,6 +58,8 @@ class Subsidy < ApplicationRecord
     elsif pi_contribution > total_request_cost
       errors.add(:pi_contribution, "must be less than than the total request cost")
     end
+
+    return errors.map(&:message) if errors.any?
   end
 
   def subsidy_audits

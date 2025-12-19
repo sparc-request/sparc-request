@@ -66,7 +66,7 @@ module Dashboard::ProtocolsHelper
         end
       end
     elsif !access
-      render "dashboard/protocols/request_access_dropdown.html.haml", protocol: protocol
+      render partial: "dashboard/protocols/request_access_dropdown", locals: { protocol: protocol }, formats: [:html]
     end
   end
 

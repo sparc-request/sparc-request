@@ -40,14 +40,6 @@
   %li
     = link_to survey.title, url_for(controller: '/surveyor/responses', action: :edit, only_path: false, id: response.id, format: :html), target: '_blank'
 
-- if @surveys.pluck(:access_code).include?("sctr-customer-satisfaction-survey")
-  #sctr-grant-citation
-    %br
-    = t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_reminder]
-    %br
-    %em.gray-text
-      = raw(t(:surveyor)[:responses][:emails][:sctr_customer_satisfaction][:grant_info])
-
 %br
 %br
 

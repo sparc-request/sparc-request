@@ -17,10 +17,14 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 $('#modalContainer').html("<%= j render 'setup', report: @report %>")
 $("#modalContainer").modal('show')
 first_dependency = "#" + $('.reporting-field.has-dependencies').attr('id')
 window.disable_deps(first_dependency)
+
+if $('.selectpicker').length
+  $('.selectpicker').selectpicker()
 
 if $('.from-date').length && $('.to-date').length
   startDate = $('.from-date').data().date

@@ -30,13 +30,15 @@ module Audited
   module Adapters
     module ActiveRecord
       class Audit < ::ActiveRecord::Base
-        begin
-          use_separate_audit_database = Setting.get_value("use_separate_audit_database")
-        rescue
-          use_separate_audit_database = nil
+        Rails.application.config.to_prepare do
+          begin
+            use_separate_audit_database = Setting.get_value("use_separate_audit_database")
+          rescue
+            use_separate_audit_database = nil
+          end
+          # database connection information in database.yml should be named audit_environment (eg. audit_development)
+          establish_connection("audit_#{Rails.env}") if use_separate_audit_database
         end
-        # database connection information in database.yml should be named audit_environment (eg. audit_development)
-        establish_connection("audit_#{Rails.env}") if use_separate_audit_database
       end
     end
   end

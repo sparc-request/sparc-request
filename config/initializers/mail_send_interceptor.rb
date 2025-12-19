@@ -19,24 +19,23 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class MailSendInterceptor
+  def self.delivering_email(mail)
+    cc_to = " AND CC TO #{mail.cc}" if mail.cc.present?
 
-  class << self
-    def delivering_email(mail)
-      cc_to = " AND CC TO #{mail.cc}" if mail.cc.present?
-
-      mail.subject = "[#{Setting.get_value("host")} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
-      mail.to = Setting.get_value("default_mail_to")
-      mail.cc = nil
-    end
+    mail.subject = "[#{Setting.get_value("host")} - EMAIL TO #{mail.to} #{cc_to}] #{mail.subject}"
+    mail.to = Setting.get_value("default_mail_to")
+    mail.cc = nil
   end
 end
 
-begin
-  send_emails_to_real_users = Setting.get_value("send_emails_to_real_users")
-rescue
-  send_emails_to_real_users = nil
-end
+Rails.application.config.to_prepare do
+  begin
+    send_emails_to_real_users = Setting.get_value("send_emails_to_real_users")
+  rescue
+    send_emails_to_real_users = nil
+  end
 
-if send_emails_to_real_users != true
-  ActionMailer::Base.register_interceptor(MailSendInterceptor)
+  if send_emails_to_real_users != true
+    ActionMailer::Base.register_interceptor(MailSendInterceptor)
+  end
 end

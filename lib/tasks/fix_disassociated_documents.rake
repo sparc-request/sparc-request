@@ -42,7 +42,7 @@ task :fix_disassociated_documents => :environment do
 
     if doc.sub_service_requests.count == 1
       puts "Updating existing document #{doc.id} with new service request id #{ssr.service_request_id} for sub service request #{ssr.id}"
-      doc.update_attributes(service_request_id: ssr.service_request_id)
+      doc.update(service_request_id: ssr.service_request_id)
       puts ""
     else
       puts "Existing document #{doc.id} belongs to multiple sub service request, creating a new document, associating new document with the sub service request #{ssr.id}, deleting old document association for this sub service request #{ssr.id}"

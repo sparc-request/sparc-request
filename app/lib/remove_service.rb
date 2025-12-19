@@ -52,8 +52,10 @@ class RemoveService
 
       @ssr.update_attribute(:status, 'draft') unless ['first_draft', 'draft'].include?(@ssr.status)
       if @ssr.line_items.empty?
-        @ssr.current_user_id = @current_user.id
-        NotifierLogic.new(@service_request, @current_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        if @current_user
+          @ssr.current_user_id = @current_user.id
+          NotifierLogic.new(@service_request, @current_user).ssr_deletion_emails(deleted_ssr: @ssr, ssr_destroyed: true, request_amendment: false, admin_delete_ssr: false)
+        end
         @ssr.destroy
       end
 

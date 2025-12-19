@@ -18,6 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+require 'logger'
 require_relative 'boot'
 
 require 'rails/all'
@@ -29,6 +30,9 @@ Bundler.require(*Rails.groups)
 
 module SparcRails
   class Application < Rails::Application
+
+    # config.load_defaults 6.1
+    # config.active_support.cache_format_version = 6.1
 
     Dotenv::Railtie.load
 
@@ -100,9 +104,9 @@ module SparcRails
       margin_bottom: '1in',
       print_media_type: true
     }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
-      
+
     ##  Error pages
-    config.exceptions_app = self.routes
+    config.exceptions_app = routes
 
     config.to_prepare do
       Doorkeeper::ApplicationsController.layout 'application'

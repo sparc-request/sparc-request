@@ -12,7 +12,9 @@ class RemovePotentialFundingSourceFromProtocols < ActiveRecord::Migration[5.2]
         p.funding_start_date = p.potential_funding_start_date
       end
 
+      Protocol.skip_callback(:save, :after, :check_for_inactive_irb_record, raise: false)
       p.save(validate: false)
+      Protocol.set_callback(:save, :after, :check_for_inactive_irb_record)
       bar.increment!
     end
 

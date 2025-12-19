@@ -5,10 +5,9 @@ gem 'activerecord-import' # Use this more! In particular for arms/calendar creat
 gem 'activeresource'
 gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
-gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+# gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
+gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
 gem 'audited', '~> 5.0'
-gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
-gem 'axlsx_rails'
 gem 'babel-transpiler'
 gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
@@ -21,21 +20,24 @@ gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
 gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.7'
+gem 'capistrano-yarn'
+gem 'caxlsx'
+gem 'caxlsx_rails'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
-gem 'devise', '~> 4.8'
+gem 'devise'
 gem 'doorkeeper' # OAuth application API authentication
 gem 'dotenv-rails'
 gem 'dynamic_form' # Check usage
 gem 'execjs'
 gem 'exception_notification'
 gem 'font-awesome-sass'
-gem 'filterrific', git: 'https://github.com/ayaman/filterrific.git'
-gem 'grape', '1.7.0'
+gem 'filterrific'
+gem 'grape'
 gem 'grape-entity', '~> 0.10.2'
 gem 'grouped_validations', :git => 'https://github.com/jleonardw9/grouped_validations.git', branch: 'master'
 gem 'gyoku' # Check usage
@@ -50,8 +52,8 @@ gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.11'
 gem 'json', '>= 1.8'
 gem 'letter_opener'
-gem 'momentjs-rails', '>= 2.8.1' # Bootstrap 4 purge
-gem 'mysql2', '0.5.4'
+gem 'microsoft_teams_incoming_webhook_ruby'
+gem 'mysql2', '0.5.6'
 gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
@@ -66,22 +68,23 @@ gem 'omniauth-rails_csrf_protection'
 gem 'paperclip', '~> 6.1' # Deprecated https://github.com/thoughtbot/paperclip
 gem 'pdfkit'  # Check usage
 gem 'prawn-table'
-gem 'prawn', '2.4.0' # Check usage
+gem 'prawn' # Check usage
 gem 'premailer-rails'
-gem 'puma', '~> 5.6'
 gem 'rack-mini-profiler', require: false
-gem 'rails', '5.2.8.1'
+# gem 'rails', '5.2.8.1'
+# gem 'rails', '6.1.7.6'
+gem 'rails', '7.0.8.1'
+gem "sprockets-rails"
 gem 'rails-html-sanitizer' # Check usage
-gem "rails-observers", git: 'https://github.com/rails/rails-observers.git' # Needed to used audited-activerecord w/ Rails 5
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
-gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/MUSC-BMIC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.13.0'
 gem 'slack-notifier'
-gem 'sprockets', '~> 4.2'
+# gem 'sprockets', '~> 4.2'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
 gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
@@ -91,13 +94,14 @@ gem 'will_paginate-bootstrap4'
 gem 'x-editable-rails'
 gem 'msteams-ruby-client'
 gem 'wkhtmltopdf-binary'
+gem 'webrick'
 
 group :production do
 end
 
 group :development, :test, :profile do
+  gem 'puma', '~> 5.6'
   gem 'addressable', '~> 2.8.1' # Check usage
-  gem 'bullet'
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage
   gem 'faker'
@@ -120,7 +124,7 @@ group :development, :test do
   gem 'rspec-activemodel-mocks' # Check usage
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
-  gem 'rspec-rails', '~> 5.1'
+  gem 'rspec-rails'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage

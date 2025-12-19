@@ -108,7 +108,7 @@ RSpec.describe 'User manages status options', js: true do
 
     context 'with user is not overlord' do
       before :each do
-        @catalog_manager.identity.update_attributes(catalog_overlord: false)
+        @catalog_manager.identity.update(catalog_overlord: false)
         visit catalog_manager_catalog_index_path
         wait_for_javascript_to_finish
         find("#institution-#{@institution.id}").click

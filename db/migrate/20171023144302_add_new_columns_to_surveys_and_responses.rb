@@ -56,7 +56,7 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
     # Replace sub_service_request_id with respondable_id and respondable_type='SubServiceRequest'
     responses.select{ |r| r.sub_service_request_id != nil }.each do |r|
       reloaded_response = Response.find(r.id)
-      reloaded_response.update_attributes(respondable_id: r.sub_service_request_id, respondable_type: 'SubServiceRequest')
+      reloaded_response.update(respondable_id: r.sub_service_request_id, respondable_type: 'SubServiceRequest')
     end
   end
 
@@ -95,7 +95,7 @@ class AddNewColumnsToSurveysAndResponses < ActiveRecord::Migration[5.1]
     # Replace respondable_id with sub_service_request_id
     responses.each do |r|
       reloaded_response = Response.find(r.id)
-      reloaded_response.update_attributes(sub_service_request_id: r.respondable_id)
+      reloaded_response.update(sub_service_request_id: r.respondable_id)
     end
   end
 end

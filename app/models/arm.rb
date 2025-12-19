@@ -68,7 +68,7 @@ class Arm < ApplicationRecord
 
   def visit_groups_in_order?(loaded_visit_groups = visit_groups)
     vg_ids_by_position = loaded_visit_groups.sort{|a,b| a.position <=> b.position}.map(&:id)
-    vg_ids_by_day = loaded_visit_groups.sort{|a,b| a.day <=> b.day}.map(&:id)
+    vg_ids_by_day = loaded_visit_groups.sort{|a,b| a.day && b.day ? a.day <=> b.day : a.day ? 1 : -1}.map(&:id) #allows sorting even if visit groups have nil values, nil values placed before all others
 
     vg_ids_by_position === vg_ids_by_day
   end
@@ -171,7 +171,7 @@ class Arm < ApplicationRecord
   end
 
   def update_minimum_counts
-    self.update_attributes(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
+    self.update(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
   end
 
   ### audit reporting methods ###
@@ -204,7 +204,7 @@ class Arm < ApplicationRecord
 
   def update_liv_subject_counts
     self.line_items_visits.select{ |liv| (liv.sub_service_request.can_be_edited? && liv.subject_count.nil?) || liv.subject_count > self.subject_count }.each do |liv|
-      liv.update_attributes(subject_count: self.subject_count)
+      liv.update(subject_count: self.subject_count)
     end
   end
 

@@ -24,7 +24,7 @@ class DefaultUnfundedRateToFederal < ActiveRecord::Migration[4.2]
 
     pricing_setups.each do |setup|
       unless setup.unfunded_rate_type
-        setup.update_attributes(unfunded_rate_type: 'federal')
+        setup.update(unfunded_rate_type: 'federal')
       end
     end
   end

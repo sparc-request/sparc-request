@@ -35,10 +35,10 @@ RSpec.describe LineItemsVisit, type: :model do
 
   describe "methods" do
     before :each do
-      service_request.protocol.update_attributes(indirect_cost_rate: 200)
+      service_request.protocol.update(indirect_cost_rate: 200)
       @line_items_visit = arm1.line_items_visits.first
 
-      service_request.arms.map(&:visits).flatten.each{|visit| visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)}
+      service_request.arms.map(&:visits).flatten.each{|visit| visit.update(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)}
       @line_items_visit.reload
     end
 
@@ -74,8 +74,8 @@ RSpec.describe LineItemsVisit, type: :model do
       describe "units per package" do
 
         it "should select the correct pricing map based on display date" do
-          pricing_map.update_attributes(unit_factor: 5)
-          pricing_map2.update_attributes(unit_factor: 10)
+          pricing_map.update(unit_factor: 5)
+          pricing_map2.update(unit_factor: 10)
           expect(@line_items_visit.units_per_package).to eq(5)
         end
       end
@@ -88,7 +88,7 @@ RSpec.describe LineItemsVisit, type: :model do
 
         it "should return zero if the research billing qantity is zero" do
           @line_items_visit.visits.each do |visit|
-            visit.update_attributes(research_billing_qty: 0)
+            visit.update(research_billing_qty: 0)
           end
 
           expect(@line_items_visit.quantity_total).to eq(0)
@@ -109,7 +109,7 @@ RSpec.describe LineItemsVisit, type: :model do
         it "should return nil if the visit has no research billing" do
           research_billing = Hash.new
           @line_items_visit.visits.each do |visit|
-            visit.update_attributes(research_billing_qty: 0)
+            visit.update(research_billing_qty: 0)
             research_billing[visit.id.to_s] = nil
           end
 
@@ -125,7 +125,7 @@ RSpec.describe LineItemsVisit, type: :model do
 
         it "should return zero if the research billing quantity is zero" do
           @line_items_visit.visits.each do |visit|
-            visit.update_attributes(research_billing_qty: 0)
+            visit.update(research_billing_qty: 0)
           end
 
           expect(@line_items_visit.direct_costs_for_visit_based_service_single_subject).to eq(0)
@@ -142,7 +142,7 @@ RSpec.describe LineItemsVisit, type: :model do
       describe "direct costs for one time fee" do
 
         it "should return the correct direct cost" do
-          service.update_attributes(one_time_fee: true)
+          service.update(one_time_fee: true)
           expect(@line_items_visit.direct_costs_for_one_time_fee).to eq(250)
         end
       end

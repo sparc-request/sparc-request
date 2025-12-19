@@ -22,7 +22,7 @@ namespace :data do
   desc "Fix Service Requests that should be Submitted Status"
   task fix_submitted_srs: :environment do
 
-    bad_srs = ServiceRequest.where.not(submitted_at: nil, status: "submitted")
+    bad_srs = ServiceRequest.where.not(submitted_at: nil).where.not(status: "submitted")
     bar = ProgressBar.new(bad_srs.size)
 
     CSV.open("tmp/corrected_srs.csv", "wb") do |csv|

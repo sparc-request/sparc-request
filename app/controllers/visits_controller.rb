@@ -40,7 +40,7 @@ class VisitsController < ApplicationController
     @visit_group        = @arm.visit_groups.find(@visit.visit_group_id)
     @locked             = !@visit.sub_service_request.can_be_edited? && !@in_admin
 
-    if @visit.update_attributes(visit_params)
+    if @visit.update(visit_params)
       @visit.sub_service_request.set_to_draft unless @in_admin
       flash[:success] = t('visit_groups.updated')
     else

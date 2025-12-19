@@ -43,7 +43,7 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration[4.2]
       if arm.line_items_visits.any?
         visit_count = arm.line_items_visits.first.visits.count
         if arm.visit_count != visit_count
-          arm.update_attributes(visit_count: visit_count)
+          arm.update(visit_count: visit_count)
         end
         puts "Arm visit count: #{arm.visit_count}"
         (arm.visit_count || 0).times do |index|
@@ -57,8 +57,8 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration[4.2]
           puts "Visit Position: #{visit.position}"
           visit_group = VisitGroup.where("arm_id = ? AND position = ?", arm.id, visit.position).first
           puts "Visit Group ID: #{visit_group.id}"
-          visit.update_attributes(visit_group_id: visit_group.id)
-          visit_group.update_attributes(name: visit.name) unless visit.name.blank?
+          visit.update(visit_group_id: visit_group.id)
+          visit_group.update(name: visit.name) unless visit.name.blank?
         end
       end
     end

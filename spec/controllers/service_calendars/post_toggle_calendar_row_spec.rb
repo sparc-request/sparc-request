@@ -37,7 +37,7 @@ RSpec.describe ServiceCalendarsController do
         liv       = arm.line_items_visits.first
         v         = arm.visits.first
 
-        v.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+        v.update(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:identity_id] = logged_in_user.id
 

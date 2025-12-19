@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SurveyNotification < ActionMailer::Base
-  add_template_helper(ApplicationHelper)
+  helper ApplicationHelper
 
   def system_satisfaction_survey(response)
     @response = response

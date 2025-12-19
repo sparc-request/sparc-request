@@ -29,7 +29,7 @@ task :update_hb_services => :environment do
     puts "No import file specified or the file specified does not exist in db/imports" if error
     file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
 
-    while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+    while file.blank? or not File.exist?(Rails.root.join("db", "imports", file))
       file = get_file(true)
     end
 
@@ -101,7 +101,7 @@ task :update_hb_services => :environment do
 
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
-      CSV.foreach(input_file, headers: true, skip_blanks: true, skip_lines: /^(?:,\s*)+$/, :encoding => 'windows-1251:utf-8') do |row|
+      CSV.foreach(input_file, headers: true, :encoding => 'windows-1251:utf-8') do |row|
         puts row['Service ID'].to_i
         service = Service.where(id: row['Service ID'].to_i).first
         updated = false

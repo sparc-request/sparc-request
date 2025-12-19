@@ -196,7 +196,7 @@ class Protocol < ApplicationRecord
     when 'id'
       order(id: order)
     when 'short_title'
-      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}")
+      Protocol.order(Arel.sql("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}"))
     when 'pis'
       joins(primary_pi_role: :identity).order("identities.first_name" => order)
     when 'requests'
@@ -209,7 +209,7 @@ class Protocol < ApplicationRecord
   scope :search_query, -> (search_attrs) {
     return if search_attrs.search_text.blank?
 
-    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
+    # Searches protocols based on 'Authorized User', 'PI', 'Protocol ID', 'IRB#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| "\\#{x}" }
@@ -227,6 +227,7 @@ class Protocol < ApplicationRecord
     pro_num_query     = IrbRecord.arel_table[:pro_number].matches(like_search_term)
     rmid_query        = Protocol.arel_table[:research_master_id].eq(search_attrs[:search_text])
     title_query       = Protocol.arel_table[:short_title].matches(like_search_term).or(Protocol.arel_table[:title].matches(like_search_term))
+    nct_num_query     = HumanSubjectsInfo.arel_table[:nct_number].matches(like_search_term)
     ### END SEARCH QUERIES ###
 
     case search_attrs[:search_drop]
@@ -237,6 +238,10 @@ class Protocol < ApplicationRecord
       others    = self.current_scope
 
       where(id: others & unscoped).distinct
+
+    when "NCT#"
+      joins(:human_subjects_info).where(nct_num_query).distinct
+
     when "PI"
       unscoped  = self.unscoped.joins(:principal_investigators).where(identity_query)
       others    = self.current_scope
@@ -244,7 +249,7 @@ class Protocol < ApplicationRecord
       where(id: others & unscoped).distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
-    when "PRO#"
+    when "IRB#"
       joins(:irb_records).
         where(pro_num_query).distinct
     when "RMID"
@@ -252,8 +257,8 @@ class Protocol < ApplicationRecord
     when "Short/Long Title"
       where(title_query).distinct
     when ""
-      joins(:identities).left_outer_joins(:irb_records).
-        where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query)).
+      joins(:identities).left_outer_joins(:irb_records, :human_subjects_info).
+        where(identity_query.or(protocol_id_query).or(title_query).or(pro_num_query).or(rmid_query).or(nct_num_query)).
         distinct
     end
   }

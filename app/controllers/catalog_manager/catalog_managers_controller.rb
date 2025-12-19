@@ -58,7 +58,7 @@ class CatalogManager::CatalogManagersController < CatalogManager::AppController
     @organization = @catalog_manager.organization
     @user_rights  = user_rights(@organization.id)
 
-    if @catalog_manager.update_attributes(catalog_manager_params)
+    if @catalog_manager.update(catalog_manager_params)
       flash[:notice] = "Catalog Manager successfully updated."
     else
       flash[:alert] = "Error updating Catalog Manager."

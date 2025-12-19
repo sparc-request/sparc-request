@@ -94,9 +94,9 @@ class ModifiedRateReport < ReportingModule
 
     date_of_change =
       if args[:admin_rate_changes_date_of_change_from] && args[:admin_rate_changes_date_of_change_to]
-        DateTime.strptime(args[:admin_rate_changes_date_of_change_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:admin_rate_changes_date_of_change_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+        DateTime.strptime(args[:admin_rate_changes_date_of_change_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:admin_rate_changes_date_of_change_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
       else
-        self.default_options["Date Range"][:from].to_s(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
+        self.default_options["Date Range"][:from].to_fs(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
       end
 
     return { organizations: { id: ssr_organization_ids }, admin_rate_changes: { date_of_change: date_of_change } }

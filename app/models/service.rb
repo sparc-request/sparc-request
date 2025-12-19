@@ -64,8 +64,19 @@ class Service < ApplicationRecord
   validate  :one_time_fee_choice
   validates :order, numericality: { only_integer: true }, on: :update
 
+  after_touch :update_administrative_status
+
   default_scope -> {
     order(:order, :name)
+  }
+
+  # Only show non-admin services in SPARC shopping area unless user is service provider AND catalog overlord
+  scope :with_admin_services, -> (user) {
+    if Setting.get_value('use_admin_services')
+      unless user.present? && user.catalog_overlord? && (user.service_providers.any? || user.super_users.any?)
+        where(is_administrative: false)
+      end
+    end
   }
 
   scope :available, -> {
@@ -337,11 +348,22 @@ class Service < ApplicationRecord
     "#{ENV.fetch('ROOT_URL')}/services/#{id}"
   end
 
+  def update_administrative_status
+    has_admin_requirements =
+      one_time_fee? &&
+      pricing_maps.exists? &&
+      !pricing_maps.where('full_rate > 0').exists?
+
+    if !has_admin_requirements && self.is_administrative
+      update_column(:is_administrative, false)
+    end
+  end
+
   private
 
   def one_time_fee_choice
     if one_time_fee.nil?
-      errors[:base] << "You must choose either One Time Fee, or Clinical Service."
+      errors.add(:base, "You must choose either One Time Fee, or Clinical Service.")
     end
   end
 

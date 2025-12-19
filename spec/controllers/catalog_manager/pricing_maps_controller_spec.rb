@@ -42,7 +42,10 @@ RSpec.describe CatalogManager::PricingMapsController, type: :controller do
 
   describe '#update' do
     it 'should update an existing Pricing Map' do
-      map = create(:pricing_map, federal_rate: 1234)
+      provider = create(:provider)
+      program = create(:program, parent: provider)
+      service = create(:service, organization: program)
+      map = create(:pricing_map, service: service,federal_rate: 1234)
       expect{
         put :update,
           params: { id: map.id, pricing_map: { federal_rate: 567.8 } },

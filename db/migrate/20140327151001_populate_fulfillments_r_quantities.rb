@@ -28,7 +28,7 @@ class PopulateFulfillmentsRQuantities < ActiveRecord::Migration[4.2]
     fulfillments = Fulfillment.all
     fulfillments.each do |fulfillment|
       if fulfillment.line_item
-        fulfillment.update_attributes(requested_r_quantity: fulfillment.line_item.quantity)
+        fulfillment.update(requested_r_quantity: fulfillment.line_item.quantity)
       end
     end
   end
@@ -36,7 +36,7 @@ class PopulateFulfillmentsRQuantities < ActiveRecord::Migration[4.2]
   def down
     fulfillments = Fulfillment.all
     fulfillments.each do |fulfillment|
-      fulfillment.update_attributes(requested_r_quantity: nil)
+      fulfillment.update(requested_r_quantity: nil)
     end
   end
 end

@@ -21,8 +21,15 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::SubServiceRequestsController do
+  include ActiveJob::TestHelper
+
   describe 'PUT #push_to_epic' do
     before :each do
+
+      allow(Setting).to receive(:get_value).and_call_original
+      allow(Setting).to receive(:get_value).with('use_epic').and_return(true)
+      allow(Setting).to receive(:get_value).with('epic_test_mode').and_return(true)
+
       @logged_in_user = create(:identity)
       log_in_dashboard_identity(obj: @logged_in_user)
 
@@ -31,10 +38,20 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       @organization         = create(:organization)
       @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id)
                               create(:super_user, identity: @logged_in_user, organization: @organization)
+
+      stub_const('EPIC_INTERFACE', double('EpicInterface')) unless defined?(EPIC_INTERFACE)
+
+      allow_any_instance_of(Protocol).to receive(:push_to_epic) do |protocol, *_args|
+        EpicQueueRecord.create!(protocol: protocol, identity: @logged_in_user)
+      end
     end
 
     it 'should push the protocol' do
-      expect{ put :push_to_epic, params: { id: @sub_service_request.id, format: :js } }.to change(EpicQueueRecord, :count).by(1)
+      expect do
+        perform_enqueued_jobs do
+          put :push_to_epic, params: { id: @sub_service_request.id, format: :js }
+        end
+      end.to change(EpicQueueRecord, :count).by(1)
     end
   end
 end

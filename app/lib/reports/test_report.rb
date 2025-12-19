@@ -31,7 +31,7 @@ class TestReport < ReportingModule
   # Key can be either string or ClassName
   # Value is hash of options
   # Options List #
-  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range, :date_field
+  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range, :date_field, :multi_select_tag
   # :field_label => key or optional text (default is key)
   # :required => boolean (default if false)
   # :dependency => id of data element that must be selected before this option is enabled

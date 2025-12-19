@@ -32,9 +32,9 @@ RSpec.describe ServiceRequest, type: :model do
     let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10) }
 
     it "should return 1 if arm visit count <= 5" do
-      arm.update_attributes(visit_count: 0)
+      arm.update(visit_count: 0)
       expect(service_request.set_visit_page(1, arm)).to eq(1)
-      arm.update_attributes(visit_count: 5)
+      arm.update(visit_count: 5)
       expect(service_request.set_visit_page(1, arm)).to eq(1)
     end
 
@@ -197,10 +197,10 @@ RSpec.describe ServiceRequest, type: :model do
 
     before :each do
       # service_request.arms.each { |arm| arm.visits.update_all(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5) }
-      service_request.arms.map(&:visits).flatten.each{|visit| visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)}
+      service_request.arms.map(&:visits).flatten.each{|visit| visit.update(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5)}
       service_request.line_items_visits.each{|liv| liv.reload}
       @protocol = service_request.protocol
-      @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
+      @protocol.update(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save validate: false
       service_request.reload
     end

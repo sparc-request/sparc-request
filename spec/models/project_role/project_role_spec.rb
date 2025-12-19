@@ -50,7 +50,7 @@ RSpec.describe ProjectRole, type: :model do
     end
 
     it "should return false if no primary pi exists" do
-      @project_role.update_attributes(role: 'mentor')
+      @project_role.update(role: 'mentor')
       expect(@project_role.validate_one_primary_pi).to eq(false)
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe ProjectRole, type: :model do
     end
 
     it "should return false if more than one project role has a pi associated with the protocol" do
-      project_role.update_attributes(role: 'primary-pi')
+      project_role.update(role: 'primary-pi')
       expect(@project_role.is_only_primary_pi?).to eq(false)
     end
   end
@@ -72,12 +72,12 @@ RSpec.describe ProjectRole, type: :model do
   describe "can switch to" do
 
     it "it should return false if the role is 'primary-pi'" do
-      @project_role.update_attributes(role: 'primary-pi')
+      @project_role.update(role: 'primary-pi')
       expect(@project_role.can_switch_to?).to eq(false)
     end
 
     it "it should return false if the role is 'pi'" do
-      @project_role.update_attributes(role: 'pi')
+      @project_role.update(role: 'pi')
       expect(@project_role.can_switch_to?).to eq(false)
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe ProjectRole, type: :model do
   describe "should select" do
 
     it "should return true if project rights == right" do
-      @project_role.update_attributes(project_rights: 'approve')
+      @project_role.update(project_rights: 'approve')
       expect(@project_role.should_select?('approve', user)).to eq(true)
     end
 
@@ -95,7 +95,7 @@ RSpec.describe ProjectRole, type: :model do
 
     it "should return false if previous conditions are not met" do
       expect(@project_role.should_select?('request', user)).to eq(false)
-      @project_role.update_attributes(role: 'mentor')
+      @project_role.update(role: 'mentor')
       expect(@project_role.should_select?('request', user2)).to eq(false)
     end
   end
@@ -103,17 +103,17 @@ RSpec.describe ProjectRole, type: :model do
   describe "display rights" do
 
     it "should display 'Member Only' when project right is 'none'" do
-      @project_role.update_attributes(project_rights: 'none')
+      @project_role.update(project_rights: 'none')
       expect(@project_role.display_rights).to eq("Member Only")
     end
 
     it "should display 'View Rights' when project right is 'view'" do
-      @project_role.update_attributes(project_rights: 'view')
+      @project_role.update(project_rights: 'view')
       expect(@project_role.display_rights).to eq("View Rights")
     end
 
     it "should display 'Authorize/Change Study Charges' when project right is 'approve'" do
-      @project_role.update_attributes(project_rights: 'approve')
+      @project_role.update(project_rights: 'approve')
       expect(@project_role.display_rights).to eq("Authorize/Change Study Charges")
     end
 

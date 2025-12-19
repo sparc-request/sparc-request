@@ -20,33 +20,45 @@
 
 require 'open3'
 require 'slack-notifier'
+require 'microsoft_teams_incoming_webhook_ruby'
 
 task delayed_job_monitor: :environment do
-  # https://hooks.slack.com/services/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
-  delayed_job_webhook = Setting.get_value("delayed_job_monitor_slack_webhook")
+  dj_slack_webhook = Setting.get_value("delayed_job_monitor_slack_webhook")
+  dj_teams_webhook = Setting.get_value("delayed_job_monitor_teams_webhook")
+  workers = ENV.fetch("DJ_WORKERS", 4).to_i
 
-  if delayed_job_webhook.present?
-    notifier = Slack::Notifier.new(delayed_job_webhook)
-  end
-
-  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job status")
+  stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n #{workers} status")
   prev_status = stderr
 
-  if stderr =~ /delayed_job: no instances running/
+  if stderr =~ /no instances running/
     message = ""
-    if delayed_job_webhook.present?
-      message += "```[SPARCRequest][#{Rails.env}]\n"
-      message += prev_status
+    if dj_slack_webhook.present? || dj_teams_webhook.present?
+      message += "```\n[SPARCRequest][#{Rails.env}]\n"
+      message += prev_status.split("\n").last + "\n" # makes sure we only get the last message and not the warnings, this may go away on production
 
       message += "delayed_job: attempting restart\n"
     end
 
-    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job start")
+    stdout, stderr, status = Open3.capture3("RAILS_ENV=#{Rails.env} bundle exec bin/delayed_job -n #{workers} restart")
     curr_status = stdout
 
-    if delayed_job_webhook.present?
+    if dj_slack_webhook.present? || dj_teams_webhook.present?
       message += curr_status + "```"
-      notifier.ping(message)
+    end
+
+    if dj_slack_webhook.present?
+      slack_notifier = Slack::Notifier.new(dj_slack_webhook)
+
+      slack_notifier.ping(message)
+    end
+
+    if dj_teams_webhook.present?
+      teams_message = MicrosoftTeamsIncomingWebhookRuby::Message.new do |tm|
+        tm.url = dj_teams_webhook
+        tm.text = message
+      end
+
+      teams_message.send
     end
   end
 end

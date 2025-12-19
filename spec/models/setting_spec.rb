@@ -25,7 +25,7 @@ RSpec.describe Setting, data_type: :model do
     expect(build(:setting)).to be_valid
   end
 
-  it { is_expected.to validate_uniqueness_of(:key) }
+  it { is_expected.to validate_uniqueness_of(:key).case_insensitive }
   it { is_expected.to validate_presence_of(:data_type) }
   it { is_expected.to validate_inclusion_of(:data_type).in_array(%w(boolean string json email url path)) }
 

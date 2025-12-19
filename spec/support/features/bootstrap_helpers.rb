@@ -66,7 +66,7 @@ module Features
           first('.dropdown-menu.show span.text', text: selection).click
         end
       end
-      find('body').click # Click away
+      first('h4', text: 'Test').click # Click away
       wait_for_javascript_to_finish
     end
 
@@ -84,7 +84,7 @@ module Features
       field.click
       field.send_keys(:delete)
       field.set(text)
-      find('body').click # Click away
+      first('h4', text: 'Test').click # Click away
       wait_for_javascript_to_finish
     end
 
@@ -131,15 +131,16 @@ module Features
           first('.dropdown-menu.open span.text', text: selection).click
         end
       end
-      find('body').click # Click away
+      first('h4', text: 'Test').click # Click away
       wait_for_javascript_to_finish
     end
 
-    def bootstrap3_datepicker(element)
-      e = page.find(element)
-      e.click
-      e.set(Date.today.strftime('%Y-%m-%d'))
-      find(".dropdown-menu td.today").click
+    def bootstrap3_datepicker(element, date = Date.current)
+      input = page.find(element)
+      input.click
+      input.set(date.iso8601)
+      input.send_keys(:tab)
+      wait_for_javascript_to_finish
     end
   end
 end

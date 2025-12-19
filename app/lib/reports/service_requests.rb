@@ -99,7 +99,7 @@ class ServiceRequestsReport < ReportingModule
       if params[:apr_data].include?("irb")
         attrs["IRB Checked Y/N"]      = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? 'Y' : 'N'"
         attrs["Number of IRBs"]       = "service_request.try(:protocol).irb_records.length"
-        attrs["If true, PRO #"]       = "service_request.try(:protocol).irb_records.length > 1 ? service_request.try(:protocol).irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.pro_number]}}.try(:join, ', ') : service_request.try(:protocol).try{irb_records.first}.try(:pro_number)"
+        attrs["If true, IRB #"]       = "service_request.try(:protocol).irb_records.length > 1 ? service_request.try(:protocol).irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.pro_number]}}.try(:join, ', ') : service_request.try(:protocol).try{irb_records.first}.try(:pro_number)"
         attrs["IRB Approval Date"]    = "service_request.try(:protocol).irb_records.length > 1 ? service_request.try(:protocol).irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_approval_date.try(:strftime, '%D').to_s]}}.try(:join, ', ') : service_request.try(:protocol).try{irb_records.first}.try(:irb_approval_date).try(:strftime, '%D')"
         attrs["IRB Expiration Date"]  = "service_request.try(:protocol).irb_records.length > 1 ? service_request.try(:protocol).irb_records.try{map.with_index(1){|m, index| ['IRB' + index.to_s + ': ' +  m.irb_expiration_date.try(:strftime, '%D').to_s]}}.try(:join, ', ') : service_request.try(:protocol).try{irb_records.first}.try(:irb_expiration_date).try(:strftime, '%D')"
 
@@ -170,7 +170,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     if args[:submitted_at_from] and args[:submitted_at_to]
-      submitted_at = DateTime.strptime(args[:submitted_at_from], "%m/%d/%Y").to_s(:db)..DateTime.strptime(args[:submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
+      submitted_at = DateTime.strptime(args[:submitted_at_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
     end
 
     # default values if none are provided

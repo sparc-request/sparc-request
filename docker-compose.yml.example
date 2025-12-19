@@ -1,0 +1,44 @@
+services:
+  sparc_db:
+    image: mysql:8.3
+    volumes:
+      - sparc_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: sparc-docker_development
+      TZ: America/New_York
+    networks:
+      - sparc_network
+    ports:
+      - "3306:3306"
+
+  sparc_web:
+    build: .
+    command: bundle exec rails s -b '0.0.0.0' -p 3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - sparc_db
+    environment:
+      DATABASE_HOST: sparc_db
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root_password
+      DATABASE_NAME: sparc-docker_development
+      RAILS_ENV: development
+      TZ: America/New_York
+      ##CWF Info
+      CWF_DATABASE_NAME: cwf-docker_development
+    env_file:
+      - .env
+    networks:
+      - sparc_network
+
+volumes:
+  sparc_db_data:
+
+networks:
+  sparc_network:
+    name: sparc_network

@@ -28,7 +28,7 @@
 //= require bootstrap-table-custom
 //= require bootstrap-toggle
 //= require moment/min/moment-with-locales.min
-//= require bootstrap-datetimepicker
+//= require eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min
 //= require catalog_manager/catalog
 //= require catalog_manager/form
 //= require jquery_ujs

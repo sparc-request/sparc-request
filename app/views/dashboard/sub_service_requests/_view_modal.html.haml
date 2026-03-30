@@ -18,6 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- docs = sub_service_request.documents + sub_service_request.protocol.documents.select{ |doc| doc.share_all}
 .modal-dialog.modal-xl#subServiceRequestDetailsModal{ role: 'document'}
   .modal-content
     .modal-header
@@ -39,7 +40,7 @@
         .card-header.bg-primary.text-white
           %h3.mb-0<
             = t('documents.header')
-        - if sub_service_request.documents.empty?
+        - if docs.empty?
           = render 'layouts/modal_errors', messages: [t(:documents)[:none]], margin: false, rounded: false
         - else
           %table.table.table-bordered.mb-0
@@ -50,7 +51,7 @@
                 %th
                   = Document.human_attribute_name(:org_ids)
             %tbody
-              - sub_service_request.documents.each do |document|
+              - docs.each do |document|
                 %tr
                   %td
                     = display_document_title(document, permission: true)

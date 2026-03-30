@@ -44,6 +44,23 @@ module ProtocolsControllerShared
 
   protected
 
+  def sync_rmid_titles
+    if @protocol.research_master_id.present?
+      rmid_record = Protocol.get_rmid(@protocol.research_master_id)
+      if rmid_record.present? && rmid_record['status'] != 404
+        rmid_title = rmid_record['long_title']
+        rmid_short_title = rmid_record['short_title']
+
+        if @protocol.title != rmid_title || @protocol.short_title != rmid_short_title
+          @protocol.update_columns(
+            title: Protocol.new(title: rmid_title).title,
+            short_title: Protocol.new(short_title: rmid_short_title).short_title
+          )
+        end
+      end
+    end
+  end
+
   def find_protocol
     @protocol = Protocol.find(params[:id])
   end

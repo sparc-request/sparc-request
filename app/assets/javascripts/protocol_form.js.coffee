@@ -30,24 +30,13 @@ $(document).ready ->
     clearTimeout(rmidTimer)
     if $(this).val()
       rmidTimer = setTimeout( (->
-        rmidTimer = null
         updateRmidFields()
       ), 750)
     else
-      rmidTimer = null
       resetRmidFields()
   ).on('keydown', '#protocol_research_master_id:not([readonly=readonly])', ->
     clearTimeout(rmidTimer)
   )
-  # Wait for rmid titles to populate before allowing form submission (SPOSDEV-1297)
-  $(document).on 'ajax:beforeSend', '#protocolForm', ->
-    if rmidTimer || (rmidAjax && rmidAjax.readyState != 4)
-      AlertSwal.fire(
-        type: 'info'
-        title: 'Please Wait'
-        html: 'RMID data still loading. Please wait and try again.'
-      )
-      return false
 
   $(document).on 'change', '#protocol_funding_status', ->
     toggleFundingSource($(this).val())

@@ -89,6 +89,8 @@ class ProtocolsController < ApplicationController
 
   def update
     if @protocol.update(protocol_params)
+      sync_rmid_titles
+
       if @service_request.status == 'first_draft'
         @service_request.update_status('draft', current_user)
       end

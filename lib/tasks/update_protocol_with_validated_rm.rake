@@ -50,14 +50,39 @@ namespace :data do
     all_rm_ids = research_masters.map{|rmid| rmid['id']}
 
     protocols_to_cleanup = Protocol.where.not(research_master_id: nil).where.not(research_master_id: all_rm_ids) # we have an research_master_id but it doesn't exist in the RMID system
-    
+
     cleanup_count = protocols_to_cleanup.count
     cleanup_ids = protocols_to_cleanup.map(&:id)
-   
+
     protocols_to_cleanup.update_all(research_master_id: nil)
-  
+
     puts("  Research Master ID removed from: #{cleanup_count} Protocols")
     puts("  IDs: #{cleanup_ids}\n")
+
+    # beginning syncing rmid titles with matched protocols
+    puts("Syncing protocol titles with RMID titles...")
+
+    title_sync_count = 0
+    title_sync_ids = []
+
+    research_masters.each do |rm|
+      if protocol = Protocol.find_by_research_master_id(rm['id'])
+        rmid_title = rm['long_title']
+        rmid_short_title = rm['short_title']
+
+        if protocol.title != rmid_title || protocol.short_title != rmid_short_title
+          protocol.short_title = rmid_short_title
+          protocol.title = rmid_title
+          protocol.save(validate: false)
+
+          title_sync_count += 1
+          title_sync_ids << protocol.id
+        end
+      end
+    end
+
+    puts("#{title_sync_count} Protocol titles synced with RMID titles")
+    puts("IDs: #{title_sync_ids}\n")
 
     # beginning validation of protocols with a valid research_master_id
     puts("Research Master validation...")
@@ -164,9 +189,10 @@ namespace :data do
       message += "\nProtocol IDs: #{removed_validation_ids}\n"
       message += "\nresearch_master_ids removed: #{cleanup_count}\n"
       message += "\nProtocol IDs: #{cleanup_ids}\n"
+      message += "\nProtocol titles synced with RMID titles: #{title_sync_count}\n"
+      message += "\nProtocol IDs: #{title_sync_ids}\n"
       notifier = Teams.new(teams_webhook)
       notifier.post(message)
     end
   end
 end
-

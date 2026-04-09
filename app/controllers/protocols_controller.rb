@@ -136,6 +136,11 @@ class ProtocolsController < ApplicationController
 
       unless @errors.any?
         @rmid_record = Protocol.get_rmid(protocol_params[:research_master_id])
+
+        # Users may need to change a protocol's rmid. If the new rmid is not eirb validated, clear the rmid_id from the irb record so it isn't locked and user can delete it (SPOSDEV-1188)
+        if @rmid_record && !@rmid_record['eirb_validated']
+          @protocol.irb_records.where(rmid_id: @rmid_record['id']).update_all(rmid_id: nil)
+        end
       end
     end
   end

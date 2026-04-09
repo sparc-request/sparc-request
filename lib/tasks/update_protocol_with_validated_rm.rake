@@ -165,6 +165,15 @@ namespace :data do
     removed_validation_count = [previously_validated_count - newly_validated_count, 0].max # return 0 for negative number
     removed_validation_ids = previously_validated_ids - newly_validated_ids
 
+    # If protocol no longer associated to validated rmid, find associated irb records and remove rmid association (SPOSDEV- 1188)
+    Protocol.where(id: removed_validation_ids).each do |protocol|
+      if protocol.has_human_subject_info?
+        protocol.human_subjects_info.irb_records
+          .where(rmid_id: protocol.research_master_id)
+          .update_all(rmid_id: nil)
+      end
+    end
+
     puts("\n\nChecking existing validated protocols against current list...")
     puts("  Previously flagged protocols: #{previously_validated_count}")
     puts("  Number validated via Research Master APIi: #{newly_validated_count}")

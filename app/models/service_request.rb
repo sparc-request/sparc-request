@@ -80,12 +80,6 @@ class ServiceRequest < ApplicationRecord
       # Run protocol validations
       self.protocol.valid?
 
-      # Check for RMID presence for auditing
-      # self.protocol.define_singleton_method(:rmid_requires_validation?) { true }
-
-      # Validate start/end dates and recruitment dates
-      # self.protocol.validate_dates
-
       # Extract and add protocol model errors to the service_requests base errors
       extract_errors(self.protocol.errors).each do |msg|
         self.errors.add(:base, msg)

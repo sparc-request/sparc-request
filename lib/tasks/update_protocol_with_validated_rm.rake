@@ -115,7 +115,6 @@ namespace :data do
         protocol.rmid_validated = true
         protocol.save(validate: false)
 
-        
         # Having an eirb number implies that the protocol should have human subjects checked in research types info.  Therefore, if it does not, either go ahead and create a research types info record or update the existing one.
         if protocol.research_types_info.blank?
           protocol.create_research_types_info(human_subjects: true)
@@ -129,31 +128,19 @@ namespace :data do
         end
 
         # If protocol already has a human subjects info record AND has an exisiting irb record in the database, override that with the irb info coming from RMID.  Otherwise, create a new irb record with the relevant data.
-        if protocol.has_human_subject_info? 
-          if protocol.human_subjects_info.irb_records.any?
-            protocol
-              .human_subjects_info
-              .irb_records
-              .first
-              .update(
-                pro_number:                 vrm['eirb_pro_number'],
-                initial_irb_approval_date:  vrm['date_initially_approved'],
-                irb_approval_date:          vrm['date_approved'],
-                irb_expiration_date:        vrm['date_expiration'],
-                rmid_id:                    protocol.research_master_id
-              )
-          else
-            protocol
-              .human_subjects_info
-              .irb_records
-              .create(
-                pro_number:                 vrm['eirb_pro_number'],
-                initial_irb_approval_date:  vrm['date_initially_approved'],
-                irb_approval_date:          vrm['date_approved'],
-                irb_expiration_date:        vrm['date_expiration'],
-                rmid_id:                    protocol.research_master_id
-              )
-          end
+        if protocol.has_human_subject_info?
+          irb_record = protocol.human_subjects_info.irb_records.first_or_initialize
+
+          ext_archive_state = vrm['eirb_state'] == 'External IRB Review Archive'
+
+          irb_record.update(
+            pro_number:                 vrm['eirb_pro_number'],
+            # Don't overwrite irb dates with rmid api data if the values are blank and the eirb is in 'External IRB Review Archive' state (SPOSDEV-1359).
+            initial_irb_approval_date:  ext_archive_state && vrm['date_initially_approved'].blank? ? irb_record.initial_irb_approval_date : vrm['date_initially_approved'],
+            irb_approval_date:          ext_archive_state && vrm['date_approved'].blank? ? irb_record.irb_approval_date : vrm['date_approved'],
+            irb_expiration_date:        ext_archive_state && vrm['date_expiration'].blank? ? irb_record.irb_expiration_date : vrm['date_expiration'],
+            rmid_id:                    protocol.research_master_id
+          )
         end
 
         newly_validated_count += 1

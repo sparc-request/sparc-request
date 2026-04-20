@@ -27,6 +27,7 @@ class IrbRecordsController < ApplicationController
     respond_to :js
 
     @irb_record = @human_subjects_info.irb_records.new
+    @lock_irb_dates = lock_irb_dates?(@irb_record.rmid_id || @protocol.research_master_id)
   end
 
   # Soft create builds hidden fields to submit on the potocol form
@@ -34,7 +35,7 @@ class IrbRecordsController < ApplicationController
     respond_to :js
 
     @irb_record = @human_subjects_info.irb_records.new(irb_record_params)
-    
+
     unless @irb_record.valid?
       @errors = @irb_record.errors
     end
@@ -44,6 +45,7 @@ class IrbRecordsController < ApplicationController
     respond_to :js
 
     @irb_record.assign_attributes(irb_record_params) if params[:irb_record]
+    @lock_irb_dates = lock_irb_dates?(@irb_record.rmid_id || @protocol.research_master_id)
   end
 
   # Soft update builds hidden fields to submit on the potocol form
@@ -63,6 +65,14 @@ class IrbRecordsController < ApplicationController
   end
 
   protected
+
+  # Make irb dates fields readonly unless irb is in 'External IRB Review Archive' state (SPOSDEV-1359)
+  def lock_irb_dates?(rmid_id)
+    return false if rmid_id.blank?
+
+    rmid_record = Protocol.get_rmid(rmid_id)
+    rmid_record.present? && rmid_record['eirb_state'] != 'External IRB Review Archive'
+  end
 
   def find_protocol
     @protocol = params[:protocol_id].present? ? Protocol.find(params[:protocol_id]) : Study.new

@@ -152,18 +152,28 @@ namespace :data do
     removed_validation_count = [previously_validated_count - newly_validated_count, 0].max # return 0 for negative number
     removed_validation_ids = previously_validated_ids - newly_validated_ids
 
-    # If protocol no longer associated to validated rmid, find associated irb records and remove rmid association (SPOSDEV- 1188)
-    Protocol.where(id: removed_validation_ids).each do |protocol|
-      if protocol.has_human_subject_info?
-        protocol.human_subjects_info.irb_records
-          .where(rmid_id: protocol.research_master_id)
-          .update_all(rmid_id: nil)
+    puts("\nRemoving stale IRB records...")
+    stale_count = 0
+    stale_protocol_ids = []
+
+    IrbRecord.includes(human_subjects_info: :protocol).where.not(rmid_id: nil).find_each do |irb|
+      protocol = irb.human_subjects_info&.protocol
+
+      if protocol.nil? || !protocol.rmid_validated || irb.rmid_id != protocol.research_master_id
+        stale_protocol_ids << protocol.id if protocol
+        irb.destroy
+        stale_count += 1
       end
     end
 
+    stale_protocol_ids = stale_protocol_ids.uniq
+
+    puts("  Stale IRB records removed: #{stale_count}\n")
+    puts("  Protocol IDs with removed IRB records: #{stale_protocol_ids}\n")
+
     puts("\n\nChecking existing validated protocols against current list...")
     puts("  Previously flagged protocols: #{previously_validated_count}")
-    puts("  Number validated via Research Master APIi: #{newly_validated_count}")
+    puts("  Number validated via Research Master API: #{newly_validated_count}")
     puts("  Validated flag removed from: #{removed_validation_count} Protocols")
     puts("  IDs: #{removed_validation_ids}")
 
@@ -187,6 +197,8 @@ namespace :data do
       message += "\nProtocol IDs: #{cleanup_ids}\n"
       message += "\nProtocol titles synced with RMID titles: #{title_sync_count}\n"
       message += "\nProtocol IDs: #{title_sync_ids}\n"
+      message += "\nStale IRB records removed: #{stale_count}\n"
+      message += "\nProtocol IDs with removed IRB records: #{stale_protocol_ids}\n"
       notifier = Teams.new(teams_webhook)
       notifier.post(message)
     end

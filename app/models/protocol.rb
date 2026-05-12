@@ -363,7 +363,7 @@ class Protocol < ApplicationRecord
     end
     if self.end_date.blank?
       self.errors.add(:end_date, :blank)
-      invalid = false
+      is_valid = false
     end
     if self.start_date && self.end_date && self.start_date > self.end_date
       self.errors.add(:start_date, :invalid)

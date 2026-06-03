@@ -10,7 +10,8 @@ namespace :audit do
     puts "File exists? #{File.exist?(input_file)}"
 
     headers = [
-      "SPARC ID", "Organization", "Requested Services", "Status", "Status Date", "Can Push to CWF?", "Blocking Reasons", "Addl Protocol Message"
+      "SPARC ID", "Organization", "Requested Services", "Status", "Status Date",
+      "SSR Admin Note", "Note Created", "Can Push to CWF?", "Blocking Reasons", "Addl Protocol Message"
     ]
 
     ssr_keys = []
@@ -44,7 +45,7 @@ namespace :audit do
               ).find_by(ssr_id: formatted_ssr_id, protocol_id: protocol_id)
 
         unless ssr
-          csv << [display_id, nil, nil, nil, nil, "No", "SSR not found", epic_questions_answered]
+          csv << [display_id, nil, nil, nil, nil, "", "",  "No", "SSR not found", epic_questions_answered]
           next
         end
 
@@ -56,6 +57,11 @@ namespace :audit do
                       .last
                       &.date
                       &.strftime("%m/%d/%Y")
+        admin_note = Note.where(notable_id: ssr.id, notable_type: "SubServiceRequest")
+                         .order(created_at: :desc)
+                         .first
+        ssr_admin_note = admin_note&.body || ""
+        note_created = admin_note&.created_at&.strftime("%m/%d/%Y") || ""
 
         # Check if Protocol exists
         if protocol.nil?
@@ -65,6 +71,8 @@ namespace :audit do
             status_date,
             ssr.organization&.name,
             ssr.status,
+            "",
+            "",
             "No",
             "Protocol is missing",
             epic_questions_answered
@@ -149,6 +157,8 @@ namespace :audit do
           requested_services,
           ssr.status,
           status_date,
+          ssr_admin_note,
+          note_created,
           blocking_errors.empty? ? "Yes" : "No",
           blocking_errors.join("; "),
           epic_questions_answered

@@ -33,7 +33,7 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: "alert-#{bg_context}", data: {toggle: 'collapse', target: ".arm-#{arm_id}-ssr-#{ssr_id}"} }
-    %th{ colspan: in_dashboard? ? 24 : 28 }
+    %th{ colspan: 28 }
       = icon('fas', 'caret-down pr-1 mr-2')
       = display_org_name(livs[0].line_item.service.organization_hierarchy, ssr, locked, complete)
 
@@ -67,9 +67,8 @@
         = display_service_rate(liv.line_item)
       = render 'service_calendars/displayed_cost', service_request: service_request, sub_service_request: sub_service_request, line_item: liv.line_item, merged: merged, page: page, tab: tab
 
-      - unless in_dashboard?
-        %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
-          = display_unit_type(liv)
+      %td.unit-type.text-center{ colspan: 4, title: display_unit_type(liv), data: { toggle: 'tooltip' } }
+        = display_unit_type(liv)
 
       = render 'service_calendars/subject_count', liv: liv, service_request: service_request, sub_service_request: sub_service_request, page: page, tab: tab, merged: merged, editable: editable
 

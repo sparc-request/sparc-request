@@ -13,6 +13,12 @@ RUN apt-get install -y default-mysql-client
 # Install tzdata package to allow time zone config in docker-compose.yml
 RUN apt-get update && apt-get install -y tzdata
 
+# Firefox for capybara tests
+RUN apt-get update && apt-get install -y \
+    firefox-esr \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set the working directory in the container
 WORKDIR /app
 

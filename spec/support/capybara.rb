@@ -29,6 +29,9 @@ Capybara.register_driver :firefox_headless do |app|
 
   if ENV['MOZ_HEADLESS']
     options.args << '--headless'
+    options.args << '--disable-gpu'
+    options.args << '--no-sandbox'
+    options.args << '--disable-dev-shm-usage'
   end
 
   Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)

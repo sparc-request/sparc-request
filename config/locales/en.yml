@@ -246,6 +246,7 @@ en:
         study_type_questions: "Study Type Questions"
         udak_project_number: "Financial Account (AWD #)"
         protocol_merge: "Merged Protocol ID(s)"
+        irb_number: "IRB#"
       protocol_filter:
         search_name: "Name"
       question:

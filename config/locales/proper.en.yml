@@ -140,8 +140,8 @@ en:
     ########
     cart:
       header: "My Services"
-      add_service: "Add to cart"
-      remove_service: "Remove from cart"
+      add_service: "Add to My Services"
+      remove_service: "Remove from My Services"
       back_to_catalog: "Return to Catalog"
       tabs:
         active:

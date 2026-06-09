@@ -125,13 +125,17 @@ $ ->
       #   refreshFulfillmentButton()
 
   $(document).on 'click', '#pushToEpic:not(.disabled)', ->
-    $(this).prop('disabled', true)
-    $.ajax
-      method: 'PUT'
-      dataType: 'script'
-      url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
-      success: ->
-        $(this).prop('disabled', false)
+    ConfirmSwal.fire(
+          text: I18n.t('dashboard.sub_service_requests.header.epic.push_confirm') 
+        ).then (result) ->
+          if result.value
+            $(this).prop('disabled', true)
+            $.ajax
+              method: 'PUT'
+              dataType: 'script'
+              url: "/dashboard/sub_service_requests/#{getSSRId()}/push_to_epic"
+              success: ->
+                $(this).prop('disabled', false)
 
   ###############
   # Details Tab #

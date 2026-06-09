@@ -32,7 +32,14 @@ $(document).ready ->
 
   ## hide these columns on startup
   $('#protocolsTable').bootstrapTable('hideColumn', 'irb_number')
-  $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')
+
+  bsOptions = $('#protocolsTable').bootstrapTable('getOptions')
+  columns = bsOptions.columns
+
+  rmidColumnExists = columns[0].some (col) -> col.field is 'research_master_id'
+
+  if rmidColumnExists
+    $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')
 
   ####################
   # Protocol Filters #

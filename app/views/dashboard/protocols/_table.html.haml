@@ -48,7 +48,8 @@
             = Protocol.human_attribute_name(:principal_investigators)
           %th.w-10{ data: { field: 'irb_number', align: 'center', sortable: 'true', visible: false } }
             = Protocol.human_attribute_name(:irb_number)
-          %th.w-10{ data: { field: 'research_master_id', align: 'center', sortable: 'true', visible: false } }
-            = Protocol.human_attribute_name(:research_master_id)
+          - if Setting.get_value('research_master_enabled')
+            %th.w-10{ data: { field: 'research_master_id', align: 'center', sortable: 'true', visible: false } }
+              = Protocol.human_attribute_name(:research_master_id)
           %th.w-10{ data: { field: 'requests', align: 'center', sortable: 'true' } }
             = Protocol.human_attribute_name(:requests)

@@ -86,6 +86,7 @@ class ProtocolsReport < ReportingModule
     attrs["Primary PI College"]           = "primary_pi.try(:professional_org_lookup, 'college')"
     attrs["Primary PI Department"]        = "primary_pi.try(:professional_org_lookup, 'department')"
     attrs["Primary PI Division"]          = "primary_pi.try(:professional_org_lookup, 'division')"
+    attrs["Location"]                     = "primary_pi.try(:professional_org_lookup, 'location')"
 
     attrs["Primary Coordinator(s)"]       = "coordinators.try{map(&:full_name)}.try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "coordinator_emails"

@@ -11,14 +11,14 @@ task :add_division_with_locations => :environment do
   puts "\n --- Please select an institution to create a new division under ---"
 
   inst.each_with_index do |i, index|
-    puts "{index + 1}. {i.name}"
+    puts "#{index + 1}. #{i.name}"
   end
 
   selected_inst = nil
 
   loop do
-    input = prompt("\nPlease enter the number of your choice: "
-    selected_inst = input - 1
+    input = prompt("\nPlease enter the number of your choice: ")
+    selected_inst = input.to_i - 1
 
     if input.match?(/\A\d+\z/) && selected_inst.between?(0, inst.length - 1)
       break

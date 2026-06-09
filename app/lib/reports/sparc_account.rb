@@ -48,6 +48,7 @@ class SPARCAccountReport < ReportingModule
     attrs["College"]     = "try(:professional_org_lookup, 'college')"
     attrs["Department"]  = "try(:professional_org_lookup, 'department')"
     attrs["Division"]    = "try(:professional_org_lookup, 'division')"
+    attrs["Location"]    = "try(:professional_org_lookup, 'location')"
     attrs["Account Created Date"] = "self.created_at.try(:strftime, \"%D\")"
     attrs["ID"] = :id
     attrs["LDAP_UID"] = :ldap_uid

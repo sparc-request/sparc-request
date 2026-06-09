@@ -22,10 +22,23 @@
 window.history.pushState({}, null, "<%= @url %>")
 <% end %>
 
+# check if IRB# or Research Master columns are visible.  If visible, persist that when filtering
+
+visibleColumns = $("#protocolsTable").bootstrapTable("getVisibleColumns")
+
+irbVisible = visibleColumns.some (col) -> col.field is "irb_number"
+rmidVisible = visibleColumns.some (col) -> col.field is "research_master_id"
+
 $("#siteSubheader").html("<%= j render '/layouts/dashboard/subheader' %>")
 $("#protocolFilters").replaceWith("<%= j render '/dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, protocol_filters: @protocol_filters, admin: @admin %>")
 $("#protocolsList").replaceWith("<%= j render '/dashboard/protocols/table', filterrific: @filterrific %>")
 
+$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+
 $('#protocolsList .export button').addClass('no-caret').siblings('.dropdown-menu').addClass('d-none')
 
-$(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
+if !irbVisible
+  $('#protocolsTable').bootstrapTable('hideColumn', 'irb_number')
+
+if !rmidVisible
+  $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')

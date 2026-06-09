@@ -30,6 +30,10 @@ $(document).ready ->
     url.pathname = url.pathname.replace('json', 'csv')
     window.location = url
 
+  ## hide these columns on startup
+  $('#protocolsTable').bootstrapTable('hideColumn', 'irb_number')
+  $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')
+
   ####################
   # Protocol Filters #
   ####################

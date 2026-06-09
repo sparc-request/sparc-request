@@ -30,10 +30,9 @@
   %th.unit-cost.text-center{ colspan: 6 }
     = LineItem.human_attribute_name(:unit_costs)
 
-  - unless in_dashboard?
-    %th.unit-type.text-center{ colspan: 4, rowspan: 2 }
-      %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip' } }
-        = raw LineItem.human_attribute_name(:clinical_quantity_type).sub(' ', '<br>')
+  %th.unit-type.text-center{ colspan: 4, rowspan: 2 }
+    %span{ title: t(:calendars)[:tooltips][:quantity_type], data: { toggle: 'tooltip' } }
+      = raw LineItem.human_attribute_name(:clinical_quantity_type).sub(' ', '<br>')
 
   %th.subject-count.text-center{ colspan: 2, rowspan: 2 }
     %span{ title: t(:calendars)[:tooltips][:subject_count], data: { toggle: 'tooltip' } }

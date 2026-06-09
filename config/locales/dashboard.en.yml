@@ -315,6 +315,7 @@ en:
         epic:
           header: "Epic"
           push: "Push to Epic"
+          push_confirm: "This action will push the study to Epic."
           pushed: "Request sent to Epic!"
           failed: "Request has errors and"
         fulfillment:

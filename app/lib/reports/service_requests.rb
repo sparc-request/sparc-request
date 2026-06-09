@@ -92,6 +92,7 @@ class ServiceRequestsReport < ReportingModule
     attrs["Primary PI College"]           = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'college')"
     attrs["Primary PI Department"]        = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'department')"
     attrs["Primary PI Division"]          = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'division')"
+    attrs["Primary PI Location"]          = "service_request.try(:protocol).try(:primary_pi).try(:professional_org_lookup, 'location')"
     attrs["Primary Coordinator(s)"]       = "service_request.try(:protocol).try(:coordinators).try(:map, &:full_name).try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
 

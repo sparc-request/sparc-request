@@ -168,10 +168,26 @@ class Protocol < ApplicationRecord
   def self.to_csv(protocols)
     CSV.generate do |csv|
       ##Insert headers
-      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "IRB#", "Research Master ID"]
+      row = ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "IRB#"]
+ 
+      ## only add RMID if setting is true
+      if Setting.get_value('research_master_enabled')
+        row << "Research Master ID"
+      end
+      ##
+
+      csv << row
+
       ##Insert data for each protocol
       protocols.each do |p|
-        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.irb_records.map(&:pro_number).join(", "), p.research_master_id]
+        row = [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.irb_records.map(&:pro_number).join(", ")]
+        
+        ## only add RMID if setting is true
+        if Setting.get_value('research_master_enabled')
+          row << p.research_master_id
+        end
+  
+        csv << row
       end
     end
   end

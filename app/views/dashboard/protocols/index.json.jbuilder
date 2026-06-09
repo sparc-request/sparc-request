@@ -10,6 +10,8 @@ json.rows (@protocols) do |protocol|
   json.short_title          protocol_short_title_link(protocol, access)
   json.pis                  pis_display(protocol)
   json.irb_number           protocol.irb_records.map(&:pro_number).join(", ")
-  json.research_master_id   protocol.research_master_id
+  if Setting.get_value('research_master_enabled')
+    json.research_master_id   protocol.research_master_id
+  end
   json.requests             display_requests_button(protocol, access)
 end

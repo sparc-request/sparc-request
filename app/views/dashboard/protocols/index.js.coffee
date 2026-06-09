@@ -40,5 +40,10 @@ $('#protocolsList .export button').addClass('no-caret').siblings('.dropdown-menu
 if !irbVisible
   $('#protocolsTable').bootstrapTable('hideColumn', 'irb_number')
 
-if !rmidVisible
+bsOptions = $('#protocolsTable').bootstrapTable('getOptions')
+columns = bsOptions.columns
+
+rmidColumnExists = columns[0].some (col) -> col.field is 'research_master_id'
+
+if rmidColumnExists && !rmidVisible
   $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')

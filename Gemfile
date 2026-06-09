@@ -100,7 +100,7 @@ group :production do
 end
 
 group :development, :test, :profile do
-  gem 'puma', '~> 5.6'
+  gem 'puma', '~> 7.2'
   gem 'addressable', '~> 2.8.1' # Check usage
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage

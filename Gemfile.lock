@@ -373,7 +373,7 @@ GEM
     net-ssh (7.3.0)
     netrc (0.11.0)
     newrelic_rpm (9.7.1)
-    nio4r (2.5.8)
+    nio4r (2.7.5)
     nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -433,7 +433,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.5)
-    puma (5.6.5)
+    puma (7.2.1)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.21)
@@ -732,7 +732,7 @@ DEPENDENCIES
   premailer-rails
   progress_bar
   pry
-  puma (~> 5.6)
+  puma (~> 7.2)
   rack-mini-profiler
   rails (= 7.0.8.1)
   rails-controller-testing

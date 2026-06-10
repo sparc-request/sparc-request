@@ -34,6 +34,8 @@ RSpec.describe "User views an individual SSR's details", js: true do
 
     visit dashboard_protocol_path(protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     find('.view-request').click
     wait_for_javascript_to_finish

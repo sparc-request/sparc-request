@@ -37,6 +37,8 @@ RSpec.describe 'User deletes a form response', js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+
+    find('#forms .card-header').click
   end
 
   it 'should delete the response' do

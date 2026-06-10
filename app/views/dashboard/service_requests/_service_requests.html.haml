@@ -56,5 +56,5 @@
           = link_to fee_agreement_dashboard_protocol_path(protocol, format: :html), class: 'btn btn-success' do
             = succeed t('dashboard.protocols.service_requests.fee_agreement') do
               = icon('fas', 'eye mr-2')
-    .collapse{ class: "service-request-#{sr.id}" }
+    .collapse{ class: "service-request-#{sr.id} #{action_name == 'show' && in_dashboard? ? 'collapsed' : 'show'}" }
       = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit

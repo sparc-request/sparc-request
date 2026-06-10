@@ -37,6 +37,8 @@ RSpec.describe 'User views a form response', js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+
+    find('#forms .card-header').click
   end
 
   it 'should show the response' do

@@ -30,6 +30,8 @@ RSpec.feature 'User wants to edit a document', js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+
+    find('#documentsCard .card-header').click
   end
 
   it 'should update the document' do

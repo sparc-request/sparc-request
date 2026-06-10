@@ -32,6 +32,8 @@ RSpec.feature 'User wants to add a document', js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+
+    find('#documentsCard .card-header').click
   end
 
   context 'selecting share with all providers' do

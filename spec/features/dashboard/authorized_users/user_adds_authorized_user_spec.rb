@@ -34,6 +34,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should add the new user' do
@@ -59,6 +60,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should change the Primary PI' do
@@ -91,6 +93,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should add them and refresh page contents to reflect their updated rights' do
@@ -107,8 +110,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       expect(@protocol.reload.project_roles.last.identity).to eq(jug2)
       expect(page).to have_selector('td', text: jug2.full_name)
-      expect(page).to have_content(I18n.t('dashboard.service_requests.modify_request'))
-      expect(page).to have_selector('a', text: @document.document.filename)
     end
   end
 

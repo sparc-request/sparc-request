@@ -153,10 +153,10 @@ module Dashboard
 
         option = [I18n.t('calendars.pppv.header_fields.page_select.header', start: beginning_visit, stop: ending_visit, total: visit_count), page + 1, class: 'vg-page-header', data: { page: page + 1 }]
         arr << option
-
+        
         # (beginning_visit..ending_visit).each do |y|
         if arm.visit_groups.present?
-          arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
+          arm.visit_groups[(beginning_visit-1)...ending_visit].sort_by(&:position).each do |vg|
             arr << ["- #{vg.identifier}", "#{vg.id}", data: { page: page + 1 }]
           end
         end

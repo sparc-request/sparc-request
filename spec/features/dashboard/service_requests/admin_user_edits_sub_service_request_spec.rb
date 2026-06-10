@@ -37,6 +37,8 @@ RSpec.describe "Admin user edits a SubServiceRequest", js: true do
   it 'should open the Admin Dashboard' do
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     find('.edit-request').click
     wait_for_javascript_to_finish
@@ -47,6 +49,8 @@ RSpec.describe "Admin user edits a SubServiceRequest", js: true do
   def click_non_clinical_services_tab
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     find('.edit-request').click
     wait_for_javascript_to_finish

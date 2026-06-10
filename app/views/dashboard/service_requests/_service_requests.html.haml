@@ -20,7 +20,7 @@
 
 - protocol.service_requests.each do |sr|
   .card.service-request-card.w-100
-    .card-header.justify-content-between.bg-primary.text-white{ data: { toggle: 'collapse', target: ".service-request-#{sr.id}" } }
+    .card-header.justify-content-between.bg-primary.text-white.collapsed{ data: { toggle: 'collapse', target: ".service-request-#{sr.id}" } }
       %h3.mb-0<
         = icon('fas', 'caret-down pr-1 mr-2')
         = raw(t('dashboard.protocols.service_requests.header', status: PermissibleValue.get_value('status', sr.status), date: format_date(sr.submitted? ? sr.submitted_at : sr.updated_at)))
@@ -56,5 +56,5 @@
           = link_to fee_agreement_dashboard_protocol_path(protocol, format: :html), class: 'btn btn-success' do
             = succeed t('dashboard.protocols.service_requests.fee_agreement') do
               = icon('fas', 'eye mr-2')
-    .collapse.show{ class: "service-request-#{sr.id}" }
+    .collapse{ class: "service-request-#{sr.id}" }
       = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, permission_to_edit: permission_to_edit

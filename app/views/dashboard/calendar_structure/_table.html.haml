@@ -19,13 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .card.w-100#calendarStructureCard
-  .card-header.text-white{ class: protocol.locked? ? 'bg-danger' : 'bg-primary', data: { toggle: 'collapse', target: '#calendarStructure' } }
+  .card-header.text-white{ class: protocol.locked? ? 'bg-danger collapsed' : 'bg-primary collapsed', data: { toggle: 'collapse', target: '#calendarStructure' } }
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       - if protocol.locked?
         = icon('fas', 'lock mr-2')
       = t(:calendar_structure)[:header]
-  .collapse.show#calendarStructure
+  .collapse#calendarStructure
     #calendarStructureTableToolbar
       - if current_user.catalog_overlord?
         = link_to dashboard_protocol_path(protocol, locked: true), method: :put, remote: true, class: ['btn', protocol.locked? ? 'btn-success' : 'btn-danger'], title: t(:calendar_structure)[:tooltips][:lock_calendar], data: { toggle: 'tooltip' } do

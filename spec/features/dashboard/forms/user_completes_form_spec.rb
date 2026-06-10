@@ -35,9 +35,12 @@ RSpec.describe 'User completes a form', js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+    
   end
 
   it 'should complete the form' do
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
     find('.complete-forms').click
     find('.complete-forms + .dropdown-menu .dropdown-item', text: @form.title).click
     wait_for_javascript_to_finish
@@ -46,6 +49,7 @@ RSpec.describe 'User completes a form', js: true do
 
     click_button I18n.t('actions.submit')
     wait_for_javascript_to_finish
+    find('#forms .card-header').click
 
     expect(jug2.reload.responses.count).to eq(1)
     expect(jug2.responses.first.question_responses.first.content).to eq('My answer is no')

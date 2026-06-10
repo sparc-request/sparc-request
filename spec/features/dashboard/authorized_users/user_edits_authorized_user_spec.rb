@@ -32,6 +32,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should update the user' do
@@ -58,6 +60,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should update the user and refresh page contents to reflect their updated rights' do
@@ -82,6 +85,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       visit dashboard_protocol_path(@protocol)
       wait_for_javascript_to_finish
+      find('#authorizedUsersCard .card-header').click
     end
 
     it 'should redirect to the dashboard landing page' do

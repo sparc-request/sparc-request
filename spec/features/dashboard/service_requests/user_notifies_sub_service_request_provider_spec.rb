@@ -37,6 +37,8 @@ RSpec.describe "User notifies a SubServiceRequest's provider", js: true do
 
     visit dashboard_protocol_path(protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     find('.send-notification').click
     all('.send-notification + .dropdown-menu .dropdown-item').last.click

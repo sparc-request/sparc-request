@@ -59,6 +59,7 @@ if $('.is-invalid').length
 <% elsif @locked %>
 $('#calendarStructureCard').replaceWith("<%= j render '/dashboard/calendar_structure/table', protocol: @protocol %>")
 $('#calendarStructureTable').bootstrapTable()
+$('#calendarStructure').collapse('show')
 
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 <% elsif request_referrer_action == 'show' %>

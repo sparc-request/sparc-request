@@ -37,6 +37,8 @@ RSpec.describe "User modifies a service request", js: true do
 
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     click_link I18n.t('dashboard.service_requests.modify_request')
     wait_for_javascript_to_finish
@@ -47,6 +49,8 @@ RSpec.describe "User modifies a service request", js: true do
   def click_review_your_request_tab
     visit dashboard_protocol_path(@protocol)
     wait_for_javascript_to_finish
+    expect(page).to have_css('.service-request-card', visible: true)
+    find('.service-request-card .card-header').click
 
     click_link I18n.t('dashboard.service_requests.modify_request')
     wait_for_javascript_to_finish

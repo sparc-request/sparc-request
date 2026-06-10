@@ -60,13 +60,8 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   end
 
   def ensure_epic_connection
-    @epic_connection = nil
-
-    if EpicUser.confirm_connection
-      @epic_connection = true 
-    else
-      @epic_connection = false 
-    end
+    @epic_connection = true #assume true unless we test the connection
+    @epic_connection = EpicUser.confirm_connection if Setting.get_value("validate_epic_users")
   end
 
   def get_epic_queue

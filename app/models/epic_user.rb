@@ -32,6 +32,7 @@ class EpicUser < ActiveResource::Base
     begin
       # test if we can query the ActiveResource, unless successful we should get a message the the interface is down
       get(:viewuser, userid: 'dummy_account')
+      return true
     rescue => e
       slack_epic_error_webhook = Setting.get_value("epic_user_api_error_slack_webhook")
       teams_epic_error_webhook = Setting.get_value("epic_user_api_error_teams_webhook")

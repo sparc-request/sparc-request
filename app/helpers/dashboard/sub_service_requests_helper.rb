@@ -236,5 +236,24 @@ module Dashboard::SubServiceRequestsHelper
       check_box_tag "select-ssr-#{ssr.id}", "#{ssr.id}"
     end
   end
+
+  def error_message_tooltip(title, messages)
+    message = "<div class='text-left'><em>#{title}</em>" 
+    count = 1
+    messages[:protocol_errors].each do |m|
+      message += "<br />#{count}. Study/Project #{m}"
+      count += 1
+    end
+
+    messages[:visit_group_errors].each do |arm_name, messages|
+      messages.each do |m|
+        message += "<br />#{count}. ARM <em>#{arm_name}</em>: #{m}"
+        count += 1
+      end
+    end
+
+    message += "</div>"
+    message 
+  end 
 end
 

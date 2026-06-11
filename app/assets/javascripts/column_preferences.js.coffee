@@ -27,8 +27,6 @@ $ ->
     options = $('#studyLevelActivitiesTable').bootstrapTable('getOptions')
     columns = options.columns
     
-    console.log JSON.stringify(columns)
-
     $.ajax
       type: 'POST'
       dataType: 'script'
@@ -36,5 +34,23 @@ $ ->
       data:
         table_id: '#studyLevelActivitiesTable'
         column_preferences: JSON.stringify(columns)
-      success: ->
-        console.log "I sent the preferences"
+
+  #### load column preferences once table data is successfully loaded
+  $(document).on 'load-success.bs.table', '#studyLevelActivitiesTable', (data) ->
+    column_prefs = null
+    $.ajax
+      type: 'GET'
+      dataType: 'script'
+      url: "/identities/fetch_column_preferences"
+      data:
+        table_id: '#studyLevelActivitiesTable'
+      success: (response) ->
+        if JSON.parse(response)?
+          column_data = JSON.parse response
+          columns = column_data[0]
+          
+          for column in columns
+            if column['visible']
+              $('#studyLevelActivitiesTable').bootstrapTable('showColumn', column['field'])
+            else
+              $('#studyLevelActivitiesTable').bootstrapTable('hideColumn', column['field'])

@@ -72,6 +72,7 @@ SparcRails::Application.routes.draw do
     end
     collection do
       post 'save_column_preferences'
+      get 'fetch_column_preferences'
     end
   end
 

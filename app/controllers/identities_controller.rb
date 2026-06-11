@@ -19,7 +19,7 @@
 
 class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
-  before_action :find_identity, except: [:save_column_preferences]
+  before_action :find_identity, except: [:save_column_preferences, :fetch_column_preferences]
 
   def approve_account
     respond_to :html
@@ -60,6 +60,11 @@ class IdentitiesController < ApplicationController
         format.js { head :bad_request }
       end
     end
+  end
+  
+  def fetch_column_preferences
+    cp = ColumnPreference.find_or_initialize_by identity: current_user, table_id: params[:table_id]
+    render json: cp.column_preferences
   end
 
   private

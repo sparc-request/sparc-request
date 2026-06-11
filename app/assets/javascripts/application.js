@@ -108,3 +108,5 @@
 
 //= require surveyor/responses
 //= require surveyor/surveys
+
+//= require column_preferences

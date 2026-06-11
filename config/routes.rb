@@ -70,6 +70,9 @@ SparcRails::Application.routes.draw do
       get 'approve_account'
       get 'disapprove_account'
     end
+    collection do
+      post 'save_column_preferences'
+    end
   end
 
   ####################

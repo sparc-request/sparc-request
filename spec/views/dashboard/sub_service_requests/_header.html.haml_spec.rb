@@ -73,9 +73,9 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         expect(response).to have_selector('#pushToEpic')
       end
 
-      context 'service request has errors' do
+      context 'sub service request has errors' do
         it 'should display a warning' do
-          allow(sr).to receive(:service_details_valid?).and_return(false)
+          allow(@sub_service_request).to receive(:enable_cwf_or_epic_button?).and_return([false, {:protocol_errors=>["Start Date can't be blank", "Start Date can't be blank"], :visit_group_errors=>{}}])
 
           render "dashboard/sub_service_requests/header", sub_service_request: @sub_service_request
 
@@ -112,9 +112,9 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         expect(response).to have_selector('#pushToFulfillment')
       end
 
-      context 'service request has errors' do
+      context 'sub service request has errors' do
         it 'should display a warning' do
-          allow(sr).to receive(:service_details_valid?).and_return(false)
+          allow(@sub_service_request).to receive(:enable_cwf_or_epic_button?).and_return([false, {:protocol_errors=>["Start Date can't be blank", "Start Date can't be blank"], :visit_group_errors=>{}}])
 
           render "dashboard/sub_service_requests/header", sub_service_request: @sub_service_request
 

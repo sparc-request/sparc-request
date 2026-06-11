@@ -78,6 +78,25 @@ class SubServiceRequest < ApplicationRecord
 
   attribute :current_user_id, :big_integer
 
+  def enable_cwf_or_epic_button?
+    # returns boolean and errors
+    # protocol checks
+    # check if protocol.valid?
+    # check if protocol.validate_dates
+
+    # service details validation
+    # check service_request.arms.all?(&:visit_groups_valid?)
+
+    visit_group_errors = {}
+
+    service_request.arms.each do |arm|
+      arm.visit_groups_valid?
+      visit_group_errors[arm.name] = arm.errors.map(&:message)
+    end
+
+    return [protocol.valid? && protocol.validate_dates && service_request.arms.all?(&:visit_groups_valid?), { protocol_errors: protocol.errors.map(&:message), visit_group_errors: visit_group_errors }]
+  end
+
   def consult_arranged_date=(date)
     write_attribute(:consult_arranged_date, date.present? ? Time.strptime(date, "%m/%d/%Y") : nil)
   end

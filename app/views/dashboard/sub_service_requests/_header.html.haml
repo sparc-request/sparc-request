@@ -18,9 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- use_epic        = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
-- use_fulfillment = Setting.get_value('fulfillment_contingent_on_catalog_manager')
-- request_valid   = sub_service_request.service_request.protocol_valid? && sub_service_request.service_request.service_details_valid?
+- use_epic                  = Setting.get_value("use_epic") && sub_service_request.protocol.selected_for_epic? && sub_service_request.candidate_services.any?(&:send_to_epic?)
+- use_fulfillment           = Setting.get_value('fulfillment_contingent_on_catalog_manager')
+- request_valid, messages   = sub_service_request.enable_cwf_or_epic_button?
 
 .card.mb-5#subServiceRequestSummary
   .card-header.justify-content-between.bg-primary.text-white
@@ -40,12 +40,12 @@
         %th.text-center
           = t('dashboard.sub_service_requests.header.owner.header')
         - if use_epic
-          %th.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }<
+          %th.text-center{ title: request_valid ? '' : error_message_tooltip(t('dashboard.sub_service_requests.tooltips.request_invalid'), messages), data: { html: 'true', toggle: 'tooltip' } }<
             - unless request_valid
               = icon('fas', 'exclamation-circle text-warning mr-1')
             = t('dashboard.sub_service_requests.header.epic.header')
         - if use_fulfillment
-          %th.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }<
+          %th.text-center{ title: request_valid ? '' : error_message_tooltip(t('dashboard.sub_service_requests.tooltips.request_invalid'), messages), data: { html: 'true', toggle: 'tooltip' } }<
             - unless request_valid
               = icon('fas', 'exclamation-circle text-warning mr-1')
             = t('dashboard.sub_service_requests.header.fulfillment.header')
@@ -84,10 +84,10 @@
                 - sub_service_request.candidate_owners.each do |owner|
                   = link_to owner.full_name, dashboard_sub_service_request_path(sub_service_request, sub_service_request: { owner_id: owner.id }), remote: true, method: :put, class: 'dropdown-item'
         - if use_epic
-          %td.text-center{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
+          %td.text-center{ title: request_valid ? '' : error_message_tooltip(t('dashboard.sub_service_requests.tooltips.request_invalid'), messages), data: { html: 'true', toggle: 'tooltip' } }
             = push_to_epic_ssr_button(sub_service_request, request_valid)
         - if use_fulfillment
-          %td.text-center#fulfillmentStatusContainer{ title: request_valid ? '' : t('dashboard.sub_service_requests.tooltips.request_invalid'), data: { toggle: 'tooltip' } }
+          %td.text-center#fulfillmentStatusContainer{ title: request_valid ? '' : error_message_tooltip(t('dashboard.sub_service_requests.tooltips.request_invalid'), messages), data: { html: 'true', toggle: 'tooltip' } }
             = ready_for_fulfillment_display(sub_service_request, request_valid)
         - if sub_service_request.is_complete? && !sub_service_request.available_surveys.empty?
           %td.text-center#surveys

@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
-  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2026_06_11_122320) do
+  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "active_storage_blobs", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -33,13 +33,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "additional_funding_sources", charset: "utf8mb3", force: :cascade do |t|
+  create_table "additional_funding_sources", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "funding_source"
     t.string "funding_source_other"
     t.string "sponsor_name"
@@ -137,12 +137,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
     t.index ["survey_id"], name: "index_associated_surveys_on_survey_id"
   end
 
-  create_table "audits", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
-    t.bigint "auditable_id"
+  create_table "audits", charset: "utf8mb3", force: :cascade do |t|
+    t.integer "auditable_id"
     t.string "auditable_type"
-    t.bigint "associated_id"
+    t.integer "associated_id"
     t.string "associated_type"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.string "user_type"
     t.string "username"
     t.string "action"
@@ -199,11 +199,20 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id"
   end
 
+  create_table "column_preferences", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+    t.bigint "identity_id"
+    t.string "table_id"
+    t.text "column_preferences"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_column_preferences_on_identity_id"
+  end
+
   create_table "cover_letters", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.text "content"
     t.bigint "sub_service_request_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id"
   end
 
@@ -225,8 +234,8 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
   create_table "documents", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.datetime "deleted_at", precision: nil
     t.string "doc_type"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "doc_type_other"
     t.bigint "protocol_id"
     t.boolean "share_all"
@@ -1213,6 +1222,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_10_26_200933) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "additional_funding_sources", "protocols"
+  add_foreign_key "column_preferences", "identities"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"

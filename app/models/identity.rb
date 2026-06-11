@@ -57,6 +57,7 @@ class Identity < ApplicationRecord
   has_many :catalog_manager_rights, class_name: 'CatalogManager'
   has_many :catalog_managers, dependent: :destroy
   has_many :clinical_providers, dependent: :destroy
+  has_many :column_preferences, dependent: :destroy
   has_many :notes, dependent: :destroy
   has_many :project_roles, dependent: :destroy
   has_many :protocol_filters, dependent: :destroy

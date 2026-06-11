@@ -1,6 +1,5 @@
 # Copyright © 2011-2022 MUSC Foundation for Research Development
 # All rights reserved.
-
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
 # 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -20,7 +19,7 @@
 
 class IdentitiesController < ApplicationController
   before_action :authenticate_identity!
-  before_action :find_identity
+  before_action :find_identity, except: [:save_column_preferences, :fetch_column_preferences]
 
   def approve_account
     respond_to :html
@@ -48,6 +47,24 @@ class IdentitiesController < ApplicationController
     end
 
     redirect_to root_path
+  end
+
+  def save_column_preferences
+    cp = ColumnPreference.find_or_initialize_by identity: current_user, table_id: params[:table_id]
+    cp.column_preferences = params[:column_preferences]
+
+    respond_to do |format|
+      if cp.save
+        format.js { head :ok }
+      else
+        format.js { head :bad_request }
+      end
+    end
+  end
+  
+  def fetch_column_preferences
+    cp = ColumnPreference.find_or_initialize_by identity: current_user, table_id: params[:table_id]
+    render json: cp.column_preferences
   end
 
   private

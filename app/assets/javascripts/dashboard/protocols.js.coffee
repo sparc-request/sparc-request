@@ -36,10 +36,11 @@ $(document).ready ->
   bsOptions = $('#protocolsTable').bootstrapTable('getOptions')
   columns = bsOptions.columns
 
-  rmidColumnExists = columns[0].some (col) -> col.field is 'research_master_id'
+  if typeof(columns) != 'undefined' && columns.length
+    rmidColumnExists = columns[0].some (col) -> col.field is 'research_master_id'
 
-  if rmidColumnExists
-    $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')
+    if rmidColumnExists
+      $('#protocolsTable').bootstrapTable('hideColumn', 'research_master_id')
 
   ####################
   # Protocol Filters #

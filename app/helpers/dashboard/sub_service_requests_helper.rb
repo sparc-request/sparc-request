@@ -240,7 +240,8 @@ module Dashboard::SubServiceRequestsHelper
   def error_message_tooltip(title, messages)
     message = "<div class='text-left'><em>#{title}</em>" 
     count = 1
-    messages[:protocol_errors].uniq.each do |m|
+
+    messages[:protocol_errors].each do |m|
       message += "<br />#{count}. Study/Project #{m}"
       count += 1
     end

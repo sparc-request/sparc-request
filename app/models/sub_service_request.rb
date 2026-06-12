@@ -86,6 +86,10 @@ class SubServiceRequest < ApplicationRecord
 
     # service details validation
     # check service_request.arms.all?(&:visit_groups_valid?)
+   
+    protocol.valid? 
+    protocol.validate_dates
+    protocol_errors = protocol.errors.map{|x| "#{x.attribute.to_s.humanize} #{x.message}"}
 
     visit_group_errors = {}
 
@@ -94,7 +98,9 @@ class SubServiceRequest < ApplicationRecord
       visit_group_errors[arm.name] = arm.errors.map(&:message)
     end
 
-    return [protocol.valid? && protocol.validate_dates && service_request.arms.all?(&:visit_groups_valid?), { protocol_errors: protocol.errors.map(&:message), visit_group_errors: visit_group_errors }]
+    valid = protocol.valid? && protocol.validate_dates && service_request.arms.all?(&:visit_groups_valid?)
+
+    return [valid, { protocol_errors: protocol_errors, visit_group_errors: visit_group_errors }]
   end
 
   def consult_arranged_date=(date)

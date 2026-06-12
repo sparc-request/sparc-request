@@ -363,7 +363,6 @@ en:
         protocol:
           attributes:
             end_date:
-              blank: "Start Date can't be blank"
               invalid: "Start Date must come before End Date"
             recruitment_end_date:
               invalid: "Recruitment Start Date must come before Recruitment End Date"
@@ -374,7 +373,6 @@ en:
             selected_for_epic:
               inclusion: "can't be blank"
             start_date:
-              blank: "Start Date can't be blank"
               invalid: "Start Date must come before End Date"
             study_type_answers:
               blank: "can't be blank"

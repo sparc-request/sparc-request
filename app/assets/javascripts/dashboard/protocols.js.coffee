@@ -107,3 +107,8 @@ $(document).ready ->
           data: data
       ), 500)
     )
+ 
+  # focus on expanded tab in dashboard/protocols view
+  if window.location.pathname.startsWith('/dashboard/protocols')
+    $(document).on 'shown.bs.collapse', (e) ->
+      $('html, body').animate({ scrollTop: $(e.target).offset().top - 60 }, 800)

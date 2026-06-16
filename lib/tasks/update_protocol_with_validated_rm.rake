@@ -127,9 +127,9 @@ namespace :data do
           protocol.create_human_subjects_info
         end
 
-        # If protocol already has a human subjects info record AND has an exisiting irb record in the database, override that with the irb info coming from RMID.  Otherwise, create a new irb record with the relevant data.
+        # If protocol already has a human subjects info record AND has an exisiting irb record in the database with an rmid_id, override that with the irb info coming from RMID (but don't overwrite irb records that don't have rmid_id since those where manually created and may still be relevant).  Otherwise, create a new irb record with the relevant data.
         if protocol.has_human_subject_info?
-          irb_record = protocol.human_subjects_info.irb_records.first_or_initialize
+          irb_record = protocol.human_subjects_info.irb_records.find_or_initialize_by(rmid_id: protocol.research_master_id)
 
           ext_archive_state = vrm['eirb_state'] == 'External IRB Review Archive'
 

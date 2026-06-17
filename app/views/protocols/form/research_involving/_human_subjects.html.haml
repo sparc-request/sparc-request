@@ -32,7 +32,9 @@
       %h5
         = HumanSubjectsInfo.human_attribute_name(:irb_records)
     .w-100#irbRecords
-      - @irb_count = ff_hsi.object.irb_records.length
-      = ff_hsi.fields_for :irb_records do |ff_irb|
-        = render 'irb_records/irb_record', protocol: protocol, irb_record: ff_irb.object, index: ff_irb.index, primary: ff_irb.index == 0
+      - sorted_irbs = ff_hsi.object.irb_records.sort_by { |i| [i.rmid_id.present? ? 0 : 1, i.id || Float::INFINITY] }
+      - @irb_count = sorted_irbs.length
+      = ff_hsi.fields_for :irb_records, sorted_irbs do |ff_irb|
+        - is_primary = ff_irb.object == sorted_irbs.first
+        = render 'irb_records/irb_record', protocol: protocol, irb_record: ff_irb.object, index: ff_irb.index, primary: is_primary
     = render 'irb_records/new_irb_record', protocol: protocol, index: @irb_count, primary: @irb_count == 0

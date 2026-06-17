@@ -33,7 +33,8 @@
     %td{ colspan: 2 }
       %h6.mb-0
         = HumanSubjectsInfo.human_attribute_name(:irb_records)
-- protocol.human_subjects_info.irb_records.each_with_index do |irb_record, i|
+- sorted_irbs = protocol.human_subjects_info.irb_records.sort_by { |i| [i.rmid_id.present? ? 0 : 1, i.id || Float::INFINITY] }
+- sorted_irbs.each_with_index do |irb_record, i|
   %tr.d-flex{ class: i.zero? ? 'alert-success' : 'alert-info' }
     %td.d-inline-block.col-3
       %label.mb-0{ title: t('protocols.tooltips.pro_number'), data: { toggle: 'tooltip', placement: 'right' } }

@@ -33,55 +33,37 @@ $('#rmidContainer').append("<%= j render 'protocols/form/rmid_server_down' %>")
 <% else %>
 $('#protocol_research_master_id').parents('.form-group').addClass('is-valid')
 
-$('#protocol_short_title').val("<%= j @rmid_record['short_title'].html_safe %>").prop('readonly', true)
-$('#protocol_title').val("<%= j @rmid_record['long_title'].html_safe %>").prop('readonly', true)
+$('#protocol_short_title').val("<%= j @rmid_record['short_title'].to_s.html_safe %>").prop('readonly', true)
+$('#protocol_title').val("<%= j @rmid_record['long_title'].to_s.html_safe %>").prop('readonly', true)
 
 <% if @rmid_record['eirb_validated'] %>
 <%
-  irb_record = @protocol.irb_records.first
-  ext_archive = @rmid_record['eirb_state'] == 'External IRB Review Archive'
+irb_records = @protocol.irb_records.to_a.sort_by { |i| [i.rmid_id.present? ? 0 : 1, i.id || Float::INFINITY] }
+irb_to_update = irb_records.find { |i| i.rmid_id == @rmid_record['id'] }
+irb_to_update ||= irb_records.find { |i| i.rmid_id.present? }
+irb_index = irb_to_update ? irb_records.index(irb_to_update) : irb_records.length
 
-  initial_date = ext_archive && @rmid_record['date_initially_approved'].blank? && irb_record ? irb_record.initial_irb_approval_date : @rmid_record['date_initially_approved']
-  approval_date = ext_archive && @rmid_record['date_approved'].blank? && irb_record ? irb_record.irb_approval_date : @rmid_record['date_approved']
-  expiration_date = ext_archive && @rmid_record['date_expiration'].blank? && irb_record ? irb_record.irb_expiration_date : @rmid_record['date_expiration']
+ext_archive = @rmid_record['eirb_state'] == 'External IRB Review Archive'
+
+initial_date = ext_archive && @rmid_record['date_initially_approved'].blank? && irb_to_update ? irb_to_update.initial_irb_approval_date : @rmid_record['date_initially_approved']
+approval_date = ext_archive && @rmid_record['date_approved'].blank? && irb_to_update ? irb_to_update.irb_approval_date : @rmid_record['date_approved']
+expiration_date = ext_archive && @rmid_record['date_expiration'].blank? && irb_to_update ? irb_to_update.irb_expiration_date : @rmid_record['date_expiration']
 %>
 
 if !$('#protocol_research_types_info_attributes_human_subjects').prop('checked')
   $('#protocol_research_types_info_attributes_human_subjects').click()
   $('#protocol_research_master_id').click()
 
-if $('.primary-irb').length
-  $.ajax
-    method: 'PUT'
-    dataType: 'script'
-    url: "<%= irb_records_path(
-      id: @protocol.irb_records.first,
-      protocol_id: @protocol.id,
-      irb_record: {
-        rmid_id: @rmid_record['id'],
-        pro_number: @rmid_record['eirb_pro_number'],
-        initial_irb_approval_date: initial_date,
-        irb_approval_date: approval_date,
-        irb_expiration_date: expiration_date
-      },
-      primary: 'true',
-      index: 0
-    ) %>"
-else
-  $.ajax
-    method: 'POST'
-    dataType: 'script'
-    url: "<%= irb_records_path(
-      protocol_id: @protocol.id,
-      irb_record: {
-        rmid_id: @rmid_record['id'],
-        pro_number: @rmid_record['eirb_pro_number'],
-        initial_irb_approval_date: initial_date,
-        irb_approval_date: approval_date,
-        irb_expiration_date: expiration_date
-      },
-      primary: 'true',
-      index: 0
-    ) %>"
+<% if irb_to_update %>
+$.ajax
+  method: 'PUT'
+  dataType: 'script'
+  url: "<%= irb_records_path(id: irb_to_update.id, protocol_id: @protocol.id, irb_record: { rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: initial_date, irb_approval_date: approval_date, irb_expiration_date: expiration_date }, primary: 'true', index: irb_index) %>"
+<% else %>
+$.ajax
+  method: 'POST'
+  dataType: 'script'
+  url: "<%= irb_records_path(protocol_id: @protocol.id, irb_record: { rmid_id: @rmid_record['id'], pro_number: @rmid_record['eirb_pro_number'], initial_irb_approval_date: initial_date, irb_approval_date: approval_date, irb_expiration_date: expiration_date }, primary: 'true', index: irb_index) %>"
+<% end %>
 <% end %>
 <% end %>

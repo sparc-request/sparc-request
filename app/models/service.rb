@@ -74,7 +74,7 @@ class Service < ApplicationRecord
   scope :with_admin_services, -> (user) {
     if Setting.get_value('use_admin_services')
       unless user.present? && user.catalog_overlord? && (user.service_providers.any? || user.super_users.any?)
-        where(is_administrative: false)
+        where(is_administrative: [false, nil])
       end
     end
   }

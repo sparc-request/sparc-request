@@ -67,6 +67,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
       :first_name,
       :last_name,
       :orcid,
+      :scopus_id,
       :credentials,
       :credentials_other,
       :ldap_uid,

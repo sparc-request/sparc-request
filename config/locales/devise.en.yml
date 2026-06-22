@@ -140,8 +140,10 @@ en:
       full_name: "Full Name"
       gender: "What is your sex/gender?"
       orcid: "ORCID"
+      scopus_id: "Scopus ID"
       placeholders:
         orcid: "XXXX-XXXX-XXXX-XXXX"
+        scopus_id: "XXXXXXXXXXX"
       links:
         orcid: "https://orcid.org/"
       race: "What is your race? (Check all that apply)"

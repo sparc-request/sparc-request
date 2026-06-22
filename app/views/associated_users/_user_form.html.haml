@@ -64,9 +64,13 @@
               %small.form-text
                 = link_to t('authorized_users.form.links.orcid'), t('authorized_users.form.links.orcid'), target: :_blank
 
-          .form-group#eraCommonsNameContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
-            = ff_i.label :era_commons_name
-            = ff_i.text_field :era_commons_name, class: 'form-control'
+          .form-row
+            .form-group.col-6#eraCommonsNameContainer{ class: ['pi', 'primary-pi'].include?(protocol_role.role) ? '' : 'd-none' }
+              = ff_i.label :era_commons_name
+              = ff_i.text_field :era_commons_name, class: 'form-control'
+            .form-group.col-6
+              = ff_i.label :scopus_id
+              = ff_i.text_field :scopus_id, class: 'form-control', placeholder: t('authorized_users.form.placeholders.scopus_id'), maxlength: 11
 
           .form-row
             .form-group.col-4

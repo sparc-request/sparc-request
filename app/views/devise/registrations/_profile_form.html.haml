@@ -58,6 +58,13 @@
     .form-group.col-12.col-xl-6
       = f.label :era_commons_name, t('devise.profile.era_commons_name'), class: 'col-form-label'
       = f.text_field :era_commons_name, class: 'form-control'
+  
+  .form-row
+    .form-group.col-12.col-xl-6
+      = f.label :scopus_id, class: 'col-form-label'
+      = f.text_field :scopus_id, class: 'form-control', placeholder: t('devise.profile.placeholders.scopus_id'), maxlength: 11
+    .form-group.col-12.col-xl-6
+      
 
   .form-row
     .form-group.col-4

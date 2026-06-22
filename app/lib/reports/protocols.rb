@@ -31,10 +31,10 @@ class ProtocolsReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "1900-01-01".to_datetime, :to => DateTime.now},
-      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
-      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
-      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true", :custom_name_method => :name},
+      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id', :custom_name_method => :name},
+      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id', :custom_name_method => :name},
+      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id', :custom_name_method => :name},
       "Authorized Users" => {
         field_type: :multi_select_tag,
         for: "authorized_user_roles",

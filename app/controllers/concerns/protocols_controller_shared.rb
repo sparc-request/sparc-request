@@ -121,6 +121,8 @@ module ProtocolsControllerShared
       :negotiated_amount,
       :negotiated_amount_clinical_services,
       :next_ssr_id,
+      :recruitment_end_date,
+      :recruitment_start_date,
       :requester_id,
       :research_master_id,
       :selected_for_epic,

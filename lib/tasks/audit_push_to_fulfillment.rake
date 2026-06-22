@@ -11,7 +11,7 @@ namespace :audit do
 
     headers = [
       "SPARC ID", "Organization", "Requested Services", "Status", "Status Date",
-      "SSR Admin Note", "Note Created", "Org uses CWF?", "Can Push to CWF?", "Blocking Reasons", "Addl Protocol Message"
+      "SSR Admin Note", "Note Created", "Org uses CWF?", "Can Push to CWF without study errors?", "Blocking Reasons", "Addl Protocol Message"
     ]
 
     ssr_keys = []

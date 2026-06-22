@@ -91,6 +91,7 @@ class Identity < ApplicationRecord
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  validates :scopus_id, numericality: true, length: { maximum: 11 }
   
   # validates_presence_of :reason, if: :new_record?
   

@@ -326,4 +326,23 @@ RSpec.describe Service, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    describe '.with_admin_services' do
+      let!(:user) { create(:identity) }
+
+      before do
+        Setting.find_by(key: 'use_admin_services')&.update(value: true)
+      end
+
+      it 'includes services with is_administrative set to false or nil, but excludes true' do
+        non_admin_service_false = create(:service, is_administrative: false)
+        non_admin_service_nil   = create(:service, is_administrative: nil)
+        admin_service           = create(:service, is_administrative: true)
+        res = Service.with_admin_services(user)
+        expect(res).to include(non_admin_service_false, non_admin_service_nil)
+        expect(res).not_to include(admin_service)
+      end
+    end
+  end
 end

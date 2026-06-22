@@ -47,6 +47,7 @@ gem 'httparty', '~> 0.21.0'
 gem 'i18n-js'
 gem 'icalendar'
 gem 'icalendar-recurrence'
+gem 'iconv'
 gem 'jquery_datepicker' # Check usage
 gem 'jquery-rails' # Bootstrap 4 purge
 gem 'jbuilder', '~> 2.11'
@@ -79,7 +80,6 @@ gem 'rails-html-sanitizer' # Check usage
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
-gem 'sanitized_data',  git: 'https://github.com/MUSC-BMIC/sanitized_data.git'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
 gem 'savon', '~> 2.13.0'

@@ -95,7 +95,7 @@ class ServicePricingReport < ReportingModule
 
     attrs["Service"] = :name
 
-    attrs["Service Status"] = :humanized_status
+    attrs["Service Display"] = :humanized_status
 
     if params[:additional_codes]
       if params[:additional_codes].include?("cpt_code")

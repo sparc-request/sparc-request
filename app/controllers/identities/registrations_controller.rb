@@ -77,6 +77,7 @@ class Identities::RegistrationsController < Devise::RegistrationsController
       :first_name,
       :last_name,
       :orcid,
+      :scopus_id,
       :credentials,
       :credentials_other,
       :email,

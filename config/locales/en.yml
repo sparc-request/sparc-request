@@ -138,6 +138,7 @@ en:
         ldap_uid: "Login"
         name: "Name"
         orcid: "ORCID"
+        scopus_id: "Scopus ID"
         phone: "Phone"
         password: "Password"
         password_confirmation: "Confirm Password"

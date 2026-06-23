@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_22_140121) do
-  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
+  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -372,6 +372,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_140121) do
     t.string "time_zone", default: "Eastern Time (US & Canada)"
     t.bigint "professional_organization_id"
     t.string "orcid", limit: 19
+    t.string "scopus_id", limit: 11
     t.boolean "imported_from_lbb", default: false
     t.string "age_group"
     t.string "gender"

@@ -91,6 +91,7 @@ class Identity < ApplicationRecord
 
   validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
   validates :orcid, format: { with: /\A([0-9]{4}-){3}[0-9]{3}[0-9X]\z/ }, allow_blank: true
+  validates :scopus_id, numericality: true, length: { maximum: 11 }, allow_blank: true
   
   # validates_presence_of :reason, if: :new_record?
   
@@ -175,13 +176,18 @@ class Identity < ApplicationRecord
   ############################## HELPER METHODS #################################
   ###############################################################################
 
+  def upcase_first_hyphenated(name)
+    return name if name.nil?
+    name.split(/([ \-])/).map(&:upcase_first).join
+  end
+
   # Returns this user's first and last name humanized.
   def full_name
-    "#{first_name.try(:humanize)} #{last_name.try(:humanize)}".lstrip.rstrip
+    "#{first_name.try(:humanize)} #{upcase_first_hyphenated(last_name)}".lstrip.rstrip
   end
 
   def last_name_first
-    "#{last_name.try(:humanize)}, #{first_name.try(:humanize)}"
+    "#{upcase_first_hyphenated(last_name)}, #{first_name.try(:humanize)}"
   end
 
   def display_credential_value
@@ -194,7 +200,7 @@ class Identity < ApplicationRecord
 
  # Returns this user's first and last name humanized, with their email.
   def display_name
-    "#{first_name.try(:humanize)} #{last_name.try(:humanize)} (#{email})".lstrip.rstrip
+    "#{first_name.try(:humanize)} #{upcase_first_hyphenated(last_name)} (#{email})".lstrip.rstrip
   end
 
   # Return the netid (ldap_uid without the @musc.edu)

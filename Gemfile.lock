@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/MUSC-BMIC/sanitized_data.git
-  revision: afdb1cfd7161ae5bc0ba6bd2f07af22da54d64e0
-  specs:
-    sanitized_data (0.0.4)
-      iconv
-
-GIT
   remote: https://github.com/jleonardw9/grouped_validations.git
   revision: dc4207a7966fe691a240a47718b3d9689861a76f
   branch: master
@@ -307,7 +300,7 @@ GEM
       icalendar (~> 2.0)
       ice_cube (~> 0.16)
     ice_cube (0.16.4)
-    iconv (1.0.8)
+    iconv (1.1.1)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -703,6 +696,7 @@ DEPENDENCIES
   i18n-js
   icalendar
   icalendar-recurrence
+  iconv
   jbuilder (~> 2.11)
   jquery-rails
   jquery_datepicker
@@ -748,7 +742,6 @@ DEPENDENCIES
   rspec-retry
   ruby-prof (~> 1.4.5)
   rubyzip (>= 1.2.1)
-  sanitized_data!
   sassc-rails
   savon (~> 2.13.0)
   shoulda-callback-matchers

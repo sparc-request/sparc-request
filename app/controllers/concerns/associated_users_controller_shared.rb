@@ -169,6 +169,7 @@ module AssociatedUsersControllerShared
         :era_commons_name,
         :id,
         :orcid,
+        :scopus_id,
         :phone,
         :professional_organization_id,
         :subspecialty

@@ -96,6 +96,8 @@ class ServiceCalendarsController < ApplicationController
       end
     end
 
+    @line_items_visit.reload
+
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @in_admin
       @line_items_visit.sub_service_request.update_attribute(:status, "draft")

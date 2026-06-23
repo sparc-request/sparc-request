@@ -41,6 +41,7 @@ class VisitsController < ApplicationController
     @locked             = !@visit.sub_service_request.can_be_edited? && !@in_admin
 
     if @visit.update(visit_params)
+      @line_items_visit.reload
       @visit.sub_service_request.set_to_draft unless @in_admin
       flash[:success] = t('visit_groups.updated')
     else

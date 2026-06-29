@@ -84,6 +84,11 @@
                 = identity.era_commons_name
             %tr.d-flex
               %td.d-inline-block.col-5
+                = Identity.human_attribute_name(:scopus_id)
+              %td.d-inline-block.col-7
+                = identity.scopus_id
+            %tr.d-flex
+              %td.d-inline-block.col-5
                 = Identity.human_attribute_name(:credentials)
               %td.d-inline-block.col-7
                 = identity.display_credential_value

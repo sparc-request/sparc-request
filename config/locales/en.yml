@@ -450,6 +450,7 @@ en:
       no_epic_access: "User does not have Epic access"
       links:
         orcid: "https://orcid.org/"
+        scopus_id: "https://www.scopus.com/"
       placeholders:
         orcid: "XXXX-XXXX-XXXX-XXXX"
         scopus_id: "XXXXXXXXXXX"

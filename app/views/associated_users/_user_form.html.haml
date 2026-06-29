@@ -71,6 +71,8 @@
             .form-group.col-6
               = ff_i.label :scopus_id
               = ff_i.text_field :scopus_id, class: 'form-control', placeholder: t('authorized_users.form.placeholders.scopus_id'), maxlength: 11
+              %small.form-text
+                = link_to t('authorized_users.form.links.scopus_id'), t('authorized_users.form.links.scopus_id'), target: :_blank
 
           .form-row
             .form-group.col-4

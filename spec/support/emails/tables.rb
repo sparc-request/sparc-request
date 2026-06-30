@@ -31,7 +31,7 @@ module EmailHelpers
     expect(mail_response).to have_xpath "//th[text()='#{@service_request.protocol.type} Title']/following-sibling::td[text()='#{@service_request.protocol.title}']"
     expect(mail_response).to have_xpath "//th[text()='Sponsor Name']/following-sibling::td[text()='#{@service_request.protocol.sponsor_name}']"
     expect(mail_response).to have_xpath "//th[text()='#{@service_request.protocol.funding_status == 'funded' ? I18n.t(:notifier)[:source] : I18n.t(:notifier)[:potential_source]}']/following-sibling::td[text()='#{@service_request.protocol.display_funding_source_value}']"
-    expect(mail_response).to have_xpath "//th[text()='#{I18n.t(:notifier)[:description]}']/following-sibling::td[text()='#{@protocol.brief_description}']" if @protocol.is_a?(Project)
+    expect(mail_response).to have_xpath "//th[text()='#{I18n.t(:notifier)[:description]}']/following-sibling::td[text()='#{@protocol.brief_description}']" if @protocol.is_a?(Project) || @protocol.brief_description.present?
   end
 
   def assert_email_user_information(mail_response)
@@ -82,7 +82,7 @@ module EmailHelpers
 
   def assert_email_srid_information_for_service_provider
     ssrs_to_be_displayed = [@service_request.protocol.sub_service_requests.first]
-    # Expect table to show only SSR's (hyper-link) that are associated with service provider 
+    # Expect table to show only SSR's (hyper-link) that are associated with service provider
     expect(@mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(@mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']/following-sibling::th[text()='Requester']"
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|
@@ -112,7 +112,7 @@ module EmailHelpers
     displayed_sub_service_request = @service_request.protocol.sub_service_requests.first
     status = PermissibleValue.get_value('status', displayed_sub_service_request.status)
     expect(@mail.body.parts.first.body).to have_xpath "//td//a[@href='#{@host_url}/dashboard/sub_service_requests/#{displayed_sub_service_request.id}']['#{displayed_sub_service_request.display_id}']/@href"
-    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"    
+    expect(@mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_sub_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"
     expect(@mail.body.parts.first.body).to have_xpath "//td[text()=\"#{displayed_sub_service_request.service_requester.try(&:full_name) || 'N/A'}\"]"
   end
 

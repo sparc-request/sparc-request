@@ -42,7 +42,7 @@
           %td.d-inline-block.col-9
             = protocol.short_title
             = display_rmid_validated_protocol(protocol, Protocol.human_attribute_name(:short_title))
-        - if protocol.is_a?(Project)
+        - if protocol.is_a?(Project) || protocol.brief_description.present?
           %tr.d-flex
             %td.d-inline-block.col-3
               = label :protocol, :brief_description, class: 'mb-0'

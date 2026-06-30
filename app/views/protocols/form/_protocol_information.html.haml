@@ -34,10 +34,9 @@
           = f.label :short_title, class: 'required', title: t('protocols.tooltips.short_title'), data: { toggle: 'tooltip', placement: 'right' }
           = f.text_field :short_title, class: [('form-control'), (Protocol.is_a?(Study) && Setting.get_value("research_master_enabled") ? 'rm-id-dependent rm-locked-fields' : '')], readonly: Setting.get_value("research_master_enabled") && protocol.research_master_id.present?
 
-      - if protocol.is_a?(Project)
-        .form-group
-          = f.label :brief_description
-          = f.text_area :brief_description, class: 'form-control', rows: 6
+      .form-group
+        = f.label :brief_description
+        = f.text_area :brief_description, class: 'form-control', rows: 6
 
       = f.fields_for :primary_pi_role do |ff_ppi|
         .form-group

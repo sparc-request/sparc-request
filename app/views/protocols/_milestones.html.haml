@@ -23,8 +23,6 @@
     %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('protocols.milestones.header')
-      %small.text-light
-        = t('protocols.milestones.sub_header')
   .collapse#protocolMilestones{ class: (controller_name == 'service_requests' && service_request.previously_submitted? && protocol.start_date && protocol.end_date)  || (action_name == 'show' && in_dashboard?) ? 'collapsed' : 'show' }
     .card-body
       - show_errors = @errors && defined?(service_request) && (service_request.try(&:previously_submitted?) || request_referrer_action == 'protocol')

@@ -1,0 +1,19 @@
+.card.w-100#protocolDetailsCard
+  .card-header.justify-content-between.bg-primary.text-white.collapsed{ data: { toggle: 'collapse', target: '#protocolDetails' } }
+    %h3.mb-0<
+      = icon('fas', 'caret-down pr-1 mr2')
+      = t('protocols.view_details.button', protocol_type: protocol.model_name.human)
+    .protocol-links-container<
+      - if in_dashboard?
+        = edit_protocol_button(protocol, permission: permission_to_edit || admin)
+
+  .collapse#protocolDetails
+    .card-body
+      .ml-4
+        = render 'protocols/view_details/protocol_information', protocol: protocol
+        = render 'protocols/view_details/financial_information', protocol: protocol
+
+        - if protocol.is_a?(Study)
+          = render 'protocols/view_details/research_involving', protocol: protocol
+          = render 'protocols/view_details/other_details', protocol: protocol
+

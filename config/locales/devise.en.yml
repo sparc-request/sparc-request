@@ -146,6 +146,7 @@ en:
         scopus_id: "XXXXXXXXXXX"
       links:
         orcid: "https://orcid.org/"
+        scopus_id: "https://www.scopus.com/"
       race: "What is your race? (Check all that apply)"
       updated: "Profile Updated!!"
       select_prompt: "Select One"

@@ -14,6 +14,7 @@
         = render 'protocols/view_details/financial_information', protocol: protocol
 
         - if protocol.is_a?(Study)
-          = render 'protocols/view_details/research_involving', protocol: protocol
+          - if protocol.research_types_info.present?
+            = render 'protocols/view_details/research_involving', protocol: protocol
           = render 'protocols/view_details/other_details', protocol: protocol
 

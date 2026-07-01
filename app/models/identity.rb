@@ -175,18 +175,13 @@ class Identity < ApplicationRecord
   ############################## HELPER METHODS #################################
   ###############################################################################
 
-  def upcase_first_hyphenated(name)
-    return name if name.nil?
-    name.split(/([ \-])/).map(&:upcase_first).join
-  end
-
-  # Returns this user's first and last name humanized.
+  # Returns this user's first and last name
   def full_name
-    "#{first_name.try(:humanize)} #{upcase_first_hyphenated(last_name)}".lstrip.rstrip
+    [first_name, last_name].join(' ').strip
   end
 
   def last_name_first
-    "#{upcase_first_hyphenated(last_name)}, #{first_name.try(:humanize)}"
+    [last_name, first_name].join(', ').strip
   end
 
   def display_credential_value
@@ -199,7 +194,7 @@ class Identity < ApplicationRecord
 
  # Returns this user's first and last name humanized, with their email.
   def display_name
-    "#{first_name.try(:humanize)} #{upcase_first_hyphenated(last_name)} (#{email})".lstrip.rstrip
+    "#{first_name} #{last_name} (#{email})".strip
   end
 
   # Return the netid (ldap_uid without the @musc.edu)

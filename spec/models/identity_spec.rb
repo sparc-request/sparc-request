@@ -27,7 +27,7 @@ RSpec.describe Identity, type: :model do
 
   describe "helper methods" do
 
-    let!(:identity) { create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com") }
+    let!(:identity) { create(:identity, first_name: "Ash", last_name: "Ketchum", email: "ash@theverybest.com") }
 
     describe "full_name" do
 

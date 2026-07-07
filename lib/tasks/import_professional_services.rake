@@ -27,7 +27,7 @@ namespace :data do
       STDIN.gets.strip
     end
 
-    skipped_services = CSV.open("tmp/skipped_pb_services_#{Time.now.strftime('%m%d%Y%T')}.csv", "wb")
+    skipped_services = CSV.open("tmp/skipped_pb_services_#{Time.now.strftime('%m%d%Y%H%M')}.csv", "wb")
 
     skipped_services << ['REASON','EAP ID','CPT Code','Charge Code','Revenue Code','Send to Epic','Procedure Name','Service Rate','Corporate Rate','Federal Rate','Member Rate','Other Rate','Is One Time Fee?','Clinical Qty Type','Unit Factor','Qty Min','Display Date','Effective Date']
 
@@ -51,8 +51,17 @@ namespace :data do
             puts "No EAP ID range exists, skipping #{eap_id} - #{row.fetch('Procedure Name')}"
             skipped_services << ['No EAP ID range found'] + row.fields
           elsif range.size > 1
-            raise "Overlapping ranges: :\n\n#{row.inspect}\n\n#{ranges.inspect}"
-            skipped_services << ['Multiple EAP ID ranges found'] + row.fields
+            overlapping = []
+            overlapping_ranges = ranges.select do |org_id, org_ranges|
+              org_ranges.each do |range|
+                if range.include?(eap_id)
+                  overlapping << "#{org_id} -> #{range}"
+                end
+              end
+            end
+
+            puts "Overlapping ranges, #{row.fetch('Procedure Name')}, #{overlapping.inspect}"
+            skipped_services << ["Multiple EAP ID ranges found #{overlapping.inspect}"] + row.fields
           else
             organization_id = range.keys.first.to_i
 

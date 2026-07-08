@@ -53,7 +53,7 @@
       %tr.skinny-black-border
         %th.table-header.left= Protocol.human_attribute_name(:funding_status)
         %td.skinny-black-border= PermissibleValue.get_value('funding_status', protocol.funding_status)
-    - if protocol.type.capitalize == "Project"
+    - if protocol.type.capitalize == "Project" || protocol.brief_description.present?
       %tr.skinny-black-border
         %th.table-header.left= t(:notifier)[:description]
         %td.skinny-black-border= protocol.brief_description

@@ -31,6 +31,7 @@ en:
           title: "Title"
           access_code: "Access Code"
           version: "Version"
+          activation_date: "Activation Date"
           active: "Active"
           actions: "Actions"
         tooltips:
@@ -180,6 +181,8 @@ en:
           title: "Title"
           access_code: "Access Code"
           version: "Version"
+          activation_date: "Activation Date"
+          not_activated: "Not yet activated"
           display_order: "Display Order"
           active: "Active"
           notify_roles: "Notify Roles"

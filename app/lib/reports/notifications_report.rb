@@ -28,7 +28,7 @@ class NottificationsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range"  => { field_type: :date_range, for: "messages_created_at", from: '2000-01-01'.to_date, to: Date.today },
+      "Date Range"  => { field_type: :date_range, for: "messages_created_at", from: '2000-01-01'.to_datetime, to: DateTime.now },
       Institution   => { field_type: :select_tag, has_dependencies: "true" },
       Provider      => { field_type: :select_tag, dependency: '#institution_id', dependency_id: 'parent_id', from: '2000-01-01'.to_date, to: Date.today },
       Program       => { field_type: :select_tag, dependency: '#provider_id', dependency_id: 'parent_id' },
@@ -86,14 +86,10 @@ class NottificationsReport < ReportingModule
     # default values if none are provided
     ssr_organization_ids = Organization.all.ids if ssr_organization_ids.compact.empty? # use all if none are selected
 
-    created_at =
-      if args[:messages_created_at_from] && args[:messages_created_at_to]
-        DateTime.strptime(args[:messages_created_at_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:messages_created_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
-      else
-        self.default_options["Date Range"][:from].to_fs(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
-      end
+    from_date = (args[:messages_created_at_from].present? ?  DateTime.strptime(args[:messages_created_at_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).utc
+    to_date = (args[:messages_created_at_to].present? ? DateTime.strptime(args[:messages_created_at_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).utc
 
-    return { organizations: { id: ssr_organization_ids }, notifications: { created_at: created_at } }
+    return { organizations: { id: ssr_organization_ids }, messages: { created_at: from_date..to_date } }
   end
 
   # Return only uniq records for

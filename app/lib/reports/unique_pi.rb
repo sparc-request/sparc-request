@@ -30,7 +30,7 @@ class UniquePiReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Time.current},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => '2000-01-01'.to_datetime, :to => DateTime.now },
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -129,16 +129,14 @@ class UniquePiReport < ReportingModule
       ssr_organization_ids = [ssr_organization_ids, org.all_child_organizations_with_self.map(&:id)].flatten
     end
 
-    if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
-      submitted_at = DateTime.strptime(args[:service_requests_submitted_at_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:service_requests_submitted_at_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
-    end
+    from_date = (args[:service_requests_submitted_at_from].present? ? DateTime.strptime(args[:service_requests_submitted_at_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).utc
+    to_date = (args[:service_requests_submitted_at_to].present? ? DateTime.strptime(args[:service_requests_submitted_at_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).utc
 
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
-    submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
 
-    return :sub_service_requests => {:organization_id => ssr_organization_ids}, :project_roles => {:role => 'primary-pi'}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return :sub_service_requests => {:organization_id => ssr_organization_ids}, :project_roles => {:role => 'primary-pi'}, :service_requests => {:submitted_at => from_date..to_date}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for

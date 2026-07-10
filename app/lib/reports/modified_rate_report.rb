@@ -30,7 +30,7 @@ class ModifiedRateReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range"  => { field_type: :date_range, for: "admin_rate_changes_date_of_change", from: '2000-01-01'.to_date, to: Date.today },
+      "Date Range"  => { field_type: :date_range, for: "admin_rate_changes_date_of_change", from: '2000-01-01'.to_datetime, to: DateTime.now },
       Institution   => { field_type: :select_tag, has_dependencies: "true" },
       Provider      => { field_type: :select_tag, dependency: '#institution_id', dependency_id: 'parent_id', from: '2000-01-01'.to_date, to: Date.today },
       Program       => { field_type: :select_tag, dependency: '#provider_id', dependency_id: 'parent_id' },
@@ -92,14 +92,10 @@ class ModifiedRateReport < ReportingModule
     # default values if none are provided
     ssr_organization_ids = Organization.all.ids if ssr_organization_ids.compact.empty? # use all if none are selected
 
-    date_of_change =
-      if args[:admin_rate_changes_date_of_change_from] && args[:admin_rate_changes_date_of_change_to]
-        DateTime.strptime(args[:admin_rate_changes_date_of_change_from], "%m/%d/%Y").to_fs(:db)..DateTime.strptime(args[:admin_rate_changes_date_of_change_to], "%m/%d/%Y").strftime("%Y-%m-%d 23:59:59")
-      else
-        self.default_options["Date Range"][:from].to_fs(:db)..self.default_options["Date Range"][:to].to_datetime.strftime("%Y-%m-%d 23:59:59")
-      end
+    from_date = (args[:admin_rate_changes_date_of_change_from].present? ? DateTime.strptime(args[:admin_rate_changes_date_of_change_from], "%m/%d/%Y") : self.default_options["Date Range"][:from]).utc
+    to_date = (args[:admin_rate_changes_date_of_change_to].present? ? DateTime.strptime(args[:admin_rate_changes_date_of_change_to], "%m/%d/%Y") : self.default_options["Date Range"][:to]).utc
 
-    return { organizations: { id: ssr_organization_ids }, admin_rate_changes: { date_of_change: date_of_change } }
+    return { organizations: { id: ssr_organization_ids }, admin_rate_changes: { date_of_change: from_date..to_date } }
   end
 
   # Return only uniq records for

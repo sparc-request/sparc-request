@@ -28,11 +28,11 @@ class Surveyor::SurveysController < Surveyor::BaseController
     respond_to do |format|
       format.html
       format.json {
-        @surveys = 
+        @surveys =
           if params[:type] == "SystemSurvey"
             SystemSurvey.all
           elsif params[:type] == "Form"
-            Form.for(current_user)
+            Form.for(current_user).includes(:audits)
           else
             Survey.none
           end
@@ -66,7 +66,7 @@ class Surveyor::SurveysController < Surveyor::BaseController
   def destroy
     @survey = Survey.find(params[:id])
     @type   = @survey.class.name.snakecase.dasherize.downcase
-    
+
     @survey.destroy
 
     respond_to do |format|
@@ -110,11 +110,11 @@ class Surveyor::SurveysController < Surveyor::BaseController
           Organization.authorized_for_catalog_manager(current_user.id)).ids
       end
     service_ids     = Service.where(organization_id: org_ids).ids
-    
+
     org_results     = Organization.where("(name LIKE ? OR abbreviation LIKE ?) AND is_available = 1 AND process_ssrs = 1 AND id IN (?)", "%#{term}%", "%#{term}%", org_ids)
     service_results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1 AND id IN (?)", "%#{term}%", "%#{term}%", "%#{term}%", service_ids).reject{ |s| (s.current_pricing_map rescue false) == false}
     results         = org_results + service_results
-    
+
     results.map!{ |r|
       {
         breadcrumb:     helpers.breadcrumb_text(r),
@@ -143,12 +143,12 @@ class Surveyor::SurveysController < Surveyor::BaseController
     @survey = Survey.find(params[:survey_id])
 
     if @survey.update(
-      notify_requester: survey_params[:notify_requester], 
+      notify_requester: survey_params[:notify_requester],
       notify_roles: survey_params[:notify_roles].reject(&:blank?).map(&:to_i)
     )
       @type = @survey.class.name.snakecase.dasherize.downcase
     else
-      @errors = @survey.errors 
+      @errors = @survey.errors
     end
 
     respond_to do |format|

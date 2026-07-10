@@ -71,6 +71,13 @@ class Survey < ApplicationRecord
     'Multiple Dropdown': 'multiple_dropdown'
   }
 
+  def first_activated_at
+    self.audits
+      .order(:created_at)
+      .find { |audit| audit.audited_changes['active'] == [false, true] }
+      &.created_at
+  end
+
   # Added because version could not be written as an attribute by FactoryBot. Possible keyword issue?
   def version=(v)
     write_attribute(:version, v)

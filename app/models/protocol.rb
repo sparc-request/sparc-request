@@ -219,6 +219,10 @@ class Protocol < ApplicationRecord
       order("sub_service_requests_count" => order)
     when 'protocol_merges'
       joins(:protocol_merges).order("protocol_merges.id" => order)
+    when 'irb_number'
+      joins(:irb_records).order("irb_records.pro_number" => order)
+    when 'research_master_id'
+      order(research_master_id: order)
     end
   }
 

@@ -42,6 +42,10 @@ if window.location.pathname.startsWith('/dashboard')
   $(".service-request-card:eq(0)").replaceWith("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit %>")
   $(".service-requests-table").bootstrapTable()
 
+# deep link to survey
+if window.location.pathname.startsWith('/surveyor/responses')
+  window.location.href = "<%= "/surveyor/responses/#{@response.id}" %>"
+
 $(document).trigger('ajax:complete') # rails-ujs element replacement bug fix
 
 <% elsif @response.survey.is_a?(SystemSurvey) && @response.survey.system_satisfaction? %>

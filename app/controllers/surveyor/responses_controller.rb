@@ -75,7 +75,10 @@ class Surveyor::ResponsesController < Surveyor::BaseController
     @response.question_responses.build
     @respondable = params[:respondable_type].constantize.find(params[:respondable_id])
 
-    respond_to :js
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def edit

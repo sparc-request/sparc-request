@@ -68,6 +68,7 @@ class UniquePiReport < ReportingModule
     attrs["Location"]    = "try(:professional_org_lookup, 'location')"
     attrs["ERA Commons Name"] = :era_commons_name
     attrs["ORCID"] = :orcid
+    attrs["Scopus ID"] = :scopus_id
 
     if Setting.get_value("displayed_demographics_fields").include?("gender")
       attrs["Gender"] = "self.display_gender"

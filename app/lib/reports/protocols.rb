@@ -61,6 +61,7 @@ class ProtocolsReport < ReportingModule
     attrs["Combined Protocol ID(s)"]      = "protocol_merges.pluck(:merged_protocol_id).join(', ')"
     attrs["Protocol Short Title"]         = "short_title"
     attrs["Protocol Title"]               = "title"
+    attrs["Brief Description"]            = "brief_description"
     attrs["Number of Requests"]           = "sub_service_requests.length"
     attrs["Funding Status"]               = "funding_status.humanize"
     attrs["Funding Source"]               = "funding_source.present? ? PermissibleValue.get_value('funding_source', funding_source) : ''"

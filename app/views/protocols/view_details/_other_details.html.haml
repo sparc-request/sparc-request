@@ -20,12 +20,14 @@
 
 %section.pt-3#otherDetails
   .card
-    .card-header.bg-primary.text-white
+    .card-header.bg-primary.text-white.collapsed{ data: { toggle: 'collapse', target: '#collapseOtherDetails'}}
       %h3.mb-0
+        = icon('fas', 'caret-down pr-1 mr-2')
         = t('protocols.form.other_details.header')
-    %table.table.mb-0
-      %tbody
-        %tr.bg-light
+    .collapse#collapseOtherDetails
+      %table.table.mb-0
+        %tbody
+          %tr.bg-light
           %td
             %h6.mb-0
               = t('protocols.form.other_details.study_types')

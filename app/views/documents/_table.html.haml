@@ -20,7 +20,7 @@
 
 .card.w-100#documentsCard
   .card-header.bg-primary.text-white{ class: (action_name == 'document_management' && service_request.previously_submitted?) || (action_name == 'show' && in_dashboard?) ? 'collapsed' : 'show', data: { toggle: 'collapse', target: '#documents' } }
-    %h3.mb-0
+    %h3.mb-0<
       = icon('fas', 'caret-down pr-1 mr-2')
       = t('documents.header')
   .collapse#documents{ class: (action_name == 'document_management' && service_request.previously_submitted?) || (action_name == 'show' && in_dashboard?) ? 'collapsed' : 'show' }

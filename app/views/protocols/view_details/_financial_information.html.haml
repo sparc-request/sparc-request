@@ -20,16 +20,18 @@
 
 %section.pt-3#financialInformation
   .card
-    .card-header.bg-primary.text-white
+    .card-header.bg-primary.text-white.collapsed{ data: { toggle: 'collapse', target: '#collapseFinancialInfo' } }
       %h3.mb-0
+        = icon('fas', 'caret-down pr-1 mr-2')
         = t('protocols.form.financial_information.header')
-    %table.table.mb-0
-      %tbody
-        %tr
-          %td.w-25
-            = label :protocol, :funding_status, class: 'mb-0', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
-          %td.w-75
-            = PermissibleValue.get_value('funding_status', protocol.funding_status)
+    .collapse#collapseFinancialInfo
+      %table.table.mb-0
+        %tbody
+          %tr
+            %td.w-25
+              = label :protocol, :funding_status, class: 'mb-0', title: t('protocols.tooltips.funding_status'), data: { toggle: 'tooltip', placement: 'right' }
+            %td.w-75
+              = PermissibleValue.get_value('funding_status', protocol.funding_status)
         - if protocol.funded? || protocol.pending_funding?
           %tr
             %td.w-25

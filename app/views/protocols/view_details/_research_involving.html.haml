@@ -20,30 +20,32 @@
 
 %section.pt-3#researchInvolving
   .card
-    .card-header.bg-primary.text-white
+    .card-header.bg-primary.text-white.collapsed{ data: { toggle: 'collapse', target: '#collapseResearchInvolving' } }
       %h3.mb-0
+        = icon('fas', 'caret-down pr-1 mr-2')
         = t('protocols.form.research_involving.header')
-    %table.table.mb-0
-      %tbody
-        %tr
-          %td{ colspan: 2 }
-            .row
-              .col-3<
-                = protocol.research_types_info.human_subjects? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                %label.mb-0
-                  = ResearchTypesInfo.human_attribute_name(:human_subjects)
-              .col-3<
-                = protocol.research_types_info.vertebrate_animals? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                %label.mb-0
-                  = ResearchTypesInfo.human_attribute_name(:vertebrate_animals)
-              .col-3<
-                = protocol.research_types_info.investigational_products? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                %label.mb-0
-                  = ResearchTypesInfo.human_attribute_name(:investigational_products)
-              .col-3<
-                = protocol.research_types_info.ip_patents? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
-                %label.mb-0
-                  = ResearchTypesInfo.human_attribute_name(:ip_patents)
+    .collapse#collapseResearchInvolving
+      %table.table.mb-0
+        %tbody
+          %tr
+            %td{ colspan: 2 }
+              .row
+                .col-3<
+                  = protocol.research_types_info.human_subjects? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  %label.mb-0
+                    = ResearchTypesInfo.human_attribute_name(:human_subjects)
+                .col-3<
+                  = protocol.research_types_info.vertebrate_animals? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  %label.mb-0
+                    = ResearchTypesInfo.human_attribute_name(:vertebrate_animals)
+                .col-3<
+                  = protocol.research_types_info.investigational_products? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  %label.mb-0
+                    = ResearchTypesInfo.human_attribute_name(:investigational_products)
+                .col-3<
+                  = protocol.research_types_info.ip_patents? ? icon('fas', 'check text-success mr-1') : icon('fas', 'times text-danger mr-1')
+                  %label.mb-0
+                    = ResearchTypesInfo.human_attribute_name(:ip_patents)
         - if protocol.research_types_info.human_subjects?
           = render 'protocols/view_details/research_involving/human_subjects', protocol: protocol
         - if protocol.research_types_info.vertebrate_animals?

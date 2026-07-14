@@ -109,8 +109,6 @@ class ProtocolsReport < ReportingModule
       end
     end
 
-
-
     if params[:show_external_organization_cols]
       attrs["External Organization(s)"]   = "external_organizations.map{|eo| [(eo.collaborating_org_name == 'other' ? eo.collaborating_org_name_other : eo.collaborating_org_name).titleize, (eo.collaborating_org_type == 'other' ? eo.collaborating_org_type_other : eo.collaborating_org_type).titleize].join(' - ')}.join(', ')"
     end

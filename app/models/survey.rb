@@ -71,9 +71,16 @@ class Survey < ApplicationRecord
     'Multiple Dropdown': 'multiple_dropdown'
   }
 
-  def first_activated_at
+  def initial_activation_date
     self.audits
       .order(:created_at)
+      .find { |audit| audit.audited_changes['active'] == [false, true] }
+      &.created_at
+  end
+
+  def current_activation_date
+    self.audits
+      .order(created_at: :desc)
       .find { |audit| audit.audited_changes['active'] == [false, true] }
       &.created_at
   end

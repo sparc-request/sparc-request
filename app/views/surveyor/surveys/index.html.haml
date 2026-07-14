@@ -33,8 +33,10 @@
             = t(:surveyor)[:systemsurveys][:table][:headers][:access_code]
           %th{ data: { field: "version", align: "left", sortable: 'true' } }
             = t(:surveyor)[:systemsurveys][:table][:headers][:version]
-          %th{ data: { field: "activation_date", align: "center", sortable: "true"}}
-            = t(:surveyor)[:systemsurveys][:table][:headers][:activation_date]
+          %th{ data: { field: "initial_activation_date", align: "center", sortable: "true", visible: "false"} }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:initial_activation_date]
+          %th{ data: { field: "current_activation_date", align: "center", sortable: "true", visible: "false"} }
+            = t(:surveyor)[:systemsurveys][:table][:headers][:current_activation_date]
           %th{ data: { field: "active", align: "center" } }
             = t(:surveyor)[:systemsurveys][:table][:headers][:active]
           %th.col-4{ data: { field: "notify_roles", align: "center" } }
@@ -62,8 +64,10 @@
             = t(:surveyor)[:forms][:table][:headers][:access_code]
           %th{ data: { field: "version", align: "left", sortable: 'true' } }
             = t(:surveyor)[:forms][:table][:headers][:version]
-          %th{ data: { field: "activation_date", align: "center", sortable: "true"}}
-            = t(:surveyor)[:forms][:table][:headers][:activation_date]
+          %th{ data: { field: "initial_activation_date", align: "center", sortable: "true", visible: "false"} }
+            = t(:surveyor)[:forms][:table][:headers][:initial_activation_date]
+          %th{ data: { field: "current_activation_date", align: "center", sortable: "true", visible: "false"} }
+            = t(:surveyor)[:forms][:table][:headers][:current_activation_date]
           %th{ data: { field: "active", align: "center" } }
             = t(:surveyor)[:forms][:table][:headers][:active]
           %th.col-4{ data: { field: "notify_roles", align: "center" } }

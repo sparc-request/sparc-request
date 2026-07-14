@@ -44,6 +44,7 @@ class ProtocolsReport < ReportingModule
                       .map { |k, v| [v, k] }, # -> [[<label>, <value>], ...]
         field_label: 'Authorized Users'
       },
+      "Include Brief Description Column" => { field_type: :check_box_tag, for: 'show_brief_description_cols', field_label: "Include Brief Description Column" },
       "Include Additional Funding Sources" => { field_type: :check_box_tag, for: 'show_additional_funding_source_cols', field_label: 'Include Additional Funding Source Columns' },
       "Include External Organizations" => { field_type: :check_box_tag, for: 'show_external_organization_cols', field_label: 'Include External Organization Columns' },
       "Include Epic Interface Columns" => {:field_type => :check_box_tag, :for => 'show_epic_cols', :field_label => 'Include Epic Interface Columns'},
@@ -61,7 +62,11 @@ class ProtocolsReport < ReportingModule
     attrs["Combined Protocol ID(s)"]      = "protocol_merges.pluck(:merged_protocol_id).join(', ')"
     attrs["Protocol Short Title"]         = "short_title"
     attrs["Protocol Title"]               = "title"
-    attrs["Brief Description"]            = "brief_description"
+
+    if params[:show_brief_description_cols]
+      attrs["Brief Description"]          = "brief_description"
+    end
+
     attrs["Number of Requests"]           = "sub_service_requests.length"
     attrs["Funding Status"]               = "funding_status.humanize"
     attrs["Funding Source"]               = "funding_source.present? ? PermissibleValue.get_value('funding_source', funding_source) : ''"
@@ -103,6 +108,8 @@ class ProtocolsReport < ReportingModule
         attrs["#{role_name} Email(s)"] = "project_roles.select{|pr| pr.role == '#{role}'}.map{|pr| pr.identity.email}.join('; ')"
       end
     end
+
+
 
     if params[:show_external_organization_cols]
       attrs["External Organization(s)"]   = "external_organizations.map{|eo| [(eo.collaborating_org_name == 'other' ? eo.collaborating_org_name_other : eo.collaborating_org_name).titleize, (eo.collaborating_org_type == 'other' ? eo.collaborating_org_type_other : eo.collaborating_org_type).titleize].join(' - ')}.join(', ')"

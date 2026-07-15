@@ -32,7 +32,7 @@ en:
           access_code: "Access Code"
           version: "Version"
           initial_activation_date: "Initial Activation Date"
-          current_activation_date: "Current Activation Date"
+          current_activation_date: "Last Activation Date"
           active: "Active"
           actions: "Actions"
         tooltips:
@@ -183,7 +183,7 @@ en:
           access_code: "Access Code"
           version: "Version"
           initial_activation_date: "Initial Activation Date"
-          current_activation_date: "Current Activation Date"
+          current_activation_date: "Last Activation Date"
           not_activated: "Not yet activated"
           display_order: "Display Order"
           active: "Active"

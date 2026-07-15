@@ -73,14 +73,14 @@ class Survey < ApplicationRecord
 
   def initial_activation_date
     self.audits
-      .order(:created_at)
+      .reorder(:created_at)
       .find { |audit| audit.audited_changes['active'] == [false, true] }
       &.created_at
   end
 
   def current_activation_date
     self.audits
-      .order(created_at: :desc)
+      .reorder(created_at: :desc)
       .find { |audit| audit.audited_changes['active'] == [false, true] }
       &.created_at
   end

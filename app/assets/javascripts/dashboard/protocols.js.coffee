@@ -70,7 +70,18 @@ $(document).ready ->
   # Protocol Show #
   #################
 
+  $('.collapse_btn').hide()
+
   if window.location.pathname.startsWith('/dashboard')
+    $(document).on 'click', '.expand_btn', (event) ->
+      $('.collapse').show()
+      $('.expand_btn').hide()
+      $('.collapse_btn').show()
+    $(document).on 'click', '.collapse_btn', (event) ->
+      $('.collapse').hide()
+      $('.expand_btn').show()
+      $('.collapse_btn').hide()
+
     $(document).on 'keyup', '.milestone-field.datetimepicker input', (event) ->
       key = event.keyCode || event.charCode
       if !$(this).val() && [8, 46].includes(key) # Backspace or Delete keys

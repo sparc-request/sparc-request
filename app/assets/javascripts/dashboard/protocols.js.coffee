@@ -74,11 +74,11 @@ $(document).ready ->
 
   if window.location.pathname.startsWith('/dashboard')
     $(document).on 'click', '.expand_btn', (event) ->
-      $('.collapse').show()
+      $('.collapse').collapse('show')
       $('.expand_btn').hide()
       $('.collapse_btn').show()
     $(document).on 'click', '.collapse_btn', (event) ->
-      $('.collapse').hide()
+      $('.collapse').collapse('hide')
       $('.expand_btn').show()
       $('.collapse_btn').hide()
 
@@ -120,6 +120,6 @@ $(document).ready ->
     )
  
   # focus on expanded tab in dashboard/protocols view
-  if window.location.pathname.startsWith('/dashboard/protocols')
-    $(document).on 'shown.bs.collapse', (e) ->
-      $('html, body').animate({ scrollTop: $(e.target).offset().top - 60 }, 800)
+  #if window.location.pathname.startsWith('/dashboard/protocols')
+  #  $(document).on 'shown.bs.collapse', (e) ->
+  #    $('html, body').animate({ scrollTop: $(e.target).offset().top - 60 }, 800)

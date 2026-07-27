@@ -770,6 +770,8 @@ en:
         protocol_link: "Protocol %{protocol_id}: %{protocol_title}"
     dashboard:
       navigation:
+        expand: 'Expand All'
+        collapse: 'Collapse All'
         short_interaction: "Short Interaction"
         epic_queue: "Epic Queue"
         oncore_log: "OnCore Log"

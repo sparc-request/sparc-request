@@ -22,12 +22,13 @@
   %ol.list-unstyled.d-flex.h4.p-0.m-0
     = session[:breadcrumbs].breadcrumbs
   .dashboard-links<
-    .btn.btn-success.expand_btn
-      = icon('fas', 'expand mr-2')
-      = t('layout.dashboard.navigation.expand')
-    .btn.btn-info.collapse_btn
-      = icon('fas', 'expand mr-2')
-      = t('layout.dashboard.navigation.collapse')
+    - if action_name == 'show'
+      .btn.btn-success.expand_btn
+        = icon('fas', 'expand mr-2')
+        = t('layout.dashboard.navigation.expand')
+      .btn.btn-info.collapse_btn
+        = icon('fas', 'expand mr-2')
+        = t('layout.dashboard.navigation.collapse')
     - if Setting.get_value("use_short_interaction") && current_user.is_service_provider?
       = link_to new_short_interaction_path, remote: true, class: 'btn btn-success' do
         = icon('fas', 'comment mr-2')

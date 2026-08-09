@@ -74,11 +74,11 @@ $(document).ready ->
 
   if window.location.pathname.startsWith('/dashboard')
     $(document).on 'click', '.expand_btn', (event) ->
-      $('.collapse').collapse('show')
+      $('#contentContainer .collapse').collapse('show')
       $('.expand_btn').hide()
       $('.collapse_btn').show()
     $(document).on 'click', '.collapse_btn', (event) ->
-      $('.collapse').collapse('hide')
+      $('#contentContainer .collapse').collapse('hide')
       $('.expand_btn').show()
       $('.collapse_btn').hide()
 

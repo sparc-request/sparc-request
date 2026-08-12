@@ -82,7 +82,7 @@ gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'rubyzip', '>= 1.2.1'
 gem 'sassc-rails'
-gem 'savon', '~> 2.13.0'
+gem 'savon', '~> 2.17.2'
 gem 'slack-notifier'
 # gem 'sprockets', '~> 4.2'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge

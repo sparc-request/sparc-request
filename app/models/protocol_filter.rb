@@ -36,12 +36,13 @@ class ProtocolFilter < ApplicationRecord
   }
 
   def href
+    sq = parsed_search_query
     Rails.application.routes.url_helpers.
     dashboard_root_path(
       filterrific: {
         show_archived: (self.show_archived ? 1 : 0),
         admin_filter: self.admin_filter,
-        search_query: eval(self.search_query),
+        search_query: sq,
         with_organization: self.with_organization,
         with_status: self.with_status,
         with_owner: self.with_owner,
@@ -55,5 +56,26 @@ class ProtocolFilter < ApplicationRecord
     else
         ['Authorized User', 'NCT#', 'PI', 'Protocol ID', 'IRB#', 'Short/Long Title']
     end
+  end
+
+  private
+
+  def parsed_search_query
+    raw = self.search_query
+    return {} if raw.blank?
+    if raw.is_a?(Hash)
+      raw.symbolize_keys.slice(:search_drop, :search_text, :merged_id)
+    else
+      parsed = begin
+        JSON.parse(raw)
+      rescue JSON::ParserError
+        begin
+          JSON.parse(raw.gsub('=>', ':').gsub("'", '"'))
+        rescue JSON::ParserError
+          {}
+        end
+      end
+    end
+    parsed.slice('search_drop', 'search_text', 'merged_id')
   end
 end

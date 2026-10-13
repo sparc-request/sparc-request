@@ -69,7 +69,9 @@ class ApplicationController < ActionController::Base
         :reason,
         :ldap_uid,
         :password,
-        :password_confirmation
+        :password_confirmation,
+        :orcid,
+        :scopus_id
       )
     end
   end

@@ -59,7 +59,21 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_params
-    devise_parameter_sanitizer.permit(:sign_up) { |u| u.permit! }
+    devise_parameter_sanitizer.permit(:sign_up) do |u|
+      u.permit(
+        :first_name,
+        :last_name,
+        :email,
+        :phone,
+        :company,
+        :reason,
+        :ldap_uid,
+        :password,
+        :password_confirmation,
+        :orcid,
+        :scopus_id
+      )
+    end
   end
 
   #############################
@@ -256,7 +270,7 @@ class ApplicationController < ActionController::Base
     arm_id  = params[:arm_id]
     @arm    = Arm.find(arm_id) if arm_id
     @service_calendar_pages = {}
-    
+
     @pages_params = params.slice(:pages).permit! if params[:pages].present?
     @service_calendar_pages = @pages_params.to_h
 

@@ -10,7 +10,6 @@ gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
 gem 'audited', '~> 5.0'
 gem 'babel-transpiler'
-gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
 gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
 gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge

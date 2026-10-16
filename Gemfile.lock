@@ -135,7 +135,6 @@ GEM
     bcrypt_pbkdf (1.1.0)
     benchmark (0.5.0)
     bigdecimal (3.1.7)
-    bluecloth (2.2.0)
     bootsnap (1.25.0)
       msgpack (~> 1.5)
     bootstrap-sass (3.4.1)
@@ -725,7 +724,6 @@ DEPENDENCIES
   audited (~> 5.0)
   babel-transpiler
   bcrypt_pbkdf
-  bluecloth
   bootsnap
   bootstrap-sass (= 3.4.1)
   bootstrap-toggle-rails

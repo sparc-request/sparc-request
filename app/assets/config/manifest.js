@@ -28,3 +28,4 @@
 //= link dashboard/fee_agreement.css
 
 //= link_tree ../images/
+//= link_tree ../builds

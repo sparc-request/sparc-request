@@ -113,3 +113,6 @@ yarn-debug.log*
 .byebug_history
 .vscode/
 config/initializers/rack_profiler.rb
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

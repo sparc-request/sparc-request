@@ -81,7 +81,7 @@ gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'rubyzip', '>= 1.2.1'
-gem 'sassc-rails'
+gem 'dartsass-rails'
 gem 'savon', '~> 2.13.0'
 gem 'slack-notifier'
 # gem 'sprockets', '~> 4.2'

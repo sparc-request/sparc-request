@@ -18,42 +18,30 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'logger'
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-
 Bundler.require(*Rails.groups)
 
 module SparcRails
   class Application < Rails::Application
 
-    # config.load_defaults 6.1
-    # config.active_support.cache_format_version = 6.1
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
-    Dotenv::Railtie.load
-
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
-
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
     config.action_dispatch.default_headers.merge!({'X-Frame-Options' => 'ALLOWALL', 'X-UA-Compatible' => 'IE=edge,chrome=1'})
 
-    config.eager_load = true
-
     config.action_view.field_error_proc = Proc.new { |html_tag, instance| html_tag }
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named.
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
-
-    # Activate observers that should always be running.
-    # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
-
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.time_zone = ENV['time_zone'] || 'Eastern Time (US & Canada)'
 
     # https://discuss.rubyonrails.org/t/cve-2022-32224-possible-rce-escalation-bug-with-serialized-columns-in-active-record/81017
@@ -62,7 +50,18 @@ module SparcRails
     # issues with existing data. In order to cope with that situation, the released version also contains
     # two new Active Record configuration options. The configuration options are as follows:
     config.active_record.use_yaml_unsafe_load = true
-    config.active_record.yaml_column_permitted_classes = [Symbol, Date, Time]
+
+    # Can also move the following to /initializers/yaml.rb
+    # add prefix 'Rails.application'
+    config.active_record.yaml_column_permitted_classes = [
+      ActiveSupport::HashWithIndifferentAccess,
+      ActiveSupport::TimeWithZone,
+      ActiveSupport::TimeZone,
+      BigDecimal,
+      Date,
+      Time,
+      Symbol
+    ]
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
@@ -76,25 +75,11 @@ module SparcRails
     config.i18n.default_locale  = :en
     config.i18n.fallbacks       = [:en]
 
-    # Configure the default encoding used in templates for Ruby 1.9.
-    config.encoding = "utf-8"
+    # The default value for active_record.belongs_to_required_by_default is true
+    # for all new Rails 5+ application. For upgraded applications, from Rails 4.x or earlier,
+    # the default is effectively false to maintain backward compatibility.
+    config.active_record.belongs_to_required_by_default = false
 
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
-
-    # Enable escaping HTML in JSON.
-    config.active_support.escape_html_entities_in_json = true
-
-    # Use SQL instead of Active Record's schema dumper when creating the database.
-    # This is necessary if your schema can't be completely dumped by the schema dumper,
-    # like if you have constraints or database-specific column types
-    # config.active_record.schema_format = :sql
-
-    # Enable the asset pipeline
-    config.assets.enabled = false
-
-    # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
 
     config.middleware.use PDFKit::Middleware, {
       orientation: 'Portrait',
@@ -104,6 +89,20 @@ module SparcRails
       margin_bottom: '1in',
       print_media_type: true
     }, :except => [%r[^/dashboard/protocols/\d+\.pdf$]]
+
+    # dartsass-rails: define entry points and suppress dep warnings
+    config.dartsass.builds = {
+      "application.scss" => "application.css",
+      "catalog_manager/application.scss" => "catalog_manager/application.css"
+    }
+
+    # Suppress deprecation warnings (@import -> @use/@forward)from 3rd-party deps (bootstrap-sass, etc.)
+    # Which requires migrating to Bootstrap 5, which is a major undertaking and not feasible at this time.
+    config.dartsass.dart_sass_flags = %w[
+      --quiet-deps
+      --no-source-map
+      --style=compressed
+    ]
 
     ##  Error pages
     config.exceptions_app = routes

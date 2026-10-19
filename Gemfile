@@ -26,6 +26,7 @@ gem 'caxlsx_rails'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
+gem 'dartsass-rails'
 gem 'deep_cloneable', '~> 3.2.0'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
@@ -80,7 +81,6 @@ gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
 gem 'rubyzip', '>= 1.2.1'
-gem 'sassc-rails'
 gem 'savon', '~> 2.17.2'
 gem 'slack-notifier'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge

@@ -18,16 +18,23 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
-@import 'flex-utils';
-@import 'bootstrap-custom';
+//  MUST be first — before ALL imports
+// ── Dart Sass compatibility ──────────────────────────────
+$bootstrap-sass-asset-helper: false;
+$icon-font-path: "/assets/bootstrap/";
 
-// replaced require_tree .
-@import 'layout';
-@import 'catalog';
+// Fix missing glyphicons icons
+// $icon-font-path is already used by bootstrap to BUILD the path before
+// calling font-path() — so just return it unchanged
+@function font-path($path) {
+@return $path;     // ← no prepending needed!
+}
 
-// other files
+// Now the rest
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
+@import 'flex-utils';
+@import 'bootstrap-custom';
 @import 'bootstrap-select';
 @import 'bootstrap-select-custom';
 @import 'bootstrap-table';
@@ -35,7 +42,9 @@
 @import 'bootstrap-toggle';
 @import 'bootstrap-datetimepicker';
 @import 'editable/bootstrap-editable';
-@import '../layout.sass';
+@import '../layout_legacy';
+@import 'layout';
+@import 'catalog';
 @import '../proper/colors';
 @import 'twitter_typeahead';
 @import 'sweetalert';

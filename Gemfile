@@ -83,8 +83,8 @@ gem 'request_store'
 gem 'rubyzip', '>= 1.2.1'
 gem 'savon', '~> 2.17.2'
 gem 'slack-notifier'
+gem 'terser'
 gem 'twitter-typeahead-rails' # Bootstrap 4 purge
-gem 'uglifier', '>= 1.3.0'
 gem 'wash_out'
 gem 'whenever', require: false
 gem 'will_paginate'

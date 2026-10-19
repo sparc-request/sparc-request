@@ -18,24 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# You would need it if you execute ruby outside Rails boot
+require "active_support/core_ext/integer/time"
+
 SparcRails::Application.configure do
-  # Settings specified here will take precedence over those in config/application.rb
+  # Settings specified here will take precedence over those in config/application.rb.
 
-  # Code is not reloaded between requests
-  config.cache_classes = true
+  # Code is not reloaded between requests.
+  config.enable_reloading = false
 
-  # Eager load code on boot. This eager loads most of Rails and
-  # your application in memory, allowing both threaded web servers
-  # and those relying on copy on write to perform better.
-  # Rake tasks automatically ignore this option for performance.
+  # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
-  config.enable_dependency_loading = false
 
-  # Full error reports are disabled and caching is turned on
-  config.consider_all_requests_local       = false
+  # Full error reports are disabled.
+  config.consider_all_requests_local = false
+
+  # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
-  # Disable Rails's static asset server (Apache or nginx will already do this)
+  # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
+  # key such as config/credentials/production.key. This key is used to decrypt credentials (and other encrypted files).
+  # config.require_master_key = true
+
+  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
   config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS
@@ -49,12 +54,17 @@ SparcRails::Application.configure do
   # Generate digests for assets URLs
   config.assets.digest = true
 
+  # ActiveStorage config
+  config.active_storage.service = :local
+
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH
 
-  # Specifies the header that your server uses for sending files
-  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
-  # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
+  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+  # config.assets.precompile = ["manifest.js"]
+
+  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
+  # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -76,36 +86,50 @@ SparcRails::Application.configure do
 
   # config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
 
-  # Use a different cache store in production
+  # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+
+  # Replace the default in-process and non-durable queuing backend for Active Job.
+  # config.active_job.queue_adapter = :resque
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
 
-  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  # config.assets.precompile = ["manifest.js"]
-
-  # Disable delivery errors, bad email addresses will be ignored
+  # Disable delivery errors, bad email addresses will be ignored.
   # config.action_mailer.raise_delivery_errors = false
 
-  # Enable threaded mode
-  # config.threadsafe!
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
+
+  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
+  # config.action_mailer.smtp_settings = {
+  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
+  #   password: Rails.application.credentials.dig(:smtp, :password),
+  #   address: "smtp.example.com",
+  #   port: 587,
+  #   authentication: :plain
+  # }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation can not be found)
+  # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
+
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
+
+  # Only use :id for inspections in production. commented out from rails generated settings.
+  # config.active_record.attributes_for_inspect = [ :id ]
+
+  # Enable DNS rebinding protection and other `Host` header attacks.
+  # config.hosts = [
+  #   "example.com",     # Allow requests from example.com
+  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
+  # ]
+  #
+  # Skip DNS rebinding protection for the default health check endpoint.
+  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  # Log the query plan for queries taking more than this (works
-  # with SQLite, MySQL, and PostgreSQL)
-  # config.active_record.auto_explain_threshold_in_seconds = 0.5
-  config.active_record.dump_schema_after_migration = false
-
-  config.action_mailer.delivery_method = :sendmail
-  config.action_mailer.default_url_options = { host: ENV.fetch('ROOT_URL') }
-  
-  # ActiveStorage config
-  config.active_storage.service = :local
 end

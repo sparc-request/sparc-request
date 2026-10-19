@@ -21,27 +21,21 @@
 SparcRails::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # The test environment is used exclusively to run your application's
-  # test suite. You never need to work with it otherwise. Remember that
-  # your test database is "scratch space" for the test suite and is wiped
-  # and recreated between test runs. Don't rely on the data there!
-  config.cache_classes = false
+  # While tests run, files are not watched, so reloading is not necessary.
+  config.enable_reloading = false
 
-  # Do not eager load code on boot. This avoids loading your whole application
-  # just for the purpose of running a single test. If you are using a tool that
-  # preloads Rails for running tests, you may have to set it to true.
+  # Do not eager load code on boot.
   config.eager_load = false
 
-  # Configure static asset server for tests with Cache-Control for performance
-  config.public_file_server.enabled = true
-  config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
+  # Configure public file server for tests with cache-control for performance.
+  config.public_file_server.headers = { 'cache-control' => 'public, max-age=3600' }
 
-  # Show full error reports and disable caching
+  # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
-  # Raise exceptions instead of rendering exception templates
-  config.action_dispatch.show_exceptions = false
+  # Raise exceptions instead of rendering exception templates.
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection    = false
@@ -50,11 +44,19 @@ SparcRails::Application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { host: 'localhost', port: '3000' }
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :silence
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: '3000' }
+  # Raises error for missing translations.
+  # config.i18n.raise_on_missing_translations = true
+
+  # Annotate rendered view with file names.
+  # config.action_view.annotate_rendered_view_with_filenames = true
+
+  # Raise error when a before_action's only/except options reference missing actions.
+  # config.action_controller.raise_on_missing_callback_actions = true
 
   # ActiveStorage config
   config.active_storage.service = :test

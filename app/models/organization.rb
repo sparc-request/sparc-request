@@ -191,14 +191,6 @@ class Organization < ApplicationRecord
     SubServiceRequest.where( organization: self.all_child_organizations_with_self ).each(&:update_org_tree)
   end
 
-  def service_providers_lookup
-    if !service_providers.empty?
-      return service_providers
-    else
-      return self.parents.select {|x| !x.service_providers.empty?}.first.try(:service_providers) || []
-    end
-  end
-
   def submission_emails_lookup
     if !submission_emails.empty?
       return submission_emails

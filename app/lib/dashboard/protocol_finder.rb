@@ -77,8 +77,7 @@ module Dashboard
     def find_identity_protocols
       return @identity_protocols if @identity_protocols
 
-      query_pagination = (@params[:limit] ? "limit #{@params[:limit]}" : '') + (@params[:offset] ? " offset #{@params[:offset]}" : '')
-      @identity_protocols = Protocol.find_by_sql(query + ' ' + query_pagination)
+      @identity_protocols = Protocol.find_by_sql([query + " limit ? offset ?", params[:limit], params[:offset]])
     end
 
     # SQL query that returns all the protocols user wants

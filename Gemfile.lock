@@ -188,7 +188,7 @@ GEM
       countries (~> 5.0)
     crack (0.4.5)
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     css_parser (1.17.1)
       addressable
     curb (0.9.11)

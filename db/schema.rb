@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
-  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+ActiveRecord::Schema[8.1].define(version: 2026_06_22_172545) do
+  create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "active_storage_blobs", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -33,13 +33,13 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb3", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "additional_funding_sources", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "additional_funding_sources", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "funding_source"
     t.string "funding_source_other"
     t.string "sponsor_name"
@@ -55,7 +55,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["protocol_id"], name: "index_additional_funding_sources_on_protocol_id"
   end
 
-  create_table "admin_rate_changes", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "admin_rate_changes", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "line_item_id"
     t.bigint "identity_id"
     t.integer "admin_cost"
@@ -91,7 +91,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "applications", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "applications", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "domain"
@@ -199,7 +199,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id"
   end
 
-  create_table "column_preferences", charset: "utf8mb3", force: :cascade do |t|
+  create_table "column_preferences", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.string "table_id"
     t.text "column_preferences"
@@ -291,7 +291,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["subsidy_map_id"], name: "index_excluded_funding_sources_on_subsidy_map_id"
   end
 
-  create_table "external_organizations", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "external_organizations", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "collaborating_org_name"
     t.string "collaborating_org_type"
     t.text "comments"
@@ -311,7 +311,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "fulfillment_synchronizations", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "fulfillment_synchronizations", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "sub_service_request_id"
     t.integer "line_item_id"
     t.string "action"
@@ -352,8 +352,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.string "credentials"
     t.string "subspecialty"
     t.string "phone"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
     t.boolean "catalog_overlord"
     t.string "credentials_other"
@@ -374,9 +374,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.string "orcid", limit: 19
     t.string "scopus_id", limit: 11
     t.boolean "imported_from_lbb", default: false
+    t.text "institution"
     t.string "age_group"
     t.string "gender"
-    t.text "institution"
     t.string "ethnicity"
     t.string "gender_other"
     t.index ["approved"], name: "index_identities_on_approved"
@@ -420,7 +420,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["protocol_id"], name: "index_ip_patents_info_on_protocol_id"
   end
 
-  create_table "irb_records", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "irb_records", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "human_subjects_info_id"
     t.integer "rmid_id"
     t.string "pro_number"
@@ -435,7 +435,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["human_subjects_info_id"], name: "index_irb_records_on_human_subjects_info_id"
   end
 
-  create_table "irb_records_study_phases", id: false, charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "irb_records_study_phases", id: false, charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "irb_record_id"
     t.bigint "study_phase_id"
     t.index ["irb_record_id"], name: "index_irb_records_study_phases_on_irb_record_id"
@@ -511,7 +511,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id"
   end
 
-  create_table "oauth_access_grants", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "oauth_access_grants", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "resource_owner_id", null: false
     t.bigint "application_id", null: false
     t.string "token", null: false
@@ -525,7 +525,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
-  create_table "oauth_access_requests", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "oauth_access_requests", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "application_id"
     t.bigint "access_token_id"
     t.string "ip_address", null: false
@@ -537,7 +537,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["application_id"], name: "index_oauth_access_requests_on_application_id"
   end
 
-  create_table "oauth_access_tokens", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "oauth_access_tokens", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "resource_owner_id"
     t.bigint "application_id", null: false
     t.string "token", null: false
@@ -553,7 +553,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end
 
-  create_table "oauth_applications", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "oauth_applications", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
     t.string "uid", null: false
@@ -566,7 +566,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "oncore_records", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "oncore_records", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "protocol_id"
     t.integer "calendar_version"
     t.string "status"
@@ -759,7 +759,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
 
   create_table "protocols", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "type"
-    t.bigint "next_ssr_id"
+    t.integer "next_ssr_id"
     t.string "short_title"
     t.text "title"
     t.string "sponsor_name"
@@ -841,7 +841,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "races", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
+  create_table "races", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.bigint "identity_id"
     t.string "name", null: false
     t.string "other_text"
@@ -1210,7 +1210,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
-    t.bigint "research_billing_qty", default: 0
+    t.integer "research_billing_qty", default: 0
     t.integer "insurance_billing_qty", default: 0
     t.integer "effort_billing_qty", default: 0
     t.bigint "line_items_visit_id"
@@ -1226,6 +1226,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
   add_foreign_key "column_preferences", "identities"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
+  add_foreign_key "irb_records", "human_subjects_info", name: "fk_irb_records_human_subjects_info_id", on_delete: :cascade
+  add_foreign_key "irb_records_study_phases", "irb_records", name: "fk_irb_records_study_phases_on_irb_record_id", on_delete: :cascade
+  add_foreign_key "irb_records_study_phases", "study_phases", name: "fk_irb_records_study_phases_on_study_phase_id", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_requests", "oauth_access_tokens", column: "access_token_id"
@@ -1233,6 +1236,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
   add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "options", "questions"
+  add_foreign_key "project_roles", "identities", column: "protocol_id", on_delete: :cascade
+  add_foreign_key "project_roles", "protocols", on_delete: :cascade
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"
   add_foreign_key "questions", "options", column: "depender_id"

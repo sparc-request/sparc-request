@@ -83,6 +83,14 @@ SparcRails::Application.configure do
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
+  # keep the following if using Sprockets, any existing asset-related settings
+  # Suppress asset request logging - change to false if actively troubleshooting asset loading problems and want to see every asset request in the logs:
+  config.assets.quiet = true
+  config.assets.compile = true
+  config.assets.digest = true
+  config.assets.version = '1.0'
+  config.assets.debug = true
+
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 

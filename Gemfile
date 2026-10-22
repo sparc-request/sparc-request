@@ -56,7 +56,6 @@ gem 'json', "< 3.0"
 gem 'letter_opener'
 gem 'microsoft_teams_incoming_webhook_ruby'
 gem 'mysql2', '0.5.6'
-gem 'nested_form' # Check usage
 gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
 gem 'nokogiri', '>=1.19.4'

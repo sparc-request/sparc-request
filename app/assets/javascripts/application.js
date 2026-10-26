@@ -56,7 +56,7 @@
 //= require corejs-typeahead/dist/typeahead.bundle.min
 //= require moment/min/moment-with-locales.min
 //= require tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4
-//= require js-cookie/src/js.cookie
+//= require js-cookie/dist/js.cookie
 //= require nprogress/nprogress
 
 //////////////////////////////////

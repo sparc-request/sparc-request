@@ -92,7 +92,7 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_filenames = true
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
@@ -104,9 +104,6 @@ SparcRails::Application.configure do
   config.to_prepare do
     DeviseFilters.add_filters
   end
-
-  # ActiveStorage config
-  config.active_storage.service = :local
 
   config.hosts = [
     IPAddr.new("0.0.0.0/0"), # All IPv4 addresses.

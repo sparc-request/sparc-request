@@ -19,11 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # Load the Rails application.
-require_relative 'application'
+require_relative "application"
 
 # Initialize the Rails application.
 Rails.application.initialize!
 
+# Although ActiveResource is no longer part of Rails
+# MUSC uses activeresource for epic_user model - leave it alone; the 'circular require...'' warning
+# is likely a nusance warning rather than an actual bug.
 ActiveResource::Base.logger = ActiveRecord::Base.logger
 
 Mime::Type.register "application/pdf", :pdf

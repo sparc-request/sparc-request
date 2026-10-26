@@ -25,3 +25,24 @@ Rails.application.config.assets.version = "1.0"
 
 # Add additional assets to the load path
 Rails.application.config.assets.paths << Rails.root.join("node_modules")
+
+# Missing fonts: font-awesome (SPARCRequest nav bar) and bootstrap glyphicons (Catalog Manager)
+# on the server, so we need to precompile them.
+# config/initializers/assets.rb
+Rails.application.config.assets.precompile += %w[
+  font-awesome/fa-solid-900.woff2
+  font-awesome/fa-solid-900.woff
+  font-awesome/fa-solid-900.ttf
+  font-awesome/fa-brands-400.woff2
+  font-awesome/fa-brands-400.woff
+  font-awesome/fa-brands-400.ttf
+  font-awesome/fa-regular-400.woff2
+  font-awesome/fa-regular-400.woff
+  font-awesome/fa-regular-400.ttf
+  -# missing bootstrap glyphicons fonts (in )Catalog Manager) on the server
+  bootstrap/glyphicons-halflings-regular.woff2
+  bootstrap/glyphicons-halflings-regular.woff
+  bootstrap/glyphicons-halflings-regular.ttf
+  bootstrap/glyphicons-halflings-regular.eot
+  bootstrap/glyphicons-halflings-regular.svg
+]

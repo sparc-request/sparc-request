@@ -22,6 +22,14 @@
 /// Require Packages ///
 ////////////////////////
 
+// ── Dart Sass: Font Awesome 5 path fix on the server ──
+$fa-font-path: "/assets/font-awesome";
+
+@function font-path($path) {
+  @return $path;   // same fix as bootstrap
+}
+// ────────────────────────────────────────
+
 @import 'custom/bootstrap-variables-custom';
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-select/dist/css/bootstrap-select.min';

@@ -24,8 +24,8 @@ class ResponseFilter < ApplicationRecord
 
   validates :name, presence: true
 
-  serialize :with_state, Array
-  serialize :with_survey, Array
+  serialize :with_state, type: Array
+  serialize :with_survey, type: Array
 
   MAX_FILTERS = 15
 

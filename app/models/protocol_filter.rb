@@ -25,9 +25,9 @@ class ProtocolFilter < ApplicationRecord
 
   validates_presence_of :search_name
 
-  serialize :with_organization, Array
-  serialize :with_status, Array
-  serialize :with_owner, Array
+  serialize :with_organization, type: Array
+  serialize :with_status, type: Array
+  serialize :with_owner,  type: Array
 
   scope :latest_for_user, -> (identity_id, limit) {
     where(identity_id: identity_id).

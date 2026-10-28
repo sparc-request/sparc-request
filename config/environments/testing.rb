@@ -18,13 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# You would need it if you execute ruby outside Rails boot
+# require "active_support/core_ext/integer/time"
+
+require "active_support/core_ext/integer/time"
+
 SparcRails::Application.configure do
-  # Settings specified here will take precedence over those in config/application.rb
+  # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
-  config.cache_classes = false
+  # config.cache_classes = false - retired in Rails 7.2, replaced by the following:
+  config.enable_reloading = true
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -42,12 +48,14 @@ SparcRails::Application.configure do
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
-  # Log the query plan for queries taking more than this (works
-  # with SQLite, MySQL, and PostgreSQL)
-  # config.active_record.auto_explain_threshold_in_seconds = 0.5
+  # Sprockets settings to keep:
+  config.assets.compile = false
+  config.assets.digest = true
 
-  # Do not compress assets
-  config.assets.compress = false
+  # Dart Sass performs the SCSS compilation and compression.
+  # Do not use Sprockets' legacy Ruby Sass compressor.
+  config.assets.css_compressor = nil
+  config.assets.js_compressor = :terser
 
   # Expands the lines which load the assets
   config.assets.debug = true

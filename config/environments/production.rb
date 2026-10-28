@@ -43,25 +43,20 @@ SparcRails::Application.configure do
   # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
   config.public_file_server.enabled = false
 
-  # Compress JavaScripts and CSS
-  config.assets.css_compressor = :sass
-  config.assets.js_compressor = Uglifier.new(harmony: true)
-
-  # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = true
-  config.assets.initialize_on_precompile = false
-
-  # Generate digests for assets URLs
+  # Sprockets settings to keep:
+  config.assets.compile = false
   config.assets.digest = true
+ 
+  # Dart Sass performs the SCSS compilation and compression.
+  # Do not use Sprockets' legacy Ruby Sass compressor.
+  config.assets.css_compressor = nil
+  config.assets.js_compressor = :terser
+
+  # Enable serving of images, stylesheets, and JavaScripts from an asset server.
+  # config.asset_host = "http://assets.example.com"
 
   # ActiveStorage config
   config.active_storage.service = :local
-
-  # Defaults to nil and saved in location specified by config.assets.prefix
-  # config.assets.manifest = YOUR_PATH
-
-  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  # config.assets.precompile = ["manifest.js"]
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # config.assume_ssl = true
@@ -69,31 +64,25 @@ SparcRails::Application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
-  # Set HTTP/S security headers
-  # config.action_dispatch.default_headers = {
-  #   'Referrer-Policy' => 'strict-origin-when-cross-origin',
-  #   'X-Content-Type-Options' => 'nosniff',
-  #   'X-Frame-Options' => 'SAMEORIGIN',
-  #   'X-XSS-Protection' => '1; mode=block'
-  # }
+  # Skip http-to-https redirect for the default health check endpoint.
+  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # See everything in the log (default is :info)
-  # config.log_level = :debug
-  config.log_level = :info
 
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
-
   # config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+
+  # Change to "debug" to log everything (including potentially personally-identifiable information!).
+  # config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+
+  # Prevent health checks from clogging up the logs.
+  config.silence_healthcheck_path = "/up"
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   # config.active_job.queue_adapter = :resque
-
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server
-  # config.action_controller.asset_host = "http://assets.example.com"
 
   # Disable delivery errors, bad email addresses will be ignored.
   # config.action_mailer.raise_delivery_errors = false

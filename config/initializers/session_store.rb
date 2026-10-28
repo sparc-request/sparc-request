@@ -20,9 +20,29 @@
 
 # Be sure to restart your server when you modify this file.
 
-SparcRails::Application.config.session_store :active_record_store
+#SparcRails::Application.config.session_store :active_record_store
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
 # SparcRails::Application.config.session_store :active_record_store
+# config/initializers/session_store.rb
+
+Rails.application.config.session_store(
+  :active_record_store,
+  key: "_sparc_session",
+
+  # IMPORTANT: avoid Marshal/YAML with Psych 5+
+  serializer: :json,
+
+  # Cookie security
+  secure: Rails.env.production?,
+  httponly: true,
+  same_site: :lax,
+
+  # Prevent fallback to insecure cookies
+  secure_session_only: true,
+
+  # Logical expiration (still requires db:sessions:trim)
+  expire_after: 14.days
+)

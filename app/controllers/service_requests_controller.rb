@@ -32,7 +32,10 @@ class ServiceRequestsController < ApplicationController
   before_action :find_linked_entity,              only:   [:catalog]
   before_action :current_page
 
+  REPORT_TYPES = %w[request_report coverage_analysis].freeze
+
   def show
+
     @sub_service_request = SubServiceRequest.find(params[:ssrid]) if params[:ssrid]
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
@@ -42,10 +45,12 @@ class ServiceRequestsController < ApplicationController
     @line_items = @service_request.line_items
     @display_all_services = params[:display_all_services] == 'true' ? true : false
 
-    @report_type = params[:report_type]
+    @report_type = REPORT_TYPES.include?(params[:report_type]) ? params[:report_type] : "request_report"
     respond_to do |format|
       format.xlsx do
-        render xlsx: "#{@report_type}", filename: "service_request_#{@protocol.id}", disposition: "inline"
+        render xlsx: "service_request_#{@protocol.id}",
+               template: "service_requests/#{@report_type}",
+               disposition: "inline"
       end
     end
   end

@@ -1226,9 +1226,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_22_172545) do
   add_foreign_key "column_preferences", "identities"
   add_foreign_key "editable_statuses", "organizations"
   add_foreign_key "external_organizations", "protocols"
-  add_foreign_key "irb_records", "human_subjects_info", name: "fk_irb_records_human_subjects_info_id", on_delete: :cascade
-  add_foreign_key "irb_records_study_phases", "irb_records", name: "fk_irb_records_study_phases_on_irb_record_id", on_delete: :cascade
-  add_foreign_key "irb_records_study_phases", "study_phases", name: "fk_irb_records_study_phases_on_study_phase_id", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_requests", "oauth_access_tokens", column: "access_token_id"
@@ -1236,8 +1233,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_22_172545) do
   add_foreign_key "oauth_access_tokens", "identities", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "options", "questions"
-  add_foreign_key "project_roles", "identities", column: "protocol_id", on_delete: :cascade
-  add_foreign_key "project_roles", "protocols", on_delete: :cascade
   add_foreign_key "question_responses", "questions"
   add_foreign_key "question_responses", "responses"
   add_foreign_key "questions", "options", column: "depender_id"

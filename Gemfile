@@ -79,7 +79,7 @@ gem 'rails-html-sanitizer' # Check usage
 gem 'redcarpet' # Check usage
 gem 'rest-client' # Consider replacing usage with httparty
 gem 'request_store'
-gem 'rubyzip', '>= 1.2.1'
+gem 'rubyzip', '~> 3.4'
 gem 'savon', '~> 2.17.2'
 gem 'slack-notifier'
 gem 'terser'
@@ -122,11 +122,11 @@ group :development, :test do
   gem 'rspec-collection_matchers'
   gem 'rspec-html-matchers' # Consider removing and using `have_selector` matchers
   gem 'rspec-rails', '~> 8.0'
+  gem 'selenium-webdriver', '~> 4.49.0'
   gem 'shoulda-callback-matchers'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false # Check usage
   gem 'site_prism'
-  gem 'webdrivers', '~> 5.2'
   gem 'webmock'
   gem 'rspec-retry'
 end

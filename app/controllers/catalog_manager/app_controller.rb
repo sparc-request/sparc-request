@@ -48,7 +48,8 @@ class CatalogManager::AppController < ApplicationController
 
   def fulfillment_rights organization_id
     { clinical_providers: ClinicalProvider.where(organization_id: organization_id),
-      patient_registrars: PatientRegistrar.where(organization_id: organization_id)}
+      patient_registrars: PatientRegistrar.where(organization_id: organization_id),
+      time_tracking_managers: TimeTrackingManager.where(organization_id: organization_id) }
   end
 
   def set_registrar_enabled organization

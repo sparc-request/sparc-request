@@ -47,6 +47,8 @@ class Organization < ApplicationRecord
   has_many :surveys, through: :associated_surveys
   has_many :primary_contacts, through: :primary_contact_providers, source: :identity
 
+  has_many :time_tracking_managers, dependent: :destroy
+
   validates :abbreviation,
             :order,
             presence: true, on: :update
@@ -407,6 +409,7 @@ class Organization < ApplicationRecord
     identity_ids += self.patient_registrars.pluck(:identity_id)
     # Placeholder for invoicers, which will be included later
     # identity_ids += self.invoicers.pluck(:identity_id)
+    identity_ids += self.time_tracking_managers.pluck(:identity_id)
     Identity.where(id: identity_ids)
   end
 

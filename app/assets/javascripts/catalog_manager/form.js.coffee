@@ -211,6 +211,13 @@ $ ->
       type: if $(this).prop('checked') then 'POST' else 'DELETE'
       url: "/catalog_manager/patient_registrar?patient_registrar[identity_id]=#{identity_id}&patient_registrar[organization_id]=#{organization_id}"
 
+  $(document).on 'change', '.time-tracking-manager-checkbox', ->
+    identity_id = $(this).data('identity-id')
+    organization_id = $(this).data('organization-id')
+    $.ajax
+      type: if $(this).prop('checked') then 'POST' else 'DELETE'
+      url: "/catalog_manager/time_tracking_manager?time_tracking_manager[identity_id]=#{identity_id}&time_tracking_manager[organization_id]=#{organization_id}"
+
 
   $(document).on 'click', '.remove-fulfillment-rights', (event) ->
     event.preventDefault()

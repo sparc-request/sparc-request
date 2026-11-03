@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_25_162517) do
   create_table "active_storage_attachments", charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -1167,6 +1167,16 @@ ActiveRecord::Schema[7.0].define(version: 2026_06_22_172545) do
     t.string "name"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true
+  end
+
+  create_table "time_tracking_managers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "identity_id"
+    t.bigint "organization_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id", "organization_id"], name: "index_time_tracking_managers_on_identity_id_and_organization_id", unique: true
+    t.index ["identity_id"], name: "index_time_tracking_managers_on_identity_id"
+    t.index ["organization_id"], name: "index_time_tracking_managers_on_organization_id"
   end
 
   create_table "tokens", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|

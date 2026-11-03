@@ -129,8 +129,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
     cp_destroyed = ClinicalProvider.find_by(fulfillment_rights_params).try(:destroy)
     ##Invoicer support, uncomment when needed:
     # iv_destroyed = Invoicer.find_by(fulfillment_rights_params).try(:destroy)
+    ttm_destroyed = TimeTrackingManager.find_by(fulfillment_rights_params).try(:destroy)
 
-    if cp_destroyed# or iv_destroyed
+    if cp_destroyed or ttm_destroyed
       @identity_id = fulfillment_rights_params[:identity_id]
       flash[:success] = "Fulfillment rights removed successfully."
     else

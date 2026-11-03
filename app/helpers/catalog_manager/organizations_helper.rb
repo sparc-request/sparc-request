@@ -44,4 +44,8 @@ module CatalogManager::OrganizationsHelper
       all_user_rights.detect{ |ur| ur.identity_id == identity_id }
     end
   end
+
+  def fulfillment_rights_column_class
+    @patient_registrar_enabled ? 'col-sm-2' : 'col-sm-3'
+  end
 end

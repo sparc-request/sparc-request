@@ -11,9 +11,9 @@ gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
 gem 'audited', '~> 5.0'
 gem 'babel-transpiler'
 gem 'bootsnap', require: false
-gem 'bootstrap-sass', '3.4.1' # Bootstrap 4 purge
-gem 'bootstrap3-datetimepicker-rails' # Bootstrap 4 purge
-gem 'bootstrap-toggle-rails' # Bootstrap 4 purge
+gem 'bootstrap-sass', '3.4.1' # Catalog Manager (BS3) only – remove when CM migrates to BS4/5
+gem 'bootstrap3-datetimepicker-rails' # Catalog Manager (BS3) only – remove when CM migrates to BS4/5
+gem 'bootstrap-toggle-rails' # Catalog Manager (BS3) only – remove when CM migrates to BS4/5
 gem 'capistrano', '~> 3.17'
 gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
@@ -50,7 +50,7 @@ gem 'icalendar', '2.12.2'
 gem 'icalendar-recurrence'
 gem 'iconv'
 gem 'jquery_datepicker' # Check usage
-gem 'jquery-rails' # Bootstrap 4 purge
+gem 'jquery-rails' # Assets shadowed by app/assets/javascripts/jquery*.js; also a dep of twitter-typeahead-rails
 gem 'jbuilder', '~> 2.13'
 gem 'json', "< 3.0"
 gem 'letter_opener'
@@ -60,7 +60,7 @@ gem 'nested_form_fields' # Check usage
 gem 'newrelic_rpm' # Check usage
 gem 'nokogiri', '>=1.19.4'
 gem 'nori' # Check usage
-gem 'nprogress-rails' # Bootstrap 4 purge
+gem 'nprogress-rails' # Catalog Manager (BS3) only – remove when CM migrates to BS4/5
 gem 'net-ldap', '~> 0.17.1'
 gem "observer"
 gem 'omniauth'
@@ -83,7 +83,7 @@ gem 'rubyzip', '~> 3.4'
 gem 'savon', '~> 2.17.2'
 gem 'slack-notifier'
 gem 'terser'
-gem 'twitter-typeahead-rails' # Bootstrap 4 purge
+gem 'twitter-typeahead-rails' # Catalog Manager (BS3) only – remove when CM migrates to BS4/5
 gem 'wash_out'
 gem 'whenever', require: false
 gem 'will_paginate'

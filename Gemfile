@@ -73,7 +73,7 @@ gem 'prawn' # Check usage
 gem 'premailer-rails'
 gem 'rack', '~> 3.1'
 gem 'rack-mini-profiler', require: false
-gem "rails", "~> 8.1"
+gem "rails", "~> 8.1.4"
 gem "sprockets-rails"
 gem 'rails-html-sanitizer' # Check usage
 gem 'redcarpet' # Check usage

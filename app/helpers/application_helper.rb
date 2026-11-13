@@ -204,7 +204,7 @@ module ApplicationHelper
     if current_user
       accessible = case identifier
         when 'sparc_fulfillment'
-          current_user.clinical_providers.any? || current_user.is_super_user?
+          current_user.clinical_providers.any? || current_user.is_super_user? || current_user.time_tracking_managers.any?
         when 'sparc_catalog'
           current_user.catalog_managers.any?
         when 'sparc_report'

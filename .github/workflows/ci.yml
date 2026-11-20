@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -73,7 +73,7 @@ jobs:
       - name: Install system dependencies and start Xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb mysql-client libcurl4-openssl-dev
+          sudo apt-get install -y xvfb libcurl4-openssl-dev
           Xvfb :99 -screen 0 1024x768x24 &
 
       # sparc proper context to start

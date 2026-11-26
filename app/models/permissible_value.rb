@@ -43,21 +43,23 @@ class PermissibleValue < ApplicationRecord
   }
 
   scope :sorted, -> (sort, order) {
+    direction = sanitize_sort_direction(order, default: :asc)
+
     case sort
     when 'category'
-      order(Arel.sql("permissible_values.category #{order}"))
+      order("permissible_values.category" => direction)
     when 'key'
-      order(Arel.sql("permissible_values.key #{order}"))
+      order("permissible_values.key" => direction)
     when 'value'
-      order(Arel.sql("permissible_values.value #{order}"))
+      order("permissible_values.value" => direction)
     when 'sort_order'
-      order(Arel.sql("permissible_values.sort_order #{order}"))
+      order("permissible_values.sort_order" => direction)
     when 'default'
-      order(Arel.sql("permissible_values.default #{order}"))
+      order("permissible_values.default" => direction)
     when 'is_available'
-      order(Arel.sql("permissible_values.is_available #{order}"))
+      order("permissible_values.is_available" => direction)
     when 'updated_at'
-      order(Arel.sql("permissible_values.updated_at #{order}"))
+      order("permissible_values.updated_at" => direction)
     end
   }
 

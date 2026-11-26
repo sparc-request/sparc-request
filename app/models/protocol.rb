@@ -205,24 +205,27 @@ class Protocol < ApplicationRecord
   )
 
   scope :sorted, -> (sort, order) {
-    sort  = 'id' if sort.blank?
-    order = 'desc' if order.blank?
+    sort      = 'id' if sort.blank?
+    direction = sanitize_sort_direction(order, default: :desc)
 
     case sort
     when 'id'
-      order(id: order)
+      order(id: direction)
     when 'short_title'
-      Protocol.order(Arel.sql("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{order}"))
+      sql = direction == :asc ?
+        "TRIM(REPLACE(short_title, CHAR(9), ' ')) ASC" :
+        "TRIM(REPLACE(short_title, CHAR(9), ' ')) DESC"
+      order(Arel.sql(sql))
     when 'pis'
-      joins(primary_pi_role: :identity).order("identities.first_name" => order)
+      joins(primary_pi_role: :identity).order("identities.first_name" => direction)
     when 'requests'
-      order("sub_service_requests_count" => order)
+      order("sub_service_requests_count" => direction)
     when 'protocol_merges'
-      joins(:protocol_merges).order("protocol_merges.id" => order)
+      joins(:protocol_merges).order("protocol_merges.id" => direction)
     when 'irb_number'
-      joins(:irb_records).order("irb_records.pro_number" => order)
+      joins(:irb_records).order("irb_records.pro_number" => direction)
     when 'research_master_id'
-      order(research_master_id: order)
+      order(research_master_id: direction)
     end
   }
 

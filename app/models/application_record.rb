@@ -20,4 +20,12 @@
 
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
+
+  def self.sanitize_sort_direction(direction, default: :asc)
+    case direction.to_s.downcase
+    when 'asc'  then :asc
+    when 'desc' then :desc
+    else default
+    end
+  end
 end

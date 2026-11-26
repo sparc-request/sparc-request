@@ -113,17 +113,19 @@ class Identity < ApplicationRecord
   }
 
   scope :sorted, -> (sort, order) {
+    direction = sanitize_sort_direction(order, default: :asc)
+
     case sort
     when 'name'
-      order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
+      order("identities.last_name" => direction, "identities.first_name" => direction)
     when 'created_at'
-      order(Arel.sql("identities.created_at #{order}"))
+      order("identities.created_at" => direction)
     when 'last_sign_in_at'
-      order(Arel.sql("identities.current_sign_in_at #{order}"))
+      order("identities.current_sign_in_at" => direction)
     when 'sign_in_count'
-      order(Arel.sql("identities.sign_in_count #{order}"))
+      order("identities.sign_in_count" => direction)
     when 'institution'
-      order(Arel.sql("identities.institution #{order}"))
+      order("identities.institution" => direction)
     end
   }
 
@@ -140,11 +142,13 @@ class Identity < ApplicationRecord
   }
 
   scope :overlords_sorted, -> (sort, order) {
+    direction = sanitize_sort_direction(order, default: :asc)
+
     case sort
     when 'name'
-      order(Arel.sql("identities.last_name #{order}, identities.first_name #{order}"))
+      order("identities.last_name" => direction, "identities.first_name" => direction)
     when 'email'
-      order(Arel.sql("identities.email #{order}"))
+      order("identities.email" => direction)
     end
   }
 

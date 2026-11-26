@@ -34,17 +34,19 @@ class Setting < ApplicationRecord
   validate :parent_value_matches_parent_data_type, if: Proc.new{ self.parent_key.present? }
 
   scope :sorted, -> (sort, order) {
+    direction = sanitize_sort_direction(order, default: :asc)
+
     case sort
     when 'group'
-      order(Arel.sql("settings.group #{order}"))
+      order("settings.group" => direction)
     when 'key'
-      order(Arel.sql("settings.key #{order}"))
+      order("settings.key" => direction)
     when 'value'
-      order(Arel.sql("settings.value #{order}"))
+      order("settings.value" => direction)
     when 'data_type'
-      order(Arel.sql("settings.data_type #{order}"))
+      order("settings.data_type" => direction)
     when 'parent_key'
-      order(Arel.sql("settings.parent_key #{order}"))
+      order("settings.parent_key" => direction)
     end
   }
 

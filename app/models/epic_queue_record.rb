@@ -58,19 +58,21 @@ class EpicQueueRecord < ApplicationRecord
 
   scope :ordered, -> (sort, order) {
     if sort
+      direction = sanitize_sort_direction(order, default: :asc)
+
       case sort
       when 'protocol'
-        eager_load(:protocol).order(Arel.sql("protocols.id #{order}"))
+        eager_load(:protocol).order("protocols.id" => direction)
       when 'pis'
-        joins(protocol: :principal_investigators).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+        joins(protocol: :principal_investigators).order("identities.first_name" => direction, "identities.last_name" => direction)
       when 'date'
-        order(Arel.sql("epic_queue_records.created_at #{order}"))
+        order("epic_queue_records.created_at" => direction)
       when 'status'
-        order(Arel.sql("epic_queue_records.status #{order}"))
+        order("epic_queue_records.status" => direction)
       when 'type'
-        order(Arel.sql("epic_queue_records.origin #{order}"))
+        order("epic_queue_records.origin" => direction)
       when 'by'
-        eager_load(:identity).order(Arel.sql("identities.first_name #{order}, identities.last_name #{order}"))
+        eager_load(:identity).order("identities.first_name" => direction, "identities.last_name" => direction)
       end
     else
       order(created_at: :desc)

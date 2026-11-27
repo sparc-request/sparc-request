@@ -101,8 +101,8 @@ GEM
       tzinfo (~> 2.0)
     acts-as-taggable-on (10.0.0)
       activerecord (>= 6.1, < 7.2)
-    addressable (2.8.6)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.9.1)
+      public_suffix (>= 2.0.2, < 8.0)
     afm (0.2.2)
     airbrussh (1.4.1)
       sshkit (>= 1.6.1, != 1.7.0)
@@ -429,7 +429,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (5.0.5)
+    public_suffix (7.0.5)
     puma (5.6.5)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -650,7 +650,7 @@ DEPENDENCIES
   activeresource
   acts-as-taggable-on
   acts_as_list!
-  addressable (~> 2.8.1)
+  addressable (~> 2.9.1)
   audited (~> 5.0)
   babel-transpiler
   bcrypt_pbkdf

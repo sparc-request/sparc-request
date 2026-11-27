@@ -188,7 +188,7 @@ GEM
       countries (~> 5.0)
     crack (0.4.5)
       rexml
-    crass (1.0.7)
+    crass (1.0.8)
     css_parser (1.17.1)
       addressable
     curb (0.9.11)
@@ -315,9 +315,9 @@ GEM
       addressable (~> 2.7)
     letter_opener (1.8.1)
       launchy (>= 2.2, < 3)
-    loofah (2.25.2)
+    loofah (2.25.3)
       crass (~> 1.0.2)
-      nokogiri (>= 1.12.0)
+      nokogiri (>= 1.19.5)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -370,7 +370,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (9.7.1)
     nio4r (2.5.8)
-    nokogiri (1.19.4)
+    nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)

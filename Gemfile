@@ -7,7 +7,7 @@ gem 'activerecord-session_store' # Check usage
 gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git'
 # gem 'acts-as-taggable-on', git: 'https://github.com/Fodoj/acts-as-taggable-on.git', branch: 'rails-5.2' # Consider updating to https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'#Had to be upgraded/changed, needs testing/work
-gem 'audited', '~> 5.0'
+gem 'audited', '~> 5.8'
 gem 'babel-transpiler'
 gem 'bluecloth' # Check usage
 gem 'bootsnap', require: false
@@ -26,7 +26,7 @@ gem 'caxlsx_rails'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'curb', '~> 0.9.11'
-gem 'deep_cloneable', '~> 3.2.0'
+gem 'deep_cloneable', '~> 3.2.2'
 gem 'delayed_job_active_record'
 gem 'delayed_job'
 gem 'devise'
@@ -74,7 +74,7 @@ gem 'premailer-rails'
 gem 'rack-mini-profiler', require: false
 # gem 'rails', '5.2.8.1'
 # gem 'rails', '6.1.7.6'
-gem 'rails', '7.0.8.1'
+gem 'rails', '8.1.4.1'
 gem "sprockets-rails"
 gem 'rails-html-sanitizer' # Check usage
 gem 'redcarpet' # Check usage
@@ -101,7 +101,7 @@ end
 
 group :development, :test, :profile do
   gem 'puma', '~> 5.6'
-  gem 'addressable', '~> 2.8.1' # Check usage
+  gem 'addressable', '~> 2.8.10' # Check usage
   gem 'connection_pool' # Check usage
   gem 'equivalent-xml' # Check usage
   gem 'faker'
